@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::pair`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -27,7 +27,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <utility>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     namespace detail {
         template <int> struct pix; // pair index
     }
@@ -37,7 +37,11 @@ BOOST_HANA_NAMESPACE_BEGIN
     //////////////////////////////////////////////////////////////////////////
     //! @cond
     template <typename First, typename Second>
+#ifdef BOOST_HANA_WORKAROUND_MSVC_EMPTYBASE
+    struct __declspec(empty_bases) pair : detail::operators::adl<pair<First, Second>>
+#else
     struct pair : detail::operators::adl<pair<First, Second>>
+#endif
                 , private detail::ebo<detail::pix<0>, First>
                 , private detail::ebo<detail::pix<1>, Second>
     {
@@ -79,8 +83,8 @@ BOOST_HANA_NAMESPACE_BEGIN
             BOOST_HANA_TT_IS_CONVERTIBLE(U const&, Second)
         >::type>
         constexpr pair(pair<T, U> const& other)
-            : detail::ebo<detail::pix<0>, First>(detail::ebo_get<detail::pix<0>>(other))
-            , detail::ebo<detail::pix<1>, Second>(detail::ebo_get<detail::pix<1>>(other))
+            : detail::ebo<detail::pix<0>, First>(hana::first(other))
+            , detail::ebo<detail::pix<1>, Second>(hana::second(other))
         { }
 
         template <typename T, typename U, typename = typename std::enable_if<
@@ -90,8 +94,8 @@ BOOST_HANA_NAMESPACE_BEGIN
             BOOST_HANA_TT_IS_CONVERTIBLE(U&&, Second)
         >::type>
         constexpr pair(pair<T, U>&& other)
-            : detail::ebo<detail::pix<0>, First>(static_cast<T&&>(detail::ebo_get<detail::pix<0>>(other)))
-            , detail::ebo<detail::pix<1>, Second>(static_cast<U&&>(detail::ebo_get<detail::pix<1>>(other)))
+            : detail::ebo<detail::pix<0>, First>(hana::first(static_cast<pair<T, U>&&>(other)))
+            , detail::ebo<detail::pix<1>, Second>(hana::second(static_cast<pair<T, U>&&>(other)))
         { }
 
 
@@ -101,8 +105,8 @@ BOOST_HANA_NAMESPACE_BEGIN
             BOOST_HANA_TT_IS_ASSIGNABLE(Second&, U const&)
         >::type>
         constexpr pair& operator=(pair<T, U> const& other) {
-            detail::ebo_get<detail::pix<0>>(*this) = detail::ebo_get<detail::pix<0>>(other);
-            detail::ebo_get<detail::pix<1>>(*this) = detail::ebo_get<detail::pix<1>>(other);
+            hana::first(*this) = hana::first(other);
+            hana::second(*this) = hana::second(other);
             return *this;
         }
 
@@ -111,8 +115,8 @@ BOOST_HANA_NAMESPACE_BEGIN
             BOOST_HANA_TT_IS_ASSIGNABLE(Second&, U&&)
         >::type>
         constexpr pair& operator=(pair<T, U>&& other) {
-            detail::ebo_get<detail::pix<0>>(*this) = static_cast<T&&>(detail::ebo_get<detail::pix<0>>(other));
-            detail::ebo_get<detail::pix<1>>(*this) = static_cast<U&&>(detail::ebo_get<detail::pix<1>>(other));
+            hana::first(*this) = hana::first(static_cast<pair<T, U>&&>(other));
+            hana::second(*this) = hana::second(static_cast<pair<T, U>&&>(other));
             return *this;
         }
 
@@ -202,6 +206,6 @@ BOOST_HANA_NAMESPACE_BEGIN
             );
         }
     };
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_PAIR_HPP

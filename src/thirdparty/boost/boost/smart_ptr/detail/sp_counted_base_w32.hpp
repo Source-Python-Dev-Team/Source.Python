@@ -25,8 +25,16 @@
 //
 
 #include <boost/smart_ptr/detail/sp_interlocked.hpp>
-#include <boost/detail/workaround.hpp>
-#include <boost/detail/sp_typeinfo.hpp>
+#include <boost/smart_ptr/detail/sp_typeinfo_.hpp>
+#include <boost/config/workaround.hpp>
+#include <boost/config.hpp>
+
+#if defined(BOOST_SP_REPORT_IMPLEMENTATION)
+
+#include <boost/config/pragma_message.hpp>
+BOOST_PRAGMA_MESSAGE("Using Win32 sp_counted_base")
+
+#endif
 
 namespace boost
 {
@@ -34,7 +42,7 @@ namespace boost
 namespace detail
 {
 
-class sp_counted_base
+class BOOST_SYMBOL_VISIBLE sp_counted_base
 {
 private:
 
@@ -66,7 +74,8 @@ public:
         delete this;
     }
 
-    virtual void * get_deleter( sp_typeinfo const & ti ) = 0;
+    virtual void * get_deleter( sp_typeinfo_ const & ti ) = 0;
+    virtual void * get_local_deleter( sp_typeinfo_ const & ti ) = 0;
     virtual void * get_untyped_deleter() = 0;
 
     void add_ref_copy()
@@ -81,18 +90,7 @@ public:
             long tmp = static_cast< long const volatile& >( use_count_ );
             if( tmp == 0 ) return false;
 
-#if defined( BOOST_MSVC ) && BOOST_WORKAROUND( BOOST_MSVC, == 1200 )
-
-            // work around a code generation bug
-
-            long tmp2 = tmp + 1;
-            if( BOOST_SP_INTERLOCKED_COMPARE_EXCHANGE( &use_count_, tmp2, tmp ) == tmp2 - 1 ) return true;
-
-#else
-
             if( BOOST_SP_INTERLOCKED_COMPARE_EXCHANGE( &use_count_, tmp + 1, tmp ) == tmp ) return true;
-
-#endif
         }
     }
 

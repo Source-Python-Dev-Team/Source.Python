@@ -1,6 +1,12 @@
 // Boost.Geometry (aka GGL, Generic Geometry Library)
 
 // Copyright (c) 2015 Barend Gehrels, Amsterdam, the Netherlands.
+// Copyright (c) 2017-2023 Adam Wulkiewicz, Lodz, Poland.
+
+// This file was modified by Oracle on 2017-2024.
+// Modifications copyright (c) 2017-2024 Oracle and/or its affiliates.
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
@@ -15,15 +21,23 @@
 #include <vector>
 
 #include <boost/core/ignore_unused.hpp>
-#include <boost/range.hpp>
+#include <boost/range/begin.hpp>
+#include <boost/range/end.hpp>
+#include <boost/range/value_type.hpp>
+
+#include <boost/geometry/core/assert.hpp>
 #include <boost/geometry/core/point_order.hpp>
 #include <boost/geometry/algorithms/detail/overlay/cluster_info.hpp>
 #include <boost/geometry/algorithms/detail/overlay/do_reverse.hpp>
+#include <boost/geometry/algorithms/detail/overlay/colocate_clusters.hpp>
+#include <boost/geometry/algorithms/detail/overlay/get_clusters.hpp>
+#include <boost/geometry/algorithms/detail/overlay/get_ring.hpp>
+#include <boost/geometry/algorithms/detail/overlay/is_self_turn.hpp>
 #include <boost/geometry/algorithms/detail/overlay/overlay_type.hpp>
 #include <boost/geometry/algorithms/detail/overlay/sort_by_side.hpp>
 #include <boost/geometry/algorithms/detail/overlay/turn_info.hpp>
-#include <boost/geometry/algorithms/detail/ring_identifier.hpp>
 #include <boost/geometry/algorithms/detail/overlay/segment_identifier.hpp>
+#include <boost/geometry/util/constexpr.hpp>
 
 #if defined(BOOST_GEOMETRY_DEBUG_HANDLE_COLOCATIONS)
 #  include <iostream>
@@ -39,331 +53,60 @@ namespace boost { namespace geometry
 namespace detail { namespace overlay
 {
 
-template <typename SegmentRatio>
-struct segment_fraction
-{
-    segment_identifier seg_id;
-    SegmentRatio fraction;
-
-    segment_fraction(segment_identifier const& id, SegmentRatio const& fr)
-        : seg_id(id)
-        , fraction(fr)
-    {}
-
-    segment_fraction()
-    {}
-
-    bool operator<(segment_fraction<SegmentRatio> const& other) const
-    {
-        return seg_id == other.seg_id
-                ? fraction < other.fraction
-                : seg_id < other.seg_id;
-    }
-
-};
-
-struct turn_operation_index
-{
-    turn_operation_index(signed_size_type ti = -1,
-                         signed_size_type oi = -1)
-        : turn_index(ti)
-        , op_index(oi)
-    {}
-
-    signed_size_type turn_index;
-    signed_size_type op_index; // only 0,1
-};
-
-
-template <typename Turns>
-struct less_by_fraction_and_type
-{
-    inline less_by_fraction_and_type(Turns const& turns)
-        : m_turns(turns)
-    {
-    }
-
-    inline bool operator()(turn_operation_index const& left,
-                           turn_operation_index const& right) const
-    {
-        typedef typename boost::range_value<Turns>::type turn_type;
-        typedef typename turn_type::turn_operation_type turn_operation_type;
-
-        turn_type const& left_turn = m_turns[left.turn_index];
-        turn_type const& right_turn = m_turns[right.turn_index];
-        turn_operation_type const& left_op
-                = left_turn.operations[left.op_index];
-
-        turn_operation_type const& right_op
-                = right_turn.operations[right.op_index];
-
-        if (! (left_op.fraction == right_op.fraction))
-        {
-            return left_op.fraction < right_op.fraction;
-        }
-
-        // Order xx first - used to discard any following colocated turn
-        bool const left_both_xx = left_turn.both(operation_blocked);
-        bool const right_both_xx = right_turn.both(operation_blocked);
-        if (left_both_xx && ! right_both_xx)
-        {
-            return true;
-        }
-        if (! left_both_xx && right_both_xx)
-        {
-            return false;
-        }
-
-        bool const left_both_uu = left_turn.both(operation_union);
-        bool const right_both_uu = right_turn.both(operation_union);
-        if (left_both_uu && ! right_both_uu)
-        {
-            return true;
-        }
-        if (! left_both_uu && right_both_uu)
-        {
-            return false;
-        }
-
-        turn_operation_type const& left_other_op
-                = left_turn.operations[1 - left.op_index];
-
-        turn_operation_type const& right_other_op
-                = right_turn.operations[1 - right.op_index];
-
-        // Fraction is the same, now sort on ring id, first outer ring,
-        // then interior rings
-        return left_other_op.seg_id < right_other_op.seg_id;
-    }
-
-private:
-    Turns const& m_turns;
-};
-
-template <typename Operation, typename ClusterPerSegment>
-inline signed_size_type get_cluster_id(Operation const& op, ClusterPerSegment const& cluster_per_segment)
-{
-    typedef typename ClusterPerSegment::key_type segment_fraction_type;
-
-    segment_fraction_type seg_frac(op.seg_id, op.fraction);
-    typename ClusterPerSegment::const_iterator it
-            = cluster_per_segment.find(seg_frac);
-
-    if (it == cluster_per_segment.end())
-    {
-        return -1;
-    }
-    return it->second;
-}
-
-template <typename Operation, typename ClusterPerSegment>
-inline void add_cluster_id(Operation const& op,
-    ClusterPerSegment& cluster_per_segment, signed_size_type id)
-{
-    typedef typename ClusterPerSegment::key_type segment_fraction_type;
-
-    segment_fraction_type seg_frac(op.seg_id, op.fraction);
-
-    cluster_per_segment[seg_frac] = id;
-}
-
-template <typename Turn, typename ClusterPerSegment>
-inline signed_size_type add_turn_to_cluster(Turn const& turn,
-        ClusterPerSegment& cluster_per_segment, signed_size_type& cluster_id)
-{
-    signed_size_type cid0 = get_cluster_id(turn.operations[0], cluster_per_segment);
-    signed_size_type cid1 = get_cluster_id(turn.operations[1], cluster_per_segment);
-
-    if (cid0 == -1 && cid1 == -1)
-    {
-        ++cluster_id;
-        add_cluster_id(turn.operations[0], cluster_per_segment, cluster_id);
-        add_cluster_id(turn.operations[1], cluster_per_segment, cluster_id);
-        return cluster_id;
-    }
-    else if (cid0 == -1 && cid1 != -1)
-    {
-        add_cluster_id(turn.operations[0], cluster_per_segment, cid1);
-        return cid1;
-    }
-    else if (cid0 != -1 && cid1 == -1)
-    {
-        add_cluster_id(turn.operations[1], cluster_per_segment, cid0);
-        return cid0;
-    }
-    else if (cid0 == cid1)
-    {
-        // Both already added to same cluster, no action
-        return cid0;
-    }
-
-    // Both operations.seg_id/fraction were already part of any cluster, and
-    // these clusters are not the same. Merge of two clusters is necessary
-#if defined(BOOST_GEOMETRY_DEBUG_HANDLE_COLOCATIONS)
-    std::cout << " TODO: merge " << cid0 << " and " << cid1 << std::endl;
-#endif
-    return cid0;
-}
-
-template
-<
-    typename Turns,
-    typename ClusterPerSegment,
-    typename Operations,
-    typename Geometry1,
-    typename Geometry2
->
-inline void handle_colocation_cluster(Turns& turns,
-        signed_size_type& cluster_id,
-        ClusterPerSegment& cluster_per_segment,
-        Operations const& operations,
-        Geometry1 const& /*geometry1*/, Geometry2 const& /*geometry2*/)
-{
-    typedef typename boost::range_value<Turns>::type turn_type;
-    typedef typename turn_type::turn_operation_type turn_operation_type;
-
-    std::vector<turn_operation_index>::const_iterator vit = operations.begin();
-
-    turn_operation_index ref_toi = *vit;
-    signed_size_type ref_id = -1;
-
-    for (++vit; vit != operations.end(); ++vit)
-    {
-        turn_type& ref_turn = turns[ref_toi.turn_index];
-        turn_operation_type const& ref_op
-                = ref_turn.operations[ref_toi.op_index];
-
-        turn_operation_index const& toi = *vit;
-        turn_type& turn = turns[toi.turn_index];
-        turn_operation_type const& op = turn.operations[toi.op_index];
-
-        BOOST_ASSERT(ref_op.seg_id == op.seg_id);
-
-        if (ref_op.fraction == op.fraction)
-        {
-            turn_operation_type const& other_op = turn.operations[1 - toi.op_index];
-
-            if (ref_id == -1)
-            {
-                ref_id = add_turn_to_cluster(ref_turn, cluster_per_segment, cluster_id);
-            }
-            BOOST_ASSERT(ref_id != -1);
-
-            // ref_turn (both operations) are already added to cluster,
-            // so also "op" is already added to cluster,
-            // We only need to add other_op
-            signed_size_type id = get_cluster_id(other_op, cluster_per_segment);
-            if (id != -1 && id != ref_id)
-            {
-            }
-            else if (id == -1)
-            {
-                // Add to same cluster
-                add_cluster_id(other_op, cluster_per_segment, ref_id);
-                id = ref_id;
-            }
-
-            // In case of colocated xx turns, all other turns may NOT be
-            // followed at all. xx cannot be discarded (otherwise colocated
-            // turns are followed).
-            if (ref_turn.both(operation_blocked))
-            {
-                turn.discarded = true;
-                // We can either set or not set colocated because it is not effective on blocked turns
-            }
-        }
-        else
-        {
-            // Not on same fraction on this segment
-            // assign for next
-            ref_toi = toi;
-            ref_id = -1;
-        }
-    }
-}
-
-template
-<
-    typename Turns,
-    typename Clusters,
-    typename ClusterPerSegment
->
-inline void assign_cluster_to_turns(Turns& turns,
-        Clusters& clusters,
-        ClusterPerSegment const& cluster_per_segment)
-{
-    typedef typename boost::range_value<Turns>::type turn_type;
-    typedef typename turn_type::turn_operation_type turn_operation_type;
-    typedef typename ClusterPerSegment::key_type segment_fraction_type;
-
-    signed_size_type turn_index = 0;
-    for (typename boost::range_iterator<Turns>::type it = turns.begin();
-         it != turns.end(); ++it, ++turn_index)
-    {
-        turn_type& turn = *it;
-
-        if (turn.discarded)
-        {
-            // They were processed (to create proper map) but will not be added
-            // This might leave a cluster with only 1 turn, which will be fixed
-            // afterwards
-            continue;
-        }
-
-        for (int i = 0; i < 2; i++)
-        {
-            turn_operation_type const& op = turn.operations[i];
-            segment_fraction_type seg_frac(op.seg_id, op.fraction);
-            typename ClusterPerSegment::const_iterator it = cluster_per_segment.find(seg_frac);
-            if (it != cluster_per_segment.end())
-            {
-#if defined(BOOST_GEOMETRY_DEBUG_HANDLE_COLOCATIONS)
-                if (turn.cluster_id != -1
-                        && turn.cluster_id != it->second)
-                {
-                    std::cout << " CONFLICT " << std::endl;
-                }
-#endif
-                turn.cluster_id = it->second;
-                clusters[turn.cluster_id].turn_indices.insert(turn_index);
-            }
-        }
-    }
-}
-
-template
-<
-    typename Turns,
-    typename Clusters
->
+// Removes clusters which have only one point left, or are empty.
+template <typename Turns, typename Clusters>
 inline void remove_clusters(Turns& turns, Clusters& clusters)
 {
-    typename Clusters::iterator it = clusters.begin();
+    auto it = clusters.begin();
     while (it != clusters.end())
     {
         // Hold iterator and increase. We can erase cit, this keeps the
         // iterator valid (cf The standard associative-container erase idiom)
-        typename Clusters::iterator current_it = it;
+        auto current_it = it;
         ++it;
 
-        std::set<signed_size_type> const& turn_indices
-                = current_it->second.turn_indices;
+        auto const& turn_indices = current_it->second.turn_indices;
         if (turn_indices.size() == 1)
         {
-            signed_size_type turn_index = *turn_indices.begin();
+            auto const turn_index = *turn_indices.begin();
             turns[turn_index].cluster_id = -1;
             clusters.erase(current_it);
         }
     }
 }
 
-template <typename Turn, typename IdSet>
-inline void discard_ie_turn(Turn& turn, IdSet& ids, signed_size_type id)
+template <typename Turns, typename Clusters>
+inline void cleanup_clusters(Turns& turns, Clusters& clusters)
+{
+    // Removes discarded turns from clusters
+    for (auto& pair : clusters)
+    {
+        auto& cinfo = pair.second;
+        auto& indices = cinfo.turn_indices;
+        for (auto sit = indices.begin(); sit != indices.end(); /* no increment */)
+        {
+            auto current_it = sit;
+            ++sit;
+
+            auto const turn_index = *current_it;
+            if (turns[turn_index].discarded)
+            {
+                indices.erase(current_it);
+            }
+        }
+    }
+
+    remove_clusters(turns, clusters);
+}
+
+template <typename Turn, typename IndexSet>
+inline void discard_colocated_turn(Turn& turn, IndexSet& indices, signed_size_type index)
 {
     turn.discarded = true;
+    // Set cluster id to -1, but don't clear colocated flags
     turn.cluster_id = -1;
     // To remove it later from clusters
-    ids.insert(id);
+    indices.insert(index);
 }
 
 template <bool Reverse>
@@ -378,6 +121,13 @@ inline bool is_ie_turn(segment_identifier const& ext_seg_0,
                        segment_identifier const& int_seg_0,
                        segment_identifier const& other_seg_1)
 {
+    if (ext_seg_0.source_index == ext_seg_1.source_index)
+    {
+        // External turn is a self-turn, dont discard internal turn for this
+        return false;
+    }
+
+
     // Compares two segment identifiers from two turns (external / one internal)
 
     // From first turn [0], both are from same polygon (multi_index),
@@ -416,37 +166,19 @@ template
 >
 inline void discard_interior_exterior_turns(Turns& turns, Clusters& clusters)
 {
-    typedef std::set<signed_size_type>::const_iterator set_iterator;
-    typedef typename boost::range_value<Turns>::type turn_type;
+    std::set<signed_size_type> indices_to_remove;
 
-    std::set<signed_size_type> ids_to_remove;
-
-    for (typename Clusters::iterator cit = clusters.begin();
-         cit != clusters.end(); ++cit)
+    for (auto& pair : clusters)
     {
-        cluster_info& cinfo = cit->second;
-        std::set<signed_size_type>& ids = cinfo.turn_indices;
+        cluster_info& cinfo = pair.second;
 
-        ids_to_remove.clear();
+        indices_to_remove.clear();
 
-        for (set_iterator it = ids.begin(); it != ids.end(); ++it)
+        for (auto index : cinfo.turn_indices)
         {
-            turn_type& turn = turns[*it];
+            auto& turn = turns[index];
             segment_identifier const& seg_0 = turn.operations[0].seg_id;
             segment_identifier const& seg_1 = turn.operations[1].seg_id;
-
-            if (turn.both(operation_intersection)
-                    && Reverse0 == Reverse1)
-            {
-                if (   is_interior<Reverse0>(seg_0)
-                    && is_interior<Reverse1>(seg_1))
-                {
-                    // ii touch with, two interior rings
-                    discard_ie_turn(turn, ids_to_remove, *it);
-                }
-
-                continue;
-            }
 
             if (! (turn.both(operation_union)
                    || turn.combination(operation_union, operation_blocked)))
@@ -455,38 +187,120 @@ inline void discard_interior_exterior_turns(Turns& turns, Clusters& clusters)
                 continue;
             }
 
-            for (set_iterator int_it = ids.begin(); int_it != ids.end(); ++int_it)
+            for (auto interior_index : cinfo.turn_indices)
             {
-                if (*it == *int_it)
+                if (index == interior_index)
                 {
                     continue;
                 }
 
                 // Turn with, possibly, an interior ring involved
-                turn_type& int_turn = turns[*int_it];
-                segment_identifier const& int_seg_0 = int_turn.operations[0].seg_id;
-                segment_identifier const& int_seg_1 = int_turn.operations[1].seg_id;
+                auto& interior_turn = turns[interior_index];
+                segment_identifier const& int_seg_0 = interior_turn.operations[0].seg_id;
+                segment_identifier const& int_seg_1 = interior_turn.operations[1].seg_id;
 
                 if (is_ie_turn<Reverse0, Reverse1>(seg_0, seg_1, int_seg_0, int_seg_1))
                 {
-                    discard_ie_turn(int_turn, ids_to_remove, *int_it);
+                    discard_colocated_turn(interior_turn, indices_to_remove, interior_index);
                 }
                 if (is_ie_turn<Reverse1, Reverse0>(seg_1, seg_0, int_seg_1, int_seg_0))
                 {
-                    discard_ie_turn(int_turn, ids_to_remove, *int_it);
+                    discard_colocated_turn(interior_turn, indices_to_remove, interior_index);
                 }
             }
         }
 
-        // Erase from the ids (which cannot be done above)
-        for (set_iterator sit = ids_to_remove.begin();
-             sit != ids_to_remove.end(); ++sit)
+        // Erase from the indices (which cannot be done above)
+        for (auto index : indices_to_remove)
         {
-            ids.erase(*sit);
+            cinfo.turn_indices.erase(index);
         }
     }
 }
 
+template
+<
+    overlay_type OverlayType,
+    typename Turns,
+    typename Clusters
+>
+inline void set_colocation(Turns& turns, Clusters const& clusters)
+{
+    for (auto const& pair : clusters)
+    {
+        cluster_info const& cinfo = pair.second;
+
+        bool both_target = false;
+        for (auto index : cinfo.turn_indices)
+        {
+            auto const& turn = turns[index];
+            if (turn.both(operation_from_overlay<OverlayType>::value))
+            {
+                both_target = true;
+                break;
+            }
+        }
+
+        if (both_target)
+        {
+            for (auto index : cinfo.turn_indices)
+            {
+                auto& turn = turns[index];
+                turn.has_colocated_both = true;
+            }
+        }
+    }
+}
+
+template
+<
+    typename Turns,
+    typename Clusters
+>
+inline void check_colocation(bool& has_blocked,
+        signed_size_type cluster_id, Turns const& turns, Clusters const& clusters)
+{
+    typedef typename boost::range_value<Turns>::type turn_type;
+
+    has_blocked = false;
+
+    auto mit = clusters.find(cluster_id);
+    if (mit == clusters.end())
+    {
+        return;
+    }
+
+    cluster_info const& cinfo = mit->second;
+
+    for (auto index : cinfo.turn_indices)
+    {
+        turn_type const& turn = turns[index];
+        if (turn.any_blocked())
+        {
+            has_blocked = true;
+        }
+    }
+}
+
+template
+<
+    typename Turns,
+    typename Clusters
+>
+inline void assign_cluster_ids(Turns& turns, Clusters const& clusters)
+{
+    for (auto& turn : turns)
+    {
+        turn.cluster_id = -1;
+    }
+    for (auto const& kv : clusters)
+    {
+        for (auto const& index : kv.second.turn_indices)
+        {
+            turns[index].cluster_id = kv.first;
+        }
+    }
+}
 
 // Checks colocated turns and flags combinations of uu/other, possibly a
 // combination of a ring touching another geometry's interior ring which is
@@ -498,117 +312,54 @@ inline void discard_interior_exterior_turns(Turns& turns, Clusters& clusters)
 template
 <
     bool Reverse1, bool Reverse2,
-    typename Turns,
-    typename Clusters,
+    overlay_type OverlayType,
+    typename Geometry0,
     typename Geometry1,
-    typename Geometry2
+    typename Turns,
+    typename Clusters
 >
-inline bool handle_colocations(Turns& turns, Clusters& clusters,
-        Geometry1 const& geometry1, Geometry2 const& geometry2)
+inline bool handle_colocations(Turns& turns, Clusters& clusters)
 {
-    typedef std::map
-        <
-            segment_identifier,
-            std::vector<turn_operation_index>
-        > map_type;
+    static const detail::overlay::operation_type target_operation
+            = detail::overlay::operation_from_overlay<OverlayType>::value;
 
-    // Create and fill map on segment-identifier Map is sorted on seg_id,
-    // meaning it is sorted on ring_identifier too. This means that exterior
-    // rings are handled first. If there is a colocation on the exterior ring,
-    // that information can be used for the interior ring too
-    map_type map;
+    get_clusters(turns, clusters);
 
-    int index = 0;
-    for (typename boost::range_iterator<Turns>::type
-            it = boost::begin(turns);
-         it != boost::end(turns);
-         ++it, ++index)
-    {
-        map[it->operations[0].seg_id].push_back(turn_operation_index(index, 0));
-        map[it->operations[1].seg_id].push_back(turn_operation_index(index, 1));
-    }
-
-    // Check if there are multiple turns on one or more segments,
-    // if not then nothing is to be done
-    bool colocations = 0;
-    for (typename map_type::const_iterator it = map.begin();
-         it != map.end();
-         ++it)
-    {
-        if (it->second.size() > 1u)
-        {
-            colocations = true;
-            break;
-        }
-    }
-
-    if (! colocations)
+    if (clusters.empty())
     {
         return false;
     }
 
-    // Sort all vectors, per same segment
-    less_by_fraction_and_type<Turns> less(turns);
-    for (typename map_type::iterator it = map.begin();
-         it != map.end(); ++it)
+    assign_cluster_ids(turns, clusters);
+
+    // Get colocated information here, and not later, to keep information
+    // on turns which are discarded afterwards
+    set_colocation<OverlayType>(turns, clusters);
+
+    if BOOST_GEOMETRY_CONSTEXPR (target_operation == operation_intersection)
     {
-        std::sort(it->second.begin(), it->second.end(), less);
+        discard_interior_exterior_turns
+            <
+                do_reverse<geometry::point_order<Geometry0>::value>::value != Reverse1,
+                do_reverse<geometry::point_order<Geometry1>::value>::value != Reverse2
+            >(turns, clusters);
     }
 
-    typedef typename boost::range_value<Turns>::type turn_type;
-    typedef typename turn_type::segment_ratio_type segment_ratio_type;
-
-    typedef std::map
-        <
-            segment_fraction<segment_ratio_type>,
-            signed_size_type
-        > cluster_per_segment_type;
-
-    cluster_per_segment_type cluster_per_segment;
-    signed_size_type cluster_id = 0;
-
-    for (typename map_type::const_iterator it = map.begin();
-         it != map.end(); ++it)
-    {
-        if (it->second.size() > 1u)
-        {
-            handle_colocation_cluster(turns, cluster_id, cluster_per_segment,
-                it->second, geometry1, geometry2);
-        }
-    }
-
-    assign_cluster_to_turns(turns, clusters, cluster_per_segment);
-    discard_interior_exterior_turns
-        <
-            do_reverse<geometry::point_order<Geometry1>::value>::value != Reverse1,
-            do_reverse<geometry::point_order<Geometry2>::value>::value != Reverse2
-        >(turns, clusters);
-    remove_clusters(turns, clusters);
+    // There might be clusters having only one turn, if the rest is discarded
+    // This is cleaned up later, after gathering the properties.
 
 #if defined(BOOST_GEOMETRY_DEBUG_HANDLE_COLOCATIONS)
     std::cout << "*** Colocations " << map.size() << std::endl;
-    for (typename map_type::const_iterator it = map.begin();
-         it != map.end(); ++it)
+    for (auto const& kv : map)
     {
-        std::cout << it->first << std::endl;
-        for (std::vector<turn_operation_index>::const_iterator vit
-             = it->second.begin(); vit != it->second.end(); ++vit)
+        std::cout << kv.first << std::endl;
+        for (auto const& toi : kv.second)
         {
-            turn_operation_index const& toi = *vit;
-            std::cout << geometry::wkt(turns[toi.turn_index].point)
-                << std::boolalpha
-                << " discarded=" << turns[toi.turn_index].discarded
-                << " colocated=" << turns[toi.turn_index].colocated
-                << " " << operation_char(turns[toi.turn_index].operations[0].operation)
-                << " "  << turns[toi.turn_index].operations[0].seg_id
-                << " "  << turns[toi.turn_index].operations[0].fraction
-                << " // " << operation_char(turns[toi.turn_index].operations[1].operation)
-                << " "  << turns[toi.turn_index].operations[1].seg_id
-                << " "  << turns[toi.turn_index].operations[1].fraction
-                << std::endl;
+            detail::debug::debug_print_turn(turns[toi.turn_index]);
+            std::cout << std::endl;
         }
     }
-#endif // DEBUG
+#endif
 
     return true;
 }
@@ -627,21 +378,58 @@ struct is_turn_index
         return indexed.turn_index == m_index;
     }
 
-    std::size_t m_index;
+    signed_size_type m_index;
 };
 
+template
+<
+    typename Sbs,
+    typename Point,
+    typename Turns,
+    typename Geometry1,
+    typename Geometry2
+>
+inline bool fill_sbs(Sbs& sbs, Point& turn_point,
+                     cluster_info const& cinfo,
+                     Turns const& turns,
+                     Geometry1 const& geometry1, Geometry2 const& geometry2)
+{
+    if (cinfo.turn_indices.empty())
+    {
+        return false;
+    }
+
+    bool first = true;
+    for (auto turn_index : cinfo.turn_indices)
+    {
+        auto const& turn = turns[turn_index];
+        if (first)
+        {
+            turn_point = turn.point;
+        }
+        for (int i = 0; i < 2; i++)
+        {
+            sbs.add(turn, turn.operations[i], turn_index, i, geometry1, geometry2, first);
+            first = false;
+        }
+    }
+    return true;
+}
 
 template
 <
     bool Reverse1, bool Reverse2,
+    overlay_type OverlayType,
     typename Turns,
     typename Clusters,
     typename Geometry1,
-    typename Geometry2
+    typename Geometry2,
+    typename Strategy
 >
 inline void gather_cluster_properties(Clusters& clusters, Turns& turns,
         operation_type for_operation,
-        Geometry1 const& geometry1, Geometry2 const& geometry2)
+        Geometry1 const& geometry1, Geometry2 const& geometry2,
+        Strategy const& strategy)
 {
     typedef typename boost::range_value<Turns>::type turn_type;
     typedef typename turn_type::point_type point_type;
@@ -651,50 +439,59 @@ inline void gather_cluster_properties(Clusters& clusters, Turns& turns,
     // right side
     typedef sort_by_side::side_sorter
         <
-            Reverse1, Reverse2, point_type, std::less<int>
+            Reverse1, Reverse2, OverlayType, point_type, Strategy, std::less<int>
         > sbs_type;
 
-    for (typename Clusters::iterator mit = clusters.begin();
-         mit != clusters.end(); ++mit)
+    for (auto& pair : clusters)
     {
-        cluster_info& cinfo = mit->second;
-        std::set<signed_size_type> const& ids = cinfo.turn_indices;
-        if (ids.empty())
+        cluster_info& cinfo = pair.second;
+
+        sbs_type sbs(strategy);
+        point_type turn_point; // should be all the same for all turns in cluster
+        if (! fill_sbs(sbs, turn_point, cinfo, turns, geometry1, geometry2))
         {
             continue;
         }
 
-        sbs_type sbs;
-        point_type turn_point; // should be all the same for all turns in cluster
-
-        bool first = true;
-        for (typename std::set<signed_size_type>::const_iterator sit = ids.begin();
-             sit != ids.end(); ++sit)
-        {
-            signed_size_type turn_index = *sit;
-            turn_type const& turn = turns[turn_index];
-            if (first)
-            {
-                turn_point = turn.point;
-            }
-            for (int i = 0; i < 2; i++)
-            {
-                turn_operation_type const& op = turn.operations[i];
-                sbs.add(op, turn_index, i, geometry1, geometry2, first);
-                first = false;
-            }
-        }
         sbs.apply(turn_point);
 
         sbs.find_open();
         sbs.assign_zones(for_operation);
 
-        // Unset the startable flag for all 'closed' zones
+        cinfo.open_count = sbs.open_count(for_operation);
+
+        // Determine spikes
+        cinfo.spike_count = 0;
+        for (std::size_t i = 0; i + 1 < sbs.m_ranked_points.size(); i++)
+        {
+            auto const& current = sbs.m_ranked_points[i];
+            auto const& next = sbs.m_ranked_points[i + 1];
+            if (current.rank == next.rank
+                && current.direction == detail::overlay::sort_by_side::dir_from
+                && next.direction == detail::overlay::sort_by_side::dir_to)
+            {
+                // It leaves, from cluster point, and immediately returns.
+                cinfo.spike_count += 1;
+            }
+        }
+
+        bool const set_startable = OverlayType != overlay_dissolve;
+
+        // Unset the startable flag for all 'closed' zones. This does not
+        // apply for self-turns, because those counts are not from both
+        // polygons
         for (std::size_t i = 0; i < sbs.m_ranked_points.size(); i++)
         {
-            const typename sbs_type::rp& ranked = sbs.m_ranked_points[i];
+            typename sbs_type::rp const& ranked = sbs.m_ranked_points[i];
             turn_type& turn = turns[ranked.turn_index];
             turn_operation_type& op = turn.operations[ranked.operation_index];
+
+            if (set_startable
+                && for_operation == operation_union
+                && cinfo.open_count == 0)
+            {
+                op.enriched.startable = false;
+            }
 
             if (ranked.direction != sort_by_side::dir_to)
             {
@@ -703,7 +500,22 @@ inline void gather_cluster_properties(Clusters& clusters, Turns& turns,
 
             op.enriched.count_left = ranked.count_left;
             op.enriched.count_right = ranked.count_right;
+            op.enriched.rank = ranked.rank;
             op.enriched.zone = ranked.zone;
+
+            if (! set_startable)
+            {
+                continue;
+            }
+
+            if BOOST_GEOMETRY_CONSTEXPR (OverlayType == overlay_difference)
+            {
+                if (is_self_turn<OverlayType>(turn))
+                {
+                    // TODO: investigate
+                    continue;
+                }
+            }
 
             if ((for_operation == operation_union
                     && ranked.count_left != 0)
@@ -714,7 +526,6 @@ inline void gather_cluster_properties(Clusters& clusters, Turns& turns,
             }
         }
 
-        cinfo.open_count = sbs.open_count(for_operation);
     }
 }
 

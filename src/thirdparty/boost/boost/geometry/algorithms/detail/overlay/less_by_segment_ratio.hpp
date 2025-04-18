@@ -2,6 +2,11 @@
 
 // Copyright (c) 2007-2015 Barend Gehrels, Amsterdam, the Netherlands.
 
+// This file was modified by Oracle on 2017-2024.
+// Modifications copyright (c) 2017-2024 Oracle and/or its affiliates.
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -15,7 +20,8 @@
 #include <set>
 #include <vector>
 
-#include <boost/range.hpp>
+#include <boost/core/addressof.hpp>
+#include <boost/range/value_type.hpp>
 
 #include <boost/geometry/algorithms/detail/overlay/copy_segment_point.hpp>
 #include <boost/geometry/algorithms/detail/overlay/sort_by_side.hpp>
@@ -59,31 +65,28 @@ template
     typename Turns,
     typename Indexed,
     typename Geometry1, typename Geometry2,
-    typename RobustPolicy,
+    typename Strategy,
     bool Reverse1, bool Reverse2
 >
 struct less_by_segment_ratio
 {
     inline less_by_segment_ratio(Turns const& turns
-            , operation_type for_operation
             , Geometry1 const& geometry1
             , Geometry2 const& geometry2
-            , RobustPolicy const& robust_policy)
+            , Strategy const& strategy)
         : m_turns(turns)
-        , m_for_operation(for_operation)
         , m_geometry1(geometry1)
         , m_geometry2(geometry2)
-        , m_robust_policy(robust_policy)
+        , m_strategy(strategy)
     {
     }
 
 private :
 
     Turns const& m_turns;
-    operation_type m_for_operation;
     Geometry1 const& m_geometry1;
     Geometry2 const& m_geometry2;
-    RobustPolicy const& m_robust_policy;
+    Strategy const& m_strategy;
 
     typedef typename geometry::point_type<Geometry1>::type point_type;
 
@@ -108,13 +111,9 @@ private :
             *right.other_seg_id,
             si, sj);
 
-        typedef typename strategy::side::services::default_strategy
-            <
-                typename cs_tag<point_type>::type
-            >::type strategy;
-
-        int const side_rj_p = strategy::apply(pi, pj, rj);
-        int const side_sj_p = strategy::apply(pi, pj, sj);
+        auto side_strategy = m_strategy.side();
+        int const side_rj_p = side_strategy.apply(pi, pj, rj);
+        int const side_sj_p = side_strategy.apply(pi, pj, sj);
 
         // Put the one turning left (1; right == -1) as last
         if (side_rj_p != side_sj_p)
@@ -122,8 +121,8 @@ private :
             return side_rj_p < side_sj_p;
         }
 
-        int const side_sj_r = strategy::apply(ri, rj, sj);
-        int const side_rj_s = strategy::apply(si, sj, rj);
+        int const side_sj_r = side_strategy.apply(ri, rj, sj);
+        int const side_rj_s = side_strategy.apply(si, sj, rj);
 
         // If they both turn left: the most left as last
         // If they both turn right: this is not relevant, but take also here most left
@@ -154,10 +153,8 @@ public :
             return left.subject->fraction < right.subject->fraction;
         }
 
-
-        typedef typename boost::range_value<Turns>::type turn_type;
-        turn_type const& left_turn = m_turns[left.turn_index];
-        turn_type const& right_turn = m_turns[right.turn_index];
+        auto const& left_turn = m_turns[left.turn_index];
+        auto const& right_turn = m_turns[right.turn_index];
 
         // First check "real" intersection (crosses)
         // -> distance zero due to precision, solve it by sorting

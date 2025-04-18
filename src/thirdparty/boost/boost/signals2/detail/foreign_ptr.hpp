@@ -13,10 +13,10 @@
 
 #include <algorithm>
 #include <boost/config.hpp>
+#include <boost/core/invoke_swap.hpp>
 #include <boost/assert.hpp>
 #include <boost/scoped_ptr.hpp>
 #include <boost/smart_ptr/bad_weak_ptr.hpp>
-#include <boost/utility/swap.hpp>
 
 #ifndef BOOST_NO_CXX11_SMART_PTR
 #include <memory>
@@ -103,7 +103,7 @@ namespace boost
         }
         void swap(foreign_void_shared_ptr &other)
         {
-          boost::swap(_p, other._p);
+          boost::core::invoke_swap(_p, other._p);
         }
       private:
         foreign_shared_ptr_impl_base *_p;
@@ -159,7 +159,7 @@ namespace boost
         }
         void swap(foreign_void_weak_ptr &other)
         {
-          boost::swap(_p, other._p);
+          boost::core::invoke_swap(_p, other._p);
         }
         foreign_void_shared_ptr lock() const
         {

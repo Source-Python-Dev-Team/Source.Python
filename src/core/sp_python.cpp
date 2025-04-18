@@ -76,15 +76,26 @@ const char *GetSourcePythonDir()
 //---------------------------------------------------------------------------------
 // Adds a path to sys.path (relative to GetSourcePythonDir()).
 //---------------------------------------------------------------------------------
-void AddToSysPath( const char* path )
+bool AddToSysPath( PyConfig& config, const char* path )
 {
+	PyStatus status;
 	char szFolderPath[MAX_PATH_LENGTH];
+	wchar_t wszFolderPath[MAX_PATH_LENGTH];
+
 	V_snprintf(szFolderPath, MAX_PATH_LENGTH, "%s%s", GetSourcePythonDir(), path);
 	V_FixSlashes(szFolderPath);
+	V_strtowcs(szFolderPath, -1, wszFolderPath, MAX_PATH_LENGTH);
 
-	DevMsg(1, MSG_PREFIX "Adding %s to path\n", szFolderPath);
-	std::string szCommandString = "sys.path.append(r\"" + std::string(szFolderPath) + "\")";
-	PyRun_SimpleString(szCommandString.c_str());
+	DevMsg(1, MSG_PREFIX "Adding %s to path...\n", szFolderPath);
+	config.module_search_paths_set = 1;
+	status = PyWideStringList_Append(&config.module_search_paths, wszFolderPath);
+	if (PyStatus_Exception(status)) {
+		Msg(MSG_PREFIX "Failed to add %s to sys.path.\n", szFolderPath);
+		PyConfig_Clear(&config);
+		return false;
+	}
+
+	return true;
 }
 
 
@@ -93,81 +104,101 @@ void AddToSysPath( const char* path )
 //---------------------------------------------------------------------------------
 bool CPythonManager::Initialize( void )
 {
-	// Construct a path to the python engine directory.
 	char szPythonHome[MAX_PATH_LENGTH];
+	wchar_t wszPythonHome[MAX_PATH_LENGTH];
+	char szProgramName[MAX_PATH_LENGTH];
+	wchar_t wszProgramName[MAX_PATH_LENGTH];
+	PyStatus status;
+	PyConfig config;
+
 	V_snprintf(szPythonHome, MAX_PATH_LENGTH, "%s/Python3", GetSourcePythonDir());
 	V_FixSlashes(szPythonHome);
-	DevMsg(1, MSG_PREFIX "Python home path set to %s\n", szPythonHome);
-
-	// Convert to wide char for python.
-	wchar_t wszPythonHome[MAX_PATH_LENGTH];
 	V_strtowcs(szPythonHome, -1, wszPythonHome, MAX_PATH_LENGTH);
+	DevMsg(1, MSG_PREFIX "Python home path set to %s.\n", szPythonHome);
 
 	// Get the full path to the shared python library
-	char szProgramName[MAX_PATH_LENGTH];
 	V_snprintf(szProgramName, MAX_PATH_LENGTH, "%s/%s", GetSourcePythonDir(), PYLIB_NAME);
 	V_FixSlashes(szProgramName);
+	V_strtowcs(szProgramName, -1, wszProgramName, MAX_PATH_LENGTH);
 	DevMsg(1, MSG_PREFIX "sys.executable set to %s\n", szProgramName);
 
-	// Convert to wide char for python.
-	wchar_t wszProgramName[MAX_PATH_LENGTH];
-	V_strtowcs(szProgramName, -1, wszProgramName, MAX_PATH_LENGTH);
+	PyConfig_InitIsolatedConfig(&config);
 
-	// Set that as the python home directory.
- 	Py_SetPythonHome(wszPythonHome);
- 	Py_SetProgramName(wszProgramName);
-	Py_SetPath(wszPythonHome);
+	status = PyConfig_SetString(&config, &config.program_name, wszProgramName);
+	if (PyStatus_Exception(status)) {
+		Msg(MSG_PREFIX "Failed to set Python program name.\n");
+		PyConfig_Clear(&config);
+		return false;
+	}
 
-	// Initialize python and its namespaces.
-	Py_Initialize();
+	status = PyConfig_SetString(&config, &config.home, wszPythonHome);
+	if (PyStatus_Exception(status)) {
+		Msg(MSG_PREFIX "Failed to set Python home.\n");
+		PyConfig_Clear(&config);
+		return false;
+	}
 
-	// Print some information
-	DevMsg(1, MSG_PREFIX "Python version %s initialized!\n", Py_GetVersion());
-	
-	// Set sys.argv and update sys.path
+	if (!AddToSysPath(config, "/Python3"))
+		return false;
+
+	if (!AddToSysPath(config, "/packages/source-python"))
+		return false;
+
+	// Add operating system specific paths.
+#if defined(WIN32)
+	if (!AddToSysPath(config, "/Python3/plat-win"))
+		return false;
+#else
+	if (!AddToSysPath(config, "/Python3/plat-linux"))
+		return false;
+
+	if (!AddToSysPath(config, "/Python3/lib-dynload"))
+		return false;
+#endif
+
+	if (!AddToSysPath(config, "/packages/site-packages"))
+		return false;
+
+	if (!AddToSysPath(config, "/packages/custom"))
+		return false;
+
+	if (!AddToSysPath(config, "/plugins"))
+		return false;
+
+	// Set sys.argv
 	DevMsg(1, MSG_PREFIX "Setting sys.argv...\n");
 	ICommandLine* pCommandLine = CommandLine();
 
 	int iParamCount = pCommandLine->ParmCount();
-	wchar_t** argv = new wchar_t*[iParamCount];
-	for (int i=0; i < iParamCount; i++)
+	wchar_t** argv = new wchar_t* [iParamCount];
+	for (int i = 0; i < iParamCount; i++)
 	{
 		const char* szParam = pCommandLine->GetParm(i);
 		int iParamLength = strlen(szParam);
 
-		wchar_t* wszParam = new wchar_t[iParamLength+1];
+		wchar_t* wszParam = new wchar_t[iParamLength + 1];
 		// Not sure what's wrong with V_strtowcs, but it seems like it
 		// doesn't convert the string correctly on Linux
-		mbstowcs(wszParam, szParam, iParamLength+1);
+		mbstowcs(wszParam, szParam, iParamLength + 1);
 
 		argv[i] = wszParam;
 	}
-	PySys_SetArgv(iParamCount, argv);
 
-	// Make sure sys is imported.
-	PyRun_SimpleString("import sys");
+	status = PyConfig_SetArgv(&config, iParamCount, argv);
+	if (PyStatus_Exception(status)) {
+		Msg(MSG_PREFIX "Failed to set sys.argv.\n");
+		return false;
+	}
 
-	// Add the Python API path.
-	AddToSysPath("/packages/source-python");
+	status = Py_InitializeFromConfig(&config);
+	PyConfig_Clear(&config);
+	if (PyStatus_Exception(status)) {
+		Msg(MSG_PREFIX "Failed to initialize Python.\n");
+		return false;
+	}
 
-	// Add operating system specific paths.
-#if defined(WIN32)
-	AddToSysPath("/Python3/plat-win");
-#else
-	AddToSysPath("/Python3/plat-linux");
-
-	// We've got a bunch of linux shared objects here we need to load.
-	AddToSysPath("/Python3/lib-dynload");
-#endif
-
-	// Site packages for any extra packages...
-	AddToSysPath("/packages/site-packages");
-
-	// Add the custom packages path.
-	AddToSysPath("/packages/custom");
-
-	// And of course, the plugins directory for script imports.
-	AddToSysPath("/plugins");
+	// Print some information
+	DevMsg(1, MSG_PREFIX "Python version %s initialized!\n", Py_GetVersion());
 
 	// Enable circular references traversal
 	EnableDictTraversal();
@@ -200,7 +231,7 @@ bool CPythonManager::Initialize( void )
 		// Only reconnect the streams if the server was launched with a console (issue #392).
 		if (pCommandLine->FindParm("-console")) {
 			object io_open = python::import("io").attr("open");
-		
+
 			object stdin_ = sys.attr("stdin");
 			if (stdin_.is_none())
 			{

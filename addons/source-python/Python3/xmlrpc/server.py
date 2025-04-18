@@ -106,13 +106,15 @@ server.handle_request()
 
 from xmlrpc.client import Fault, dumps, loads, gzip_encode, gzip_decode
 from http.server import BaseHTTPRequestHandler
+from functools import partial
+from inspect import signature
+import html
 import http.server
 import socketserver
 import sys
 import os
 import re
 import pydoc
-import inspect
 import traceback
 try:
     import fcntl
@@ -204,16 +206,21 @@ class SimpleXMLRPCDispatcher:
         self.instance = instance
         self.allow_dotted_names = allow_dotted_names
 
-    def register_function(self, function, name=None):
+    def register_function(self, function=None, name=None):
         """Registers a function to respond to XML-RPC requests.
 
         The optional name argument can be used to set a Unicode name
         for the function.
         """
+        # decorator factory
+        if function is None:
+            return partial(self.register_function, name=name)
 
         if name is None:
             name = function.__name__
         self.funcs[name] = function
+
+        return function
 
     def register_introspection_functions(self):
         """Registers the XML-RPC introspection methods in the system
@@ -261,11 +268,9 @@ class SimpleXMLRPCDispatcher:
         except Fault as fault:
             response = dumps(fault, allow_none=self.allow_none,
                              encoding=self.encoding)
-        except:
-            # report exception back to server
-            exc_type, exc_value, exc_tb = sys.exc_info()
+        except BaseException as exc:
             response = dumps(
-                Fault(1, "%s:%s" % (exc_type, exc_value)),
+                Fault(1, "%s:%s" % (type(exc), exc)),
                 encoding=self.encoding, allow_none=self.allow_none,
                 )
 
@@ -357,11 +362,10 @@ class SimpleXMLRPCDispatcher:
                     {'faultCode' : fault.faultCode,
                      'faultString' : fault.faultString}
                     )
-            except:
-                exc_type, exc_value, exc_tb = sys.exc_info()
+            except BaseException as exc:
                 results.append(
                     {'faultCode' : 1,
-                     'faultString' : "%s:%s" % (exc_type, exc_value)}
+                     'faultString' : "%s:%s" % (type(exc), exc)}
                     )
         return results
 
@@ -386,30 +390,35 @@ class SimpleXMLRPCDispatcher:
         not be called.
         """
 
-        func = None
         try:
-            # check to see if a matching function has been registered
+            # call the matching registered function
             func = self.funcs[method]
         except KeyError:
-            if self.instance is not None:
-                # check for a _dispatch method
-                if hasattr(self.instance, '_dispatch'):
-                    return self.instance._dispatch(method, params)
-                else:
-                    # call instance method directly
-                    try:
-                        func = resolve_dotted_attribute(
-                            self.instance,
-                            method,
-                            self.allow_dotted_names
-                            )
-                    except AttributeError:
-                        pass
-
-        if func is not None:
-            return func(*params)
+            pass
         else:
+            if func is not None:
+                return func(*params)
             raise Exception('method "%s" is not supported' % method)
+
+        if self.instance is not None:
+            if hasattr(self.instance, '_dispatch'):
+                # call the `_dispatch` method on the instance
+                return self.instance._dispatch(method, params)
+
+            # call the instance's method directly
+            try:
+                func = resolve_dotted_attribute(
+                    self.instance,
+                    method,
+                    self.allow_dotted_names
+                )
+            except AttributeError:
+                pass
+            else:
+                if func is not None:
+                    return func(*params)
+
+        raise Exception('method "%s" is not supported' % method)
 
 class SimpleXMLRPCRequestHandler(BaseHTTPRequestHandler):
     """Simple XML-RPC request handler class.
@@ -420,7 +429,7 @@ class SimpleXMLRPCRequestHandler(BaseHTTPRequestHandler):
 
     # Class attribute listing the accessible path components;
     # paths not on this list will result in a 404 error.
-    rpc_paths = ('/', '/RPC2')
+    rpc_paths = ('/', '/RPC2', '/pydoc.css')
 
     #if not None, encode responses larger than this, if possible
     encode_threshold = 1400 #a common MTU
@@ -614,13 +623,12 @@ class MultiPathXMLRPCServer(SimpleXMLRPCServer):
         try:
             response = self.dispatchers[path]._marshaled_dispatch(
                data, dispatch_method, path)
-        except:
+        except BaseException as exc:
             # report low level exception back to server
             # (each dispatcher should have handled their own
             # exceptions)
-            exc_type, exc_value = sys.exc_info()[:2]
             response = dumps(
-                Fault(1, "%s:%s" % (exc_type, exc_value)),
+                Fault(1, "%s:%s" % (type(exc), exc)),
                 encoding=self.encoding, allow_none=self.allow_none)
             response = response.encode(self.encoding, 'xmlcharrefreplace')
         return response
@@ -708,13 +716,11 @@ class ServerHTMLDoc(pydoc.HTMLDoc):
         # hyperlinking of arbitrary strings being used as method
         # names. Only methods with names consisting of word characters
         # and '.'s are hyperlinked.
-        pattern = re.compile(r'\b((http|ftp)://\S+[\w/]|'
+        pattern = re.compile(r'\b((http|https|ftp)://\S+[\w/]|'
                                 r'RFC[- ]?(\d+)|'
                                 r'PEP[- ]?(\d+)|'
                                 r'(self\.)?((?:\w|\.)+))\b')
-        while 1:
-            match = pattern.search(text, here)
-            if not match: break
+        while match := pattern.search(text, here):
             start, end = match.span()
             results.append(escape(text[here:start]))
 
@@ -723,10 +729,10 @@ class ServerHTMLDoc(pydoc.HTMLDoc):
                 url = escape(all).replace('"', '&quot;')
                 results.append('<a href="%s">%s</a>' % (url, url))
             elif rfc:
-                url = 'http://www.rfc-editor.org/rfc/rfc%d.txt' % int(rfc)
+                url = 'https://www.rfc-editor.org/rfc/rfc%d.txt' % int(rfc)
                 results.append('<a href="%s">%s</a>' % (url, escape(all)))
             elif pep:
-                url = 'http://www.python.org/dev/peps/pep-%04d/' % int(pep)
+                url = 'https://peps.python.org/pep-%04d/' % int(pep)
                 results.append('<a href="%s">%s</a>' % (url, escape(all)))
             elif text[end:end+1] == '(':
                 results.append(self.namelink(name, methods, funcs, classes))
@@ -748,24 +754,8 @@ class ServerHTMLDoc(pydoc.HTMLDoc):
         title = '<a name="%s"><strong>%s</strong></a>' % (
             self.escape(anchor), self.escape(name))
 
-        if inspect.ismethod(object):
-            args = inspect.getfullargspec(object)
-            # exclude the argument bound to the instance, it will be
-            # confusing to the non-Python user
-            argspec = inspect.formatargspec (
-                    args.args[1:],
-                    args.varargs,
-                    args.varkw,
-                    args.defaults,
-                    annotations=args.annotations,
-                    formatvalue=self.formatvalue
-                )
-        elif inspect.isfunction(object):
-            args = inspect.getfullargspec(object)
-            argspec = inspect.formatargspec(
-                args.args, args.varargs, args.varkw, args.defaults,
-                annotations=args.annotations,
-                formatvalue=self.formatvalue)
+        if callable(object):
+            argspec = str(signature(object))
         else:
             argspec = '(...)'
 
@@ -793,7 +783,7 @@ class ServerHTMLDoc(pydoc.HTMLDoc):
 
         server_name = self.escape(server_name)
         head = '<big><big><strong>%s</strong></big></big>' % server_name
-        result = self.heading(head, '#ffffff', '#7799ee')
+        result = self.heading(head)
 
         doc = self.markup(package_documentation, self.preformat, fdict)
         doc = doc and '<tt>%s</tt>' % doc
@@ -804,9 +794,24 @@ class ServerHTMLDoc(pydoc.HTMLDoc):
         for key, value in method_items:
             contents.append(self.docroutine(value, key, funcs=fdict))
         result = result + self.bigsection(
-            'Methods', '#ffffff', '#eeaa77', ''.join(contents))
+            'Methods', 'functions', ''.join(contents))
 
         return result
+
+
+    def page(self, title, contents):
+        """Format an HTML page."""
+        css_path = "/pydoc.css"
+        css_link = (
+            '<link rel="stylesheet" type="text/css" href="%s">' %
+            css_path)
+        return '''\
+<!DOCTYPE>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Python: %s</title>
+%s</head><body>%s</body></html>''' % (title, css_link, contents)
 
 class XMLRPCDocGenerator:
     """Generates documentation for an XML-RPC server.
@@ -887,7 +892,7 @@ class XMLRPCDocGenerator:
                                 methods
                             )
 
-        return documenter.page(self.server_title, documentation)
+        return documenter.page(html.escape(self.server_title), documentation)
 
 class DocXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
     """XML-RPC and documentation request handler class.
@@ -898,6 +903,12 @@ class DocXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
     Handles all HTTP GET requests and interprets them as requests
     for documentation.
     """
+
+    def _get_css(self, url):
+        path_here = os.path.dirname(os.path.realpath(__file__))
+        css_path = os.path.join(path_here, "..", "pydoc_data", "_pydoc.css")
+        with open(css_path, mode="rb") as fp:
+            return fp.read()
 
     def do_GET(self):
         """Handles the HTTP GET request.
@@ -910,9 +921,15 @@ class DocXMLRPCRequestHandler(SimpleXMLRPCRequestHandler):
             self.report_404()
             return
 
-        response = self.server.generate_html_documentation().encode('utf-8')
+        if self.path.endswith('.css'):
+            content_type = 'text/css'
+            response = self._get_css(self.path)
+        else:
+            content_type = 'text/html'
+            response = self.server.generate_html_documentation().encode('utf-8')
+
         self.send_response(200)
-        self.send_header("Content-type", "text/html")
+        self.send_header('Content-Type', '%s; charset=UTF-8' % content_type)
         self.send_header("Content-length", str(len(response)))
         self.end_headers()
         self.wfile.write(response)

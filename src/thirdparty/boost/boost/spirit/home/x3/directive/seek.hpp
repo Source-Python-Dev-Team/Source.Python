@@ -19,7 +19,7 @@ namespace boost { namespace spirit { namespace x3
         static bool const is_pass_through_unary = true;
         static bool const handles_container = Subject::handles_container;
 
-        seek_directive(Subject const& subject) :
+        constexpr seek_directive(Subject const& subject) :
             base_type(subject) {}
 
         template<typename Iterator, typename Context
@@ -28,39 +28,32 @@ namespace boost { namespace spirit { namespace x3
             Iterator& first, Iterator const& last
           , Context const& context, RContext& rcontext, Attribute& attr) const
         {
-            Iterator current(first);
-            for (/**/; current != last; ++current)
+            for (Iterator current(first);; ++current)
             {
                 if (this->subject.parse(current, last, context, rcontext, attr))
                 {
                     first = current;
                     return true;
                 }
-            }
 
-            // Test for when subjects match on input empty. Example:
-            //     comment = "//" >> seek[eol | eoi]
-            if (this->subject.parse(current, last, context, rcontext, attr))
-            {
-                first = current;
-                return true;
+                // fail only after subject fails & no input
+                if (current == last)
+                    return false;
             }
-
-            return false;
         }
     };
 
     struct seek_gen
     {
         template<typename Subject>
-        seek_directive<typename extension::as_parser<Subject>::value_type>
+        constexpr seek_directive<typename extension::as_parser<Subject>::value_type>
         operator[](Subject const& subject) const
         {
             return { as_parser(subject) };
         }
     };
 
-    auto const seek = seek_gen{};
+    constexpr auto seek = seek_gen{};
 }}}
 
 #endif

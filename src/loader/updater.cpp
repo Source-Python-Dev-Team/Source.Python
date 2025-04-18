@@ -99,6 +99,7 @@ void ApplyUpdateStage2()
 
 	// Delete old directories
 	DeleteDir(bfs::path(szGameDir) / SP_PACKAGE_PATH);
+	DeleteDir(bfs::path(szGameDir) / SITE_PACKAGE_PATH);
 	DeleteDir(bfs::path(szGameDir) / SP_DATA_PATH);
 	DeleteDir(bfs::path(szGameDir) / SP_DOCS_PATH);
 	DeleteDir(bfs::path(szGameDir) / PYTHON3_PATH);

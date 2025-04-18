@@ -17,6 +17,37 @@
 #define BOOST_LOG_DETAIL_LOCKS_HPP_INCLUDED_
 
 #include <boost/log/detail/config.hpp>
+
+#ifndef BOOST_LOG_NO_THREADS
+
+#include <boost/move/detail/std_ns_begin.hpp>
+BOOST_MOVE_STD_NS_BEG
+
+// Forward declaration of the standard locks. Specified to avoid including <mutex> and <shared_mutex>.
+#if !defined(BOOST_MSSTL_VERSION) || (BOOST_MSSTL_VERSION != 140)
+template< typename >
+class lock_guard;
+#else
+// MSVC 14.0 has a non-confogrming lock_guard
+template< typename... >
+class lock_guard;
+#endif
+template< typename >
+class unique_lock;
+#if !defined(BOOST_NO_CXX14_HDR_SHARED_MUTEX)
+template< typename >
+class shared_lock;
+#endif
+#if defined(__cpp_lib_scoped_lock) && (__cpp_lib_scoped_lock >= 201703l)
+template< typename... >
+class scoped_lock;
+#endif
+
+BOOST_MOVE_STD_NS_END
+#include <boost/move/detail/std_ns_end.hpp>
+
+#endif // BOOST_LOG_NO_THREADS
+
 #include <boost/log/detail/header.hpp>
 
 #ifdef BOOST_HAS_PRAGMA_ONCE
@@ -55,7 +86,7 @@ public:
     /*!
      * Constructs the pseudo-lock. The mutex is not affected during the construction.
      */
-    explicit no_lock(MutexT&) {}
+    explicit no_lock(MutexT&) BOOST_NOEXCEPT {}
 
 private:
     no_lock(no_lock const&);
@@ -117,7 +148,7 @@ protected:
 template< typename MutexT >
 struct exclusive_lock_guard
 {
-    explicit exclusive_lock_guard(MutexT& m) : m_Mutex(m)
+    explicit exclusive_lock_guard(MutexT& m) BOOST_NOEXCEPT_IF(BOOST_NOEXCEPT_EXPR(m.lock())) : m_Mutex(m)
     {
         m.lock();
     }
@@ -137,7 +168,7 @@ private:
 template< typename MutexT >
 struct shared_lock_guard
 {
-    explicit shared_lock_guard(MutexT& m) : m_Mutex(m)
+    explicit shared_lock_guard(MutexT& m) BOOST_NOEXCEPT_IF(BOOST_NOEXCEPT_EXPR(m.lock_shared())) : m_Mutex(m)
     {
         m.lock_shared();
     }
@@ -158,7 +189,7 @@ template< typename MutexT1, typename MutexT2 >
 class multiple_unique_lock2
 {
 public:
-    multiple_unique_lock2(MutexT1& m1, MutexT2& m2) :
+    multiple_unique_lock2(MutexT1& m1, MutexT2& m2) BOOST_NOEXCEPT_IF(BOOST_NOEXCEPT_EXPR(m1.lock()) && BOOST_NOEXCEPT_EXPR(m2.lock())) :
         m_p1(&m1),
         m_p2(&m2)
     {

@@ -4,6 +4,11 @@
 // Copyright (c) 2008-2012 Barend Gehrels, Amsterdam, the Netherlands.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
 
+// This file was modified by Oracle on 2018.
+// Modifications copyright (c) 2018, Oracle and/or its affiliates.
+
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
 
@@ -17,10 +22,13 @@
 
 #include <boost/geometry/core/access.hpp>
 
+#include <boost/geometry/geometries/concepts/point_concept.hpp>
+
 #include <boost/geometry/strategies/distance.hpp>
 
-#include <boost/geometry/util/math.hpp>
 #include <boost/geometry/util/calculation_type.hpp>
+#include <boost/geometry/util/math.hpp>
+#include <boost/geometry/util/numeric_cast.hpp>
 
 
 namespace boost { namespace geometry
@@ -39,8 +47,8 @@ struct compute_pythagoras
     template <typename Point1, typename Point2>
     static inline T apply(Point1 const& p1, Point2 const& p2)
     {
-        T const c1 = boost::numeric_cast<T>(get<I-1>(p1));
-        T const c2 = boost::numeric_cast<T>(get<I-1>(p2));
+        T const c1 = util::numeric_cast<T>(get<I-1>(p1));
+        T const c2 = util::numeric_cast<T>(get<I-1>(p2));
         T const d = c1 - c2;
         return d * d + compute_pythagoras<I-1, T>::apply(p1, p2);
     }
@@ -52,7 +60,7 @@ struct compute_pythagoras<0, T>
     template <typename Point1, typename Point2>
     static inline T apply(Point1 const&, Point2 const&)
     {
-        return boost::numeric_cast<T>(0);
+        return util::numeric_cast<T>(0);
     }
 };
 
@@ -156,7 +164,7 @@ public :
         // The cast is necessary for MSVC which considers sqrt __int64 as an ambiguous call
         return math::sqrt
             (
-                 boost::numeric_cast<typename calculation_type<P1, P2>::type>
+                 util::numeric_cast<typename calculation_type<P1, P2>::type>
                     (
                         comparable::pythagoras<CalculationType>::apply(p1, p2)
                     )

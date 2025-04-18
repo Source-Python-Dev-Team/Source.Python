@@ -18,11 +18,17 @@
 #include <boost/spirit/home/support/unused.hpp>
 #include <boost/spirit/home/support/info.hpp>
 #include <boost/spirit/home/support/lazy.hpp>
-#include <boost/spirit/include/phoenix_core.hpp>
 #include <boost/fusion/include/at.hpp>
 #include <boost/utility/result_of.hpp>
+#include <boost/proto/make_expr.hpp>
 #include <boost/type_traits/remove_reference.hpp>
 #include <boost/mpl/not.hpp>
+
+namespace boost { namespace phoenix
+{
+    template <typename Expr>
+    struct actor;
+}}
 
 namespace boost { namespace spirit
 {
@@ -59,7 +65,7 @@ namespace boost { namespace spirit { namespace karma
           , typename Delimiter, typename Attribute>
         bool lazy_generate_impl(Generator const& g, OutputIterator& sink
           , Context& context, Delimiter const& delim
-          , Attribute const& attr, mpl::true_)
+          , Attribute const& /* attr */, mpl::true_)
         {
             // If DeducedAuto is false (semantic actions is present), the
             // component's attribute is unused.
@@ -138,10 +144,6 @@ namespace boost { namespace spirit { namespace karma
 
         Function func;
         Modifiers modifiers;
-
-    private:
-        // silence MSVC warning C4512: assignment operator could not be generated
-        lazy_generator& operator= (lazy_generator const&);
     };
 
     ///////////////////////////////////////////////////////////////////////////

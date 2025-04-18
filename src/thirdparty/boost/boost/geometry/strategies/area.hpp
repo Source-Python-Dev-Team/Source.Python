@@ -1,50 +1,21 @@
-// Boost.Geometry (aka GGL, Generic Geometry Library)
+// Boost.Geometry
 
-// Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
-// Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
-// Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
+// Copyright (c) 2020, Oracle and/or its affiliates.
 
-// Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
-// (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
-// Use, modification and distribution is subject to the Boost Software License,
-// Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)
+// Licensed under the Boost Software License version 1.0.
+// http://www.boost.org/users/license.html
 
 #ifndef BOOST_GEOMETRY_STRATEGIES_AREA_HPP
 #define BOOST_GEOMETRY_STRATEGIES_AREA_HPP
 
-#include <boost/mpl/assert.hpp>
 
-#include <boost/geometry/strategies/tags.hpp>
-
-namespace boost { namespace geometry
-{
+#include <boost/config/pragma_message.hpp>
+BOOST_PRAGMA_MESSAGE("This include file is deprecated and will be removed in Boost 1.86")
 
 
-namespace strategy { namespace area { namespace services
-{
+#include <boost/geometry/strategy/area.hpp>
 
-/*!
-    \brief Traits class binding a default area strategy to a coordinate system
-    \ingroup area
-    \tparam Tag tag of coordinate system
-    \tparam PointOfSegment point-type
-*/
-template <typename Tag, typename PointOfSegment>
-struct default_strategy
-{
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_IMPLEMENTED_FOR_THIS_POINT_TYPE
-            , (types<PointOfSegment>)
-        );
-};
-
-
-}}} // namespace strategy::area::services
-
-
-}} // namespace boost::geometry
 
 #endif // BOOST_GEOMETRY_STRATEGIES_AREA_HPP

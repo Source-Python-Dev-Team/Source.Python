@@ -9,7 +9,7 @@ except ImportError:
 __all__ = ['make_scanner']
 
 NUMBER_RE = re.compile(
-    r'(-?(?:0|[1-9]\d*))(\.\d+)?([eE][-+]?\d+)?',
+    r'(-?(?:0|[1-9][0-9]*))(\.[0-9]+)?([eE][-+]?[0-9]+)?',
     (re.VERBOSE | re.MULTILINE | re.DOTALL))
 
 def py_make_scanner(context):
@@ -29,7 +29,7 @@ def py_make_scanner(context):
         try:
             nextchar = string[idx]
         except IndexError:
-            raise StopIteration(idx)
+            raise StopIteration(idx) from None
 
         if nextchar == '"':
             return parse_string(string, idx + 1, strict)
@@ -68,6 +68,6 @@ def py_make_scanner(context):
         finally:
             memo.clear()
 
-    return _scan_once
+    return scan_once
 
 make_scanner = c_make_scanner or py_make_scanner

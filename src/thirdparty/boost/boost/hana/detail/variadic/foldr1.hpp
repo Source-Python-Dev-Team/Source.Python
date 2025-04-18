@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::detail::variadic::foldr1`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -14,7 +14,8 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/core/when.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN namespace detail { namespace variadic {
+namespace boost { namespace hana { namespace detail { namespace variadic {
+    //! @cond
     template <unsigned int n, typename = when<true>>
     struct foldr1_impl;
 
@@ -181,6 +182,7 @@ BOOST_HANA_NAMESPACE_BEGIN namespace detail { namespace variadic {
                      foldr1_impl<sizeof...(xn) + 1>::apply(f, static_cast<X56&&>(x56), static_cast<Xn&&>(xn)...))))))))))))))))))))))))))))))))))))))))))))))))))))))));
         }
     };
+    //! @endcond
 
     struct foldr1_t {
         template <typename F, typename X1, typename ...Xn>
@@ -191,7 +193,7 @@ BOOST_HANA_NAMESPACE_BEGIN namespace detail { namespace variadic {
         }
     };
 
-    constexpr foldr1_t foldr1{};
+    BOOST_HANA_INLINE_VARIABLE constexpr foldr1_t foldr1{};
 
     struct foldr_t {
         template <typename F, typename State, typename ...Xn>
@@ -202,7 +204,7 @@ BOOST_HANA_NAMESPACE_BEGIN namespace detail { namespace variadic {
         }
     };
 
-    constexpr foldr_t foldr{};
-}} BOOST_HANA_NAMESPACE_END
+    BOOST_HANA_INLINE_VARIABLE constexpr foldr_t foldr{};
+}} }} // end namespace boost::hana
 
 #endif // !BOOST_HANA_DETAIL_VARIADIC_FOLDR1_HPP

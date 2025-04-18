@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::tag_of` and `boost::hana::tag_of_t`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -13,7 +13,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/config.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @ingroup group-core
     //! %Metafunction returning the tag associated to `T`.
     //!
@@ -57,7 +57,7 @@ BOOST_HANA_NAMESPACE_BEGIN
     //!             std::is_same<
     //!                 typename fusion::traits::tag_of<T>::type,
     //!                 fusion::traits::tag_of<fusion::vector<>>::type
-    //!             >{}
+    //!             >::value
     //!         >> {
     //!             using type = BoostFusionVector;
     //!         };
@@ -115,6 +115,6 @@ BOOST_HANA_NAMESPACE_BEGIN
     //! @include example/core/tag_of_t.cpp
     template <typename T>
     using tag_of_t = typename hana::tag_of<T>::type;
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_CORE_TAG_OF_HPP

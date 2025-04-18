@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::map`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -40,9 +40,12 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/functional/partial.hpp>
 #include <boost/hana/fwd/any_of.hpp>
 #include <boost/hana/fwd/at_key.hpp>
+#include <boost/hana/fwd/difference.hpp>
 #include <boost/hana/fwd/erase_key.hpp>
+#include <boost/hana/fwd/intersection.hpp>
 #include <boost/hana/fwd/is_subset.hpp>
 #include <boost/hana/fwd/keys.hpp>
+#include <boost/hana/fwd/union.hpp>
 #include <boost/hana/insert.hpp>
 #include <boost/hana/integral_constant.hpp>
 #include <boost/hana/keys.hpp>
@@ -53,12 +56,13 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/unpack.hpp>
 #include <boost/hana/value.hpp>
 
+
 #include <cstddef>
 #include <type_traits>
 #include <utility>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //////////////////////////////////////////////////////////////////////////
     // operators
     //////////////////////////////////////////////////////////////////////////
@@ -120,7 +124,7 @@ BOOST_HANA_NAMESPACE_BEGIN
         };
 
         template <typename HashTable, typename Storage>
-        struct map_impl
+        struct map_impl final
             : detail::searchable_operators<map_impl<HashTable, Storage>>
             , detail::operators::adl<map_impl<HashTable, Storage>>
         {
@@ -480,6 +484,71 @@ BOOST_HANA_NAMESPACE_BEGIN
     };
 
     //////////////////////////////////////////////////////////////////////////
+    // union_
+    //////////////////////////////////////////////////////////////////////////
+    template <>
+    struct union_impl<map_tag> {
+        template <typename Xs, typename Ys>
+        static constexpr auto apply(Xs&& xs, Ys&& ys) {
+            return hana::fold_left(static_cast<Xs&&>(xs), static_cast<Ys&&>(ys),
+                                   hana::insert);
+        }
+    };
+
+    //////////////////////////////////////////////////////////////////////////
+    // intersection_
+    //////////////////////////////////////////////////////////////////////////
+    namespace detail {
+        template <typename Ys>
+        struct map_insert_if_contains {
+            Ys const& ys;
+
+            // Second template param will be pair
+            // Get its key and check if it exists, if it does, insert key, value pair.
+            template <typename Result, typename Pair>
+            static constexpr auto helper(Result&& result, Pair&& pair, hana::true_) {
+                return hana::insert(static_cast<Result&&>(result), static_cast<Pair&&>(pair));
+            }
+
+            template <typename Result, typename Pair>
+            static constexpr auto helper(Result&& result, Pair&&, hana::false_) {
+                return static_cast<Result&&>(result);
+            }
+
+            template <typename Result, typename Pair>
+            constexpr auto operator()(Result&& result, Pair&& pair) const {
+                constexpr bool keep = hana::value<decltype(hana::contains(ys, hana::first(pair)))>();
+                return map_insert_if_contains::helper(static_cast<Result&&>(result),
+                                                      static_cast<Pair&&>(pair),
+                                                      hana::bool_c<keep>);
+            }
+        };
+    }
+
+    template <>
+    struct intersection_impl<map_tag> {
+        template <typename Xs, typename Ys>
+        static constexpr auto apply(Xs&& xs, Ys const& ys) {
+            return hana::fold_left(static_cast<Xs&&>(xs), hana::make_map(),
+                                   detail::map_insert_if_contains<Ys>{ys});
+        }
+    };
+
+    //////////////////////////////////////////////////////////////////////////
+    // difference
+    //////////////////////////////////////////////////////////////////////////
+    template <>
+    struct difference_impl<map_tag> {
+        template <typename Xs, typename Ys>
+        static constexpr auto apply(Xs&& xs, Ys&& ys) {
+            return hana::fold_left(
+                    hana::keys(static_cast<Ys&&>(ys)),
+                    static_cast<Xs&&>(xs),
+                    hana::erase_key);
+        }
+    };
+
+    //////////////////////////////////////////////////////////////////////////
     // Foldable
     //////////////////////////////////////////////////////////////////////////
     template <>
@@ -503,6 +572,6 @@ BOOST_HANA_NAMESPACE_BEGIN
             );
         }
     };
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_MAP_HPP

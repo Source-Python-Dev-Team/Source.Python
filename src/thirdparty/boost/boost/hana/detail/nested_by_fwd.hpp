@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::detail::nested_by`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -13,7 +13,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/config.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN namespace detail {
+namespace boost { namespace hana { namespace detail {
     template <typename Algorithm>
     struct nested_by_t {
         template <typename Predicate, typename Object>
@@ -50,6 +50,6 @@ BOOST_HANA_NAMESPACE_BEGIN namespace detail {
 
     template <typename Algorithm>
     constexpr nested_by_t<Algorithm> nested_by<Algorithm>::by;
-} BOOST_HANA_NAMESPACE_END
+} }} // end namespace boost::hana
 
 #endif // !BOOST_HANA_DETAIL_NESTED_BY_FWD_HPP

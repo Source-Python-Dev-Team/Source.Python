@@ -1,4 +1,5 @@
 //  (C) Copyright John Maddock 2006.
+//  (C) Copyright Matt Borland 2024.
 //  Use, modification and distribution are subject to the
 //  Boost Software License, Version 1.0. (See accompanying file
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -10,14 +11,16 @@
 #pragma once
 #endif
 
+#include <boost/math/tools/config.hpp>
+
+#ifndef BOOST_MATH_HAS_NVRTC
+
 #include <boost/math/tools/rational.hpp>
+#include <boost/math/tools/type_traits.hpp>
+#include <boost/math/tools/cstdint.hpp>
 #include <boost/math/policies/error_handling.hpp>
 #include <boost/math/special_functions/math_fwd.hpp>
 #include <boost/math/special_functions/fpclassify.hpp>
-#include <boost/mpl/divides.hpp>
-#include <boost/mpl/plus.hpp>
-#include <boost/mpl/if.hpp>
-#include <boost/type_traits/is_convertible.hpp>
 
 namespace boost{ namespace math{
 
@@ -26,21 +29,21 @@ namespace detail
 
 struct big_int_type
 {
-   operator boost::uintmax_t()const;
+   operator std::uintmax_t() const;
 };
 
-template <class T>
+template <typename T>
 struct largest_cbrt_int_type
 {
-   typedef typename mpl::if_<
-      boost::is_convertible<big_int_type, T>,
-      boost::uintmax_t,
+   using type = typename std::conditional<
+      std::is_convertible<big_int_type, T>::value,
+      std::uintmax_t,
       unsigned int
-   >::type type;
+   >::type;
 };
 
-template <class T, class Policy>
-T cbrt_imp(T z, const Policy& pol)
+template <typename T, typename Policy>
+BOOST_MATH_GPU_ENABLED T cbrt_imp(T z, const Policy& pol)
 {
    BOOST_MATH_STD_USING
    //
@@ -53,7 +56,7 @@ T cbrt_imp(T z, const Policy& pol)
    // Expected Error Term:                         -1.231e-006
    // Maximum Relative Change in Control Points:   5.982e-004
    //
-   static const T P[] = { 
+   BOOST_MATH_STATIC const T P[] = { 
       static_cast<T>(0.37568269008611818),
       static_cast<T>(1.3304968705558024),
       static_cast<T>(-1.4897101632445036),
@@ -61,7 +64,7 @@ T cbrt_imp(T z, const Policy& pol)
       static_cast<T>(-0.6398703759826468),
       static_cast<T>(0.13584489959258635),
    };
-   static const T correction[] = {
+   BOOST_MATH_STATIC const T correction[] = {
       static_cast<T>(0.62996052494743658238360530363911),  // 2^-2/3
       static_cast<T>(0.79370052598409973737585281963615),  // 2^-1/3
       static_cast<T>(1),
@@ -87,9 +90,9 @@ T cbrt_imp(T z, const Policy& pol)
    guess = tools::evaluate_polynomial(P, guess);
    int i_exp3 = i_exp / 3;
 
-   typedef typename largest_cbrt_int_type<T>::type shift_type;
+   using shift_type = typename largest_cbrt_int_type<T>::type;
 
-   BOOST_STATIC_ASSERT( ::std::numeric_limits<shift_type>::radix == 2);
+   static_assert( ::std::numeric_limits<shift_type>::radix == 2, "The radix of the type to shift to must be 2.");
 
    if(abs(i_exp3) < std::numeric_limits<shift_type>::digits)
    {
@@ -111,15 +114,15 @@ T cbrt_imp(T z, const Policy& pol)
    // checking of the boilerplate version as we know in advance that the function
    // is well behaved...
    //
-   typedef typename policies::precision<T, Policy>::type prec;
-   typedef typename mpl::divides<prec, mpl::int_<3> >::type prec3;
-   typedef typename mpl::plus<prec3, mpl::int_<3> >::type new_prec;
-   typedef typename policies::normalise<Policy, policies::digits2<new_prec::value> >::type new_policy;
+   using prec = typename policies::precision<T, Policy>::type;
+   constexpr auto prec3 = prec::value / 3;
+   constexpr auto new_prec = prec3 + 3;
+   using new_policy = typename policies::normalise<Policy, policies::digits2<new_prec>>::type;
    //
    // Epsilon calculation uses compile time arithmetic when it's available for type T,
    // otherwise uses ldexp to calculate at runtime:
    //
-   T eps = (new_prec::value > 3) ? policies::get_epsilon<T, new_policy>() : ldexp(T(1), -2 - tools::digits<T>() / 3);
+   T eps = (new_prec > 3) ? policies::get_epsilon<T, new_policy>() : ldexp(T(1), -2 - tools::digits<T>() / 3);
    T diff;
 
    if(original_i_exp < std::numeric_limits<T>::max_exponent - 3)
@@ -155,22 +158,55 @@ T cbrt_imp(T z, const Policy& pol)
 
 } // namespace detail
 
-template <class T, class Policy>
-inline typename tools::promote_args<T>::type cbrt(T z, const Policy& pol)
+template <typename T, typename Policy>
+BOOST_MATH_GPU_ENABLED inline typename tools::promote_args<T>::type cbrt(T z, const Policy& pol)
 {
-   typedef typename tools::promote_args<T>::type result_type;
-   typedef typename policies::evaluation<result_type, Policy>::type value_type;
+   using result_type = typename tools::promote_args<T>::type;
+   using value_type = typename policies::evaluation<result_type, Policy>::type;
    return static_cast<result_type>(detail::cbrt_imp(value_type(z), pol));
 }
 
-template <class T>
-inline typename tools::promote_args<T>::type cbrt(T z)
+template <typename T>
+BOOST_MATH_GPU_ENABLED inline typename tools::promote_args<T>::type cbrt(T z)
 {
    return cbrt(z, policies::policy<>());
 }
 
 } // namespace math
 } // namespace boost
+
+#else // Special NVRTC handling
+
+namespace boost {
+namespace math {
+
+template <typename T>
+BOOST_MATH_GPU_ENABLED double cbrt(T x)
+{
+   return ::cbrt(x);
+}
+
+BOOST_MATH_GPU_ENABLED inline float cbrt(float x)
+{
+   return ::cbrtf(x);
+}
+
+template <typename T, typename Policy>
+BOOST_MATH_GPU_ENABLED double cbrt(T x, const Policy&)
+{
+   return ::cbrt(x);
+}
+
+template <typename Policy>
+BOOST_MATH_GPU_ENABLED float cbrt(float x, const Policy&)
+{
+   return ::cbrtf(x);
+}
+
+} // namespace math
+} // namespace boost
+
+#endif // NVRTC
 
 #endif // BOOST_MATH_SF_CBRT_HPP
 

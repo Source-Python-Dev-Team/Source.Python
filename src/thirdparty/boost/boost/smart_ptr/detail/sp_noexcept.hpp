@@ -9,21 +9,30 @@
 
 //  detail/sp_noexcept.hpp
 //
-//  Copyright 2016 Peter Dimov
+//  Copyright 2016, 2017 Peter Dimov
 //
 //  Distributed under the Boost Software License, Version 1.0.
 //  See accompanying file LICENSE_1_0.txt or copy at
 //  http://www.boost.org/LICENSE_1_0.txt
 
-#include <boost/config.hpp>
 
-#if defined( BOOST_MSVC ) && BOOST_MSVC >= 1700 && BOOST_MSVC < 1900
+// BOOST_SP_NOEXCEPT (obsolete, only retained for compatibility)
 
-#define BOOST_SP_NOEXCEPT BOOST_NOEXCEPT_OR_NOTHROW
+#define BOOST_SP_NOEXCEPT noexcept
+
+// BOOST_SP_NOEXCEPT_WITH_ASSERT (noexcept, unless a user assertion handler is present)
+
+#if defined(BOOST_DISABLE_ASSERTS) || ( defined(BOOST_ENABLE_ASSERT_DEBUG_HANDLER) && defined(NDEBUG) )
+
+#  define BOOST_SP_NOEXCEPT_WITH_ASSERT noexcept
+
+#elif defined(BOOST_ENABLE_ASSERT_HANDLER) || ( defined(BOOST_ENABLE_ASSERT_DEBUG_HANDLER) && !defined(NDEBUG) )
+
+#  define BOOST_SP_NOEXCEPT_WITH_ASSERT
 
 #else
 
-#define BOOST_SP_NOEXCEPT BOOST_NOEXCEPT
+#  define BOOST_SP_NOEXCEPT_WITH_ASSERT noexcept
 
 #endif
 

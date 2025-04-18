@@ -2,7 +2,7 @@
 // ip/basic_resolver.hpp
 // ~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2017 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2024 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -16,19 +16,41 @@
 #endif // defined(_MSC_VER) && (_MSC_VER >= 1200)
 
 #include <boost/asio/detail/config.hpp>
-#include <boost/asio/basic_io_object.hpp>
+#include <string>
+#include <utility>
+#include <boost/asio/any_io_executor.hpp>
+#include <boost/asio/async_result.hpp>
 #include <boost/asio/detail/handler_type_requirements.hpp>
+#include <boost/asio/detail/io_object_impl.hpp>
+#include <boost/asio/detail/non_const_lvalue.hpp>
+#include <boost/asio/detail/string_view.hpp>
 #include <boost/asio/detail/throw_error.hpp>
 #include <boost/asio/error.hpp>
+#include <boost/asio/execution_context.hpp>
 #include <boost/asio/ip/basic_resolver_iterator.hpp>
 #include <boost/asio/ip/basic_resolver_query.hpp>
-#include <boost/asio/ip/resolver_service.hpp>
+#include <boost/asio/ip/basic_resolver_results.hpp>
+#include <boost/asio/ip/resolver_base.hpp>
+#if defined(BOOST_ASIO_WINDOWS_RUNTIME)
+# include <boost/asio/detail/winrt_resolver_service.hpp>
+#else
+# include <boost/asio/detail/resolver_service.hpp>
+#endif
 
 #include <boost/asio/detail/push_options.hpp>
 
 namespace boost {
 namespace asio {
 namespace ip {
+
+#if !defined(BOOST_ASIO_IP_BASIC_RESOLVER_FWD_DECL)
+#define BOOST_ASIO_IP_BASIC_RESOLVER_FWD_DECL
+
+// Forward declaration with defaulted arguments.
+template <typename InternetProtocol, typename Executor = any_io_executor>
+class basic_resolver;
+
+#endif // !defined(BOOST_ASIO_IP_BASIC_RESOLVER_FWD_DECL)
 
 /// Provides endpoint resolution functionality.
 /**
@@ -39,34 +61,157 @@ namespace ip {
  * @e Distinct @e objects: Safe.@n
  * @e Shared @e objects: Unsafe.
  */
-template <typename InternetProtocol,
-    typename ResolverService = resolver_service<InternetProtocol> >
+template <typename InternetProtocol, typename Executor>
 class basic_resolver
-  : public basic_io_object<ResolverService>
+  : public resolver_base
 {
+private:
+  class initiate_async_resolve;
+
 public:
+  /// The type of the executor associated with the object.
+  typedef Executor executor_type;
+
+  /// Rebinds the resolver type to another executor.
+  template <typename Executor1>
+  struct rebind_executor
+  {
+    /// The resolver type when rebound to the specified executor.
+    typedef basic_resolver<InternetProtocol, Executor1> other;
+  };
+
   /// The protocol type.
   typedef InternetProtocol protocol_type;
 
   /// The endpoint type.
   typedef typename InternetProtocol::endpoint endpoint_type;
 
-  /// The query type.
-  typedef basic_resolver_query<InternetProtocol> query;
+  /// The results type.
+  typedef basic_resolver_results<InternetProtocol> results_type;
 
-  /// The iterator type.
-  typedef basic_resolver_iterator<InternetProtocol> iterator;
-
-  /// Constructor.
+  /// Construct with executor.
   /**
    * This constructor creates a basic_resolver.
    *
-   * @param io_service The io_service object that the resolver will use to
-   * dispatch handlers for any asynchronous operations performed on the timer.
+   * @param ex The I/O executor that the resolver will use, by default, to
+   * dispatch handlers for any asynchronous operations performed on the
+   * resolver.
    */
-  explicit basic_resolver(boost::asio::io_service& io_service)
-    : basic_io_object<ResolverService>(io_service)
+  explicit basic_resolver(const executor_type& ex)
+    : impl_(0, ex)
   {
+  }
+
+  /// Construct with execution context.
+  /**
+   * This constructor creates a basic_resolver.
+   *
+   * @param context An execution context which provides the I/O executor that
+   * the resolver will use, by default, to dispatch handlers for any
+   * asynchronous operations performed on the resolver.
+   */
+  template <typename ExecutionContext>
+  explicit basic_resolver(ExecutionContext& context,
+      constraint_t<
+        is_convertible<ExecutionContext&, execution_context&>::value
+      > = 0)
+    : impl_(0, 0, context)
+  {
+  }
+
+  /// Move-construct a basic_resolver from another.
+  /**
+   * This constructor moves a resolver from one object to another.
+   *
+   * @param other The other basic_resolver object from which the move will
+   * occur.
+   *
+   * @note Following the move, the moved-from object is in the same state as if
+   * constructed using the @c basic_resolver(const executor_type&) constructor.
+   */
+  basic_resolver(basic_resolver&& other)
+    : impl_(std::move(other.impl_))
+  {
+  }
+
+  // All resolvers have access to each other's implementations.
+  template <typename InternetProtocol1, typename Executor1>
+  friend class basic_resolver;
+
+  /// Move-construct a basic_resolver from another.
+  /**
+   * This constructor moves a resolver from one object to another.
+   *
+   * @param other The other basic_resolver object from which the move will
+   * occur.
+   *
+   * @note Following the move, the moved-from object is in the same state as if
+   * constructed using the @c basic_resolver(const executor_type&) constructor.
+   */
+  template <typename Executor1>
+  basic_resolver(basic_resolver<InternetProtocol, Executor1>&& other,
+      constraint_t<
+          is_convertible<Executor1, Executor>::value
+      > = 0)
+    : impl_(std::move(other.impl_))
+  {
+  }
+
+  /// Move-assign a basic_resolver from another.
+  /**
+   * This assignment operator moves a resolver from one object to another.
+   * Cancels any outstanding asynchronous operations associated with the target
+   * object.
+   *
+   * @param other The other basic_resolver object from which the move will
+   * occur.
+   *
+   * @note Following the move, the moved-from object is in the same state as if
+   * constructed using the @c basic_resolver(const executor_type&) constructor.
+   */
+  basic_resolver& operator=(basic_resolver&& other)
+  {
+    impl_ = std::move(other.impl_);
+    return *this;
+  }
+
+  /// Move-assign a basic_resolver from another.
+  /**
+   * This assignment operator moves a resolver from one object to another.
+   * Cancels any outstanding asynchronous operations associated with the target
+   * object.
+   *
+   * @param other The other basic_resolver object from which the move will
+   * occur.
+   *
+   * @note Following the move, the moved-from object is in the same state as if
+   * constructed using the @c basic_resolver(const executor_type&) constructor.
+   */
+  template <typename Executor1>
+  constraint_t<
+    is_convertible<Executor1, Executor>::value,
+    basic_resolver&
+  > operator=(basic_resolver<InternetProtocol, Executor1>&& other)
+  {
+    basic_resolver tmp(std::move(other));
+    impl_ = std::move(tmp.impl_);
+    return *this;
+  }
+
+  /// Destroys the resolver.
+  /**
+   * This function destroys the resolver, cancelling any outstanding
+   * asynchronous wait operations associated with the resolver as if by calling
+   * @c cancel.
+   */
+  ~basic_resolver()
+  {
+  }
+
+  /// Get the executor associated with the object.
+  executor_type get_executor() noexcept
+  {
+    return impl_.get_executor();
   }
 
   /// Cancel any asynchronous operations that are waiting on the resolver.
@@ -77,94 +222,654 @@ public:
    */
   void cancel()
   {
-    return this->service.cancel(this->implementation);
+    return impl_.get_service().cancel(impl_.get_implementation());
   }
 
   /// Perform forward resolution of a query to a list of entries.
   /**
-   * This function is used to resolve a query into a list of endpoint entries.
+   * This function is used to resolve host and service names into a list of
+   * endpoint entries.
    *
-   * @param q A query object that determines what endpoints will be returned.
+   * @param host A string identifying a location. May be a descriptive name or
+   * a numeric address string. If an empty string and the passive flag has been
+   * specified, the resolved endpoints are suitable for local service binding.
+   * If an empty string and passive is not specified, the resolved endpoints
+   * will use the loopback address.
    *
-   * @returns A forward-only iterator that can be used to traverse the list
-   * of endpoint entries.
+   * @param service A string identifying the requested service. This may be a
+   * descriptive name or a numeric string corresponding to a port number. May
+   * be an empty string, in which case all resolved endpoints will have a port
+   * number of 0.
+   *
+   * @returns A range object representing the list of endpoint entries. A
+   * successful call to this function is guaranteed to return a non-empty
+   * range.
    *
    * @throws boost::system::system_error Thrown on failure.
    *
-   * @note A default constructed iterator represents the end of the list.
+   * @note On POSIX systems, host names may be locally defined in the file
+   * <tt>/etc/hosts</tt>. On Windows, host names may be defined in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\hosts</tt>. Remote host name
+   * resolution is performed using DNS. Operating systems may use additional
+   * locations when resolving host names (such as NETBIOS names on Windows).
    *
-   * A successful call to this function is guaranteed to return at least one
-   * entry.
+   * On POSIX systems, service names are typically defined in the file
+   * <tt>/etc/services</tt>. On Windows, service names may be found in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
+   * may use additional locations when resolving service names.
    */
-  iterator resolve(const query& q)
+  results_type resolve(BOOST_ASIO_STRING_VIEW_PARAM host,
+      BOOST_ASIO_STRING_VIEW_PARAM service)
   {
-    boost::system::error_code ec;
-    iterator i = this->service.resolve(this->implementation, q, ec);
-    boost::asio::detail::throw_error(ec, "resolve");
-    return i;
+    return resolve(host, service, resolver_base::flags());
   }
 
   /// Perform forward resolution of a query to a list of entries.
   /**
-   * This function is used to resolve a query into a list of endpoint entries.
+   * This function is used to resolve host and service names into a list of
+   * endpoint entries.
    *
-   * @param q A query object that determines what endpoints will be returned.
+   * @param host A string identifying a location. May be a descriptive name or
+   * a numeric address string. If an empty string and the passive flag has been
+   * specified, the resolved endpoints are suitable for local service binding.
+   * If an empty string and passive is not specified, the resolved endpoints
+   * will use the loopback address.
+   *
+   * @param service A string identifying the requested service. This may be a
+   * descriptive name or a numeric string corresponding to a port number. May
+   * be an empty string, in which case all resolved endpoints will have a port
+   * number of 0.
    *
    * @param ec Set to indicate what error occurred, if any.
    *
-   * @returns A forward-only iterator that can be used to traverse the list
-   * of endpoint entries. Returns a default constructed iterator if an error
-   * occurs.
+   * @returns A range object representing the list of endpoint entries. An
+   * empty range is returned if an error occurs. A successful call to this
+   * function is guaranteed to return a non-empty range.
    *
-   * @note A default constructed iterator represents the end of the list.
+   * @note On POSIX systems, host names may be locally defined in the file
+   * <tt>/etc/hosts</tt>. On Windows, host names may be defined in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\hosts</tt>. Remote host name
+   * resolution is performed using DNS. Operating systems may use additional
+   * locations when resolving host names (such as NETBIOS names on Windows).
    *
-   * A successful call to this function is guaranteed to return at least one
-   * entry.
+   * On POSIX systems, service names are typically defined in the file
+   * <tt>/etc/services</tt>. On Windows, service names may be found in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
+   * may use additional locations when resolving service names.
    */
-  iterator resolve(const query& q, boost::system::error_code& ec)
+  results_type resolve(BOOST_ASIO_STRING_VIEW_PARAM host,
+      BOOST_ASIO_STRING_VIEW_PARAM service, boost::system::error_code& ec)
   {
-    return this->service.resolve(this->implementation, q, ec);
+    return resolve(host, service, resolver_base::flags(), ec);
+  }
+
+  /// Perform forward resolution of a query to a list of entries.
+  /**
+   * This function is used to resolve host and service names into a list of
+   * endpoint entries.
+   *
+   * @param host A string identifying a location. May be a descriptive name or
+   * a numeric address string. If an empty string and the passive flag has been
+   * specified, the resolved endpoints are suitable for local service binding.
+   * If an empty string and passive is not specified, the resolved endpoints
+   * will use the loopback address.
+   *
+   * @param service A string identifying the requested service. This may be a
+   * descriptive name or a numeric string corresponding to a port number. May
+   * be an empty string, in which case all resolved endpoints will have a port
+   * number of 0.
+   *
+   * @param resolve_flags A set of flags that determine how name resolution
+   * should be performed. The default flags are suitable for communication with
+   * remote hosts. See the @ref resolver_base documentation for the set of
+   * available flags.
+   *
+   * @returns A range object representing the list of endpoint entries. A
+   * successful call to this function is guaranteed to return a non-empty
+   * range.
+   *
+   * @throws boost::system::system_error Thrown on failure.
+   *
+   * @note On POSIX systems, host names may be locally defined in the file
+   * <tt>/etc/hosts</tt>. On Windows, host names may be defined in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\hosts</tt>. Remote host name
+   * resolution is performed using DNS. Operating systems may use additional
+   * locations when resolving host names (such as NETBIOS names on Windows).
+   *
+   * On POSIX systems, service names are typically defined in the file
+   * <tt>/etc/services</tt>. On Windows, service names may be found in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
+   * may use additional locations when resolving service names.
+   */
+  results_type resolve(BOOST_ASIO_STRING_VIEW_PARAM host,
+      BOOST_ASIO_STRING_VIEW_PARAM service, resolver_base::flags resolve_flags)
+  {
+    boost::system::error_code ec;
+    basic_resolver_query<protocol_type> q(static_cast<std::string>(host),
+        static_cast<std::string>(service), resolve_flags);
+    results_type r = impl_.get_service().resolve(
+        impl_.get_implementation(), q, ec);
+    boost::asio::detail::throw_error(ec, "resolve");
+    return r;
+  }
+
+  /// Perform forward resolution of a query to a list of entries.
+  /**
+   * This function is used to resolve host and service names into a list of
+   * endpoint entries.
+   *
+   * @param host A string identifying a location. May be a descriptive name or
+   * a numeric address string. If an empty string and the passive flag has been
+   * specified, the resolved endpoints are suitable for local service binding.
+   * If an empty string and passive is not specified, the resolved endpoints
+   * will use the loopback address.
+   *
+   * @param service A string identifying the requested service. This may be a
+   * descriptive name or a numeric string corresponding to a port number. May
+   * be an empty string, in which case all resolved endpoints will have a port
+   * number of 0.
+   *
+   * @param resolve_flags A set of flags that determine how name resolution
+   * should be performed. The default flags are suitable for communication with
+   * remote hosts. See the @ref resolver_base documentation for the set of
+   * available flags.
+   *
+   * @param ec Set to indicate what error occurred, if any.
+   *
+   * @returns A range object representing the list of endpoint entries. An
+   * empty range is returned if an error occurs. A successful call to this
+   * function is guaranteed to return a non-empty range.
+   *
+   * @note On POSIX systems, host names may be locally defined in the file
+   * <tt>/etc/hosts</tt>. On Windows, host names may be defined in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\hosts</tt>. Remote host name
+   * resolution is performed using DNS. Operating systems may use additional
+   * locations when resolving host names (such as NETBIOS names on Windows).
+   *
+   * On POSIX systems, service names are typically defined in the file
+   * <tt>/etc/services</tt>. On Windows, service names may be found in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
+   * may use additional locations when resolving service names.
+   */
+  results_type resolve(BOOST_ASIO_STRING_VIEW_PARAM host,
+      BOOST_ASIO_STRING_VIEW_PARAM service, resolver_base::flags resolve_flags,
+      boost::system::error_code& ec)
+  {
+    basic_resolver_query<protocol_type> q(static_cast<std::string>(host),
+        static_cast<std::string>(service), resolve_flags);
+    return impl_.get_service().resolve(impl_.get_implementation(), q, ec);
+  }
+
+  /// Perform forward resolution of a query to a list of entries.
+  /**
+   * This function is used to resolve host and service names into a list of
+   * endpoint entries.
+   *
+   * @param protocol A protocol object, normally representing either the IPv4 or
+   * IPv6 version of an internet protocol.
+   *
+   * @param host A string identifying a location. May be a descriptive name or
+   * a numeric address string. If an empty string and the passive flag has been
+   * specified, the resolved endpoints are suitable for local service binding.
+   * If an empty string and passive is not specified, the resolved endpoints
+   * will use the loopback address.
+   *
+   * @param service A string identifying the requested service. This may be a
+   * descriptive name or a numeric string corresponding to a port number. May
+   * be an empty string, in which case all resolved endpoints will have a port
+   * number of 0.
+   *
+   * @returns A range object representing the list of endpoint entries. A
+   * successful call to this function is guaranteed to return a non-empty
+   * range.
+   *
+   * @throws boost::system::system_error Thrown on failure.
+   *
+   * @note On POSIX systems, host names may be locally defined in the file
+   * <tt>/etc/hosts</tt>. On Windows, host names may be defined in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\hosts</tt>. Remote host name
+   * resolution is performed using DNS. Operating systems may use additional
+   * locations when resolving host names (such as NETBIOS names on Windows).
+   *
+   * On POSIX systems, service names are typically defined in the file
+   * <tt>/etc/services</tt>. On Windows, service names may be found in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
+   * may use additional locations when resolving service names.
+   */
+  results_type resolve(const protocol_type& protocol,
+      BOOST_ASIO_STRING_VIEW_PARAM host, BOOST_ASIO_STRING_VIEW_PARAM service)
+  {
+    return resolve(protocol, host, service, resolver_base::flags());
+  }
+
+  /// Perform forward resolution of a query to a list of entries.
+  /**
+   * This function is used to resolve host and service names into a list of
+   * endpoint entries.
+   *
+   * @param protocol A protocol object, normally representing either the IPv4 or
+   * IPv6 version of an internet protocol.
+   *
+   * @param host A string identifying a location. May be a descriptive name or
+   * a numeric address string. If an empty string and the passive flag has been
+   * specified, the resolved endpoints are suitable for local service binding.
+   * If an empty string and passive is not specified, the resolved endpoints
+   * will use the loopback address.
+   *
+   * @param service A string identifying the requested service. This may be a
+   * descriptive name or a numeric string corresponding to a port number. May
+   * be an empty string, in which case all resolved endpoints will have a port
+   * number of 0.
+   *
+   * @param ec Set to indicate what error occurred, if any.
+   *
+   * @returns A range object representing the list of endpoint entries. An
+   * empty range is returned if an error occurs. A successful call to this
+   * function is guaranteed to return a non-empty range.
+   *
+   * @note On POSIX systems, host names may be locally defined in the file
+   * <tt>/etc/hosts</tt>. On Windows, host names may be defined in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\hosts</tt>. Remote host name
+   * resolution is performed using DNS. Operating systems may use additional
+   * locations when resolving host names (such as NETBIOS names on Windows).
+   *
+   * On POSIX systems, service names are typically defined in the file
+   * <tt>/etc/services</tt>. On Windows, service names may be found in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
+   * may use additional locations when resolving service names.
+   */
+  results_type resolve(const protocol_type& protocol,
+      BOOST_ASIO_STRING_VIEW_PARAM host, BOOST_ASIO_STRING_VIEW_PARAM service,
+      boost::system::error_code& ec)
+  {
+    return resolve(protocol, host, service, resolver_base::flags(), ec);
+  }
+
+  /// Perform forward resolution of a query to a list of entries.
+  /**
+   * This function is used to resolve host and service names into a list of
+   * endpoint entries.
+   *
+   * @param protocol A protocol object, normally representing either the IPv4 or
+   * IPv6 version of an internet protocol.
+   *
+   * @param host A string identifying a location. May be a descriptive name or
+   * a numeric address string. If an empty string and the passive flag has been
+   * specified, the resolved endpoints are suitable for local service binding.
+   * If an empty string and passive is not specified, the resolved endpoints
+   * will use the loopback address.
+   *
+   * @param service A string identifying the requested service. This may be a
+   * descriptive name or a numeric string corresponding to a port number. May
+   * be an empty string, in which case all resolved endpoints will have a port
+   * number of 0.
+   *
+   * @param resolve_flags A set of flags that determine how name resolution
+   * should be performed. The default flags are suitable for communication with
+   * remote hosts. See the @ref resolver_base documentation for the set of
+   * available flags.
+   *
+   * @returns A range object representing the list of endpoint entries. A
+   * successful call to this function is guaranteed to return a non-empty
+   * range.
+   *
+   * @throws boost::system::system_error Thrown on failure.
+   *
+   * @note On POSIX systems, host names may be locally defined in the file
+   * <tt>/etc/hosts</tt>. On Windows, host names may be defined in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\hosts</tt>. Remote host name
+   * resolution is performed using DNS. Operating systems may use additional
+   * locations when resolving host names (such as NETBIOS names on Windows).
+   *
+   * On POSIX systems, service names are typically defined in the file
+   * <tt>/etc/services</tt>. On Windows, service names may be found in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
+   * may use additional locations when resolving service names.
+   */
+  results_type resolve(const protocol_type& protocol,
+      BOOST_ASIO_STRING_VIEW_PARAM host, BOOST_ASIO_STRING_VIEW_PARAM service,
+      resolver_base::flags resolve_flags)
+  {
+    boost::system::error_code ec;
+    basic_resolver_query<protocol_type> q(
+        protocol, static_cast<std::string>(host),
+        static_cast<std::string>(service), resolve_flags);
+    results_type r = impl_.get_service().resolve(
+        impl_.get_implementation(), q, ec);
+    boost::asio::detail::throw_error(ec, "resolve");
+    return r;
+  }
+
+  /// Perform forward resolution of a query to a list of entries.
+  /**
+   * This function is used to resolve host and service names into a list of
+   * endpoint entries.
+   *
+   * @param protocol A protocol object, normally representing either the IPv4 or
+   * IPv6 version of an internet protocol.
+   *
+   * @param host A string identifying a location. May be a descriptive name or
+   * a numeric address string. If an empty string and the passive flag has been
+   * specified, the resolved endpoints are suitable for local service binding.
+   * If an empty string and passive is not specified, the resolved endpoints
+   * will use the loopback address.
+   *
+   * @param service A string identifying the requested service. This may be a
+   * descriptive name or a numeric string corresponding to a port number. May
+   * be an empty string, in which case all resolved endpoints will have a port
+   * number of 0.
+   *
+   * @param resolve_flags A set of flags that determine how name resolution
+   * should be performed. The default flags are suitable for communication with
+   * remote hosts. See the @ref resolver_base documentation for the set of
+   * available flags.
+   *
+   * @param ec Set to indicate what error occurred, if any.
+   *
+   * @returns A range object representing the list of endpoint entries. An
+   * empty range is returned if an error occurs. A successful call to this
+   * function is guaranteed to return a non-empty range.
+   *
+   * @note On POSIX systems, host names may be locally defined in the file
+   * <tt>/etc/hosts</tt>. On Windows, host names may be defined in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\hosts</tt>. Remote host name
+   * resolution is performed using DNS. Operating systems may use additional
+   * locations when resolving host names (such as NETBIOS names on Windows).
+   *
+   * On POSIX systems, service names are typically defined in the file
+   * <tt>/etc/services</tt>. On Windows, service names may be found in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
+   * may use additional locations when resolving service names.
+   */
+  results_type resolve(const protocol_type& protocol,
+      BOOST_ASIO_STRING_VIEW_PARAM host, BOOST_ASIO_STRING_VIEW_PARAM service,
+      resolver_base::flags resolve_flags, boost::system::error_code& ec)
+  {
+    basic_resolver_query<protocol_type> q(
+        protocol, static_cast<std::string>(host),
+        static_cast<std::string>(service), resolve_flags);
+    return impl_.get_service().resolve(impl_.get_implementation(), q, ec);
   }
 
   /// Asynchronously perform forward resolution of a query to a list of entries.
   /**
-   * This function is used to asynchronously resolve a query into a list of
+   * This function is used to resolve host and service names into a list of
    * endpoint entries.
    *
-   * @param q A query object that determines what endpoints will be returned.
+   * @param host A string identifying a location. May be a descriptive name or
+   * a numeric address string. If an empty string and the passive flag has been
+   * specified, the resolved endpoints are suitable for local service binding.
+   * If an empty string and passive is not specified, the resolved endpoints
+   * will use the loopback address.
    *
-   * @param handler The handler to be called when the resolve operation
-   * completes. Copies will be made of the handler as required. The function
-   * signature of the handler must be:
+   * @param service A string identifying the requested service. This may be a
+   * descriptive name or a numeric string corresponding to a port number. May
+   * be an empty string, in which case all resolved endpoints will have a port
+   * number of 0.
+   *
+   * @param token The @ref completion_token that will be used to produce a
+   * completion handler, which will be called when the resolve completes.
+   * Potential completion tokens include @ref use_future, @ref use_awaitable,
+   * @ref yield_context, or a function object with the correct completion
+   * signature. The function signature of the completion handler must be:
    * @code void handler(
    *   const boost::system::error_code& error, // Result of operation.
-   *   resolver::iterator iterator             // Forward-only iterator that can
-   *                                           // be used to traverse the list
-   *                                           // of endpoint entries.
+   *   resolver::results_type results // Resolved endpoints as a range.
    * ); @endcode
    * Regardless of whether the asynchronous operation completes immediately or
-   * not, the handler will not be invoked from within this function. Invocation
-   * of the handler will be performed in a manner equivalent to using
-   * boost::asio::io_service::post().
+   * not, the completion handler will not be invoked from within this function.
+   * On immediate completion, invocation of the handler will be performed in a
+   * manner equivalent to using boost::asio::async_immediate().
    *
-   * @note A default constructed iterator represents the end of the list.
-   *
-   * A successful resolve operation is guaranteed to pass at least one entry to
+   * A successful resolve operation is guaranteed to pass a non-empty range to
    * the handler.
+   *
+   * @par Completion Signature
+   * @code void(boost::system::error_code, results_type) @endcode
+   *
+   * @note On POSIX systems, host names may be locally defined in the file
+   * <tt>/etc/hosts</tt>. On Windows, host names may be defined in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\hosts</tt>. Remote host name
+   * resolution is performed using DNS. Operating systems may use additional
+   * locations when resolving host names (such as NETBIOS names on Windows).
+   *
+   * On POSIX systems, service names are typically defined in the file
+   * <tt>/etc/services</tt>. On Windows, service names may be found in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
+   * may use additional locations when resolving service names.
    */
-  template <typename ResolveHandler>
-  BOOST_ASIO_INITFN_RESULT_TYPE(ResolveHandler,
-      void (boost::system::error_code, iterator))
-  async_resolve(const query& q,
-      BOOST_ASIO_MOVE_ARG(ResolveHandler) handler)
+  template <
+      BOOST_ASIO_COMPLETION_TOKEN_FOR(void (boost::system::error_code,
+        results_type)) ResolveToken = default_completion_token_t<executor_type>>
+  auto async_resolve(BOOST_ASIO_STRING_VIEW_PARAM host,
+      BOOST_ASIO_STRING_VIEW_PARAM service,
+      ResolveToken&& token = default_completion_token_t<executor_type>())
+    -> decltype(
+      boost::asio::async_initiate<ResolveToken,
+        void (boost::system::error_code, results_type)>(
+          declval<initiate_async_resolve>(), token,
+          declval<basic_resolver_query<protocol_type>&>()))
   {
-    // If you get an error on the following line it means that your handler does
-    // not meet the documented type requirements for a ResolveHandler.
-    BOOST_ASIO_RESOLVE_HANDLER_CHECK(
-        ResolveHandler, handler, iterator) type_check;
+    return async_resolve(host, service, resolver_base::flags(),
+        static_cast<ResolveToken&&>(token));
+  }
 
-    return this->service.async_resolve(this->implementation, q,
-        BOOST_ASIO_MOVE_CAST(ResolveHandler)(handler));
+  /// Asynchronously perform forward resolution of a query to a list of entries.
+  /**
+   * This function is used to resolve host and service names into a list of
+   * endpoint entries. It is an initiating function for an @ref
+   * asynchronous_operation, and always returns immediately.
+   *
+   * @param host A string identifying a location. May be a descriptive name or
+   * a numeric address string. If an empty string and the passive flag has been
+   * specified, the resolved endpoints are suitable for local service binding.
+   * If an empty string and passive is not specified, the resolved endpoints
+   * will use the loopback address.
+   *
+   * @param service A string identifying the requested service. This may be a
+   * descriptive name or a numeric string corresponding to a port number. May
+   * be an empty string, in which case all resolved endpoints will have a port
+   * number of 0.
+   *
+   * @param resolve_flags A set of flags that determine how name resolution
+   * should be performed. The default flags are suitable for communication with
+   * remote hosts. See the @ref resolver_base documentation for the set of
+   * available flags.
+   *
+   * @param token The @ref completion_token that will be used to produce a
+   * completion handler, which will be called when the resolve completes.
+   * Potential completion tokens include @ref use_future, @ref use_awaitable,
+   * @ref yield_context, or a function object with the correct completion
+   * signature. The function signature of the completion handler must be:
+   * @code void handler(
+   *   const boost::system::error_code& error, // Result of operation.
+   *   resolver::results_type results // Resolved endpoints as a range.
+   * ); @endcode
+   * Regardless of whether the asynchronous operation completes immediately or
+   * not, the completion handler will not be invoked from within this function.
+   * On immediate completion, invocation of the handler will be performed in a
+   * manner equivalent to using boost::asio::async_immediate().
+   *
+   * A successful resolve operation is guaranteed to pass a non-empty range to
+   * the handler.
+   *
+   * @par Completion Signature
+   * @code void(boost::system::error_code, results_type) @endcode
+   *
+   * @note On POSIX systems, host names may be locally defined in the file
+   * <tt>/etc/hosts</tt>. On Windows, host names may be defined in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\hosts</tt>. Remote host name
+   * resolution is performed using DNS. Operating systems may use additional
+   * locations when resolving host names (such as NETBIOS names on Windows).
+   *
+   * On POSIX systems, service names are typically defined in the file
+   * <tt>/etc/services</tt>. On Windows, service names may be found in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
+   * may use additional locations when resolving service names.
+   */
+  template <
+      BOOST_ASIO_COMPLETION_TOKEN_FOR(void (boost::system::error_code,
+        results_type)) ResolveToken = default_completion_token_t<executor_type>>
+  auto async_resolve(BOOST_ASIO_STRING_VIEW_PARAM host,
+      BOOST_ASIO_STRING_VIEW_PARAM service, resolver_base::flags resolve_flags,
+      ResolveToken&& token = default_completion_token_t<executor_type>())
+    -> decltype(
+      boost::asio::async_initiate<ResolveToken,
+        void (boost::system::error_code, results_type)>(
+          declval<initiate_async_resolve>(), token,
+          declval<basic_resolver_query<protocol_type>&>()))
+  {
+    basic_resolver_query<protocol_type> q(static_cast<std::string>(host),
+        static_cast<std::string>(service), resolve_flags);
+
+    return boost::asio::async_initiate<ResolveToken,
+      void (boost::system::error_code, results_type)>(
+        initiate_async_resolve(this), token, q);
+  }
+
+  /// Asynchronously perform forward resolution of a query to a list of entries.
+  /**
+   * This function is used to resolve host and service names into a list of
+   * endpoint entries. It is an initiating function for an @ref
+   * asynchronous_operation, and always returns immediately.
+   *
+   * @param protocol A protocol object, normally representing either the IPv4 or
+   * IPv6 version of an internet protocol.
+   *
+   * @param host A string identifying a location. May be a descriptive name or
+   * a numeric address string. If an empty string and the passive flag has been
+   * specified, the resolved endpoints are suitable for local service binding.
+   * If an empty string and passive is not specified, the resolved endpoints
+   * will use the loopback address.
+   *
+   * @param service A string identifying the requested service. This may be a
+   * descriptive name or a numeric string corresponding to a port number. May
+   * be an empty string, in which case all resolved endpoints will have a port
+   * number of 0.
+   *
+   * @param token The @ref completion_token that will be used to produce a
+   * completion handler, which will be called when the resolve completes.
+   * Potential completion tokens include @ref use_future, @ref use_awaitable,
+   * @ref yield_context, or a function object with the correct completion
+   * signature. The function signature of the completion handler must be:
+   * @code void handler(
+   *   const boost::system::error_code& error, // Result of operation.
+   *   resolver::results_type results // Resolved endpoints as a range.
+   * ); @endcode
+   * Regardless of whether the asynchronous operation completes immediately or
+   * not, the completion handler will not be invoked from within this function.
+   * On immediate completion, invocation of the handler will be performed in a
+   * manner equivalent to using boost::asio::async_immediate().
+   *
+   * A successful resolve operation is guaranteed to pass a non-empty range to
+   * the handler.
+   *
+   * @par Completion Signature
+   * @code void(boost::system::error_code, results_type) @endcode
+   *
+   * @note On POSIX systems, host names may be locally defined in the file
+   * <tt>/etc/hosts</tt>. On Windows, host names may be defined in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\hosts</tt>. Remote host name
+   * resolution is performed using DNS. Operating systems may use additional
+   * locations when resolving host names (such as NETBIOS names on Windows).
+   *
+   * On POSIX systems, service names are typically defined in the file
+   * <tt>/etc/services</tt>. On Windows, service names may be found in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
+   * may use additional locations when resolving service names.
+   */
+  template <
+      BOOST_ASIO_COMPLETION_TOKEN_FOR(void (boost::system::error_code,
+        results_type)) ResolveToken = default_completion_token_t<executor_type>>
+  auto async_resolve(const protocol_type& protocol,
+      BOOST_ASIO_STRING_VIEW_PARAM host, BOOST_ASIO_STRING_VIEW_PARAM service,
+      ResolveToken&& token = default_completion_token_t<executor_type>())
+    -> decltype(
+      boost::asio::async_initiate<ResolveToken,
+        void (boost::system::error_code, results_type)>(
+          declval<initiate_async_resolve>(), token,
+          declval<basic_resolver_query<protocol_type>&>()))
+  {
+    return async_resolve(protocol, host, service, resolver_base::flags(),
+        static_cast<ResolveToken&&>(token));
+  }
+
+  /// Asynchronously perform forward resolution of a query to a list of entries.
+  /**
+   * This function is used to resolve host and service names into a list of
+   * endpoint entries. It is an initiating function for an @ref
+   * asynchronous_operation, and always returns immediately.
+   *
+   * @param protocol A protocol object, normally representing either the IPv4 or
+   * IPv6 version of an internet protocol.
+   *
+   * @param host A string identifying a location. May be a descriptive name or
+   * a numeric address string. If an empty string and the passive flag has been
+   * specified, the resolved endpoints are suitable for local service binding.
+   * If an empty string and passive is not specified, the resolved endpoints
+   * will use the loopback address.
+   *
+   * @param service A string identifying the requested service. This may be a
+   * descriptive name or a numeric string corresponding to a port number. May
+   * be an empty string, in which case all resolved endpoints will have a port
+   * number of 0.
+   *
+   * @param resolve_flags A set of flags that determine how name resolution
+   * should be performed. The default flags are suitable for communication with
+   * remote hosts. See the @ref resolver_base documentation for the set of
+   * available flags.
+   *
+   * @param token The @ref completion_token that will be used to produce a
+   * completion handler, which will be called when the resolve completes.
+   * Potential completion tokens include @ref use_future, @ref use_awaitable,
+   * @ref yield_context, or a function object with the correct completion
+   * signature. The function signature of the completion handler must be:
+   * @code void handler(
+   *   const boost::system::error_code& error, // Result of operation.
+   *   resolver::results_type results // Resolved endpoints as a range.
+   * ); @endcode
+   * Regardless of whether the asynchronous operation completes immediately or
+   * not, the completion handler will not be invoked from within this function.
+   * On immediate completion, invocation of the handler will be performed in a
+   * manner equivalent to using boost::asio::async_immediate().
+   *
+   * A successful resolve operation is guaranteed to pass a non-empty range to
+   * the handler.
+   *
+   * @par Completion Signature
+   * @code void(boost::system::error_code, results_type) @endcode
+   *
+   * @note On POSIX systems, host names may be locally defined in the file
+   * <tt>/etc/hosts</tt>. On Windows, host names may be defined in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\hosts</tt>. Remote host name
+   * resolution is performed using DNS. Operating systems may use additional
+   * locations when resolving host names (such as NETBIOS names on Windows).
+   *
+   * On POSIX systems, service names are typically defined in the file
+   * <tt>/etc/services</tt>. On Windows, service names may be found in the file
+   * <tt>c:\\windows\\system32\\drivers\\etc\\services</tt>. Operating systems
+   * may use additional locations when resolving service names.
+   */
+  template <
+      BOOST_ASIO_COMPLETION_TOKEN_FOR(void (boost::system::error_code,
+        results_type)) ResolveToken = default_completion_token_t<executor_type>>
+  auto async_resolve(const protocol_type& protocol,
+      BOOST_ASIO_STRING_VIEW_PARAM host, BOOST_ASIO_STRING_VIEW_PARAM service,
+      resolver_base::flags resolve_flags,
+      ResolveToken&& token = default_completion_token_t<executor_type>())
+    -> decltype(
+      boost::asio::async_initiate<ResolveToken,
+        void (boost::system::error_code, results_type)>(
+          declval<initiate_async_resolve>(), token,
+          declval<basic_resolver_query<protocol_type>&>()))
+  {
+    basic_resolver_query<protocol_type> q(
+        protocol, static_cast<std::string>(host),
+        static_cast<std::string>(service), resolve_flags);
+
+    return boost::asio::async_initiate<ResolveToken,
+      void (boost::system::error_code, results_type)>(
+        initiate_async_resolve(this), token, q);
   }
 
   /// Perform reverse resolution of an endpoint to a list of entries.
@@ -175,20 +880,17 @@ public:
    * @param e An endpoint object that determines what endpoints will be
    * returned.
    *
-   * @returns A forward-only iterator that can be used to traverse the list
-   * of endpoint entries.
+   * @returns A range object representing the list of endpoint entries. A
+   * successful call to this function is guaranteed to return a non-empty
+   * range.
    *
    * @throws boost::system::system_error Thrown on failure.
-   *
-   * @note A default constructed iterator represents the end of the list.
-   *
-   * A successful call to this function is guaranteed to return at least one
-   * entry.
    */
-  iterator resolve(const endpoint_type& e)
+  results_type resolve(const endpoint_type& e)
   {
     boost::system::error_code ec;
-    iterator i = this->service.resolve(this->implementation, e, ec);
+    results_type i = impl_.get_service().resolve(
+        impl_.get_implementation(), e, ec);
     boost::asio::detail::throw_error(ec, "resolve");
     return i;
   }
@@ -203,62 +905,108 @@ public:
    *
    * @param ec Set to indicate what error occurred, if any.
    *
-   * @returns A forward-only iterator that can be used to traverse the list
-   * of endpoint entries. Returns a default constructed iterator if an error
-   * occurs.
-   *
-   * @note A default constructed iterator represents the end of the list.
-   *
-   * A successful call to this function is guaranteed to return at least one
-   * entry.
+   * @returns A range object representing the list of endpoint entries. An
+   * empty range is returned if an error occurs. A successful call to this
+   * function is guaranteed to return a non-empty range.
    */
-  iterator resolve(const endpoint_type& e, boost::system::error_code& ec)
+  results_type resolve(const endpoint_type& e, boost::system::error_code& ec)
   {
-    return this->service.resolve(this->implementation, e, ec);
+    return impl_.get_service().resolve(impl_.get_implementation(), e, ec);
   }
 
   /// Asynchronously perform reverse resolution of an endpoint to a list of
   /// entries.
   /**
    * This function is used to asynchronously resolve an endpoint into a list of
-   * endpoint entries.
+   * endpoint entries. It is an initiating function for an @ref
+   * asynchronous_operation, and always returns immediately.
    *
    * @param e An endpoint object that determines what endpoints will be
    * returned.
    *
-   * @param handler The handler to be called when the resolve operation
-   * completes. Copies will be made of the handler as required. The function
-   * signature of the handler must be:
+   * @param token The @ref completion_token that will be used to produce a
+   * completion handler, which will be called when the resolve completes.
+   * Potential completion tokens include @ref use_future, @ref use_awaitable,
+   * @ref yield_context, or a function object with the correct completion
+   * signature. The function signature of the completion handler must be:
    * @code void handler(
    *   const boost::system::error_code& error, // Result of operation.
-   *   resolver::iterator iterator             // Forward-only iterator that can
-   *                                           // be used to traverse the list
-   *                                           // of endpoint entries.
+   *   resolver::results_type results // Resolved endpoints as a range.
    * ); @endcode
    * Regardless of whether the asynchronous operation completes immediately or
-   * not, the handler will not be invoked from within this function. Invocation
-   * of the handler will be performed in a manner equivalent to using
-   * boost::asio::io_service::post().
+   * not, the completion handler will not be invoked from within this function.
+   * On immediate completion, invocation of the handler will be performed in a
+   * manner equivalent to using boost::asio::async_immediate().
    *
-   * @note A default constructed iterator represents the end of the list.
-   *
-   * A successful resolve operation is guaranteed to pass at least one entry to
+   * A successful resolve operation is guaranteed to pass a non-empty range to
    * the handler.
+   *
+   * @par Completion Signature
+   * @code void(boost::system::error_code, results_type) @endcode
    */
-  template <typename ResolveHandler>
-  BOOST_ASIO_INITFN_RESULT_TYPE(ResolveHandler,
-      void (boost::system::error_code, iterator))
-  async_resolve(const endpoint_type& e,
-      BOOST_ASIO_MOVE_ARG(ResolveHandler) handler)
+  template <
+      BOOST_ASIO_COMPLETION_TOKEN_FOR(void (boost::system::error_code,
+        results_type)) ResolveToken = default_completion_token_t<executor_type>>
+  auto async_resolve(const endpoint_type& e,
+      ResolveToken&& token = default_completion_token_t<executor_type>())
+    -> decltype(
+      boost::asio::async_initiate<ResolveToken,
+        void (boost::system::error_code, results_type)>(
+          declval<initiate_async_resolve>(), token, e))
   {
-    // If you get an error on the following line it means that your handler does
-    // not meet the documented type requirements for a ResolveHandler.
-    BOOST_ASIO_RESOLVE_HANDLER_CHECK(
-        ResolveHandler, handler, iterator) type_check;
-
-    return this->service.async_resolve(this->implementation, e,
-        BOOST_ASIO_MOVE_CAST(ResolveHandler)(handler));
+    return boost::asio::async_initiate<ResolveToken,
+      void (boost::system::error_code, results_type)>(
+        initiate_async_resolve(this), token, e);
   }
+
+private:
+  // Disallow copying and assignment.
+  basic_resolver(const basic_resolver&) = delete;
+  basic_resolver& operator=(const basic_resolver&) = delete;
+
+  class initiate_async_resolve
+  {
+  public:
+    typedef Executor executor_type;
+
+    explicit initiate_async_resolve(basic_resolver* self)
+      : self_(self)
+    {
+    }
+
+    executor_type get_executor() const noexcept
+    {
+      return self_->get_executor();
+    }
+
+    template <typename ResolveHandler, typename Query>
+    void operator()(ResolveHandler&& handler,
+        const Query& q) const
+    {
+      // If you get an error on the following line it means that your handler
+      // does not meet the documented type requirements for a ResolveHandler.
+      BOOST_ASIO_RESOLVE_HANDLER_CHECK(
+          ResolveHandler, handler, results_type) type_check;
+
+      boost::asio::detail::non_const_lvalue<ResolveHandler> handler2(handler);
+      self_->impl_.get_service().async_resolve(
+          self_->impl_.get_implementation(), q,
+          handler2.value, self_->impl_.get_executor());
+    }
+
+  private:
+    basic_resolver* self_;
+  };
+
+# if defined(BOOST_ASIO_WINDOWS_RUNTIME)
+  boost::asio::detail::io_object_impl<
+    boost::asio::detail::winrt_resolver_service<InternetProtocol>,
+    Executor> impl_;
+# else
+  boost::asio::detail::io_object_impl<
+    boost::asio::detail::resolver_service<InternetProtocol>,
+    Executor> impl_;
+# endif
 };
 
 } // namespace ip

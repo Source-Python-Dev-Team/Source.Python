@@ -3,10 +3,10 @@
 // Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
 // Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
-
-// This file was modified by Oracle on 2014.
-// Modifications copyright (c) 2014 Oracle and/or its affiliates.
-
+// Copyright (c) 2024 Adam Wulkiewicz, Lodz, Poland.
+// 
+// This file was modified by Oracle on 2014-2021.
+// Modifications copyright (c) 2014-2021 Oracle and/or its affiliates.
 // Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
@@ -19,14 +19,13 @@
 #ifndef BOOST_GEOMETRY_CORE_CLOSURE_HPP
 #define BOOST_GEOMETRY_CORE_CLOSURE_HPP
 
-#include <boost/mpl/assert.hpp>
-#include <boost/mpl/size_t.hpp>
 #include <boost/range/value_type.hpp>
 
 #include <boost/geometry/core/ring_type.hpp>
+#include <boost/geometry/core/static_assert.hpp>
 #include <boost/geometry/core/tag.hpp>
 #include <boost/geometry/core/tags.hpp>
-#include <boost/geometry/util/bare_type.hpp>
+#include <boost/geometry/util/type_traits_std.hpp>
 
 namespace boost { namespace geometry
 {
@@ -97,13 +96,17 @@ template <closure_selector Closure>
 struct minimum_ring_size {};
 
 template <>
-struct minimum_ring_size<geometry::closed> : boost::mpl::size_t<4> {};
+struct minimum_ring_size<geometry::closed>
+    : std::integral_constant<std::size_t, 4>
+{};
 
 template <>
-struct minimum_ring_size<geometry::open> : boost::mpl::size_t<3> {};
+struct minimum_ring_size<geometry::open>
+    : std::integral_constant<std::size_t, 3>
+{};
 
 
-}} // namespace detail::point_order
+}} // namespace core_detail::closure
 #endif // DOXYGEN_NO_DETAIL
 
 
@@ -115,11 +118,9 @@ namespace core_dispatch
 template <typename Tag, typename Geometry>
 struct closure
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_IMPLEMENTED_FOR_THIS_GEOMETRY_TYPE
-            , (types<Geometry>)
-        );
+    BOOST_GEOMETRY_STATIC_ASSERT_FALSE(
+        "Not implemented for this Geometry type.",
+        Geometry);
 };
 
 template <typename Box>
@@ -187,13 +188,36 @@ struct closure<multi_polygon_tag, MultiPolygon>
 */
 template <typename Geometry>
 struct closure
-{
-    static const closure_selector value = core_dispatch::closure
+    : std::integral_constant
         <
-            typename tag<Geometry>::type,
-            typename util::bare_type<Geometry>::type
-        >::value;
-};
+            closure_selector,
+            core_dispatch::closure
+                <
+                    tag_t<Geometry>,
+                    util::remove_cptrref_t<Geometry>
+                >::value
+        >
+{};
+
+#ifndef BOOST_NO_CXX17_INLINE_VARIABLES
+template <typename Geometry>
+inline constexpr closure_selector closure_v = closure<Geometry>::value;
+#endif
+
+
+#ifndef DOXYGEN_NO_DETAIL
+namespace detail
+{
+
+template <typename Geometry>
+using minimum_ring_size = core_detail::closure::minimum_ring_size
+                            <
+                                geometry::closure<Geometry>::value
+                            >;
+
+
+} // namespace detail
+#endif // DOXYGEN_NO_DETAIL
 
 
 }} // namespace boost::geometry

@@ -49,14 +49,18 @@
 #ifndef BOOST_POLYMORPHIC_CAST_HPP
 #define BOOST_POLYMORPHIC_CAST_HPP
 
-# include <boost/config.hpp>
-# include <boost/assert.hpp>
-# include <boost/throw_exception.hpp>
-# include <typeinfo>
+#include <boost/config.hpp>
 
 #ifdef BOOST_HAS_PRAGMA_ONCE
 #   pragma once
 #endif
+
+# include <boost/assert.hpp>
+# include <boost/throw_exception.hpp>
+
+# include <memory>  // std::addressof
+# include <typeinfo>
+# include <type_traits>
 
 namespace boost
 {
@@ -79,7 +83,7 @@ namespace boost
 
 //  polymorphic_downcast  ----------------------------------------------------//
 
-    //  BOOST_ASSERT() checked polymorphic downcast.  Crosscasts prohibited.
+    //  BOOST_ASSERT() checked raw pointer polymorphic downcast.  Crosscasts prohibited.
 
     //  WARNING: Because this cast uses BOOST_ASSERT(), it violates
     //  the One Definition Rule if used in multiple translation units
@@ -93,6 +97,26 @@ namespace boost
     {
         BOOST_ASSERT( dynamic_cast<Target>(x) == x );  // detect logic error
         return static_cast<Target>(x);
+    }
+
+    //  BOOST_ASSERT() checked reference polymorphic downcast.  Crosscasts prohibited.
+
+    //  WARNING: Because this cast uses BOOST_ASSERT(), it violates
+    //  the One Definition Rule if used in multiple translation units
+    //  where BOOST_DISABLE_ASSERTS, BOOST_ENABLE_ASSERT_HANDLER
+    //  NDEBUG are defined inconsistently.
+
+    //  Contributed by Julien Delacroix
+
+    template <class Target, class Source>
+    inline typename std::enable_if<
+        std::is_reference<Target>::value, Target
+    >::type polymorphic_downcast(Source& x)
+    {
+        typedef typename std::remove_reference<Target>::type* target_pointer_type;
+        return *boost::polymorphic_downcast<target_pointer_type>(
+            std::addressof(x)
+        );
     }
 
 } // namespace boost

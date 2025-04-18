@@ -2,7 +2,7 @@
 // detail/impl/win_iocp_serial_port_service.ipp
 // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2017 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2024 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 // Copyright (c) 2008 Rep Invariant Systems, Inc. (info@repinvariant.com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
@@ -30,12 +30,13 @@ namespace asio {
 namespace detail {
 
 win_iocp_serial_port_service::win_iocp_serial_port_service(
-    boost::asio::io_service& io_service)
-  : handle_service_(io_service)
+    execution_context& context)
+  : execution_context_service_base<win_iocp_serial_port_service>(context),
+    handle_service_(context)
 {
 }
 
-void win_iocp_serial_port_service::shutdown_service()
+void win_iocp_serial_port_service::shutdown()
 {
 }
 
@@ -46,6 +47,7 @@ boost::system::error_code win_iocp_serial_port_service::open(
   if (is_open(impl))
   {
     ec = boost::asio::error::already_open;
+    BOOST_ASIO_ERROR_LOCATION(ec);
     return ec;
   }
 
@@ -61,6 +63,7 @@ boost::system::error_code win_iocp_serial_port_service::open(
     DWORD last_error = ::GetLastError();
     ec = boost::system::error_code(last_error,
         boost::asio::error::get_system_category());
+    BOOST_ASIO_ERROR_LOCATION(ec);
     return ec;
   }
 
@@ -75,21 +78,34 @@ boost::system::error_code win_iocp_serial_port_service::open(
     ::CloseHandle(handle);
     ec = boost::system::error_code(last_error,
         boost::asio::error::get_system_category());
+    BOOST_ASIO_ERROR_LOCATION(ec);
     return ec;
   }
 
   // Set some default serial port parameters. This implementation does not
-  // support changing these, so they might as well be in a known state.
+  // support changing all of these, so they might as well be in a known state.
   dcb.fBinary = TRUE; // Win32 only supports binary mode.
-  dcb.fDsrSensitivity = FALSE;
   dcb.fNull = FALSE; // Do not ignore NULL characters.
   dcb.fAbortOnError = FALSE; // Ignore serial framing errors.
+  dcb.BaudRate = CBR_9600; // 9600 baud by default
+  dcb.ByteSize = 8; // 8 bit bytes
+  dcb.fOutxCtsFlow = FALSE; // No flow control
+  dcb.fOutxDsrFlow = FALSE;
+  dcb.fDtrControl = DTR_CONTROL_DISABLE;
+  dcb.fDsrSensitivity = FALSE;
+  dcb.fOutX = FALSE;
+  dcb.fInX = FALSE;
+  dcb.fRtsControl = RTS_CONTROL_DISABLE;
+  dcb.fParity = FALSE; // No parity
+  dcb.Parity = NOPARITY;
+  dcb.StopBits = ONESTOPBIT; // One stop bit
   if (!::SetCommState(handle, &dcb))
   {
     DWORD last_error = ::GetLastError();
     ::CloseHandle(handle);
     ec = boost::system::error_code(last_error,
         boost::asio::error::get_system_category());
+    BOOST_ASIO_ERROR_LOCATION(ec);
     return ec;
   }
 
@@ -108,6 +124,7 @@ boost::system::error_code win_iocp_serial_port_service::open(
     ::CloseHandle(handle);
     ec = boost::system::error_code(last_error,
         boost::asio::error::get_system_category());
+    BOOST_ASIO_ERROR_LOCATION(ec);
     return ec;
   }
 
@@ -132,6 +149,7 @@ boost::system::error_code win_iocp_serial_port_service::do_set_option(
     DWORD last_error = ::GetLastError();
     ec = boost::system::error_code(last_error,
         boost::asio::error::get_system_category());
+    BOOST_ASIO_ERROR_LOCATION(ec);
     return ec;
   }
 
@@ -143,6 +161,7 @@ boost::system::error_code win_iocp_serial_port_service::do_set_option(
     DWORD last_error = ::GetLastError();
     ec = boost::system::error_code(last_error,
         boost::asio::error::get_system_category());
+    BOOST_ASIO_ERROR_LOCATION(ec);
     return ec;
   }
 
@@ -165,6 +184,7 @@ boost::system::error_code win_iocp_serial_port_service::do_get_option(
     DWORD last_error = ::GetLastError();
     ec = boost::system::error_code(last_error,
         boost::asio::error::get_system_category());
+    BOOST_ASIO_ERROR_LOCATION(ec);
     return ec;
   }
 

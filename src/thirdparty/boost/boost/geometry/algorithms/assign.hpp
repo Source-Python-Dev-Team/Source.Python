@@ -4,6 +4,12 @@
 // Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
 // Copyright (c) 2014 Samuel Debionne, Grenoble, France.
+// Copyright (c) 2024 Adam Wulkiewicz, Lodz, Poland.
+
+// This file was modified by Oracle on 2020-2023.
+// Modifications copyright (c) 2020-2023 Oracle and/or its affiliates.
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
@@ -15,34 +21,20 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_ASSIGN_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_ASSIGN_HPP
 
-
-#include <cstddef>
-
-#include <boost/concept/requires.hpp>
-#include <boost/concept_check.hpp>
-#include <boost/mpl/assert.hpp>
-#include <boost/mpl/if.hpp>
-#include <boost/numeric/conversion/bounds.hpp>
-#include <boost/numeric/conversion/cast.hpp>
-
-#include <boost/variant/apply_visitor.hpp>
 #include <boost/variant/static_visitor.hpp>
 #include <boost/variant/variant_fwd.hpp>
+
+#include <boost/geometry/algorithms/append.hpp>
+#include <boost/geometry/algorithms/clear.hpp>
+#include <boost/geometry/algorithms/convert.hpp>
 
 #include <boost/geometry/algorithms/detail/assign_box_corners.hpp>
 #include <boost/geometry/algorithms/detail/assign_indexed_point.hpp>
 #include <boost/geometry/algorithms/detail/assign_values.hpp>
-#include <boost/geometry/algorithms/convert.hpp>
-#include <boost/geometry/algorithms/append.hpp>
-#include <boost/geometry/algorithms/clear.hpp>
-#include <boost/geometry/arithmetic/arithmetic.hpp>
-#include <boost/geometry/core/access.hpp>
-#include <boost/geometry/core/exterior_ring.hpp>
-#include <boost/geometry/core/tags.hpp>
+
+#include <boost/geometry/core/static_assert.hpp>
 
 #include <boost/geometry/geometries/concepts/check.hpp>
-
-#include <boost/geometry/util/for_each_coordinate.hpp>
 
 namespace boost { namespace geometry
 {
@@ -100,7 +92,7 @@ inline void assign_inverse(Geometry& geometry)
 
     dispatch::assign_inverse
         <
-            typename tag<Geometry>::type,
+            tag_t<Geometry>,
             Geometry
         >::apply(geometry);
 }
@@ -120,7 +112,7 @@ inline void assign_zero(Geometry& geometry)
 
     dispatch::assign_zero
         <
-            typename tag<Geometry>::type,
+            tag_t<Geometry>,
             Geometry
         >::apply(geometry);
 }
@@ -150,9 +142,9 @@ inline void assign_values(Geometry& geometry, Type const& c1, Type const& c2)
 
     dispatch::assign
         <
-            typename tag<Geometry>::type,
+            tag_t<Geometry>,
             Geometry,
-            geometry::dimension<Geometry>::type::value
+            geometry::dimension<Geometry>::value
         >::apply(geometry, c1, c2);
 }
 
@@ -183,9 +175,9 @@ inline void assign_values(Geometry& geometry,
 
     dispatch::assign
         <
-            typename tag<Geometry>::type,
+            tag_t<Geometry>,
             Geometry,
-            geometry::dimension<Geometry>::type::value
+            geometry::dimension<Geometry>::value
         >::apply(geometry, c1, c2, c3);
 }
 
@@ -210,9 +202,9 @@ inline void assign_values(Geometry& geometry,
 
     dispatch::assign
         <
-            typename tag<Geometry>::type,
+            tag_t<Geometry>,
             Geometry,
-            geometry::dimension<Geometry>::type::value
+            geometry::dimension<Geometry>::value
         >::apply(geometry, c1, c2, c3, c4);
 }
 
@@ -225,45 +217,41 @@ template <typename Geometry1, typename Geometry2>
 struct assign
 {
     static inline void
-    apply(Geometry1& geometry1, const Geometry2& geometry2)
+    apply(Geometry1& geometry1, Geometry2 const& geometry2)
     {
         concepts::check<Geometry1>();
         concepts::check<Geometry2 const>();
         concepts::check_concepts_and_equal_dimensions<Geometry1, Geometry2 const>();
-            
+
         static bool const same_point_order
             = point_order<Geometry1>::value == point_order<Geometry2>::value;
-        BOOST_MPL_ASSERT_MSG
-        (
-            (same_point_order),
-            ASSIGN_IS_NOT_SUPPORTED_FOR_DIFFERENT_POINT_ORDER,
-            (types<Geometry1, Geometry2>)
-        );
+        BOOST_GEOMETRY_STATIC_ASSERT(
+            same_point_order,
+            "Assign is not supported for different point orders.",
+            Geometry1, Geometry2);
         static bool const same_closure
             = closure<Geometry1>::value == closure<Geometry2>::value;
-        BOOST_MPL_ASSERT_MSG
-        (
-            (same_closure),
-            ASSIGN_IS_NOT_SUPPORTED_FOR_DIFFERENT_CLOSURE,
-            (types<Geometry1, Geometry2>)
-        );
-            
+        BOOST_GEOMETRY_STATIC_ASSERT(
+            same_closure,
+            "Assign is not supported for different closures.",
+            Geometry1, Geometry2);
+
         dispatch::convert<Geometry2, Geometry1>::apply(geometry2, geometry1);
     }
 };
-    
-    
+
+
 template <BOOST_VARIANT_ENUM_PARAMS(typename T), typename Geometry2>
 struct assign<variant<BOOST_VARIANT_ENUM_PARAMS(T)>, Geometry2>
 {
     struct visitor: static_visitor<void>
     {
         Geometry2 const& m_geometry2;
-            
+
         visitor(Geometry2 const& geometry2)
         : m_geometry2(geometry2)
         {}
-            
+
         template <typename Geometry1>
         result_type operator()(Geometry1& geometry1) const
         {
@@ -275,7 +263,7 @@ struct assign<variant<BOOST_VARIANT_ENUM_PARAMS(T)>, Geometry2>
             (geometry1, m_geometry2);
         }
     };
-        
+
     static inline void
     apply(variant<BOOST_VARIANT_ENUM_PARAMS(T)>& geometry1,
           Geometry2 const& geometry2)
@@ -283,19 +271,19 @@ struct assign<variant<BOOST_VARIANT_ENUM_PARAMS(T)>, Geometry2>
         return boost::apply_visitor(visitor(geometry2), geometry1);
     }
 };
-    
-    
+
+
 template <typename Geometry1, BOOST_VARIANT_ENUM_PARAMS(typename T)>
 struct assign<Geometry1, variant<BOOST_VARIANT_ENUM_PARAMS(T)> >
 {
     struct visitor: static_visitor<void>
     {
         Geometry1& m_geometry1;
-            
+
         visitor(Geometry1 const& geometry1)
         : m_geometry1(geometry1)
         {}
-            
+
         template <typename Geometry2>
         result_type operator()(Geometry2 const& geometry2) const
         {
@@ -307,7 +295,7 @@ struct assign<Geometry1, variant<BOOST_VARIANT_ENUM_PARAMS(T)> >
             (m_geometry1, geometry2);
         }
     };
-        
+
     static inline void
     apply(Geometry1& geometry1,
           variant<BOOST_VARIANT_ENUM_PARAMS(T)> const& geometry2)
@@ -315,8 +303,8 @@ struct assign<Geometry1, variant<BOOST_VARIANT_ENUM_PARAMS(T)> >
         return boost::apply_visitor(visitor(geometry1), geometry2);
     }
 };
-    
-    
+
+
 template <BOOST_VARIANT_ENUM_PARAMS(typename T1), BOOST_VARIANT_ENUM_PARAMS(typename T2)>
 struct assign<variant<BOOST_VARIANT_ENUM_PARAMS(T1)>, variant<BOOST_VARIANT_ENUM_PARAMS(T2)> >
 {
@@ -335,7 +323,7 @@ struct assign<variant<BOOST_VARIANT_ENUM_PARAMS(T1)>, variant<BOOST_VARIANT_ENUM
             (geometry1, geometry2);
         }
     };
-        
+
     static inline void
     apply(variant<BOOST_VARIANT_ENUM_PARAMS(T1)>& geometry1,
           variant<BOOST_VARIANT_ENUM_PARAMS(T2)> const& geometry2)
@@ -343,9 +331,9 @@ struct assign<variant<BOOST_VARIANT_ENUM_PARAMS(T1)>, variant<BOOST_VARIANT_ENUM
         return boost::apply_visitor(visitor(), geometry1, geometry2);
     }
 };
-    
+
 } // namespace resolve_variant
-    
+
 
 /*!
 \brief Assigns one geometry to another geometry

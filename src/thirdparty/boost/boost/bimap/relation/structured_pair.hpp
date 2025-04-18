@@ -26,7 +26,7 @@
 
 #include <boost/call_traits.hpp>
 
-#include <boost/utility/enable_if.hpp>
+#include <boost/core/enable_if.hpp>
 #include <boost/type_traits/is_same.hpp>
 #include <boost/mpl/if.hpp>
 #include <boost/mpl/vector.hpp>
@@ -254,7 +254,7 @@ class mutant_relation;
 /// \brief A std::pair signature compatible class that allows you to control
 ///        the internal structure of the data.
 /**
-This class allows you to specify the order in wich the two data types will be
+This class allows you to specify the order in which the two data types will be
 in the layout of the class.
                                                                                **/
 

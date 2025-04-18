@@ -2,7 +2,7 @@
 @file
 Defines a SFINAE-friendly version of `std::common_type`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -16,7 +16,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <utility>
 
 
-BOOST_HANA_NAMESPACE_BEGIN namespace detail {
+namespace boost { namespace hana { namespace detail {
     //! @ingroup group-details
     //! Equivalent to `std::common_type`, except it is SFINAE-friendly and
     //! does not support custom specializations.
@@ -31,6 +31,6 @@ BOOST_HANA_NAMESPACE_BEGIN namespace detail {
             decltype(true ? std::declval<T>() : std::declval<U>())
         >::type;
     };
-} BOOST_HANA_NAMESPACE_END
+} }} // end namespace boost::hana
 
 #endif // !BOOST_HANA_DETAIL_STD_COMMON_TYPE_HPP

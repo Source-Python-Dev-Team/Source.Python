@@ -32,7 +32,7 @@
 
 namespace boost {
 namespace container {
-namespace container_detail {
+namespace dtl {
 
 //!Pooled memory allocator using single segregated storage. Includes
 //!a reference count but the class does not delete itself, this is
@@ -41,10 +41,10 @@ namespace container_detail {
 template< std::size_t NodeSize, std::size_t NodesPerBlock >
 class private_node_pool
    //Inherit from the implementation to avoid template bloat
-   :  public boost::container::container_detail::
+   :  public boost::container::dtl::
          private_node_pool_impl<fake_segment_manager>
 {
-   typedef boost::container::container_detail::
+   typedef boost::container::dtl::
       private_node_pool_impl<fake_segment_manager>   base_t;
    //Non-copyable
    private_node_pool(const private_node_pool &);
@@ -52,7 +52,7 @@ class private_node_pool
 
    public:
    typedef typename base_t::multiallocation_chain multiallocation_chain;
-   static const std::size_t nodes_per_block = NodesPerBlock;
+   BOOST_STATIC_CONSTEXPR std::size_t nodes_per_block = NodesPerBlock;
 
    //!Constructor from a segment manager. Never throws
    private_node_pool()
@@ -82,7 +82,7 @@ class shared_node_pool
    ~shared_node_pool()
    {}
 
-   //!Allocates array of count elements. Can throw std::bad_alloc
+   //!Allocates array of count elements. Can throw bad_alloc
    void *allocate_node()
    {
       //-----------------------
@@ -101,7 +101,7 @@ class shared_node_pool
    }
 
    //!Allocates a singly linked list of n nodes ending in null pointer.
-   //!can throw std::bad_alloc
+   //!can throw bad_alloc
    void allocate_nodes(const std::size_t n, multiallocation_chain &chain)
    {
       //-----------------------
@@ -148,7 +148,7 @@ class shared_node_pool
    default_mutex mutex_;
 };
 
-}  //namespace container_detail {
+}  //namespace dtl {
 }  //namespace container {
 }  //namespace boost {
 

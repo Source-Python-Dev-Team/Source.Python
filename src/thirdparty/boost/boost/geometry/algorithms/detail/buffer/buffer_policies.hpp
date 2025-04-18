@@ -2,8 +2,9 @@
 
 // Copyright (c) 2012-2014 Barend Gehrels, Amsterdam, the Netherlands.
 
-// This file was modified by Oracle on 2017.
-// Modifications copyright (c) 2017, Oracle and/or its affiliates.
+// This file was modified by Oracle on 2017-2024.
+// Modifications copyright (c) 2017-2024, Oracle and/or its affiliates.
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
 // Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Use, modification and distribution is subject to the Boost Software License,
@@ -13,19 +14,15 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_BUFFER_BUFFER_POLICIES_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_BUFFER_BUFFER_POLICIES_HPP
 
-#if ! defined(BOOST_GEOMETRY_NO_ROBUSTNESS)
-#  define BOOST_GEOMETRY_BUFFER_USE_SIDE_OF_INTERSECTION
-#endif
-
 #include <cstddef>
 
-#include <boost/range.hpp>
+#include <boost/range/value_type.hpp>
 
 #include <boost/geometry/core/coordinate_type.hpp>
 #include <boost/geometry/core/point_type.hpp>
 
-#include <boost/geometry/algorithms/covered_by.hpp>
 #include <boost/geometry/algorithms/detail/overlay/backtrack_check_si.hpp>
+#include <boost/geometry/algorithms/detail/overlay/traversal_info.hpp>
 #include <boost/geometry/algorithms/detail/overlay/turn_info.hpp>
 
 #include <boost/geometry/strategies/buffer.hpp>
@@ -39,12 +36,6 @@ namespace boost { namespace geometry
 namespace detail { namespace buffer
 {
 
-
-enum intersection_location_type
-{
-    location_ok, inside_buffer, location_discard
-};
-
 class backtrack_for_buffer
 {
 public :
@@ -57,7 +48,6 @@ public :
             typename Turns,
             typename Geometry,
             typename Strategy,
-            typename RobustPolicy,
             typename Visitor
         >
     static inline void apply(std::size_t size_at_start,
@@ -69,7 +59,6 @@ public :
                 Geometry const& ,
                 Geometry const& ,
                 Strategy const& ,
-                RobustPolicy const& ,
                 state_type& state,
                 Visitor& /*visitor*/
                 )
@@ -127,6 +116,10 @@ public :
     void visit_traverse_reject(Turns const& , Turn const& , Operation const& ,
             detail::overlay::traverse_error_type )
     {}
+
+    template <typename Rings>
+    void visit_generated_rings(Rings const& )
+    {}
 };
 
 
@@ -137,16 +130,16 @@ struct buffer_turn_operation
     : public detail::overlay::traversal_turn_operation<Point, SegmentRatio>
 {
     signed_size_type piece_index;
-    signed_size_type index_in_robust_ring;
+    signed_size_type index_in_ring;
 
     inline buffer_turn_operation()
         : piece_index(-1)
-        , index_in_robust_ring(-1)
+        , index_in_ring(-1)
     {}
 };
 
-// Version for buffer including type of location, is_opposite, and helper variables
-template <typename Point, typename RobustPoint, typename SegmentRatio>
+// Version of turn_info for buffer with its turn index and other helper variables
+template <typename Point, typename SegmentRatio>
 struct buffer_turn_info
     : public detail::overlay::turn_info
         <
@@ -156,80 +149,135 @@ struct buffer_turn_info
         >
 {
     typedef Point point_type;
-    typedef RobustPoint robust_point_type;
 
-    std::size_t turn_index; // TODO: this might go if partition can operate on non-const input
+    std::size_t turn_index;
 
-    RobustPoint robust_point;
-#if defined(BOOST_GEOMETRY_BUFFER_ENLARGED_CLUSTERS)
-    // Will (most probably) be removed later
-    RobustPoint mapped_robust_point; // alas... we still need to adapt our points, offsetting them 1 integer to be co-located with neighbours
-#endif
+    // Information if turn can be used. It is not traversable if it is within
+    // another piece, or within the original (depending on deflation),
+    // or (for deflate) if there are not enough points to traverse it.
+    bool is_turn_traversable;
 
-
-    inline RobustPoint const& get_robust_point() const
-    {
-#if defined(BOOST_GEOMETRY_BUFFER_ENLARGED_CLUSTERS)
-        return mapped_robust_point;
-#endif
-        return robust_point;
-    }
-
-    intersection_location_type location;
-
-#if defined(BOOST_GEOMETRY_BUFFER_USE_SIDE_OF_INTERSECTION)
-    robust_point_type rob_pi, rob_pj, rob_qi, rob_qj;
-#endif
-
-    std::size_t count_within;
-
+    bool is_linear_end_point;
     bool within_original;
-    std::size_t count_on_original_boundary;
     signed_size_type count_in_original; // increased by +1 for in ext.ring, -1 for int.ring
-
-    std::size_t count_on_offsetted;
-    std::size_t count_on_helper;
-#if ! defined(BOOST_GEOMETRY_BUFFER_USE_SIDE_OF_INTERSECTION)
-    std::size_t count_within_near_offsetted;
-#endif
-
-    bool remove_on_multi;
-
-    // Obsolete:
-    std::size_t count_on_occupied;
-    std::size_t count_on_multi;
 
     inline buffer_turn_info()
         : turn_index(0)
-        , location(location_ok)
-        , count_within(0)
+        , is_turn_traversable(true)
+        , is_linear_end_point(false)
         , within_original(false)
-        , count_on_original_boundary(0)
         , count_in_original(0)
-        , count_on_offsetted(0)
-        , count_on_helper(0)
-#if ! defined(BOOST_GEOMETRY_BUFFER_USE_SIDE_OF_INTERSECTION)
-        , count_within_near_offsetted(0)
-#endif
-        , remove_on_multi(false)
-        , count_on_occupied(0)
-        , count_on_multi(0)
     {}
 };
 
-struct buffer_operation_less
+struct buffer_less
 {
-    template <typename Turn>
-    inline bool operator()(Turn const& left, Turn const& right) const
+    template <typename Indexed>
+    inline bool operator()(Indexed const& left, Indexed const& right) const
     {
-        segment_identifier const& sl = left.seg_id;
-        segment_identifier const& sr = right.seg_id;
+        if (! (left.subject->seg_id == right.subject->seg_id))
+        {
+            return left.subject->seg_id < right.subject->seg_id;
+        }
 
-        // Sort them descending
-        return sl == sr
-            ? left.fraction < right.fraction
-            : sl < sr;
+        // Both left and right are located on the SAME segment.
+        if (! (left.subject->fraction == right.subject->fraction))
+        {
+            return left.subject->fraction < right.subject->fraction;
+        }
+
+        return left.turn_index < right.turn_index;
     }
+};
+
+template <typename Strategy>
+struct piece_get_box
+{
+    explicit piece_get_box(Strategy const& strategy)
+        : m_strategy(strategy)
+    {}
+
+    template <typename Box, typename Piece>
+    inline void apply(Box& total, Piece const& piece) const
+    {
+        assert_coordinate_type_equal(total, piece.m_piece_border.m_envelope);
+
+        if (piece.m_piece_border.m_has_envelope)
+        {
+            geometry::expand(total, piece.m_piece_border.m_envelope,
+                             m_strategy);
+        }
+    }
+
+    Strategy const& m_strategy;
+};
+
+template <typename Strategy>
+struct piece_overlaps_box
+{
+    explicit piece_overlaps_box(Strategy const& strategy)
+        : m_strategy(strategy)
+    {}
+
+    template <typename Box, typename Piece>
+    inline bool apply(Box const& box, Piece const& piece) const
+    {
+        assert_coordinate_type_equal(box, piece.m_piece_border.m_envelope);
+
+        if (piece.type == strategy::buffer::buffered_flat_end
+            || piece.type == strategy::buffer::buffered_concave)
+        {
+            // Turns cannot be inside a flat end (though they can be on border)
+            // Neither we need to check if they are inside concave helper pieces
+
+            // Skip all pieces not used as soon as possible
+            return false;
+        }
+        if (! piece.m_piece_border.m_has_envelope)
+        {
+            return false;
+        }
+
+        return ! geometry::detail::disjoint::disjoint_box_box(box, piece.m_piece_border.m_envelope,
+                                                              m_strategy);
+    }
+
+    Strategy const& m_strategy;
+};
+
+template <typename Strategy>
+struct turn_get_box
+{
+    explicit turn_get_box(Strategy const& strategy)
+        : m_strategy(strategy)
+    {}
+
+    template <typename Box, typename Turn>
+    inline void apply(Box& total, Turn const& turn) const
+    {
+        assert_coordinate_type_equal(total, turn.point);
+        geometry::expand(total, turn.point, m_strategy);
+    }
+
+    Strategy const& m_strategy;
+};
+
+template <typename Strategy>
+struct turn_overlaps_box
+{
+    explicit turn_overlaps_box(Strategy const& strategy)
+        : m_strategy(strategy)
+    {}
+
+    template <typename Box, typename Turn>
+    inline bool apply(Box const& box, Turn const& turn) const
+    {
+        assert_coordinate_type_equal(turn.point, box);
+        return ! geometry::detail::disjoint::disjoint_point_box(turn.point, box,
+                                                                m_strategy);
+    }
+
+    Strategy const& m_strategy;
 };
 
 }} // namespace detail::buffer

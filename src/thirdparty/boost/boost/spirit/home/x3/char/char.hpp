@@ -18,15 +18,15 @@ namespace boost { namespace spirit { namespace x3
     namespace standard
     {
         typedef any_char<char_encoding::standard> char_type;
-        auto const char_ = char_type{};
+        constexpr auto char_ = char_type{};
 
-        inline literal_char<char_encoding::standard, unused_type>
+        constexpr literal_char<char_encoding::standard, unused_type>
         lit(char ch)
         {
             return { ch };
         }
 
-        inline literal_char<char_encoding::standard, unused_type>
+        constexpr literal_char<char_encoding::standard, unused_type>
         lit(wchar_t ch)
         {
             return { ch };
@@ -38,30 +38,32 @@ namespace boost { namespace spirit { namespace x3
     using standard::char_;
     using standard::lit;
 
+#ifndef BOOST_SPIRIT_NO_STANDARD_WIDE
     namespace standard_wide
     {
         typedef any_char<char_encoding::standard_wide> char_type;
-        auto const char_ = char_type{};
+        constexpr auto char_ = char_type{};
 
-        inline literal_char<char_encoding::standard_wide, unused_type>
+        constexpr literal_char<char_encoding::standard_wide, unused_type>
         lit(wchar_t ch)
         {
             return { ch };
         }
     }
+#endif
 
     namespace ascii
     {
         typedef any_char<char_encoding::ascii> char_type;
-        auto const char_ = char_type{};
+        constexpr auto char_ = char_type{};
 
-        inline literal_char<char_encoding::ascii, unused_type>
+        constexpr literal_char<char_encoding::ascii, unused_type>
         lit(char ch)
         {
             return { ch };
         }
 
-        inline literal_char<char_encoding::ascii, unused_type>
+        constexpr literal_char<char_encoding::ascii, unused_type>
         lit(wchar_t ch)
         {
             return { ch };
@@ -71,15 +73,15 @@ namespace boost { namespace spirit { namespace x3
     namespace iso8859_1
     {
         typedef any_char<char_encoding::iso8859_1> char_type;
-        auto const char_ = char_type{};
+        constexpr auto char_ = char_type{};
 
-        inline literal_char<char_encoding::iso8859_1, unused_type>
+        constexpr literal_char<char_encoding::iso8859_1, unused_type>
         lit(char ch)
         {
             return { ch };
         }
 
-        inline literal_char<char_encoding::iso8859_1, unused_type>
+        constexpr literal_char<char_encoding::iso8859_1, unused_type>
         lit(wchar_t ch)
         {
             return { ch };
@@ -97,12 +99,13 @@ namespace boost { namespace spirit { namespace x3
 
             typedef type value_type;
 
-            static type call(char ch)
+            static constexpr type call(char ch)
             {
                 return { ch };
             }
         };
 
+#ifndef BOOST_SPIRIT_NO_STANDARD_WIDE
         template <>
         struct as_parser<wchar_t>
         {
@@ -112,11 +115,12 @@ namespace boost { namespace spirit { namespace x3
 
             typedef type value_type;
 
-            static type call(wchar_t ch)
+            static constexpr type call(wchar_t ch)
             {
                 return { ch };
             }
         };
+#endif
 
         template <>
         struct as_parser<char [2]>
@@ -127,12 +131,13 @@ namespace boost { namespace spirit { namespace x3
 
             typedef type value_type;
 
-            static type call(char const ch[])
+            static constexpr type call(char const ch[])
             {
                 return { ch[0] };
             }
         };
 
+#ifndef BOOST_SPIRIT_NO_STANDARD_WIDE
         template <>
         struct as_parser<wchar_t [2]>
         {
@@ -142,11 +147,12 @@ namespace boost { namespace spirit { namespace x3
 
             typedef type value_type;
 
-            static type call(wchar_t const ch[] )
+            static constexpr type call(wchar_t const ch[] )
             {
                 return { ch[0] };
             }
         };
+#endif
 
     }
 

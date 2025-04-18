@@ -27,6 +27,7 @@
 #include <boost/mpi/detail/mpi_datatype_cache.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/archive/basic_archive.hpp>
+#include <boost/serialization/library_version_type.hpp>
 #include <boost/serialization/item_version_type.hpp>
 #include <utility> // for std::pair
 
@@ -80,7 +81,7 @@ struct is_mpi_logical_datatype
  *  complex MPI data type for a given C++ type.
  *
  *  This type trait determines when there is a direct mapping from a
- *  C++ type to an MPI data type that is classified as an complex data
+ *  C++ type to an MPI data type that is classified as a complex data
  *  type. See @c is_mpi_builtin_datatype for general information about
  *  built-in MPI data types.
  */
@@ -140,7 +141,7 @@ struct is_mpi_builtin_datatype
  *  be accessible via @c get_mpi_datatype.
 
  *  For any C++ type that maps to a built-in MPI data type (see @c
- *  is_mpi_builtin_datatype), @c is_mpi_data_type is trivially
+ *  is_mpi_builtin_datatype), @c is_mpi_datatype is trivially
  *  true. However, any POD ("Plain Old Data") type containing types
  *  that themselves can be represented by MPI data types can itself be
  *  represented as an MPI data type. For instance, a @c point3d class
@@ -280,16 +281,16 @@ struct is_mpi_datatype<std::array<T, N> >
 
 // Define wchar_t specialization of is_mpi_datatype, if possible.
 #if !defined(BOOST_NO_INTRINSIC_WCHAR_T) && \
-  (defined(MPI_WCHAR) || (defined(MPI_VERSION) && MPI_VERSION >= 2))
+  (defined(MPI_WCHAR) || (BOOST_MPI_VERSION >= 2))
 BOOST_MPI_DATATYPE(wchar_t, MPI_WCHAR, builtin);
 #endif
 
 // Define long long or __int64 specialization of is_mpi_datatype, if possible.
 #if defined(BOOST_HAS_LONG_LONG) && \
-  (defined(MPI_LONG_LONG_INT) || (defined(MPI_VERSION) && MPI_VERSION >= 2))
+  (defined(MPI_LONG_LONG_INT) || (BOOST_MPI_VERSION >= 2))
 BOOST_MPI_DATATYPE(long long, MPI_LONG_LONG_INT, builtin);
 #elif defined(BOOST_HAS_MS_INT64) && \
-  (defined(MPI_LONG_LONG_INT) || (defined(MPI_VERSION) && MPI_VERSION >= 2))
+  (defined(MPI_LONG_LONG_INT) || (BOOST_MPI_VERSION >= 2))
 BOOST_MPI_DATATYPE(__int64, MPI_LONG_LONG_INT, builtin); 
 #endif
 
@@ -300,16 +301,16 @@ BOOST_MPI_DATATYPE(__int64, MPI_LONG_LONG_INT, builtin);
 // MPI_UNSIGNED_LONG_LONG.
 #if defined(BOOST_HAS_LONG_LONG) && \
   (defined(MPI_UNSIGNED_LONG_LONG) \
-   || (defined(MPI_VERSION) && MPI_VERSION >= 2))
+   || (BOOST_MPI_VERSION >= 2))
 BOOST_MPI_DATATYPE(unsigned long long, MPI_UNSIGNED_LONG_LONG, builtin);
 #elif defined(BOOST_HAS_MS_INT64) && \
   (defined(MPI_UNSIGNED_LONG_LONG) \
-   || (defined(MPI_VERSION) && MPI_VERSION >= 2))
+   || (BOOST_MPI_VERSION >= 2))
 BOOST_MPI_DATATYPE(unsigned __int64, MPI_UNSIGNED_LONG_LONG, builtin); 
 #endif
 
 // Define signed char specialization of is_mpi_datatype, if possible.
-#if defined(MPI_SIGNED_CHAR) || (defined(MPI_VERSION) && MPI_VERSION >= 2)
+#if defined(MPI_SIGNED_CHAR) || (BOOST_MPI_VERSION >= 2)
 BOOST_MPI_DATATYPE(signed char, MPI_SIGNED_CHAR, builtin);
 #endif
 
@@ -319,6 +320,7 @@ BOOST_MPI_DATATYPE(signed char, MPI_SIGNED_CHAR, builtin);
 namespace detail {
   inline MPI_Datatype build_mpi_datatype_for_bool()
   {
+    // this is explicitly freed in mpi_datatype_map::clear
     MPI_Datatype type;
     MPI_Type_contiguous(sizeof(bool), MPI_BYTE, &type);
     MPI_Type_commit(&type);
@@ -344,7 +346,7 @@ struct is_mpi_datatype<bool>
 
 #ifndef BOOST_MPI_DOXYGEN
 // direct support for special primitive data types of the serialization library
-BOOST_MPI_DATATYPE(boost::archive::library_version_type, get_mpi_datatype(uint_least16_t()), integer);
+BOOST_MPI_DATATYPE(boost::serialization::library_version_type, get_mpi_datatype(uint_least16_t()), integer);
 BOOST_MPI_DATATYPE(boost::archive::version_type, get_mpi_datatype(uint_least8_t()), integer);
 BOOST_MPI_DATATYPE(boost::archive::class_id_type, get_mpi_datatype(int_least16_t()), integer);
 BOOST_MPI_DATATYPE(boost::archive::class_id_reference_type, get_mpi_datatype(int_least16_t()), integer);

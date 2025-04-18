@@ -19,9 +19,9 @@
 namespace boost
 {
     /////////////////////////////////////////////////////////////////////////
-    // Clonable concept 
+    // Clonable concept
     /////////////////////////////////////////////////////////////////////////
-    
+
     template< class T >
     inline T* new_clone( const T& r )
     {
@@ -37,19 +37,8 @@ namespace boost
         return res;
     }
 
-    template< class T >
-    inline T* new_clone( const T* r )
-    {
-        return r ? new_clone( *r ) : 0;
-    }
 
-    // 
-    // @remark: to make new_clone() work
-    //          with scope_ptr/shared_ptr ect.
-    //          simply overload for those types
-    //          in the appropriate namespace.
-    // 
-    
+
     template< class T >
     inline void delete_clone( const T* r )
     {
@@ -59,7 +48,7 @@ namespace boost
     /////////////////////////////////////////////////////////////////////////
     // CloneAllocator concept
     /////////////////////////////////////////////////////////////////////////
-    
+
     struct heap_clone_allocator
     {
         template< class U >
@@ -77,7 +66,7 @@ namespace boost
     };
 
 
-    
+
     struct view_clone_allocator
     {
         template< class U >

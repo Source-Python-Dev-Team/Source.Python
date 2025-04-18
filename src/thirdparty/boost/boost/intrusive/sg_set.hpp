@@ -16,7 +16,6 @@
 #include <boost/intrusive/intrusive_fwd.hpp>
 #include <boost/intrusive/detail/mpl.hpp>
 #include <boost/intrusive/sgtree.hpp>
-#include <boost/static_assert.hpp>
 #include <boost/move/utility_core.hpp>
 
 #if defined(BOOST_HAS_PRAGMA_ONCE)
@@ -118,61 +117,61 @@ class sg_set_impl
    ~sg_set_impl();
 
    //! @copydoc ::boost::intrusive::sgtree::begin()
-   iterator begin();
+   iterator begin() BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::begin()const
-   const_iterator begin() const;
+   const_iterator begin() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::cbegin()const
-   const_iterator cbegin() const;
+   const_iterator cbegin() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::end()
-   iterator end();
+   iterator end() BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::end()const
-   const_iterator end() const;
+   const_iterator end() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::cend()const
-   const_iterator cend() const;
+   const_iterator cend() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::rbegin()
-   reverse_iterator rbegin();
+   reverse_iterator rbegin() BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::rbegin()const
-   const_reverse_iterator rbegin() const;
+   const_reverse_iterator rbegin() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::crbegin()const
-   const_reverse_iterator crbegin() const;
+   const_reverse_iterator crbegin() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::rend()
-   reverse_iterator rend();
+   reverse_iterator rend() BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::rend()const
-   const_reverse_iterator rend() const;
+   const_reverse_iterator rend() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::crend()const
-   const_reverse_iterator crend() const;
+   const_reverse_iterator crend() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::root()
-   iterator root();
+   iterator root() BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::root()const
-   const_iterator root() const;
+   const_iterator root() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::croot()const
-   const_iterator croot() const;
+   const_iterator croot() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::container_from_end_iterator(iterator)
-   static sg_set_impl &container_from_end_iterator(iterator end_iterator);
+   static sg_set_impl &container_from_end_iterator(iterator end_iterator) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::container_from_end_iterator(const_iterator)
-   static const sg_set_impl &container_from_end_iterator(const_iterator end_iterator);
+   static const sg_set_impl &container_from_end_iterator(const_iterator end_iterator) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::container_from_iterator(iterator)
-   static sg_set_impl &container_from_iterator(iterator it);
+   static sg_set_impl &container_from_iterator(iterator it) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::container_from_iterator(const_iterator)
-   static const sg_set_impl &container_from_iterator(const_iterator it);
+   static const sg_set_impl &container_from_iterator(const_iterator it) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::key_comp()const
    key_compare key_comp() const;
@@ -181,10 +180,10 @@ class sg_set_impl
    value_compare value_comp() const;
 
    //! @copydoc ::boost::intrusive::sgtree::empty()const
-   bool empty() const;
+   bool empty() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::size()const
-   size_type size() const;
+   size_type size() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::swap
    void swap(sg_set_impl& other);
@@ -242,24 +241,24 @@ class sg_set_impl
    {  tree_type::insert_unique(b, e);  }
 
    //! @copydoc ::boost::intrusive::sgtree::insert_unique_commit
-   iterator insert_commit(reference value, const insert_commit_data &commit_data)
+   iterator insert_commit(reference value, const insert_commit_data &commit_data) BOOST_NOEXCEPT
    {  return tree_type::insert_unique_commit(value, commit_data);  }
 
    #ifdef BOOST_INTRUSIVE_DOXYGEN_INVOKED
    //! @copydoc ::boost::intrusive::sgtree::insert_before
-   iterator insert_before(const_iterator pos, reference value);
+   iterator insert_before(const_iterator pos, reference value) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::push_back
-   void push_back(reference value);
+   void push_back(reference value) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::push_front
-   void push_front(reference value);
+   void push_front(reference value) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::erase(const_iterator)
-   iterator erase(const_iterator i);
+   iterator erase(const_iterator i) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::erase(const_iterator,const_iterator)
-   iterator erase(const_iterator b, const_iterator e);
+   iterator erase(const_iterator b, const_iterator e) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::erase(const key_type &)
    size_type erase(const key_type &key);
@@ -270,11 +269,11 @@ class sg_set_impl
 
    //! @copydoc ::boost::intrusive::sgtree::erase_and_dispose(const_iterator,Disposer)
    template<class Disposer>
-   iterator erase_and_dispose(const_iterator i, Disposer disposer);
+   iterator erase_and_dispose(const_iterator i, Disposer disposer) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::erase_and_dispose(const_iterator,const_iterator,Disposer)
    template<class Disposer>
-   iterator erase_and_dispose(const_iterator b, const_iterator e, Disposer disposer);
+   iterator erase_and_dispose(const_iterator b, const_iterator e, Disposer disposer) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::erase_and_dispose(const key_type &, Disposer)
    template<class Disposer>
@@ -285,11 +284,11 @@ class sg_set_impl
    size_type erase_and_dispose(const KeyType& key, KeyTypeKeyCompare comp, Disposer disposer);
 
    //! @copydoc ::boost::intrusive::sgtree::clear
-   void clear();
+   void clear() BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::clear_and_dispose
    template<class Disposer>
-   void clear_and_dispose(Disposer disposer);
+   void clear_and_dispose(Disposer disposer) BOOST_NOEXCEPT;
 
    #endif   //   #ifdef BOOST_INTRUSIVE_DOXYGEN_INVOKED
 
@@ -389,40 +388,40 @@ class sg_set_impl
          (const KeyType& lower_key, const KeyType& upper_key, KeyTypeKeyCompare comp, bool left_closed, bool right_closed) const;
 
    //! @copydoc ::boost::intrusive::sgtree::s_iterator_to(reference)
-   static iterator s_iterator_to(reference value);
+   static iterator s_iterator_to(reference value) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::s_iterator_to(const_reference)
-   static const_iterator s_iterator_to(const_reference value);
+   static const_iterator s_iterator_to(const_reference value) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::iterator_to(reference)
-   iterator iterator_to(reference value);
+   iterator iterator_to(reference value) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::iterator_to(const_reference)const
-   const_iterator iterator_to(const_reference value) const;
+   const_iterator iterator_to(const_reference value) const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::init_node(reference)
-   static void init_node(reference value);
+   static void init_node(reference value) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::unlink_leftmost_without_rebalance
-   pointer unlink_leftmost_without_rebalance();
+   pointer unlink_leftmost_without_rebalance() BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::replace_node
-   void replace_node(iterator replace_this, reference with_this);
+   void replace_node(iterator replace_this, reference with_this) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::remove_node
-   void remove_node(reference value);
+   void remove_node(reference value) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::rebalance
-   void rebalance();
+   void rebalance() BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::rebalance_subtree
-   iterator rebalance_subtree(iterator root);
+   iterator rebalance_subtree(iterator root) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::balance_factor()
-   float balance_factor() const;
+   float balance_factor() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::balance_factor(float)
-   void balance_factor(float new_alpha);
+   void balance_factor(float new_alpha) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::rbtree::merge_unique
    template<class ...Options2>
@@ -532,48 +531,52 @@ class sg_set
    typedef typename Base::const_iterator     const_iterator;
 
    //Assert if passed value traits are compatible with the type
-   BOOST_STATIC_ASSERT((detail::is_same<typename value_traits::value_type, T>::value));
+   BOOST_INTRUSIVE_STATIC_ASSERT((detail::is_same<typename value_traits::value_type, T>::value));
 
-   sg_set()
+   inline sg_set()
       :  Base()
    {}
 
-   explicit sg_set( const key_compare &cmp, const value_traits &v_traits = value_traits())
+   inline explicit sg_set( const key_compare &cmp, const value_traits &v_traits = value_traits())
       :  Base(cmp, v_traits)
    {}
 
    template<class Iterator>
-   sg_set( Iterator b, Iterator e
+   inline sg_set( Iterator b, Iterator e
       , const key_compare &cmp = key_compare()
       , const value_traits &v_traits = value_traits())
       :  Base(b, e, cmp, v_traits)
    {}
 
-   sg_set(BOOST_RV_REF(sg_set) x)
+   inline sg_set(BOOST_RV_REF(sg_set) x)
       :  Base(BOOST_MOVE_BASE(Base, x))
    {}
 
-   sg_set& operator=(BOOST_RV_REF(sg_set) x)
+   inline sg_set& operator=(BOOST_RV_REF(sg_set) x)
    {  return static_cast<sg_set &>(this->Base::operator=(BOOST_MOVE_BASE(Base, x)));  }
 
    template <class Cloner, class Disposer>
-   void clone_from(const sg_set &src, Cloner cloner, Disposer disposer)
+   inline void clone_from(const sg_set &src, Cloner cloner, Disposer disposer)
    {  Base::clone_from(src, cloner, disposer);  }
 
    template <class Cloner, class Disposer>
-   void clone_from(BOOST_RV_REF(sg_set) src, Cloner cloner, Disposer disposer)
+   inline void clone_from(BOOST_RV_REF(sg_set) src, Cloner cloner, Disposer disposer)
    {  Base::clone_from(BOOST_MOVE_BASE(Base, src), cloner, disposer);  }
 
-   static sg_set &container_from_end_iterator(iterator end_iterator)
+   BOOST_INTRUSIVE_NO_DANGLING
+   inline static sg_set &container_from_end_iterator(iterator end_iterator) BOOST_NOEXCEPT
    {  return static_cast<sg_set &>(Base::container_from_end_iterator(end_iterator));   }
 
-   static const sg_set &container_from_end_iterator(const_iterator end_iterator)
+   BOOST_INTRUSIVE_NO_DANGLING
+   inline static const sg_set &container_from_end_iterator(const_iterator end_iterator) BOOST_NOEXCEPT
    {  return static_cast<const sg_set &>(Base::container_from_end_iterator(end_iterator));   }
 
-   static sg_set &container_from_iterator(iterator it)
+   BOOST_INTRUSIVE_NO_DANGLING
+   inline static sg_set &container_from_iterator(iterator it) BOOST_NOEXCEPT
    {  return static_cast<sg_set &>(Base::container_from_iterator(it));   }
 
-   static const sg_set &container_from_iterator(const_iterator it)
+   BOOST_INTRUSIVE_NO_DANGLING
+   inline static const sg_set &container_from_iterator(const_iterator it) BOOST_NOEXCEPT
    {  return static_cast<const sg_set &>(Base::container_from_iterator(it));   }
 };
 
@@ -666,61 +669,61 @@ class sg_multiset_impl
    ~sg_multiset_impl();
 
    //! @copydoc ::boost::intrusive::sgtree::begin()
-   iterator begin();
+   iterator begin() BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::begin()const
-   const_iterator begin() const;
+   const_iterator begin() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::cbegin()const
-   const_iterator cbegin() const;
+   const_iterator cbegin() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::end()
-   iterator end();
+   iterator end() BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::end()const
-   const_iterator end() const;
+   const_iterator end() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::cend()const
-   const_iterator cend() const;
+   const_iterator cend() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::rbegin()
-   reverse_iterator rbegin();
+   reverse_iterator rbegin() BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::rbegin()const
-   const_reverse_iterator rbegin() const;
+   const_reverse_iterator rbegin() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::crbegin()const
-   const_reverse_iterator crbegin() const;
+   const_reverse_iterator crbegin() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::rend()
-   reverse_iterator rend();
+   reverse_iterator rend() BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::rend()const
-   const_reverse_iterator rend() const;
+   const_reverse_iterator rend() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::crend()const
-   const_reverse_iterator crend() const;
+   const_reverse_iterator crend() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::root()
-   iterator root();
+   iterator root() BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::root()const
-   const_iterator root() const;
+   const_iterator root() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::croot()const
-   const_iterator croot() const;
+   const_iterator croot() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::container_from_end_iterator(iterator)
-   static sg_multiset_impl &container_from_end_iterator(iterator end_iterator);
+   static sg_multiset_impl &container_from_end_iterator(iterator end_iterator) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::container_from_end_iterator(const_iterator)
-   static const sg_multiset_impl &container_from_end_iterator(const_iterator end_iterator);
+   static const sg_multiset_impl &container_from_end_iterator(const_iterator end_iterator) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::container_from_iterator(iterator)
-   static sg_multiset_impl &container_from_iterator(iterator it);
+   static sg_multiset_impl &container_from_iterator(iterator it) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::container_from_iterator(const_iterator)
-   static const sg_multiset_impl &container_from_iterator(const_iterator it);
+   static const sg_multiset_impl &container_from_iterator(const_iterator it) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::key_comp()const
    key_compare key_comp() const;
@@ -729,10 +732,10 @@ class sg_multiset_impl
    value_compare value_comp() const;
 
    //! @copydoc ::boost::intrusive::sgtree::empty()const
-   bool empty() const;
+   bool empty() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::size()const
-   size_type size() const;
+   size_type size() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::swap
    void swap(sg_multiset_impl& other);
@@ -767,19 +770,19 @@ class sg_multiset_impl
 
    #ifdef BOOST_INTRUSIVE_DOXYGEN_INVOKED
    //! @copydoc ::boost::intrusive::sgtree::insert_before
-   iterator insert_before(const_iterator pos, reference value);
+   iterator insert_before(const_iterator pos, reference value) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::push_back
-   void push_back(reference value);
+   void push_back(reference value) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::push_front
-   void push_front(reference value);
+   void push_front(reference value) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::erase(const_iterator)
-   iterator erase(const_iterator i);
+   iterator erase(const_iterator i) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::erase(const_iterator,const_iterator)
-   iterator erase(const_iterator b, const_iterator e);
+   iterator erase(const_iterator b, const_iterator e) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::erase(const key_type &)
    size_type erase(const key_type &key);
@@ -790,11 +793,11 @@ class sg_multiset_impl
 
    //! @copydoc ::boost::intrusive::sgtree::erase_and_dispose(const_iterator,Disposer)
    template<class Disposer>
-   iterator erase_and_dispose(const_iterator i, Disposer disposer);
+   iterator erase_and_dispose(const_iterator i, Disposer disposer) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::erase_and_dispose(const_iterator,const_iterator,Disposer)
    template<class Disposer>
-   iterator erase_and_dispose(const_iterator b, const_iterator e, Disposer disposer);
+   iterator erase_and_dispose(const_iterator b, const_iterator e, Disposer disposer) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::erase_and_dispose(const key_type &, Disposer)
    template<class Disposer>
@@ -805,11 +808,11 @@ class sg_multiset_impl
    size_type erase_and_dispose(const KeyType& key, KeyTypeKeyCompare comp, Disposer disposer);
 
    //! @copydoc ::boost::intrusive::sgtree::clear
-   void clear();
+   void clear() BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::clear_and_dispose
    template<class Disposer>
-   void clear_and_dispose(Disposer disposer);
+   void clear_and_dispose(Disposer disposer) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::count(const key_type &)const
    size_type count(const key_type &key) const;
@@ -895,40 +898,40 @@ class sg_multiset_impl
          (const KeyType& lower_key, const KeyType& upper_key, KeyTypeKeyCompare comp, bool left_closed, bool right_closed) const;
 
    //! @copydoc ::boost::intrusive::sgtree::s_iterator_to(reference)
-   static iterator s_iterator_to(reference value);
+   static iterator s_iterator_to(reference value) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::s_iterator_to(const_reference)
-   static const_iterator s_iterator_to(const_reference value);
+   static const_iterator s_iterator_to(const_reference value) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::iterator_to(reference)
-   iterator iterator_to(reference value);
+   iterator iterator_to(reference value) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::iterator_to(const_reference)const
-   const_iterator iterator_to(const_reference value) const;
+   const_iterator iterator_to(const_reference value) const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::init_node(reference)
-   static void init_node(reference value);
+   static void init_node(reference value) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::unlink_leftmost_without_rebalance
-   pointer unlink_leftmost_without_rebalance();
+   pointer unlink_leftmost_without_rebalance() BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::replace_node
-   void replace_node(iterator replace_this, reference with_this);
+   void replace_node(iterator replace_this, reference with_this) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::remove_node
-   void remove_node(reference value);
+   void remove_node(reference value) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::rebalance
-   void rebalance();
+   void rebalance() BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::rebalance_subtree
-   iterator rebalance_subtree(iterator root);
+   iterator rebalance_subtree(iterator root) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::balance_factor()
-   float balance_factor() const;
+   float balance_factor() const BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::sgtree::balance_factor(float)
-   void balance_factor(float new_alpha);
+   void balance_factor(float new_alpha) BOOST_NOEXCEPT;
 
    //! @copydoc ::boost::intrusive::treap::merge_unique
    template<class ...Options2>
@@ -1039,48 +1042,52 @@ class sg_multiset
    typedef typename Base::const_iterator     const_iterator;
 
    //Assert if passed value traits are compatible with the type
-   BOOST_STATIC_ASSERT((detail::is_same<typename value_traits::value_type, T>::value));
+   BOOST_INTRUSIVE_STATIC_ASSERT((detail::is_same<typename value_traits::value_type, T>::value));
 
-   sg_multiset()
+   inline sg_multiset()
       :  Base()
    {}
 
-   explicit sg_multiset( const key_compare &cmp, const value_traits &v_traits = value_traits())
+   inline explicit sg_multiset( const key_compare &cmp, const value_traits &v_traits = value_traits())
       :  Base(cmp, v_traits)
    {}
 
    template<class Iterator>
-   sg_multiset( Iterator b, Iterator e
+   inline sg_multiset( Iterator b, Iterator e
            , const key_compare &cmp = key_compare()
            , const value_traits &v_traits = value_traits())
       :  Base(b, e, cmp, v_traits)
    {}
 
-   sg_multiset(BOOST_RV_REF(sg_multiset) x)
+   inline sg_multiset(BOOST_RV_REF(sg_multiset) x)
       :  Base(BOOST_MOVE_BASE(Base, x))
    {}
 
-   sg_multiset& operator=(BOOST_RV_REF(sg_multiset) x)
+   inline sg_multiset& operator=(BOOST_RV_REF(sg_multiset) x)
    {  return static_cast<sg_multiset &>(this->Base::operator=(BOOST_MOVE_BASE(Base, x)));  }
 
    template <class Cloner, class Disposer>
-   void clone_from(const sg_multiset &src, Cloner cloner, Disposer disposer)
+   inline void clone_from(const sg_multiset &src, Cloner cloner, Disposer disposer)
    {  Base::clone_from(src, cloner, disposer);  }
 
    template <class Cloner, class Disposer>
-   void clone_from(BOOST_RV_REF(sg_multiset) src, Cloner cloner, Disposer disposer)
+   inline void clone_from(BOOST_RV_REF(sg_multiset) src, Cloner cloner, Disposer disposer)
    {  Base::clone_from(BOOST_MOVE_BASE(Base, src), cloner, disposer);  }
 
-   static sg_multiset &container_from_end_iterator(iterator end_iterator)
+   BOOST_INTRUSIVE_NO_DANGLING
+   inline static sg_multiset &container_from_end_iterator(iterator end_iterator) BOOST_NOEXCEPT
    {  return static_cast<sg_multiset &>(Base::container_from_end_iterator(end_iterator));   }
 
-   static const sg_multiset &container_from_end_iterator(const_iterator end_iterator)
+   BOOST_INTRUSIVE_NO_DANGLING
+   inline static const sg_multiset &container_from_end_iterator(const_iterator end_iterator) BOOST_NOEXCEPT
    {  return static_cast<const sg_multiset &>(Base::container_from_end_iterator(end_iterator));   }
 
-   static sg_multiset &container_from_iterator(iterator it)
+   BOOST_INTRUSIVE_NO_DANGLING
+   inline static sg_multiset &container_from_iterator(iterator it) BOOST_NOEXCEPT
    {  return static_cast<sg_multiset &>(Base::container_from_iterator(it));   }
 
-   static const sg_multiset &container_from_iterator(const_iterator it)
+   BOOST_INTRUSIVE_NO_DANGLING
+   inline static const sg_multiset &container_from_iterator(const_iterator it) BOOST_NOEXCEPT
    {  return static_cast<const sg_multiset &>(Base::container_from_iterator(it));   }
 };
 

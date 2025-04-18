@@ -27,7 +27,6 @@
 #include <boost/interprocess/detail/workaround.hpp>
 
 #include <boost/interprocess/smart_ptr/shared_ptr.hpp>
-#include <boost/core/no_exceptions_support.hpp>
 #include <boost/interprocess/allocators/allocator.hpp>
 #include <boost/interprocess/smart_ptr/deleter.hpp>
 #include <boost/intrusive/pointer_traits.hpp>
@@ -63,8 +62,10 @@ class weak_ptr
    private:
    // Borland 5.5.1 specific workarounds
    typedef weak_ptr<T, A, D> this_type;
+   typedef typename boost::container::
+      allocator_traits<A>::pointer                       alloc_ptr;
    typedef typename boost::intrusive::
-      pointer_traits<typename A::pointer>::template
+      pointer_traits<alloc_ptr>::template
          rebind_pointer<T>::type                         pointer;
    typedef typename ipcdetail::add_reference
                      <T>::type            reference;
@@ -163,15 +164,15 @@ class weak_ptr
       if(expired()){
          return shared_ptr<element_type, A, D>();
       }
-      BOOST_TRY{
+      BOOST_INTERPROCESS_TRY{
          return shared_ptr<element_type, A, D>(*this);
       }
-      BOOST_CATCH(bad_weak_ptr const &){
+      BOOST_INTERPROCESS_CATCH(bad_weak_ptr const &){
          // Q: how can we get here?
          // A: another thread may have invalidated r after the use_count test above.
          return shared_ptr<element_type, A, D>();
       }
-      BOOST_CATCH_END
+      BOOST_INTERPROCESS_CATCH_END
    }
 
    //!Returns: 0 if *this is empty; otherwise, the number of shared_ptr objects

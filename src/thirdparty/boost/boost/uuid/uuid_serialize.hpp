@@ -1,20 +1,13 @@
-// Boost uuid_serialize.hpp header file  ----------------------------------------------//
+#ifndef BOOST_UUID_UUID_SERIALIZE_HPP_INCLUDED
+#define BOOST_UUID_UUID_SERIALIZE_HPP_INCLUDED
 
 // Copyright 2007 Andy Tompkins.
-// Distributed under the Boost Software License, Version 1.0. (See
-// accompanying file LICENSE_1_0.txt or copy at
-// http://www.boost.org/LICENSE_1_0.txt)
+// Distributed under the Boost Software License, Version 1.0.
+// https://www.boost.org/LICENSE_1_0.txt
 
-// Revision History
-//  12 Nov 2007 - Initial Revision
-//  25 Feb 2008 - moved to namespace boost::uuids::detail
-
-#ifndef BOOST_UUID_SERIALIZE_HPP
-#define BOOST_UUID_SERIALIZE_HPP
+// This header is no longer needed and is only retained
+// for backward compatibility.
 
 #include <boost/uuid/uuid.hpp>
-#include <boost/serialization/level.hpp>
 
-BOOST_CLASS_IMPLEMENTATION(boost::uuids::uuid, boost::serialization::primitive_type)
-
-#endif // BOOST_UUID_SERIALIZE_HPP
+#endif // BOOST_UUID_UUID_SERIALIZE_HPP_INCLUDED

@@ -2,7 +2,7 @@
 // ip/impl/address_v4.ipp
 // ~~~~~~~~~~~~~~~~~~~~~~
 //
-// Copyright (c) 2003-2017 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2024 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -17,6 +17,7 @@
 
 #include <boost/asio/detail/config.hpp>
 #include <climits>
+#include <limits>
 #include <stdexcept>
 #include <boost/asio/error.hpp>
 #include <boost/asio/detail/socket_ops.hpp>
@@ -45,33 +46,27 @@ address_v4::address_v4(const address_v4::bytes_type& bytes)
   memcpy(&addr_.s_addr, bytes.data(), 4);
 }
 
-address_v4::address_v4(unsigned long addr)
+address_v4::address_v4(address_v4::uint_type addr)
 {
-#if ULONG_MAX > 0xFFFFFFFF
-  if (addr > 0xFFFFFFFF)
+  if ((std::numeric_limits<uint_type>::max)() > 0xFFFFFFFF)
   {
-    std::out_of_range ex("address_v4 from unsigned long");
+    std::out_of_range ex("address_v4 from unsigned integer");
     boost::asio::detail::throw_exception(ex);
   }
-#endif // ULONG_MAX > 0xFFFFFFFF
 
   addr_.s_addr = boost::asio::detail::socket_ops::host_to_network_long(
       static_cast<boost::asio::detail::u_long_type>(addr));
 }
 
-address_v4::bytes_type address_v4::to_bytes() const
+address_v4::bytes_type address_v4::to_bytes() const noexcept
 {
   using namespace std; // For memcpy.
   bytes_type bytes;
-#if defined(BOOST_ASIO_HAS_STD_ARRAY)
   memcpy(bytes.data(), &addr_.s_addr, 4);
-#else // defined(BOOST_ASIO_HAS_STD_ARRAY)
-  memcpy(bytes.elems, &addr_.s_addr, 4);
-#endif // defined(BOOST_ASIO_HAS_STD_ARRAY)
   return bytes;
 }
 
-unsigned long address_v4::to_ulong() const
+address_v4::uint_type address_v4::to_uint() const noexcept
 {
   return boost::asio::detail::socket_ops::network_to_host_long(addr_.s_addr);
 }
@@ -79,97 +74,74 @@ unsigned long address_v4::to_ulong() const
 std::string address_v4::to_string() const
 {
   boost::system::error_code ec;
-  std::string addr = to_string(ec);
-  boost::asio::detail::throw_error(ec);
-  return addr;
-}
-
-std::string address_v4::to_string(boost::system::error_code& ec) const
-{
   char addr_str[boost::asio::detail::max_addr_v4_str_len];
   const char* addr =
     boost::asio::detail::socket_ops::inet_ntop(
         BOOST_ASIO_OS_DEF(AF_INET), &addr_, addr_str,
         boost::asio::detail::max_addr_v4_str_len, 0, ec);
   if (addr == 0)
-    return std::string();
+    boost::asio::detail::throw_error(ec);
   return addr;
 }
 
-address_v4 address_v4::from_string(const char* str)
+bool address_v4::is_loopback() const noexcept
+{
+  return (to_uint() & 0xFF000000) == 0x7F000000;
+}
+
+bool address_v4::is_unspecified() const noexcept
+{
+  return to_uint() == 0;
+}
+
+bool address_v4::is_multicast() const noexcept
+{
+  return (to_uint() & 0xF0000000) == 0xE0000000;
+}
+
+address_v4 make_address_v4(const char* str)
 {
   boost::system::error_code ec;
-  address_v4 addr = from_string(str, ec);
+  address_v4 addr = make_address_v4(str, ec);
   boost::asio::detail::throw_error(ec);
   return addr;
 }
 
-address_v4 address_v4::from_string(
-    const char* str, boost::system::error_code& ec)
+address_v4 make_address_v4(const char* str,
+    boost::system::error_code& ec) noexcept
 {
-  address_v4 tmp;
+  address_v4::bytes_type bytes;
   if (boost::asio::detail::socket_ops::inet_pton(
-        BOOST_ASIO_OS_DEF(AF_INET), str, &tmp.addr_, 0, ec) <= 0)
+        BOOST_ASIO_OS_DEF(AF_INET), str, &bytes, 0, ec) <= 0)
     return address_v4();
-  return tmp;
+  return address_v4(bytes);
 }
 
-address_v4 address_v4::from_string(const std::string& str)
+address_v4 make_address_v4(const std::string& str)
 {
-  return from_string(str.c_str());
+  return make_address_v4(str.c_str());
 }
 
-address_v4 address_v4::from_string(
-    const std::string& str, boost::system::error_code& ec)
+address_v4 make_address_v4(const std::string& str,
+    boost::system::error_code& ec) noexcept
 {
-  return from_string(str.c_str(), ec);
+  return make_address_v4(str.c_str(), ec);
 }
 
-bool address_v4::is_loopback() const
+#if defined(BOOST_ASIO_HAS_STRING_VIEW)
+
+address_v4 make_address_v4(string_view str)
 {
-  return (to_ulong() & 0xFF000000) == 0x7F000000;
+  return make_address_v4(static_cast<std::string>(str));
 }
 
-bool address_v4::is_unspecified() const
+address_v4 make_address_v4(string_view str,
+    boost::system::error_code& ec) noexcept
 {
-  return to_ulong() == 0;
+  return make_address_v4(static_cast<std::string>(str), ec);
 }
 
-bool address_v4::is_class_a() const
-{
-  return (to_ulong() & 0x80000000) == 0;
-}
-
-bool address_v4::is_class_b() const
-{
-  return (to_ulong() & 0xC0000000) == 0x80000000;
-}
-
-bool address_v4::is_class_c() const
-{
-  return (to_ulong() & 0xE0000000) == 0xC0000000;
-}
-
-bool address_v4::is_multicast() const
-{
-  return (to_ulong() & 0xF0000000) == 0xE0000000;
-}
-
-address_v4 address_v4::broadcast(const address_v4& addr, const address_v4& mask)
-{
-  return address_v4(addr.to_ulong() | (mask.to_ulong() ^ 0xFFFFFFFF));
-}
-
-address_v4 address_v4::netmask(const address_v4& addr)
-{
-  if (addr.is_class_a())
-    return address_v4(0xFF000000);
-  if (addr.is_class_b())
-    return address_v4(0xFFFF0000);
-  if (addr.is_class_c())
-    return address_v4(0xFFFFFF00);
-  return address_v4(0xFFFFFFFF);
-}
+#endif // defined(BOOST_ASIO_HAS_STRING_VIEW)
 
 } // namespace ip
 } // namespace asio

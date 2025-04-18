@@ -2,6 +2,10 @@
 
 // Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
 
+// This file was modified by Oracle on 2024.
+// Modifications copyright (c) 2024 Oracle and/or its affiliates.
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
+
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -10,6 +14,8 @@
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_OVERLAY_TRAVERSE_HPP
 
 #include <cstddef>
+
+#include <boost/range/size.hpp>
 
 #include <boost/geometry/algorithms/detail/overlay/backtrack_check_si.hpp>
 #include <boost/geometry/algorithms/detail/overlay/traversal_ring_creator.hpp>
@@ -42,14 +48,11 @@ class traverse
     template <typename Turns>
     static void reset_visits(Turns& turns)
     {
-        for (typename boost::range_iterator<Turns>::type
-            it = boost::begin(turns);
-            it != boost::end(turns);
-            ++it)
+        for (auto& turn : turns)
         {
-            for (int i = 0; i < 2; i++)
+            for (auto& op : turn.operations)
             {
-                it->operations[i].visited.reset();
+                op.visited.reset();
             }
         }
     }
@@ -59,17 +62,17 @@ public :
     template
     <
         typename IntersectionStrategy,
-        typename RobustPolicy,
         typename Turns,
         typename Rings,
-        typename Visitor,
-        typename Clusters
+        typename TurnInfoMap,
+        typename Clusters,
+        typename Visitor
     >
     static inline void apply(Geometry1 const& geometry1,
                 Geometry2 const& geometry2,
                 IntersectionStrategy const& intersection_strategy,
-                RobustPolicy const& robust_policy,
                 Turns& turns, Rings& rings,
+                TurnInfoMap& turn_info_map,
                 Clusters& clusters,
                 Visitor& visitor)
     {
@@ -78,9 +81,9 @@ public :
                 Reverse1, Reverse2, OverlayType,
                 Geometry1, Geometry2,
                 Turns, Clusters,
-                RobustPolicy, Visitor
+                Visitor
             > switch_detector(geometry1, geometry2, turns, clusters,
-                   robust_policy, visitor);
+                   visitor);
 
         switch_detector.iterate();
         reset_visits(turns);
@@ -89,12 +92,12 @@ public :
             <
                 Reverse1, Reverse2, OverlayType,
                 Geometry1, Geometry2,
-                Turns, Clusters,
+                Turns, TurnInfoMap, Clusters,
                 IntersectionStrategy,
-                RobustPolicy, Visitor,
+                Visitor,
                 Backtrack
-            > trav(geometry1, geometry2, turns, clusters,
-                   intersection_strategy, robust_policy, visitor);
+            > trav(geometry1, geometry2, turns, turn_info_map, clusters,
+                   intersection_strategy, visitor);
 
         std::size_t finalized_ring_size = boost::size(rings);
 

@@ -3,9 +3,10 @@
 // Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
 // Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
+// Copyright (c) 2017-2023 Adam Wulkiewicz, Lodz, Poland.
 
-// This file was modified by Oracle on 2015.
-// Modifications copyright (c) 2015 Oracle and/or its affiliates.
+// This file was modified by Oracle on 2015-2021.
+// Modifications copyright (c) 2015-2021 Oracle and/or its affiliates.
 
 // Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
@@ -23,6 +24,7 @@
 #include <cstddef>
 
 #include <boost/geometry/algorithms/assign.hpp>
+#include <boost/geometry/algorithms/detail/signed_size_type.hpp>
 #include <boost/geometry/arithmetic/arithmetic.hpp>
 #include <boost/geometry/core/coordinate_type.hpp>
 #include <boost/geometry/core/point_type.hpp>
@@ -42,19 +44,20 @@ namespace strategy { namespace centroid
 */
 template
 <
-    typename PointCentroid,
-    typename Point = PointCentroid
+    typename Ignored1 = void,
+    typename Ignored2 = void
 >
 class average
 {
 private :
 
     /*! subclass to keep state */
+    template <typename GeometryPoint, typename ResultPoint>
     class sum
     {
         friend class average;
-        std::size_t count;
-        PointCentroid centroid;
+        signed_size_type count;
+        ResultPoint centroid;
 
     public :
         inline sum()
@@ -65,22 +68,29 @@ private :
     };
 
 public :
-    typedef sum state_type;
-    typedef PointCentroid centroid_point_type;
-    typedef Point point_type;
+    template <typename GeometryPoint, typename ResultPoint>
+    struct state_type
+    {
+        typedef sum<GeometryPoint, ResultPoint> type;
+    };
 
-    static inline void apply(Point const& p, sum& state)
+    template <typename GeometryPoint, typename ResultPoint>
+    static inline void apply(GeometryPoint const& p,
+                             sum<GeometryPoint, ResultPoint>& state)
     {
         add_point(state.centroid, p);
         state.count++;
     }
 
-    static inline bool result(sum const& state, PointCentroid& centroid)
+    template <typename GeometryPoint, typename ResultPoint>
+    static inline bool result(sum<GeometryPoint, ResultPoint> const& state,
+                              ResultPoint& centroid)
     {
         centroid = state.centroid;
         if ( state.count > 0 )
         {
-            divide_value(centroid, state.count);
+            using coord_t = typename coordinate_type<ResultPoint>::type;
+            divide_value(centroid, static_cast<coord_t>(state.count));
             return true;
         }
         return false;
@@ -108,7 +118,7 @@ struct default_strategy
     typedef average
         <
             Point,
-            typename point_type<Geometry>::type
+            point_type_t<Geometry>
         > type;
 };
 

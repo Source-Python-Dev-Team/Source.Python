@@ -3,8 +3,8 @@
 // Copyright (c) 2009-2012 Barend Gehrels, Amsterdam, the Netherlands.
 // Copyright (c) 2014 Adam Wulkiewicz, Lodz, Poland.
 
-// This file was modified by Oracle on 2016.
-// Modifications copyright (c) 2016, Oracle and/or its affiliates.
+// This file was modified by Oracle on 2016-2020.
+// Modifications copyright (c) 2016-2020, Oracle and/or its affiliates.
 
 // Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
@@ -22,18 +22,17 @@
 #include <string>
 
 #include <boost/config.hpp>
-#include <boost/mpl/assert.hpp>
-#include <boost/range.hpp>
-
+#include <boost/range/begin.hpp>
+#include <boost/range/end.hpp>
+#include <boost/range/value_type.hpp>
 #include <boost/variant/apply_visitor.hpp>
 #include <boost/variant/static_visitor.hpp>
 #include <boost/variant/variant_fwd.hpp>
 
-#include <boost/geometry/algorithms/detail/interior_iterator.hpp>
-
 #include <boost/geometry/core/exterior_ring.hpp>
 #include <boost/geometry/core/interior_rings.hpp>
 #include <boost/geometry/core/ring_type.hpp>
+#include <boost/geometry/core/static_assert.hpp>
 
 #include <boost/geometry/geometries/concepts/check.hpp>
 
@@ -98,7 +97,7 @@ struct svg_segment
         ct y1 = geometry::get<0, 1>(segment);
         ct x2 = geometry::get<1, 0>(segment);
         ct y2 = geometry::get<1, 1>(segment);
-        
+
         os << "<line x1=\"" << x1 << "\" y1=\"" << y1
             << "\" x2=\"" << x2 << "\" y2=\"" << y2
             << "\" style=\"" << style << "\"/>";
@@ -116,15 +115,11 @@ struct svg_range
     static inline void apply(std::basic_ostream<Char, Traits>& os,
         Range const& range, std::string const& style, double)
     {
-        typedef typename boost::range_iterator<Range const>::type iterator;
-
         bool first = true;
 
         os << "<" << Policy::prefix() << " points=\"";
 
-        for (iterator it = boost::begin(range);
-            it != boost::end(range);
-            ++it, first = false)
+        for (auto it = boost::begin(range); it != boost::end(range); ++it, first = false)
         {
             os << (first ? "" : " " )
                 << geometry::get<0>(*it)
@@ -145,15 +140,12 @@ struct svg_poly
         Polygon const& polygon, std::string const& style, double)
     {
         typedef typename geometry::ring_type<Polygon>::type ring_type;
-        typedef typename boost::range_iterator<ring_type const>::type iterator_type;
 
         bool first = true;
         os << "<g fill-rule=\"evenodd\"><path d=\"";
 
         ring_type const& ring = geometry::exterior_ring(polygon);
-        for (iterator_type it = boost::begin(ring);
-            it != boost::end(ring);
-            ++it, first = false)
+        for (auto it = boost::begin(ring); it != boost::end(ring); ++it, first = false)
         {
             os << (first ? "M" : " L") << " "
                 << geometry::get<0>(*it)
@@ -163,15 +155,11 @@ struct svg_poly
 
         // Inner rings:
         {
-            typename interior_return_type<Polygon const>::type
-                rings = interior_rings(polygon);
-            for (typename detail::interior_iterator<Polygon const>::type
-                    rit = boost::begin(rings); rit != boost::end(rings); ++rit)
+            auto const& rings = interior_rings(polygon);
+            for (auto rit = boost::begin(rings); rit != boost::end(rings); ++rit)
             {
                 first = true;
-                for (typename detail::interior_ring_iterator<Polygon const>::type
-                        it = boost::begin(*rit); it != boost::end(*rit);
-                    ++it, first = false)
+                for (auto it = boost::begin(*rit); it != boost::end(*rit); ++it, first = false)
                 {
                     os << (first ? "M" : " L") << " "
                         << geometry::get<0>(*it)
@@ -208,14 +196,10 @@ struct svg_multi
     static inline void apply(std::basic_ostream<Char, Traits>& os,
         MultiGeometry const& multi, std::string const& style, double size)
     {
-        for (typename boost::range_iterator<MultiGeometry const>::type
-                    it = boost::begin(multi);
-            it != boost::end(multi);
-            ++it)
+        for (auto it = boost::begin(multi); it != boost::end(multi); ++it)
         {
             Policy::apply(os, *it, style, size);
         }
-
     }
 
 };
@@ -240,11 +224,9 @@ static inline void apply(std::basic_ostream<Char, Traits>& os, G const& geometry
 template <typename Geometry, typename Tag = typename tag<Geometry>::type>
 struct svg
 {
-    BOOST_MPL_ASSERT_MSG
-        (
-            false, NOT_OR_NOT_YET_IMPLEMENTED_FOR_THIS_GEOMETRY_TYPE
-            , (Geometry)
-        );
+    BOOST_GEOMETRY_STATIC_ASSERT_FALSE(
+        "Not or not yet implemented for this Geometry type.",
+        Geometry, Tag);
 };
 
 template <typename Point>

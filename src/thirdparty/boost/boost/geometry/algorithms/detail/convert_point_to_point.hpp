@@ -18,10 +18,10 @@
 
 #include <cstddef>
 
-#include <boost/numeric/conversion/cast.hpp>
 #include <boost/geometry/core/access.hpp>
 #include <boost/geometry/core/coordinate_dimension.hpp>
 #include <boost/geometry/core/coordinate_type.hpp>
+#include <boost/geometry/util/numeric_cast.hpp>
 
 
 namespace boost { namespace geometry
@@ -32,6 +32,12 @@ namespace detail { namespace conversion
 {
 
 
+// TODO: Use assignment if possible.
+// WARNING: This utility is called in various places for a subset of dimensions.
+//   In such cases only some of the coordinates should be copied. Alternatively
+//   there should be a different utility for that called differently than
+//   convert_xxx, e.g. set_coordinates.
+
 template <typename Source, typename Destination, std::size_t Dimension, std::size_t DimensionCount>
 struct point_to_point
 {
@@ -39,7 +45,7 @@ struct point_to_point
     {
         typedef typename coordinate_type<Destination>::type coordinate_type;
 
-        set<Dimension>(destination, boost::numeric_cast<coordinate_type>(get<Dimension>(source)));
+        set<Dimension>(destination, util::numeric_cast<coordinate_type>(get<Dimension>(source)));
         point_to_point<Source, Destination, Dimension + 1, DimensionCount>::apply(source, destination);
     }
 };

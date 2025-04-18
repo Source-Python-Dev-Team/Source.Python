@@ -27,6 +27,8 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+class CBasePlayer;
+
 #include "players_generator.h"
 #include "export_main.h"
 #include "modules/memory/memory_tools.h"

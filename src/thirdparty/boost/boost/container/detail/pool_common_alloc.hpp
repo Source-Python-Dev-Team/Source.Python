@@ -30,18 +30,18 @@
 
 namespace boost{
 namespace container{
-namespace container_detail{
+namespace dtl{
 
 struct node_slist_helper
-   : public boost::container::container_detail::node_slist<void*>
+   : public boost::container::dtl::node_slist<void*>
 {};
 
 struct fake_segment_manager
 {
    typedef void * void_pointer;
-   static const std::size_t PayloadPerAllocation = BOOST_CONTAINER_ALLOCATION_PAYLOAD;
+   BOOST_STATIC_CONSTEXPR std::size_t PayloadPerAllocation = BOOST_CONTAINER_ALLOCATION_PAYLOAD;
 
-   typedef boost::container::container_detail::
+   typedef boost::container::dtl::
       basic_multiallocation_chain<void*>              multiallocation_chain;
    static void deallocate(void_pointer p)
    { dlmalloc_free(p); }
@@ -49,7 +49,7 @@ struct fake_segment_manager
    static void deallocate_many(multiallocation_chain &chain)
    {
       std::size_t size = chain.size();
-      std::pair<void*, void*> ptrs = chain.extract_data();
+      multiallocation_chain::pointer_pair ptrs = chain.extract_data();
       dlmalloc_memchain dlchain;
       BOOST_CONTAINER_MEMCHAIN_INIT_FROM(&dlchain, ptrs.first, ptrs.second, size);
       dlmalloc_multidealloc(&dlchain);
@@ -77,23 +77,23 @@ struct fake_segment_manager
 
 }  //namespace boost{
 }  //namespace container{
-}  //namespace container_detail{
+}  //namespace dtl{
 
 namespace boost {
 namespace container {
-namespace container_detail {
+namespace dtl {
 
 template<class T>
 struct is_stateless_segment_manager;
 
 template<>
 struct is_stateless_segment_manager
-   <boost::container::container_detail::fake_segment_manager>
+   <boost::container::dtl::fake_segment_manager>
 {
-   static const bool value = true;
+   BOOST_STATIC_CONSTEXPR bool value = true;
 };
 
-}  //namespace container_detail {
+}  //namespace dtl {
 }  //namespace container {
 }  //namespace boost {
 

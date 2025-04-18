@@ -195,7 +195,7 @@ def _prepare_generated_source_python_file(file_path):
     """
     new_name = file_path.parent / file_path.basename().replace(
         'source-python.', '')
-    if new_name.isfile():
+    if new_name.is_file():
         file_path.remove()
         return
 
@@ -326,8 +326,8 @@ def _build_source_python_docs():
 
         # Create/update credits.rst
         with project.project_source_dir.joinpath(
-                'general', 'credits.rst').open('w') as f:
-            f.write(_get_updated_credits_wiki())
+                'general', 'credits.rst').open('wb') as f:
+            f.write(_get_updated_credits_wiki().encode())
 
         try:
             project.build()
@@ -445,13 +445,13 @@ def is_source_python(package):
 def is_custom_package(package):
     """Return True if the given package name is a custom package."""
     return package in map(
-        lambda path: str(path.namebase), CUSTOM_PACKAGES_PATH.listdir())
+        lambda path: str(path.name), CUSTOM_PACKAGES_PATH.iterdir())
 
 
 def is_plugin(package):
     """Return True if the given package name is a plugin."""
     return package in map(
-        lambda path: str(path.namebase), PLUGIN_PATH.dirs())
+        lambda path: str(path.name), PLUGIN_PATH.dirs())
 
 
 # =============================================================================

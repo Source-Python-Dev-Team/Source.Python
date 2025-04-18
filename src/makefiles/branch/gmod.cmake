@@ -8,3 +8,6 @@
 # ------------------------------------------------------------------
 Set(SOURCE_ENGINE "gmod")
 add_definitions(-DENGINE_GMOD -DENGINE_BRANCH_GMOD)
+
+Set(SOURCEPYTHON_LINK_LIBRARIES
+    legacy_stdio_definitions.lib)

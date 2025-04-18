@@ -57,7 +57,7 @@ struct check_base_unit {
 template<class Derived,
          class Dim,
          long N
-#if !defined(BOOST_UNITS_DOXYGEN) && !defined(__BORLANDC__)
+#if !defined(BOOST_UNITS_DOXYGEN) && !defined(BOOST_BORLANDC)
          ,
          class = typename detail::ordinal_has_already_been_defined<
              check_base_unit<Derived, N>::value
@@ -104,21 +104,21 @@ class base_unit :
         /// check_base_unit will trigger an error earlier
         /// for compilers with less strict name lookup.
         /// INTERNAL ONLY
-        friend Derived* 
+        friend BOOST_CONSTEXPR Derived* 
         check_double_register(const units::base_unit_ordinal<N>&) 
         { return(0); }
 
         /// Register this ordinal
         /// INTERNAL ONLY
-        friend detail::yes 
+        friend BOOST_CONSTEXPR detail::yes 
         boost_units_unit_is_registered(const units::base_unit_ordinal<N>&) 
-        { detail::yes result; return(result); }
+        { return(detail::yes()); }
         
         /// But make sure we can identify the current instantiation!
         /// INTERNAL ONLY
-        friend detail::yes 
+        friend BOOST_CONSTEXPR detail::yes 
         boost_units_unit_is_registered(const units::base_unit_pair<Derived, N>&) 
-        { detail::yes result; return(result); }
+        { return(detail::yes()); }
 };
 
 } // namespace units

@@ -1,8 +1,9 @@
 // Boost.Geometry (aka GGL, Generic Geometry Library)
 
-// Copyright (c) 2014-2015, Oracle and/or its affiliates.
+// Copyright (c) 2014-2020, Oracle and/or its affiliates.
 
 // Contributed and/or modified by Menelaos Karavelas, on behalf of Oracle
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Licensed under the Boost Software License version 1.0.
 // http://www.boost.org/users/license.html
@@ -10,7 +11,7 @@
 #ifndef BOOST_GEOMETRY_ALGORITHMS_DETAIL_IS_VALID_IS_ACCEPTABLE_TURN_HPP
 #define BOOST_GEOMETRY_ALGORITHMS_DETAIL_IS_VALID_IS_ACCEPTABLE_TURN_HPP
 
-#include <boost/range.hpp>
+#include <boost/range/value_type.hpp>
 
 #include <boost/geometry/core/point_order.hpp>
 #include <boost/geometry/core/tag.hpp>
@@ -138,12 +139,19 @@ public:
         }
 
         operation_type const op = acceptable_operation<MultiPolygon>::value;
+        if ( base::check_turn(turn, method_touch_interior, op)
+          || base::check_turn(turn, method_touch, op))
+        {
+            return true;
+        }
 
-        return base::check_turn(turn, method_touch_interior, op)
-            || base::check_turn(turn, method_touch, op)
-            ;
+        // Turn is acceptable only in case of a touch(interior) and both lines
+        // (polygons) do not cross
+        return (turn.method == method_touch
+                || turn.method == method_touch_interior)
+                && turn.touch_only;
     }
-};   
+};
 
 
 }} // namespace detail::is_valid

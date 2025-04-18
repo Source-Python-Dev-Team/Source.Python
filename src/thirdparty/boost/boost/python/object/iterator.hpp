@@ -6,6 +6,7 @@
 # define ITERATOR_DWA2002510_HPP
 
 # include <boost/python/detail/prefix.hpp>
+# include <boost/python/detail/type_traits.hpp>
 
 # include <boost/python/class.hpp>
 # include <boost/python/return_value_policy.hpp>
@@ -24,11 +25,7 @@
 
 # include <boost/type.hpp>
 
-# include <boost/type_traits/is_same.hpp>
-# include <boost/type_traits/add_reference.hpp>
-# include <boost/type_traits/add_const.hpp>
-
-# include <boost/detail/iterator.hpp>
+# include <iterator>
 
 namespace boost { namespace python { namespace objects {
 
@@ -45,7 +42,7 @@ struct iterator_range
 {
     iterator_range(object sequence, Iterator start, Iterator finish);
 
-    typedef boost::detail::iterator_traits<Iterator> traits_t;
+    typedef std::iterator_traits<Iterator> traits_t;
 
     struct next
     {
@@ -202,8 +199,8 @@ inline object make_iterator_function(
 )
 {
     typedef typename Accessor1::result_type iterator;
-    typedef typename add_const<iterator>::type iterator_const;
-    typedef typename add_reference<iterator_const>::type iterator_cref;
+    typedef typename boost::python::detail::add_const<iterator>::type iterator_const;
+    typedef typename boost::python::detail::add_lvalue_reference<iterator_const>::type iterator_cref;
       
     return detail::make_iterator_function(
         get_start

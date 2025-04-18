@@ -24,9 +24,6 @@
 
 #ifndef BOOST_LOG_NO_THREADS
 
-#include <boost/throw_exception.hpp>
-#include <boost/thread/exceptions.hpp>
-
 #if defined(BOOST_THREAD_POSIX) // This one can be defined by users, so it should go first
 #define BOOST_LOG_ADAPTIVE_MUTEX_USE_PTHREAD
 #elif defined(BOOST_WINDOWS)
@@ -38,12 +35,14 @@
 #if defined(BOOST_LOG_ADAPTIVE_MUTEX_USE_WINAPI)
 
 #include <boost/log/detail/pause.hpp>
+#include <boost/winapi/thread.hpp>
 #include <boost/detail/interlocked.hpp>
-#include <boost/detail/winapi/thread.hpp>
 
 #if defined(__INTEL_COMPILER) || defined(_MSC_VER)
 #    if defined(__INTEL_COMPILER)
 #        define BOOST_LOG_COMPILER_BARRIER __memory_barrier()
+#    elif defined(__clang__) // clang-win also defines _MSC_VER
+#        define BOOST_LOG_COMPILER_BARRIER __atomic_signal_fence(__ATOMIC_SEQ_CST)
 #    else
 extern "C" void _ReadWriteBarrier(void);
 #        if defined(BOOST_MSVC)
@@ -103,10 +102,10 @@ public:
             {
                 // Restart spinning after waking up this thread
                 pause_count = initial_pause;
-                SwitchToThread();
+                boost::winapi::SwitchToThread();
             }
 #else
-            SwitchToThread();
+            boost::winapi::SwitchToThread();
 #endif
         }
     }
@@ -141,7 +140,10 @@ BOOST_LOG_CLOSE_NAMESPACE // namespace log
 #elif defined(BOOST_LOG_ADAPTIVE_MUTEX_USE_PTHREAD)
 
 #include <pthread.h>
+#include <cerrno>
+#include <system_error>
 #include <boost/assert.hpp>
+#include <boost/assert/source_location.hpp>
 #include <boost/log/detail/header.hpp>
 
 #if defined(PTHREAD_ADAPTIVE_MUTEX_INITIALIZER_NP)
@@ -174,7 +176,7 @@ public:
         const int err = pthread_mutex_init(&m_State, NULL);
 #endif
         if (BOOST_UNLIKELY(err != 0))
-            throw_exception< thread_resource_error >(err, "Failed to initialize an adaptive mutex", "adaptive_mutex::adaptive_mutex()", __FILE__, __LINE__);
+            throw_system_error(err, "Failed to initialize an adaptive mutex", "adaptive_mutex::adaptive_mutex()", __FILE__, __LINE__);
     }
 
     ~adaptive_mutex()
@@ -188,7 +190,7 @@ public:
         if (err == 0)
             return true;
         if (BOOST_UNLIKELY(err != EBUSY))
-            throw_exception< lock_error >(err, "Failed to lock an adaptive mutex", "adaptive_mutex::try_lock()", __FILE__, __LINE__);
+            throw_system_error(err, "Failed to lock an adaptive mutex", "adaptive_mutex::try_lock()", __FILE__, __LINE__);
         return false;
     }
 
@@ -196,7 +198,7 @@ public:
     {
         const int err = pthread_mutex_lock(&m_State);
         if (BOOST_UNLIKELY(err != 0))
-            throw_exception< lock_error >(err, "Failed to lock an adaptive mutex", "adaptive_mutex::lock()", __FILE__, __LINE__);
+            throw_system_error(err, "Failed to lock an adaptive mutex", "adaptive_mutex::lock()", __FILE__, __LINE__);
     }
 
     void unlock()
@@ -209,14 +211,9 @@ public:
     BOOST_DELETED_FUNCTION(adaptive_mutex& operator= (adaptive_mutex const&))
 
 private:
-    template< typename ExceptionT >
-    static BOOST_NOINLINE BOOST_LOG_NORETURN void throw_exception(int err, const char* descr, const char* func, const char* file, int line)
+    static BOOST_NOINLINE BOOST_LOG_NORETURN void throw_system_error(int err, const char* descr, const char* func, const char* file, int line)
     {
-#if !defined(BOOST_EXCEPTION_DISABLE)
-        boost::exception_detail::throw_exception_(ExceptionT(err, descr), func, file, line);
-#else
-        boost::throw_exception(ExceptionT(err, descr));
-#endif
+        boost::throw_exception(std::system_error(std::error_code(err, std::system_category()), descr), boost::source_location(file, line, func));
     }
 };
 

@@ -1,4 +1,5 @@
 //  (C) Copyright John Maddock 2006.
+//  (C) Copyright Matt Borland 2024.
 //  Use, modification and distribution are subject to the
 //  Boost Software License, Version 1.0. (See accompanying file
 //  LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -10,6 +11,8 @@
 #pragma once
 #endif
 
+#include <boost/math/tools/config.hpp>
+#include <boost/math/tools/cstdint.hpp>
 #include <boost/math/tools/tuple.hpp>
 #include <boost/math/special_functions/gamma.hpp>
 #include <boost/math/special_functions/sign.hpp>
@@ -21,7 +24,7 @@ namespace boost{ namespace math{
 namespace detail{
 
 template <class T>
-T find_inverse_s(T p, T q)
+BOOST_MATH_GPU_ENABLED T find_inverse_s(T p, T q)
 {
    //
    // Computation of the Incomplete Gamma Function Ratios and their Inverse
@@ -33,7 +36,7 @@ T find_inverse_s(T p, T q)
    //
    BOOST_MATH_STD_USING
    T t;
-   if(p < 0.5)
+   if(p < T(0.5))
    {
       t = sqrt(-2 * log(p));
    }
@@ -41,16 +44,16 @@ T find_inverse_s(T p, T q)
    {
       t = sqrt(-2 * log(q));
    }
-   static const double a[4] = { 3.31125922108741, 11.6616720288968, 4.28342155967104, 0.213623493715853 };
-   static const double b[5] = { 1, 6.61053765625462, 6.40691597760039, 1.27364489782223, 0.3611708101884203e-1 };
+   BOOST_MATH_STATIC const double a[4] = { 3.31125922108741, 11.6616720288968, 4.28342155967104, 0.213623493715853 };
+   BOOST_MATH_STATIC const double b[5] = { 1, 6.61053765625462, 6.40691597760039, 1.27364489782223, 0.3611708101884203e-1 };
    T s = t - tools::evaluate_polynomial(a, t) / tools::evaluate_polynomial(b, t);
-   if(p < 0.5)
+   if(p < T(0.5))
       s = -s;
    return s;
 }
 
 template <class T>
-T didonato_SN(T a, T x, unsigned N, T tolerance = 0)
+BOOST_MATH_GPU_ENABLED T didonato_SN(T a, T x, unsigned N, T tolerance = 0)
 {
    //
    // Computation of the Incomplete Gamma Function Ratios and their Inverse
@@ -77,7 +80,7 @@ T didonato_SN(T a, T x, unsigned N, T tolerance = 0)
 }
 
 template <class T, class Policy>
-inline T didonato_FN(T p, T a, T x, unsigned N, T tolerance, const Policy& pol)
+BOOST_MATH_GPU_ENABLED inline T didonato_FN(T p, T a, T x, unsigned N, T tolerance, const Policy& pol)
 {
    //
    // Computation of the Incomplete Gamma Function Ratios and their Inverse
@@ -93,7 +96,7 @@ inline T didonato_FN(T p, T a, T x, unsigned N, T tolerance, const Policy& pol)
 }
 
 template <class T, class Policy>
-T find_inverse_gamma(T a, T p, T q, const Policy& pol, bool* p_has_10_digits)
+BOOST_MATH_GPU_ENABLED T find_inverse_gamma(T a, T p, T q, const Policy& pol, bool* p_has_10_digits)
 {
    //
    // In order to understand what's going on here, you will
@@ -120,9 +123,9 @@ T find_inverse_gamma(T a, T p, T q, const Policy& pol, bool* p_has_10_digits)
       T b = q * g;
       BOOST_MATH_INSTRUMENT_VARIABLE(g);
       BOOST_MATH_INSTRUMENT_VARIABLE(b);
-      if((b > 0.6) || ((b >= 0.45) && (a >= 0.3)))
+      if((b >T(0.6)) || ((b >= T(0.45)) && (a >= T(0.3))))
       {
-         // DiDonato & Morris Eq 21: 
+         // DiDonato & Morris Eq 21:
          //
          // There is a slight variation from DiDonato and Morris here:
          // the first form given here is unstable when p is close to 1,
@@ -130,7 +133,7 @@ T find_inverse_gamma(T a, T p, T q, const Policy& pol, bool* p_has_10_digits)
          // q.  Fortunately the second form works perfectly well in this case.
          //
          T u;
-         if((b * q > 1e-8) && (q > 1e-5))
+         if((b * q > T(1e-8)) && (q > T(1e-5)))
          {
             u = pow(p * g * a, 1 / a);
             BOOST_MATH_INSTRUMENT_VARIABLE(u);
@@ -233,10 +236,10 @@ T find_inverse_gamma(T a, T p, T q, const Policy& pol, bool* p_has_10_digits)
          }
          else
          {
-            T D = (std::max)(T(2), T(a * (a - 1)));
+            T D = BOOST_MATH_GPU_SAFE_MAX(T(2), T(a * (a - 1)));
             T lg = boost::math::lgamma(a, pol);
             T lb = log(q) + lg;
-            if(lb < -D * 2.3)
+            if(lb < -D * T(2.3))
             {
                // DiDonato and Morris Eq 25:
                T y = -lb;
@@ -293,7 +296,7 @@ T find_inverse_gamma(T a, T p, T q, const Policy& pol, bool* p_has_10_digits)
          if((z <= 0.01 * ap1) || (z > 0.7 * ap1))
          {
             result = z;
-            if(z <= 0.002 * ap1)
+            if(z <= T(0.002) * ap1)
                *p_has_10_digits = true;
             BOOST_MATH_INSTRUMENT_VARIABLE(result);
          }
@@ -315,7 +318,7 @@ T find_inverse_gamma(T a, T p, T q, const Policy& pol, bool* p_has_10_digits)
 template <class T, class Policy>
 struct gamma_p_inverse_func
 {
-   gamma_p_inverse_func(T a_, T p_, bool inv) : a(a_), p(p_), invert(inv)
+   BOOST_MATH_GPU_ENABLED gamma_p_inverse_func(T a_, T p_, bool inv) : a(a_), p(p_), invert(inv)
    {
       //
       // If p is too near 1 then P(x) - p suffers from cancellation
@@ -326,14 +329,14 @@ struct gamma_p_inverse_func
       // be inaccurate anyway (because there's not enough information in p)
       // but at least we will converge on the (inaccurate) answer quickly.
       //
-      if(p > 0.9)
+      if(p > T(0.9))
       {
          p = 1 - p;
          invert = !invert;
       }
    }
 
-   boost::math::tuple<T, T, T> operator()(const T& x)const
+   BOOST_MATH_GPU_ENABLED boost::math::tuple<T, T, T> operator()(const T& x)const
    {
       BOOST_FPU_EXCEPTION_GUARD
       //
@@ -343,9 +346,9 @@ struct gamma_p_inverse_func
       typedef typename policies::evaluation<T, Policy>::type value_type;
       // typedef typename lanczos::lanczos<T, Policy>::type evaluation_type;
       typedef typename policies::normalise<
-         Policy, 
-         policies::promote_float<false>, 
-         policies::promote_double<false>, 
+         Policy,
+         policies::promote_float<false>,
+         policies::promote_double<false>,
          policies::discrete_quantile<>,
          policies::assert_undefined<> >::type forwarding_policy;
 
@@ -354,18 +357,27 @@ struct gamma_p_inverse_func
       T f, f1;
       value_type ft;
       f = static_cast<T>(boost::math::detail::gamma_incomplete_imp(
-               static_cast<value_type>(a), 
-               static_cast<value_type>(x), 
+               static_cast<value_type>(a),
+               static_cast<value_type>(x),
                true, invert,
                forwarding_policy(), &ft));
       f1 = static_cast<T>(ft);
       T f2;
       T div = (a - x - 1) / x;
       f2 = f1;
-      if((fabs(div) > 1) && (tools::max_value<T>() / fabs(div) < f2))
+      if(fabs(div) > 1)
       {
-         // overflow:
-         f2 = -tools::max_value<T>() / 2;
+         // split if statement to address M1 mac clang bug;
+         // see issue 826
+         if (tools::max_value<T>() / fabs(div) < f2)
+         {
+            // overflow:
+            f2 = -tools::max_value<T>() / 2;
+         }
+         else
+         {
+            f2 *= div;
+         }
       }
       else
       {
@@ -386,11 +398,11 @@ private:
 };
 
 template <class T, class Policy>
-T gamma_p_inv_imp(T a, T p, const Policy& pol)
+BOOST_MATH_GPU_ENABLED T gamma_p_inv_imp(T a, T p, const Policy& pol)
 {
    BOOST_MATH_STD_USING  // ADL of std functions.
 
-   static const char* function = "boost::math::gamma_p_inv<%1%>(%1%, %1%)";
+   constexpr auto function = "boost::math::gamma_p_inv<%1%>(%1%, %1%)";
 
    BOOST_MATH_INSTRUMENT_VARIABLE(a);
    BOOST_MATH_INSTRUMENT_VARIABLE(p);
@@ -398,9 +410,9 @@ T gamma_p_inv_imp(T a, T p, const Policy& pol)
    if(a <= 0)
       return policies::raise_domain_error<T>(function, "Argument a in the incomplete gamma function inverse must be >= 0 (got a=%1%).", a, pol);
    if((p < 0) || (p > 1))
-      return policies::raise_domain_error<T>(function, "Probabilty must be in the range [0,1] in the incomplete gamma function inverse (got p=%1%).", p, pol);
+      return policies::raise_domain_error<T>(function, "Probability must be in the range [0,1] in the incomplete gamma function inverse (got p=%1%).", p, pol);
    if(p == 1)
-      return policies::raise_overflow_error<T>(function, 0, Policy());
+      return policies::raise_overflow_error<T>(function, nullptr, Policy());
    if(p == 0)
       return 0;
    bool has_10_digits;
@@ -414,7 +426,7 @@ T gamma_p_inv_imp(T a, T p, const Policy& pol)
    //
    // Work out how many digits to converge to, normally this is
    // 2/3 of the digits in T, but if the first derivative is very
-   // large convergence is slow, so we'll bump it up to full 
+   // large convergence is slow, so we'll bump it up to full
    // precision to prevent premature termination of the root-finding routine.
    //
    unsigned digits = policies::digits<T, Policy>();
@@ -428,12 +440,14 @@ T gamma_p_inv_imp(T a, T p, const Policy& pol)
       digits /= 2;
       digits -= 1;
    }
-   if((a < 0.125) && (fabs(gamma_p_derivative(a, guess, pol)) > 1 / sqrt(tools::epsilon<T>())))
+   if((a < T(0.125)) && (fabs(gamma_p_derivative(a, guess, pol)) > 1 / sqrt(tools::epsilon<T>())))
       digits = policies::digits<T, Policy>() - 2;
    //
    // Go ahead and iterate:
    //
-   boost::uintmax_t max_iter = policies::get_max_root_iterations<Policy>();
+   boost::math::uintmax_t max_iter = policies::get_max_root_iterations<Policy>();
+   
+   #ifndef BOOST_MATH_HAS_GPU_SUPPORT
    guess = tools::halley_iterate(
       detail::gamma_p_inverse_func<T, Policy>(a, p, false),
       guess,
@@ -441,6 +455,16 @@ T gamma_p_inv_imp(T a, T p, const Policy& pol)
       tools::max_value<T>(),
       digits,
       max_iter);
+   #else
+   guess = tools::newton_raphson_iterate(
+      detail::gamma_p_inverse_func<T, Policy>(a, p, false),
+      guess,
+      lower,
+      tools::max_value<T>(),
+      digits,
+      max_iter);
+   #endif
+   
    policies::check_root_iterations<T>(function, max_iter, pol);
    BOOST_MATH_INSTRUMENT_VARIABLE(guess);
    if(guess == lower)
@@ -449,18 +473,18 @@ T gamma_p_inv_imp(T a, T p, const Policy& pol)
 }
 
 template <class T, class Policy>
-T gamma_q_inv_imp(T a, T q, const Policy& pol)
+BOOST_MATH_GPU_ENABLED T gamma_q_inv_imp(T a, T q, const Policy& pol)
 {
    BOOST_MATH_STD_USING  // ADL of std functions.
 
-   static const char* function = "boost::math::gamma_q_inv<%1%>(%1%, %1%)";
+   constexpr auto function = "boost::math::gamma_q_inv<%1%>(%1%, %1%)";
 
    if(a <= 0)
       return policies::raise_domain_error<T>(function, "Argument a in the incomplete gamma function inverse must be >= 0 (got a=%1%).", a, pol);
    if((q < 0) || (q > 1))
-      return policies::raise_domain_error<T>(function, "Probabilty must be in the range [0,1] in the incomplete gamma function inverse (got q=%1%).", q, pol);
+      return policies::raise_domain_error<T>(function, "Probability must be in the range [0,1] in the incomplete gamma function inverse (got q=%1%).", q, pol);
    if(q == 0)
-      return policies::raise_overflow_error<T>(function, 0, Policy());
+      return policies::raise_overflow_error<T>(function, nullptr, Policy());
    if(q == 1)
       return 0;
    bool has_10_digits;
@@ -473,7 +497,7 @@ T gamma_q_inv_imp(T a, T q, const Policy& pol)
    //
    // Work out how many digits to converge to, normally this is
    // 2/3 of the digits in T, but if the first derivative is very
-   // large convergence is slow, so we'll bump it up to full 
+   // large convergence is slow, so we'll bump it up to full
    // precision to prevent premature termination of the root-finding routine.
    //
    unsigned digits = policies::digits<T, Policy>();
@@ -492,7 +516,9 @@ T gamma_q_inv_imp(T a, T q, const Policy& pol)
    //
    // Go ahead and iterate:
    //
-   boost::uintmax_t max_iter = policies::get_max_root_iterations<Policy>();
+   boost::math::uintmax_t max_iter = policies::get_max_root_iterations<Policy>();
+
+   #ifndef BOOST_MATH_HAS_GPU_SUPPORT
    guess = tools::halley_iterate(
       detail::gamma_p_inverse_func<T, Policy>(a, q, true),
       guess,
@@ -500,6 +526,16 @@ T gamma_q_inv_imp(T a, T q, const Policy& pol)
       tools::max_value<T>(),
       digits,
       max_iter);
+   #else
+   guess = tools::newton_raphson_iterate(
+      detail::gamma_p_inverse_func<T, Policy>(a, q, true),
+      guess,
+      lower,
+      tools::max_value<T>(),
+      digits,
+      max_iter);
+   #endif
+
    policies::check_root_iterations<T>(function, max_iter, pol);
    if(guess == lower)
       guess = policies::raise_underflow_error<T>(function, "Expected result known to be non-zero, but is smaller than the smallest available number.", pol);
@@ -509,7 +545,7 @@ T gamma_q_inv_imp(T a, T q, const Policy& pol)
 } // namespace detail
 
 template <class T1, class T2, class Policy>
-inline typename tools::promote_args<T1, T2>::type 
+BOOST_MATH_GPU_ENABLED inline typename tools::promote_args<T1, T2>::type
    gamma_p_inv(T1 a, T2 p, const Policy& pol)
 {
    typedef typename tools::promote_args<T1, T2>::type result_type;
@@ -519,7 +555,7 @@ inline typename tools::promote_args<T1, T2>::type
 }
 
 template <class T1, class T2, class Policy>
-inline typename tools::promote_args<T1, T2>::type 
+BOOST_MATH_GPU_ENABLED inline typename tools::promote_args<T1, T2>::type
    gamma_q_inv(T1 a, T2 p, const Policy& pol)
 {
    typedef typename tools::promote_args<T1, T2>::type result_type;
@@ -529,14 +565,14 @@ inline typename tools::promote_args<T1, T2>::type
 }
 
 template <class T1, class T2>
-inline typename tools::promote_args<T1, T2>::type 
+BOOST_MATH_GPU_ENABLED inline typename tools::promote_args<T1, T2>::type
    gamma_p_inv(T1 a, T2 p)
 {
    return gamma_p_inv(a, p, policies::policy<>());
 }
 
 template <class T1, class T2>
-inline typename tools::promote_args<T1, T2>::type 
+BOOST_MATH_GPU_ENABLED inline typename tools::promote_args<T1, T2>::type
    gamma_q_inv(T1 a, T2 p)
 {
    return gamma_q_inv(a, p, policies::policy<>());

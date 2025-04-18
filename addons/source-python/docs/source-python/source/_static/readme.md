@@ -1,0 +1,1 @@
+Custom static files (such as style sheets or script files) will be placed here.

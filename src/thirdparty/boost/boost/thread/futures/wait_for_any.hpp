@@ -14,9 +14,9 @@
 #include <boost/thread/futures/is_future_type.hpp>
 #include <boost/thread/lock_algorithms.hpp>
 #include <boost/thread/mutex.hpp>
+#include <boost/thread/condition_variable.hpp>
 
 #include <boost/core/enable_if.hpp>
-#include <boost/next_prior.hpp>
 #include <boost/scoped_array.hpp>
 
 #include <iterator>
@@ -154,7 +154,9 @@ namespace boost
     {
       waiter.add(*current);
     }
-    return boost::next(begin, waiter.wait());
+
+    std::advance( begin, waiter.wait() );
+    return begin;
   }
 }
 

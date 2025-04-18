@@ -147,8 +147,8 @@ T* __obj__(CPointer* pPtr)
 // ============================================================================
 // Use this macro to add the class to the ExposedClasses dict
 #define STORE_CLASS(classname, pyname) \
-	extern dict g_oExposedClasses; \
-	g_oExposedClasses[XSTRINGIFY(classname)] = scope().attr(pyname);
+	extern DeferredDict g_oExposedClasses; \
+	g_oExposedClasses.get()[XSTRINGIFY(classname)] = scope().attr(pyname);
 
 
 // ============================================================================
@@ -202,12 +202,12 @@ END_CLASS_INFO()
 #define BEGIN_CLASS_INFO(classname) \
 	{ \
 		typedef classname functionInfoClass; \
-		extern dict g_oClassInfo; \
+		extern DeferredDict g_oClassInfo; \
 		dict classInfoDict; \
-		if (g_oClassInfo.contains( #classname )) \
-			classInfoDict = extract<dict>(g_oClassInfo[ #classname ]); \
+		if (g_oClassInfo.get().contains( #classname )) \
+			classInfoDict = extract<dict>(g_oClassInfo.get()[ #classname ]); \
 		else \
-			g_oClassInfo[ #classname ] = classInfoDict;
+			g_oClassInfo.get()[ #classname ] = classInfoDict;
 
 // Finish a class info dictionary
 #define END_CLASS_INFO() \

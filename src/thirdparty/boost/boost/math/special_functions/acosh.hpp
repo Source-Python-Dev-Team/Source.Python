@@ -15,13 +15,13 @@
 #pragma once
 #endif
 
-#include <boost/config/no_tr1/cmath.hpp>
-#include <boost/config.hpp>
+#include <cmath>
 #include <boost/math/tools/precision.hpp>
 #include <boost/math/policies/error_handling.hpp>
 #include <boost/math/special_functions/math_fwd.hpp>
 #include <boost/math/special_functions/log1p.hpp>
 #include <boost/math/constants/constants.hpp>
+#include <boost/math/special_functions/fpclassify.hpp>
 
 // This is the inverse of the hyperbolic cosine function.
 
@@ -38,9 +38,7 @@ namespace boost
             
             if((x < 1) || (boost::math::isnan)(x))
             {
-               return policies::raise_domain_error<T>(
-                  "boost::math::acosh<%1%>(%1%)",
-                  "acosh requires x >= 1, but got x = %1%.", x, pol);
+               return policies::raise_domain_error<T>("boost::math::acosh<%1%>(%1%)", "acosh requires x >= 1, but got x = %1%.", x, pol);
             }
             else if    ((x - 1) >= tools::root_epsilon<T>())
             {
@@ -53,7 +51,7 @@ namespace boost
                 else if(x < 1.5f)
                 {
                    // This is just a rearrangement of the standard form below
-                   // devised to minimse loss of precision when x ~ 1:
+                   // devised to minimise loss of precision when x ~ 1:
                    T y = x - 1;
                    return boost::math::log1p(y + sqrt(y * y + 2 * y), pol);
                 }

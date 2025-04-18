@@ -2,7 +2,11 @@
 //
 // Spatial query predicates
 //
-// Copyright (c) 2011-2015 Adam Wulkiewicz, Lodz, Poland.
+// Copyright (c) 2011-2022 Adam Wulkiewicz, Lodz, Poland.
+//
+// This file was modified by Oracle on 2019-2021.
+// Modifications copyright (c) 2019-2021 Oracle and/or its affiliates.
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 //
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
@@ -11,8 +15,14 @@
 #ifndef BOOST_GEOMETRY_INDEX_PREDICATES_HPP
 #define BOOST_GEOMETRY_INDEX_PREDICATES_HPP
 
+#ifdef BOOST_GEOMETRY_INDEX_DETAIL_EXPERIMENTAL
+#ifndef BOOST_GEOMETRY_INDEX_DETAIL_EXPERIMENTAL_PREDICATES
+#define BOOST_GEOMETRY_INDEX_DETAIL_EXPERIMENTAL_PREDICATES
+#endif
+#endif
+
 #include <boost/geometry/index/detail/predicates.hpp>
-#include <boost/geometry/index/detail/tuples.hpp>
+#include <boost/geometry/util/tuples.hpp>
 
 /*!
 \defgroup predicates Predicates (boost::geometry::index::)
@@ -23,9 +33,10 @@ namespace boost { namespace geometry { namespace index {
 /*!
 \brief Generate \c contains() predicate.
 
-Generate a predicate defining Value and Geometry relationship.
-Value will be returned by the query if <tt>bg::within(Geometry, Indexable)</tt>
-returns true.
+Generate a predicate defining Value and Geometry relationship. With this
+predicate query returns indexed Values that contain passed Geometry.
+Value is returned by the query if <tt>bg::within(Geometry, Indexable)</tt>
+returns <tt>true</tt>.
 
 \par Example
 \verbatim
@@ -53,9 +64,10 @@ contains(Geometry const& g)
 /*!
 \brief Generate \c covered_by() predicate.
 
-Generate a predicate defining Value and Geometry relationship.
-Value will be returned by the query if <tt>bg::covered_by(Indexable, Geometry)</tt>
-returns true.
+Generate a predicate defining Value and Geometry relationship. With this
+predicate query returns indexed Values that are covered by passed Geometry.
+Value is returned by the query if <tt>bg::covered_by(Indexable, Geometry)</tt>
+returns <tt>true</tt>.
 
 \par Example
 \verbatim
@@ -83,9 +95,10 @@ covered_by(Geometry const& g)
 /*!
 \brief Generate \c covers() predicate.
 
-Generate a predicate defining Value and Geometry relationship.
-Value will be returned by the query if <tt>bg::covered_by(Geometry, Indexable)</tt>
-returns true.
+Generate a predicate defining Value and Geometry relationship. With this
+predicate query returns indexed Values that cover passed Geometry.
+Value is returned by the query if <tt>bg::covered_by(Geometry, Indexable)</tt>
+returns <tt>true</tt>.
 
 \par Example
 \verbatim
@@ -113,9 +126,10 @@ covers(Geometry const& g)
 /*!
 \brief Generate \c disjoint() predicate.
 
-Generate a predicate defining Value and Geometry relationship.
-Value will be returned by the query if <tt>bg::disjoint(Indexable, Geometry)</tt>
-returns true.
+Generate a predicate defining Value and Geometry relationship. With this
+predicate query returns indexed Values that are disjoint with passed Geometry.
+Value is returned by the query if <tt>bg::disjoint(Indexable, Geometry)</tt>
+returns <tt>true</tt>.
 
 \par Example
 \verbatim
@@ -143,9 +157,10 @@ disjoint(Geometry const& g)
 /*!
 \brief Generate \c intersects() predicate.
 
-Generate a predicate defining Value and Geometry relationship.
-Value will be returned by the query if <tt>bg::intersects(Indexable, Geometry)</tt>
-returns true.
+Generate a predicate defining Value and Geometry relationship. With this
+predicate query returns indexed Values that intersect passed Geometry.
+Value is returned by the query if <tt>bg::intersects(Indexable, Geometry)</tt>
+returns <tt>true</tt>.
 
 \par Example
 \verbatim
@@ -175,9 +190,10 @@ intersects(Geometry const& g)
 /*!
 \brief Generate \c overlaps() predicate.
 
-Generate a predicate defining Value and Geometry relationship.
-Value will be returned by the query if <tt>bg::overlaps(Indexable, Geometry)</tt>
-returns true.
+Generate a predicate defining Value and Geometry relationship. With this
+predicate query returns indexed Values that overlap passed Geometry.
+Value is returned by the query if <tt>bg::overlaps(Indexable, Geometry)</tt>
+returns <tt>true</tt>.
 
 \par Example
 \verbatim
@@ -202,14 +218,15 @@ overlaps(Geometry const& g)
                 >(g);
 }
 
-#ifdef BOOST_GEOMETRY_INDEX_DETAIL_EXPERIMENTAL
+#ifdef BOOST_GEOMETRY_INDEX_DETAIL_EXPERIMENTAL_PREDICATES
 
 /*!
 \brief Generate \c touches() predicate.
 
-Generate a predicate defining Value and Geometry relationship.
-Value will be returned by the query if <tt>bg::touches(Indexable, Geometry)</tt>
-returns true.
+Generate a predicate defining Value and Geometry relationship. With this
+predicate query returns indexed Values that touch passed Geometry.
+Value is returned by the query if <tt>bg::touches(Indexable, Geometry)</tt>
+returns <tt>true</tt>.
 
 \ingroup predicates
 
@@ -229,14 +246,15 @@ touches(Geometry const& g)
                 >(g);
 }
 
-#endif // BOOST_GEOMETRY_INDEX_DETAIL_EXPERIMENTAL
+#endif // BOOST_GEOMETRY_INDEX_DETAIL_EXPERIMENTAL_PREDICATES
 
 /*!
 \brief Generate \c within() predicate.
 
-Generate a predicate defining Value and Geometry relationship.
-Value will be returned by the query if <tt>bg::within(Indexable, Geometry)</tt>
-returns true.
+Generate a predicate defining Value and Geometry relationship. With this
+predicate query returns indexed Values that are within passed Geometry.
+Value is returned by the query if <tt>bg::within(Indexable, Geometry)</tt>
+returns <tt>true</tt>.
 
 \par Example
 \verbatim
@@ -282,10 +300,8 @@ std::back_inserter(result));
 rt.query(index::intersects(box) && index::satisfies(is_red_o()),
 std::back_inserter(result));
 
-#ifndef BOOST_NO_CXX11_LAMBDAS
 rt.query(index::intersects(box) && index::satisfies([](Value const& v) { return v.is_red(); }),
 std::back_inserter(result));
-#endif
 \endverbatim
 
 \ingroup predicates
@@ -326,12 +342,12 @@ Only one \c nearest() predicate may be used in a query.
 */
 template <typename Geometry> inline
 detail::predicates::nearest<Geometry>
-nearest(Geometry const& geometry, unsigned k)
+nearest(Geometry const& geometry, std::size_t k)
 {
     return detail::predicates::nearest<Geometry>(geometry, k);
 }
 
-#ifdef BOOST_GEOMETRY_INDEX_DETAIL_EXPERIMENTAL
+#ifdef BOOST_GEOMETRY_INDEX_DETAIL_EXPERIMENTAL_PREDICATES
 
 /*!
 \brief Generate path() predicate.
@@ -356,12 +372,12 @@ Only one distance predicate (\c nearest() or \c path()) may be used in a query.
 */
 template <typename SegmentOrLinestring> inline
 detail::predicates::path<SegmentOrLinestring>
-path(SegmentOrLinestring const& linestring, unsigned k)
+path(SegmentOrLinestring const& linestring, std::size_t k)
 {
     return detail::predicates::path<SegmentOrLinestring>(linestring, k);
 }
 
-#endif // BOOST_GEOMETRY_INDEX_DETAIL_EXPERIMENTAL
+#endif // BOOST_GEOMETRY_INDEX_DETAIL_EXPERIMENTAL_PREDICATES
 
 namespace detail { namespace predicates {
 
@@ -384,36 +400,28 @@ operator!(spatial_predicate<Geometry, Tag, Negated> const& p)
 // operator&& generators
 
 template <typename Pred1, typename Pred2> inline
-boost::tuples::cons<
-    Pred1,
-    boost::tuples::cons<Pred2, boost::tuples::null_type>
->
+std::tuple<Pred1, Pred2>
 operator&&(Pred1 const& p1, Pred2 const& p2)
 {
-    /*typedef typename boost::mpl::if_c<is_predicate<Pred1>::value, Pred1, Pred1 const&>::type stored1;
-    typedef typename boost::mpl::if_c<is_predicate<Pred2>::value, Pred2, Pred2 const&>::type stored2;*/
-    namespace bt = boost::tuples;
-
-    return
-    bt::cons< Pred1, bt::cons<Pred2, bt::null_type> >
-        ( p1, bt::cons<Pred2, bt::null_type>(p2, bt::null_type()) );
+    /*typedef std::conditional_t<is_predicate<Pred1>::value, Pred1, Pred1 const&> stored1;
+    typedef std::conditional_t<is_predicate<Pred2>::value, Pred2, Pred2 const&> stored2;*/
+    return std::tuple<Pred1, Pred2>(p1, p2);
 }
 
-template <typename Head, typename Tail, typename Pred> inline
-typename tuples::push_back<
-    boost::tuples::cons<Head, Tail>, Pred
->::type
-operator&&(boost::tuples::cons<Head, Tail> const& t, Pred const& p)
+template <typename ...Preds, typename Pred> inline
+typename geometry::tuples::push_back
+    <
+        std::tuple<Preds...>, Pred
+    >::type
+operator&&(std::tuple<Preds...> const& t, Pred const& p)
 {
-    //typedef typename boost::mpl::if_c<is_predicate<Pred>::value, Pred, Pred const&>::type stored;
-    namespace bt = boost::tuples;
-
-    return
-    tuples::push_back<
-        bt::cons<Head, Tail>, Pred
-    >::apply(t, p);
+    //typedef std::conditional_t<is_predicate<Pred>::value, Pred, Pred const&> stored;
+    return geometry::tuples::push_back
+            <
+                std::tuple<Preds...>, Pred
+            >::apply(t, p);
 }
-    
+
 }} // namespace detail::predicates
 
 }}} // namespace boost::geometry::index

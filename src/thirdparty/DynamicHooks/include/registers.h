@@ -40,6 +40,22 @@
 
 
 // ============================================================================
+// >> RegisterSize
+// ============================================================================
+enum RegisterSize : uint8_t {
+	SIZE_INVALID = 0,
+	SIZE_BYTE = 1,
+	SIZE_WORD = 2,
+	SIZE_DWORD = 4,
+	SIZE_QWORD = 8,
+	SIZE_TWORD = 10,
+	SIZE_XMMWORD = 16,
+	SIZE_YMMWORD = 32,
+	SIZE_ZMMWORD = 64
+};
+
+
+// ============================================================================
 // >> Register_t
 // ============================================================================
 enum Register_t
@@ -51,23 +67,6 @@ enum Register_t
 	CL,
 	DL,
 	BL,
-
-	// 64-bit mode only
-	/*
-	SPL,
-	BPL,
-	SIL,
-	DIL,
-	R8B,
-	R9B,
-	R10B,
-	R11B,
-	R12B,
-	R13B,
-	R14B,
-	R15B,
-	*/
-
 	AH,
 	CH,
 	DH,
@@ -85,18 +84,6 @@ enum Register_t
 	SI,
 	DI,
 
-	// 64-bit mode only
-	/*
-	R8W,
-	R9W,
-	R10W,
-	R11W,
-	R12W,
-	R13W,
-	R14W,
-	R15W,
-	*/
-
 	// ========================================================================
 	// >> 32-bit General purpose registers
 	// ========================================================================
@@ -108,45 +95,6 @@ enum Register_t
 	EBP,
 	ESI,
 	EDI,
-	
-	// 64-bit mode only
-	/*
-	R8D,
-	R9D,
-	R10D,
-	R11D,
-	R12D,
-	R13D,
-	R14D,
-	R15D,
-	*/
-	
-	// ========================================================================
-	// >> 64-bit General purpose registers
-	// ========================================================================
-	// 64-bit mode only
-	/*
-	RAX,
-	RCX,
-	RDX,
-	RBX,
-	RSP,
-	RBP,
-	RSI,
-	RDI,
-	*/
-
-	// 64-bit mode only
-	/*
-	R8,
-	R9,
-	R10,
-	R11,
-	R12,
-	R13,
-	R14,
-	R15,
-	*/
 
 	// ========================================================================
 	// >> 64-bit MM (MMX) registers
@@ -171,18 +119,6 @@ enum Register_t
 	XMM5,
 	XMM6,
 	XMM7,
-
-	// 64-bit mode only
-	/*
-	XMM8,
-	XMM9,
-	XMM10,
-	XMM11,
-	XMM12,
-	XMM13,
-	XMM14,
-	XMM15,
-	*/
 
 	// ========================================================================
 	// >> 16-bit Segment registers
@@ -276,23 +212,6 @@ public:
 	CRegister* m_cl;
 	CRegister* m_dl;
 	CRegister* m_bl;
-
-	// 64-bit mode only
-	/*
-	CRegister* m_spl;
-	CRegister* m_bpl;
-	CRegister* m_sil;
-	CRegister* m_dil;
-	CRegister* m_r8b;
-	CRegister* m_r9b;
-	CRegister* m_r10b;
-	CRegister* m_r11b;
-	CRegister* m_r12b;
-	CRegister* m_r13b;
-	CRegister* m_r14b;
-	CRegister* m_r15b;
-	*/
-
 	CRegister* m_ah;
 	CRegister* m_ch;
 	CRegister* m_dh;
@@ -310,18 +229,6 @@ public:
 	CRegister* m_si;
 	CRegister* m_di;
 
-	// 64-bit mode only
-	/*
-	CRegister* m_r8w;
-	CRegister* m_r9w;
-	CRegister* m_r10w;
-	CRegister* m_r11w;
-	CRegister* m_r12w;
-	CRegister* m_r13w;
-	CRegister* m_r14w;
-	CRegister* m_r15w;
-	*/
-
 	// ========================================================================
 	// >> 32-bit General purpose registers
 	// ========================================================================
@@ -333,45 +240,6 @@ public:
 	CRegister* m_ebp;
 	CRegister* m_esi;
 	CRegister* m_edi;
-
-	// 64-bit mode only
-	/*
-	CRegister* m_r8d;
-	CRegister* m_r9d;
-	CRegister* m_r10d;
-	CRegister* m_r11d;
-	CRegister* m_r12d;
-	CRegister* m_r13d;
-	CRegister* m_r14d;
-	CRegister* m_r15d;
-	*/
-
-	// ========================================================================
-	// >> 64-bit General purpose registers
-	// ========================================================================
-	// 64-bit mode only
-	/*
-	CRegister* m_rax;
-	CRegister* m_rcx;
-	CRegister* m_rdx;
-	CRegister* m_rbx;
-	CRegister* m_rsp;
-	CRegister* m_rbp;
-	CRegister* m_rsi;
-	CRegister* m_rdi;
-	*/
-	
-	// 64-bit mode only
-	/*
-	CRegister* m_r8;
-	CRegister* m_r9;
-	CRegister* m_r10;
-	CRegister* m_r11;
-	CRegister* m_r12;
-	CRegister* m_r13;
-	CRegister* m_r14;
-	CRegister* m_r15;
-	*/
 
 	// ========================================================================
 	// >> 64-bit MM (MMX) registers
@@ -396,18 +264,6 @@ public:
 	CRegister* m_xmm5;
 	CRegister* m_xmm6;
 	CRegister* m_xmm7;
-
-	// 64-bit mode only
-	/*
-	CRegister* m_xmm8;
-	CRegister* m_xmm9;
-	CRegister* m_xmm10;
-	CRegister* m_xmm11;
-	CRegister* m_xmm12;
-	CRegister* m_xmm13;
-	CRegister* m_xmm14;
-	CRegister* m_xmm15;
-	*/
 
 	// ========================================================================
 	// >> 16-bit Segment registers

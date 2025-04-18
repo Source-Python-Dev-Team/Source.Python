@@ -24,7 +24,6 @@
 #include <boost/random/detail/operators.hpp>
 #include <boost/random/detail/signed_unsigned_tools.hpp>
 #include <boost/type_traits/is_integral.hpp>
-#include <boost/mpl/bool.hpp>
 
 namespace boost {
 namespace random {
@@ -33,7 +32,7 @@ namespace detail {
 template<class Engine, class T>
 T generate_uniform_real(
     Engine& eng, T min_value, T max_value,
-    boost::mpl::false_  /** is_integral<Engine::result_type> */)
+    boost::false_type  /** is_integral<Engine::result_type> */)
 {
     for(;;) {
         typedef T result_type;
@@ -49,7 +48,7 @@ T generate_uniform_real(
 template<class Engine, class T>
 T generate_uniform_real(
     Engine& eng, T min_value, T max_value,
-    boost::mpl::true_  /** is_integral<Engine::result_type> */)
+    boost::true_type  /** is_integral<Engine::result_type> */)
 {
     for(;;) {
         typedef T result_type;
@@ -96,7 +95,7 @@ public:
         /**
          * Constructs the parameters of a uniform_real_distribution.
          *
-         * Requires min <= max
+         * Requires min < max
          */
         explicit param_type(RealType min_arg = RealType(0.0),
                             RealType max_arg = RealType(1.0))
@@ -149,7 +148,7 @@ public:
      * Constructs a uniform_real_distribution. @c min and @c max are
      * the parameters of the distribution.
      *
-     * Requires: min <= max
+     * Requires: min < max
      */
     explicit uniform_real_distribution(
         RealType min_arg = RealType(0.0),

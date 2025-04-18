@@ -4,10 +4,11 @@
 // Copyright (c) 2008-2014 Barend Gehrels, Amsterdam, the Netherlands.
 // Copyright (c) 2009-2014 Mateusz Loskot, London, UK.
 
-// This file was modified by Oracle on 2014.
-// Modifications copyright (c) 2014, Oracle and/or its affiliates.
+// This file was modified by Oracle on 2014, 2018.
+// Modifications copyright (c) 2014, 2018, Oracle and/or its affiliates.
 
 // Contributed and/or modified by Menelaos Karavelas, on behalf of Oracle
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
@@ -21,13 +22,15 @@
 
 
 #include <boost/geometry/core/access.hpp>
+#include <boost/geometry/core/point_type.hpp>
+
+#include <boost/geometry/geometries/concepts/point_concept.hpp>
 
 #include <boost/geometry/strategies/distance.hpp>
 
-#include <boost/geometry/util/math.hpp>
 #include <boost/geometry/util/calculation_type.hpp>
-
-
+#include <boost/geometry/util/math.hpp>
+#include <boost/geometry/util/numeric_cast.hpp>
 
 
 namespace boost { namespace geometry
@@ -47,14 +50,14 @@ struct compute_pythagoras_box_box
     static inline void apply(Box1 const& box1, Box2 const& box2, T& result)
     {
         T const b1_min_coord =
-            boost::numeric_cast<T>(geometry::get<min_corner, I-1>(box1));
+            util::numeric_cast<T>(geometry::get<min_corner, I-1>(box1));
         T const b1_max_coord =
-            boost::numeric_cast<T>(geometry::get<max_corner, I-1>(box1));
+            util::numeric_cast<T>(geometry::get<max_corner, I-1>(box1));
 
         T const b2_min_coord =
-            boost::numeric_cast<T>(geometry::get<min_corner, I-1>(box2));
+            util::numeric_cast<T>(geometry::get<min_corner, I-1>(box2));
         T const b2_max_coord =
-            boost::numeric_cast<T>(geometry::get<max_corner, I-1>(box2));
+            util::numeric_cast<T>(geometry::get<max_corner, I-1>(box2));
 
         if ( b1_max_coord < b2_min_coord )
         {
@@ -115,9 +118,9 @@ public :
     apply(Box1 const& box1, Box2 const& box2)
     {
         BOOST_CONCEPT_ASSERT
-            ( (concepts::ConstPoint<typename point_type<Box1>::type>) );
+            ( (concepts::ConstPoint<point_type_t<Box1>>) );
         BOOST_CONCEPT_ASSERT
-            ( (concepts::ConstPoint<typename point_type<Box2>::type>) );
+            ( (concepts::ConstPoint<point_type_t<Box2>>) );
 
         // Calculate distance using Pythagoras
         // (Leave comment above for Doxygen)
@@ -125,7 +128,7 @@ public :
         assert_dimension_equal<Box1, Box2>();
 
         typename calculation_type<Box1, Box2>::type result(0);
-        
+
         detail::compute_pythagoras_box_box
             <
                 dimension<Box1>::value
@@ -184,7 +187,7 @@ public :
         // The cast is necessary for MSVC which considers sqrt __int64 as an ambiguous call
         return math::sqrt
             (
-                 boost::numeric_cast<typename calculation_type
+                 util::numeric_cast<typename calculation_type
                      <
                          Box1, Box2
                      >::type>

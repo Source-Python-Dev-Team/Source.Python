@@ -5,6 +5,10 @@
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
 // Copyright (c) 2014 Adam Wulkiewicz, Lodz, Poland.
 
+// This file was modified by Oracle on 2018-2020.
+// Modifications copyright (c) 2018-2020, Oracle and/or its affiliates.
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
 
@@ -20,9 +24,10 @@
 #include <string>
 
 #include <boost/concept_check.hpp>
-#include <boost/range.hpp>
-
-#include <boost/geometry/algorithms/detail/interior_iterator.hpp>
+#include <boost/range/begin.hpp>
+#include <boost/range/end.hpp>
+#include <boost/range/value_type.hpp>
+#include <boost/range/size.hpp>
 
 #include <boost/geometry/core/exterior_ring.hpp>
 #include <boost/geometry/core/interior_rings.hpp>
@@ -164,15 +169,11 @@ struct dsv_range
             Range const& range,
             dsv_settings const& settings)
     {
-        typedef typename boost::range_iterator<Range const>::type iterator_type;
-
         bool first = true;
 
         os << settings.list_open;
 
-        for (iterator_type it = boost::begin(range);
-            it != boost::end(range);
-            ++it)
+        for (auto it = boost::begin(range); it != boost::end(range); ++it)
         {
             os << (first ? "" : settings.point_separator)
                 << settings.point_open;
@@ -212,10 +213,8 @@ struct dsv_poly
 
         dsv_range<ring>::apply(os, exterior_ring(poly), settings);
 
-        typename interior_return_type<Polygon const>::type
-            rings = interior_rings(poly);
-        for (typename detail::interior_iterator<Polygon const>::type
-                it = boost::begin(rings); it != boost::end(rings); ++it)
+        auto const& rings = interior_rings(poly);
+        for (auto it = boost::begin(rings); it != boost::end(rings); ++it)
         {
             os << settings.list_separator;
             dsv_range<ring>::apply(os, *it, settings);
@@ -227,7 +226,7 @@ struct dsv_poly
 template <typename Geometry, std::size_t Index>
 struct dsv_per_index
 {
-    typedef typename point_type<Geometry>::type point_type;
+    using type = point_type_t<Geometry>;
 
     template <typename Char, typename Traits>
     static inline void apply(std::basic_ostream<Char, Traits>& os,
@@ -246,7 +245,7 @@ struct dsv_per_index
 template <typename Geometry>
 struct dsv_indexed
 {
-    typedef typename point_type<Geometry>::type point_type;
+    using type = point_type_t<Geometry>;
 
     template <typename Char, typename Traits>
     static inline void apply(std::basic_ostream<Char, Traits>& os,
@@ -327,11 +326,11 @@ public:
     {
         dispatch::dsv
             <
-                typename tag_cast
+                tag_cast_t
                     <
-                        typename tag<Geometry>::type,
+                        tag_t<Geometry>,
                         multi_tag
-                    >::type,
+                    >,
                 Geometry
             >::apply(os, m.m_geometry, m.m_settings);
         os.flush();
@@ -356,12 +355,6 @@ struct dsv_multi
                     typename boost::range_value<MultiGeometry>::type
                 > dispatch_one;
 
-    typedef typename boost::range_iterator
-        <
-            MultiGeometry const
-        >::type iterator;
-
-
     template <typename Char, typename Traits>
     static inline void apply(std::basic_ostream<Char, Traits>& os,
                 MultiGeometry const& multi,
@@ -370,9 +363,7 @@ struct dsv_multi
         os << settings.list_open;
 
         bool first = true;
-        for(iterator it = boost::begin(multi);
-            it != boost::end(multi);
-            ++it, first = false)
+        for(auto it = boost::begin(multi); it != boost::end(multi); ++it, first = false)
         {
             os << (first ? "" : settings.list_separator);
             dispatch_one::apply(os, *it, settings);
@@ -405,7 +396,7 @@ struct dsv<multi_tag, Geometry>
 \note Useful for examples and testing purposes
 \note With this function GeoJSON objects can be created, using the right
     delimiters
-\ingroup utility
+\ingroup dsv
 */
 template <typename Geometry>
 inline detail::dsv::dsv_manipulator<Geometry> dsv(Geometry const& geometry

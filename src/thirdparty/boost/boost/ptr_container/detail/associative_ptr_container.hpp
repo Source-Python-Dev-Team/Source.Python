@@ -18,6 +18,12 @@
 #endif
 
 #include <boost/ptr_container/detail/reversible_ptr_container.hpp>
+#include <boost/ptr_container/detail/ptr_container_disable_deprecated.hpp>
+
+#if defined(BOOST_PTR_CONTAINER_DISABLE_DEPRECATED)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 
 namespace boost
 {
@@ -80,7 +86,7 @@ namespace ptr_container_detail
                                    const Allocator& a )
          : base_type( comp, a, container_type() )
         { }
-        
+
         template< class Hash, class Pred, class Allocator >
         associative_ptr_container( const Hash& hash,
                                    const Pred& pred,
@@ -94,7 +100,7 @@ namespace ptr_container_detail
                                    const Allocator& a )
          : base_type( first, last, comp, a, container_type() )
         { }
-        
+
         template< class InputIterator, class Hash, class Pred, class Allocator >
         associative_ptr_container( InputIterator first, InputIterator last,
                                    const Hash& hash,
@@ -102,32 +108,50 @@ namespace ptr_container_detail
                                    const Allocator& a )
          : base_type( first, last, hash, pred, a )
         { }
-        
+
+#ifndef BOOST_NO_AUTO_PTR
         template< class PtrContainer >
         explicit associative_ptr_container( std::auto_ptr<PtrContainer> r )
          : base_type( r )
         { }
+#endif
+#ifndef BOOST_NO_CXX11_SMART_PTR
+        template< class PtrContainer >
+        explicit associative_ptr_container( std::unique_ptr<PtrContainer> r )
+         : base_type( std::move( r ) )
+        { }
+#endif
 
         associative_ptr_container( const associative_ptr_container& r )
          : base_type( r.begin(), r.end(), container_type() )
         { }
-        
+
         template< class C, class V >
         associative_ptr_container( const associative_ptr_container<C,V>& r )
          : base_type( r.begin(), r.end(), container_type() )
         { }
-        
+
+#ifndef BOOST_NO_AUTO_PTR
         template< class PtrContainer >
         associative_ptr_container& operator=( std::auto_ptr<PtrContainer> r ) // nothrow
         {
            base_type::operator=( r );
            return *this;
         }
-        
+#endif
+#ifndef BOOST_NO_CXX11_SMART_PTR
+        template< class PtrContainer >
+        associative_ptr_container& operator=( std::unique_ptr<PtrContainer> r ) // nothrow
+        {
+           base_type::operator=( std::move( r ) );
+           return *this;
+        }
+#endif
+
         associative_ptr_container& operator=( associative_ptr_container r ) // strong
         {
            this->swap( r );
-           return *this;   
+           return *this;
         }
 
     public: // associative container interface
@@ -155,12 +179,12 @@ namespace ptr_container_detail
 
         size_type erase( const key_type& x ) // nothrow
         {
-            iterator i( this->base().find( x ) );       
+            iterator i( this->base().find( x ) );
                                                         // nothrow
             if( i == this->end() )                      // nothrow
                 return 0u;                              // nothrow
             this->remove( i );                          // nothrow
-            return this->base().erase( x );             // nothrow 
+            return this->base().erase( x );             // nothrow
         }
 
         iterator erase( iterator first,
@@ -176,9 +200,9 @@ namespace ptr_container_detail
         }
 
 #if defined(BOOST_NO_SFINAE) || defined(BOOST_NO_FUNCTION_TEMPLATE_ORDERING)
-#else    
+#else
         template< class Range >
-        BOOST_DEDUCED_TYPENAME boost::disable_if< boost::is_convertible<Range&,key_type&>, 
+        BOOST_DEDUCED_TYPENAME boost::disable_if< boost::is_convertible<Range&,key_type&>,
                                                   iterator >::type
         erase( const Range& r )
         {
@@ -206,13 +230,13 @@ namespace ptr_container_detail
                                   AssociatePtrCont& from ) // basic
         {
             BOOST_ASSERT( (void*)&from != (void*)this );
- 
+
             size_type res = 0;
             for( ; first != last; )
             {
                 BOOST_ASSERT( first != from.end() );
                 this->base().insert( *first.base() );     // strong
-                BOOST_DEDUCED_TYPENAME AssociatePtrCont::iterator 
+                BOOST_DEDUCED_TYPENAME AssociatePtrCont::iterator
                     to_delete( first );
                 ++first;
                 from.base().erase( to_delete.base() );    // nothrow
@@ -250,7 +274,7 @@ namespace ptr_container_detail
                 BOOST_ASSERT( first != from.end() );
                 std::pair<BOOST_DEDUCED_TYPENAME base_type::ptr_iterator,bool> p =
                     this->base().insert( *first.base() );     // strong
-                BOOST_DEDUCED_TYPENAME AssociatePtrCont::iterator 
+                BOOST_DEDUCED_TYPENAME AssociatePtrCont::iterator
                     to_delete( first );
                 ++first;
                 if( p.second )
@@ -261,12 +285,12 @@ namespace ptr_container_detail
             }
             return res;
         }
-        
+
         reference front()
         {
             BOOST_ASSERT( !this->empty() );
             BOOST_ASSERT( *this->begin().base() != 0 );
-            return *this->begin(); 
+            return *this->begin();
         }
 
         const_reference front() const
@@ -278,7 +302,7 @@ namespace ptr_container_detail
         {
             BOOST_ASSERT( !this->empty() );
             BOOST_ASSERT( *(--this->end()).base() != 0 );
-            return *--this->end(); 
+            return *--this->end();
         }
 
         const_reference back() const
@@ -296,37 +320,37 @@ namespace ptr_container_detail
         {
             return this->base().key_eq();
         }
-        
+
         size_type bucket_count() const
         {
             return this->base().bucket_count();
         }
-        
+
         size_type max_bucket_count() const
         {
             return this->base().max_bucket_count();
         }
-        
+
         size_type bucket_size( size_type n ) const
         {
             return this->base().bucket_size( n );
         }
-        
+
         float load_factor() const
         {
             return this->base().load_factor();
         }
-        
+
         float max_load_factor() const
         {
             return this->base().max_load_factor();
         }
-        
+
         void max_load_factor( float factor )
         {
             return this->base().max_load_factor( factor );
         }
-        
+
         void rehash( size_type n )
         {
             this->base().rehash( n );
@@ -375,37 +399,40 @@ namespace ptr_container_detail
         {
             return local_iterator( this->base().begin( n ) );
         }
-        
+
         const_local_iterator begin( size_type n ) const
         {
             return const_local_iterator( this->base().begin( n ) );
         }
-        
+
         local_iterator end( size_type n )
         {
             return local_iterator( this->base().end( n ) );
         }
-        
+
         const_local_iterator end( size_type n ) const
         {
             return const_local_iterator( this->base().end( n ) );
         }
-        
+
         const_local_iterator cbegin( size_type n ) const
         {
             return const_local_iterator( this->base().cbegin( n ) );
         }
-        
+
         const_local_iterator cend( size_type n )
         {
             return const_local_iterator( this->base().cend( n ) );
         }
 
      }; // class 'associative_ptr_container'
-    
+
 } // namespace 'ptr_container_detail'
-    
+
 } // namespace 'boost'
 
+#if defined(BOOST_PTR_CONTAINER_DISABLE_DEPRECATED)
+#pragma GCC diagnostic pop
+#endif
 
 #endif

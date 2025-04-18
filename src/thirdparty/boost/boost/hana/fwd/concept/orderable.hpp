@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::Orderable`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -13,7 +13,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/config.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @ingroup group-concepts
     //! @defgroup group-Orderable Orderable
     //! The `Orderable` concept represents totally ordered data types.
@@ -177,11 +177,11 @@ BOOST_HANA_NAMESPACE_BEGIN
     //!
     //!
     //! [1]: http://en.wikipedia.org/wiki/Total_order
-    //! [2]: http://en.cppreference.com/w/cpp/concept/LessThanComparable
+    //! [2]: http://en.cppreference.com/w/cpp/named_req/LessThanComparable
     //! [3]: http://www.open-std.org/jtc1/sc22/wg21/docs/papers/2012/n3351.pdf
     //! [4]: http://en.wikipedia.org/wiki/Strict_weak_ordering
     template <typename Ord>
     struct Orderable;
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_CONCEPT_ORDERABLE_HPP

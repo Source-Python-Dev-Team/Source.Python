@@ -9,10 +9,10 @@
 #include <boost/ptr_container/detail/serialize_reversible_cont.hpp>
 #include <boost/ptr_container/ptr_vector.hpp>
 
-namespace boost 
+namespace boost
 {
 
-namespace serialization 
+namespace serialization
 {
 
 template<class Archive, class T, class CloneAllocator, class Allocator>
@@ -20,18 +20,18 @@ void load(Archive& ar, ptr_vector<T, CloneAllocator, Allocator>& c, unsigned int
 {
     typedef ptr_vector<T, CloneAllocator, Allocator> container_type;
     typedef BOOST_DEDUCED_TYPENAME container_type::size_type size_type;
-    
+
     size_type n;
     ar >> boost::serialization::make_nvp( ptr_container_detail::count(), n );
     c.reserve(n);
-    
+
     ptr_container_detail::load_helper(ar, c, n);
 }
 
 template<class Archive, class T, class CloneAllocator, class Allocator>
 void serialize(Archive& ar, ptr_vector<T, CloneAllocator, Allocator>& c, const unsigned int version)
 {
-   split_free(ar, c, version);
+   core::split_free(ar, c, version);
 }
 
 } // namespace serialization

@@ -2,7 +2,7 @@
 @file
 Defines operators for Searchables.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -14,7 +14,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/fwd/at_key.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN namespace detail {
+namespace boost { namespace hana { namespace detail {
     template <typename Derived>
     struct searchable_operators {
         template <typename Key>
@@ -35,6 +35,6 @@ BOOST_HANA_NAMESPACE_BEGIN namespace detail {
                                 static_cast<Key&&>(key));
         }
     };
-} BOOST_HANA_NAMESPACE_END
+} }} // end namespace boost::hana
 
 #endif // !BOOST_HANA_DETAIL_OPERATORS_SEARCHABLE_HPP

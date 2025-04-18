@@ -5,11 +5,11 @@
 // Copyright (c) 2009-2014 Mateusz Loskot, London, UK.
 // Copyright (c) 2013-2014 Adam Wulkiewicz, Lodz, Poland.
 
-// This file was modified by Oracle on 2013-2017.
-// Modifications copyright (c) 2013-2017, Oracle and/or its affiliates.
-
-// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+// This file was modified by Oracle on 2013-2024.
+// Modifications copyright (c) 2013-2024, Oracle and/or its affiliates.
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
 // Contributed and/or modified by Menelaos Karavelas, on behalf of Oracle
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
@@ -24,9 +24,6 @@
 #include <cstddef>
 #include <deque>
 
-#include <boost/range.hpp>
-#include <boost/geometry/util/range.hpp>
-
 #include <boost/geometry/core/point_type.hpp>
 #include <boost/geometry/core/tag.hpp>
 #include <boost/geometry/core/tags.hpp>
@@ -34,10 +31,11 @@
 #include <boost/geometry/algorithms/detail/overlay/turn_info.hpp>
 #include <boost/geometry/algorithms/detail/overlay/get_turns.hpp>
 #include <boost/geometry/algorithms/detail/overlay/do_reverse.hpp>
+#include <boost/geometry/algorithms/detail/overlay/segment_as_subrange.hpp>
+
+#include <boost/geometry/geometries/helper_geometry.hpp>
 
 #include <boost/geometry/policies/disjoint_interrupt_policy.hpp>
-#include <boost/geometry/policies/robustness/no_rescale_policy.hpp>
-#include <boost/geometry/policies/robustness/segment_ratio_type.hpp>
 
 #include <boost/geometry/algorithms/dispatch/disjoint.hpp>
 
@@ -57,30 +55,17 @@ struct disjoint_segment
     static inline bool apply(Segment1 const& segment1, Segment2 const& segment2,
                              Strategy const& strategy)
     {
-        typedef typename point_type<Segment1>::type point_type;
-
-        // We don't need to rescale to detect disjointness
-        typedef no_rescale_policy rescale_policy_type;
-        rescale_policy_type robust_policy;
-
-        typedef segment_intersection_points
-            <
-                point_type,
-                typename segment_ratio_type
-                    <
-                        point_type,
-                        rescale_policy_type
-                    >::type
-            > intersection_return_type;
-
-        typedef policies::relate::segments_intersection_points
+        using point_type = point_type_t<Segment1>;
+        using intersection_return_type = segment_intersection_points<point_type>;
+        using intersection_policy = policies::relate::segments_intersection_points
             <
                 intersection_return_type
-            > intersection_policy;
+            >;
 
-        intersection_return_type is = strategy.apply(segment1, segment2,
-                                                     intersection_policy(),
-                                                     robust_policy);
+        detail::segment_as_subrange<Segment1> sub_range1(segment1);
+        detail::segment_as_subrange<Segment2> sub_range2(segment2);
+        intersection_return_type is = strategy.relate().apply(sub_range1, sub_range2,
+                                                              intersection_policy());
 
         return is.count == 0;
     }
@@ -93,18 +78,7 @@ struct assign_disjoint_policy
     static bool const include_no_turn = true;
     static bool const include_degenerate = true;
     static bool const include_opposite = true;
-
-    // We don't assign extra info:
-    template
-    <
-        typename Info,
-        typename Point1,
-        typename Point2,
-        typename IntersectionInfo
-    >
-    static inline void apply(Info& , Point1 const& , Point2 const&,
-                IntersectionInfo const&)
-    {}
+    static bool const include_start_turn = false;
 };
 
 
@@ -116,21 +90,21 @@ struct disjoint_linear
                              Geometry2 const& geometry2,
                              Strategy const& strategy)
     {
-        typedef typename geometry::point_type<Geometry1>::type point_type;
-        typedef detail::no_rescale_policy rescale_policy_type;
-        typedef typename geometry::segment_ratio_type
+        using point_type = typename geometry::point_type<Geometry1>::type;
+        using mutable_point_type = typename helper_geometry<point_type>::type;
+        using ratio_type = geometry::segment_ratio
             <
-                point_type, rescale_policy_type
-            >::type segment_ratio_type;
-        typedef overlay::turn_info
+                typename coordinate_type<point_type>::type
+            > ;
+        using turn_info_type = overlay::turn_info
             <
-                point_type,
-                segment_ratio_type,
+                mutable_point_type,
+                ratio_type,
                 typename detail::get_turns::turn_operation_type
                         <
-                            Geometry1, Geometry2, segment_ratio_type
+                            Geometry1, Geometry2, mutable_point_type, ratio_type
                         >::type
-            > turn_info_type;
+            >;
 
         std::deque<turn_info_type> turns;
 
@@ -151,7 +125,7 @@ struct disjoint_linear
                         Geometry1, Geometry2, assign_disjoint_policy
                     >
             >::apply(0, geometry1, 1, geometry2,
-                     strategy, rescale_policy_type(), turns, interrupt_policy);
+                     strategy, turns, interrupt_policy);
 
         return !interrupt_policy.has_intersections;
     }

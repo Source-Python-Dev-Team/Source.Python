@@ -9,19 +9,21 @@ Copyright (c) 2009-2009: Joachim Faulhaber
 #define BOOST_ICL_ITERATOR_HPP_JOFA_091003
 
 #include <iterator>
-#include <boost/config/warning_disable.hpp>
 
 namespace boost{namespace icl
 {
 
 /** \brief Performes an addition using a container's memberfunction add, when operator= is called. */
 template<class ContainerT> class add_iterator
-    : public std::iterator<std::output_iterator_tag, void, void, void, void>
 {
 public:
     /// The container's type.
     typedef ContainerT container_type;
     typedef std::output_iterator_tag iterator_category; 
+    typedef void value_type;
+    typedef void difference_type;
+    typedef void pointer;
+    typedef void reference;
 
     /** An add_iterator is constructed with a container and a position 
         that has to be maintained. */
@@ -57,12 +59,15 @@ inline add_iterator<ContainerT> adder(ContainerT& cont, IteratorT iter_)
 
 /** \brief Performes an insertion using a container's memberfunction add, when operator= is called. */
 template<class ContainerT> class insert_iterator
-    : public std::iterator<std::output_iterator_tag, void, void, void, void>
 {
 public:
     /// The container's type.
     typedef ContainerT container_type;
     typedef std::output_iterator_tag iterator_category; 
+    typedef void value_type;
+    typedef void difference_type;
+    typedef void pointer;
+    typedef void reference;
 
     /** An insert_iterator is constructed with a container and a position 
         that has to be maintained. */

@@ -103,9 +103,9 @@ namespace boost
               BOOST_SIGNALS2_FORWARDED_ARGS(BOOST_SIGNALS2_NUM_ARGS));
         }
         template<typename T>
-          bool operator==(const T &other) const
+          bool contains(const T &other) const
         {
-          return _fun == other;
+          return _fun.contains(other);
         }
       private:
         BOOST_SIGNALS2_BOUND_EXTENDED_SLOT_FUNCTION_N(BOOST_SIGNALS2_NUM_ARGS)()
@@ -115,6 +115,8 @@ namespace boost
         boost::shared_ptr<connection> _connection;
       };
 
+      template<BOOST_SIGNALS2_SIGNAL_TEMPLATE_DECL(BOOST_SIGNALS2_NUM_ARGS)>
+        class BOOST_SIGNALS2_WEAK_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS);
       template<BOOST_SIGNALS2_SIGNAL_TEMPLATE_DECL(BOOST_SIGNALS2_NUM_ARGS)>
         class BOOST_SIGNALS2_SIGNAL_IMPL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS);
 
@@ -150,10 +152,12 @@ namespace boost
         typedef GroupCompare group_compare_type;
         typedef typename detail::slot_call_iterator_t<slot_invoker,
           typename connection_list_type::iterator, connection_body<group_key_type, slot_type, Mutex> > slot_call_iterator;
+        typedef detail::BOOST_SIGNALS2_WEAK_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS)
+          <BOOST_SIGNALS2_SIGNAL_TEMPLATE_INSTANTIATION> weak_signal_type;
 
         BOOST_SIGNALS2_SIGNAL_IMPL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS)(const combiner_type &combiner_arg,
           const group_compare_type &group_compare):
-          _shared_state(new invocation_state(connection_list_type(group_compare), combiner_arg)),
+          _shared_state(boost::make_shared<invocation_state>(connection_list_type(group_compare), combiner_arg)),
           _garbage_collector_it(_shared_state->connection_bodies().end()),
           _mutex(new mutex_type())
         {}
@@ -219,7 +223,7 @@ namespace boost
         void disconnect(const T &slot)
         {
           typedef mpl::bool_<(is_convertible<T, group_type>::value)> is_group;
-          do_disconnect(slot, is_group());
+          do_disconnect(unwrap_ref(slot), is_group());
         }
         // emit signal
         result_type operator ()(BOOST_SIGNALS2_SIGNATURE_FULL_ARGS(BOOST_SIGNALS2_NUM_ARGS))
@@ -306,7 +310,7 @@ namespace boost
           if(_shared_state.unique())
             _shared_state->combiner() = combiner_arg;
           else
-            _shared_state.reset(new invocation_state(*_shared_state, combiner_arg));
+            _shared_state = boost::make_shared<invocation_state>(*_shared_state, combiner_arg);
         }
       private:
         typedef Mutex mutex_type;
@@ -475,7 +479,7 @@ namespace boost
         {
           if(_shared_state.unique() == false)
           {
-            _shared_state.reset(new invocation_state(*_shared_state, _shared_state->connection_bodies()));
+            _shared_state = boost::make_shared<invocation_state>(*_shared_state, _shared_state->connection_bodies());
             nolock_cleanup_connections_from(lock, true, _shared_state->connection_bodies().begin());
           }else
           {
@@ -497,7 +501,7 @@ namespace boost
           }
           if(_shared_state.unique() == false)
           {
-            _shared_state.reset(new invocation_state(*_shared_state, _shared_state->connection_bodies()));
+            _shared_state = boost::make_shared<invocation_state>(*_shared_state, _shared_state->connection_bodies());
           }
           nolock_cleanup_connections_from(list_lock, false, _shared_state->connection_bodies().begin());
         }
@@ -510,7 +514,7 @@ namespace boost
           const slot_type &slot)
         {
           nolock_force_unique_connection_list(lock);
-          return connection_body_type(new connection_body<group_key_type, slot_type, Mutex>(slot, _mutex));
+          return boost::make_shared<connection_body<group_key_type, slot_type, Mutex> >(slot, _mutex);
         }
         void do_disconnect(const group_type &group, mpl::bool_<true> /* is_group */)
         {
@@ -527,17 +531,24 @@ namespace boost
           {
             garbage_collecting_lock<connection_body_base> lock(**it);
             if((*it)->nolock_nograb_connected() == false) continue;
-            if((*it)->slot().slot_function() == slot)
+            if((*it)->slot().slot_function().contains(slot))
             {
               (*it)->nolock_disconnect(lock);
             }else
-            {
-              // check for wrapped extended slot
+            { // check for wrapped extended slot
               bound_extended_slot_function_type *fp;
               fp = (*it)->slot().slot_function().template target<bound_extended_slot_function_type>();
-              if(fp && *fp == slot)
+              if(fp && fp->contains(slot))
               {
                 (*it)->nolock_disconnect(lock);
+              }else
+              { // check for wrapped signal
+                weak_signal_type *fp;
+                fp = (*it)->slot().slot_function().template target<weak_signal_type>();
+                if(fp && fp->contains(slot))
+                {
+                  (*it)->nolock_disconnect(lock);
+                }
               }
             }
           }
@@ -588,8 +599,6 @@ namespace boost
         const boost::shared_ptr<mutex_type> _mutex;
       };
 
-      template<BOOST_SIGNALS2_SIGNAL_TEMPLATE_DECL(BOOST_SIGNALS2_NUM_ARGS)>
-        class BOOST_SIGNALS2_WEAK_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS);
     }
 
     template<BOOST_SIGNALS2_SIGNAL_TEMPLATE_DEFAULTED_DECL(BOOST_SIGNALS2_NUM_ARGS)>
@@ -603,8 +612,7 @@ namespace boost
       typedef detail::BOOST_SIGNALS2_SIGNAL_IMPL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS)
         <BOOST_SIGNALS2_SIGNAL_TEMPLATE_INSTANTIATION> impl_class;
     public:
-      typedef detail::BOOST_SIGNALS2_WEAK_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS)
-        <BOOST_SIGNALS2_SIGNAL_TEMPLATE_INSTANTIATION> weak_signal_type;
+      typedef typename impl_class::weak_signal_type weak_signal_type;
       friend class detail::BOOST_SIGNALS2_WEAK_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS)
         <BOOST_SIGNALS2_SIGNAL_TEMPLATE_INSTANTIATION>;
 
@@ -658,7 +666,7 @@ namespace boost
       BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS)(const combiner_type &combiner_arg = combiner_type(),
         const group_compare_type &group_compare = group_compare_type()):
         _pimpl(new impl_class(combiner_arg, group_compare))
-      {};
+      {}
       virtual ~BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS)()
       {
       }
@@ -666,14 +674,14 @@ namespace boost
       //move support
 #if !defined(BOOST_NO_CXX11_RVALUE_REFERENCES)
       BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS)(
-        BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS) && other)
+        BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS) && other) BOOST_NOEXCEPT
       {
         using std::swap;
         swap(_pimpl, other._pimpl);
-      };
+      }
       
       BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS) & 
-        operator=(BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS) && rhs)
+        operator=(BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS) && rhs) BOOST_NOEXCEPT
       {
         if(this == &rhs)
         {
@@ -706,15 +714,18 @@ namespace boost
       }
       void disconnect_all_slots()
       {
+        if (_pimpl.get() == 0) return;
         (*_pimpl).disconnect_all_slots();
       }
       void disconnect(const group_type &group)
       {
+        if (_pimpl.get() == 0) return;
         (*_pimpl).disconnect(group);
       }
       template <typename T>
       void disconnect(const T &slot)
       {
+        if (_pimpl.get() == 0) return;
         (*_pimpl).disconnect(slot);
       }
       result_type operator ()(BOOST_SIGNALS2_SIGNATURE_FULL_ARGS(BOOST_SIGNALS2_NUM_ARGS))
@@ -727,10 +738,12 @@ namespace boost
       }
       std::size_t num_slots() const
       {
+        if (_pimpl.get() == 0) return 0;
         return (*_pimpl).num_slots();
       }
       bool empty() const
       {
+        if (_pimpl.get() == 0) return true;
         return (*_pimpl).empty();
       }
       combiner_type combiner() const
@@ -741,10 +754,18 @@ namespace boost
       {
         return (*_pimpl).set_combiner(combiner_arg);
       }
-      void swap(BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS) & other)
+      void swap(BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS) & other) BOOST_NOEXCEPT
       {
         using std::swap;
         swap(_pimpl, other._pimpl);
+      }
+      bool operator==(const BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS) & other) const
+      {
+        return _pimpl.get() == other._pimpl.get();
+      }
+      bool null() const
+      {
+        return _pimpl.get() == 0;
       }
     protected:
       virtual shared_ptr<void> lock_pimpl() const
@@ -752,6 +773,14 @@ namespace boost
         return _pimpl;
       }
     private:
+      // explicit private copy constructor to avoid compiler trying to do implicit conversions to signal
+      explicit BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS)(
+        const BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS) & other) BOOST_NOEXCEPT
+      {
+          // noncopyable
+          BOOST_ASSERT(false);
+      }
+
       shared_ptr<impl_class>
         _pimpl;
     };
@@ -761,7 +790,7 @@ namespace boost
     template<BOOST_SIGNALS2_SIGNAL_TEMPLATE_DECL(BOOST_SIGNALS2_NUM_ARGS)>
       void swap(
         BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS) <BOOST_SIGNALS2_SIGNAL_TEMPLATE_INSTANTIATION> &sig1,
-        BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS) <BOOST_SIGNALS2_SIGNAL_TEMPLATE_INSTANTIATION> &sig2 )
+        BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS) <BOOST_SIGNALS2_SIGNAL_TEMPLATE_INSTANTIATION> &sig2 ) BOOST_NOEXCEPT
     {
       sig1.swap(sig2);
     }
@@ -801,6 +830,16 @@ namespace boost
             <BOOST_SIGNALS2_SIGNAL_TEMPLATE_INSTANTIATION> >
             shared_pimpl(_weak_pimpl.lock());
           return (*shared_pimpl)(BOOST_SIGNALS2_SIGNATURE_ARG_NAMES(BOOST_SIGNALS2_NUM_ARGS));
+        }
+        bool contains(const BOOST_SIGNALS2_SIGNAL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS)
+          <BOOST_SIGNALS2_SIGNAL_TEMPLATE_INSTANTIATION> &signal) const
+        {
+          return _weak_pimpl.lock().get() == signal._pimpl.get(); 
+        }
+        template <typename T>
+        bool contains(const T&) const
+        {
+          return false;
         }
       private:
         boost::weak_ptr<detail::BOOST_SIGNALS2_SIGNAL_IMPL_CLASS_NAME(BOOST_SIGNALS2_NUM_ARGS)
