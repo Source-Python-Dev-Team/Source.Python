@@ -7,14 +7,13 @@ Requirements
 Linux
 ^^^^^
 
-1. GLIBC 2.17 or later is required. Check your version by typing ``ld -version``.
-2. The 32 bit version of ``libz.so.1`` and ``libffi.so.6`` is required. See the table below to install the proper packages.
+1. GLIBC 2.29 or later is required. Check your version by typing ``ld -version``.
+2. The 32 bit version of ``libz.so.1`` and ``libffi.so.7`` is required. See the table below to install the proper packages.
 
 ================================= ================================== ======================================
-Distribution                      libz.so.1                          libffi.so.6
+Distribution                      libz.so.1                          libffi.so.7
 ================================= ================================== ======================================
-Debian/Ubuntu 32 bit              apt-get install zlib1g             apt-get install libffi6
-Debian/Ubuntu 64 bit              apt-get install zlib1g:i386        apt-get install libffi6:i386
+Debian/Ubuntu                     apt-get install zlib1g:i386        apt-get install libffi7:i386
 ================================= ================================== ======================================
 
 
@@ -22,7 +21,7 @@ Debian/Ubuntu 64 bit              apt-get install zlib1g:i386        apt-get ins
 Windows
 ^^^^^^^
 
-1. `Visual C++ Redistributable for Visual Studio 2010 (x86) <https://download.microsoft.com/download/C/6/D/C6D0FD4E-9E53-4897-9B91-836EBA2AACD3/vcredist_x86.exe>`_ is required. Most machines already have a redistributable installed, so you only need to install it if Source.Python didn't load properly due to the missing redistributable.
+There are no special requirements.
 
 
 Installation steps
