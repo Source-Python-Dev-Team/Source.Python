@@ -473,7 +473,7 @@ def setup_sqlite():
     # memory using its absolute path.
     # Using RPATH might be a better solution, but I don't get it working...
     ctypes.cdll.LoadLibrary(
-    	BASE_PATH / 'Python3/lib-dynload/_sqlite3.cpython-313-x86_64-linux-gnu.so')
+    	BASE_PATH / 'Python3/plat-linux/libsqlite3.so.0')
 
 
 # =============================================================================
