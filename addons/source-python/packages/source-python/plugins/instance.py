@@ -59,6 +59,14 @@ class Plugin(object):
         self.info = self.manager._create_plugin_info(plugin_name)
         self.import_name = (self.manager.base_import + plugin_name +
                             '.' + plugin_name)
+                            
+    @property
+    def loaded(self):
+        """Return whether or not the plugin is loaded.
+
+        :rtype: bool
+        """
+        return self.manager.is_loaded(self.name)
 
     def unload(self):
         """Unload the plugin."""

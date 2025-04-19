@@ -223,42 +223,42 @@ class SubCommandManager(AutoUnload, list):
         """List all currently loaded plugins."""
         # Get header messages
         message = self.translations[
-            'Plugins'].get_string() + '\n' + '=' * 61 + '\n\n'
+            'Plugins'].get_string() + f' {len(self.manager)}\n' + '-' * 61 + '\n\n'
 
         # Loop through all loaded plugins
         for plugin_name in sorted(self.manager):
             info = self.manager[plugin_name].info
 
-            message += plugin_name + ' ({}):\n'.format(info.verbose_name)
+            message += plugin_name + f' ({info.verbose_name}):\n'
 
             if info.author is not None:
-                message += '   author:          {}\n'.format(info.author)
+                message += f'   author:          {info.author}\n'
 
             if info.description is not None:
-                message += '   description:     {}\n'.format(info.description)
+                message += f'   description:     {info.description}\n'
 
             if info.version != 'unversioned':
-                message += '   version:         {}\n'.format(info.version)
+                message += f'   version:         {info.version}\n'
 
             if info.url is not None:
-                message += '   url:             {}\n'.format(info.url)
+                message += f'   url:             {info.url}\n'
 
             if info.permissions:
                 message += '   permissions:\n'
                 for permission, description in info.permissions:
-                    message += '      {}:'.format(permission).ljust(30) + description + '\n'
+                    message += f'      {permission}:'.ljust(30) + description + '\n'
 
             if isinstance(info.public_convar, PublicConVar):
-                message += '   public convar:   {}\n'.format(info.public_convar.name)
+                message += f'   public convar:   {info.public_convar.name}\n'
 
             for attr in info.display_in_listing:
-                message += '   {}:'.format(attr).ljust(20) + str(getattr(info, attr)) + '\n'
+                message += f'   {attr}:'.ljust(20) + str(getattr(info, attr)) + '\n'
 
             # Add 1 blank line between each plugin
             message += '\n'
 
         # Add the ending separator
-        message += '=' * 61
+        message += '-' * 61
 
         # Print the message
         self.log_message(message)
