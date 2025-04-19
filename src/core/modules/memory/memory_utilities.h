@@ -67,6 +67,14 @@ inline unsigned long ExtractAddress(object oPtr, bool bValidate = false)
 {
 	CPointer* pPtr;
 
+	if (oPtr.is_none()) {
+		if (bValidate) {
+			BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Pointer is NULL.")
+		}
+
+		return 0;
+	}
+
 	extract<CPointer *> extractor(oPtr);
 	if (!extractor.check())
 	{
