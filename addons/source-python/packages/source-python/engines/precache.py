@@ -113,13 +113,7 @@ class _PrecacheBase(AutoUnload):
         self._precache()
 
     def _unload_instance(self):
-        """Remove from the downloads list and unregister server_spawn."""
-        # Remove the path from the downloads list
-        try:
-            self._downloads._unload_instance()
-        except AttributeError:
-            pass
-
+        """Unregister server_spawn."""
         # Unregister the server_spawn event
         event_manager.unregister_for_event('server_spawn', self._server_spawn)
 
