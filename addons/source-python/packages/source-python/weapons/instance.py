@@ -8,6 +8,10 @@
 # Source.Python Imports
 #   Cvars
 from cvars import ConVar
+#   Weapons
+from weapons.constants import WeaponID
+from weapons.constants import WeaponSlot
+from weapons.constants import WeaponType
 
 
 # =============================================================================
@@ -31,8 +35,17 @@ class WeaponClass(object):
         # Store the weapon's base name
         self._basename = basename
 
+        # Store the weapon's id number
+        self._id = self.parse_weapon_constants(
+            properties.get('id', None), WeaponID)
+
+        # Store the weapon's type number
+        self._type = self.parse_weapon_constants(
+            properties.get('type', None), WeaponType)
+
         # Store the weapon's slot number
-        self._slot = properties.get('slot', None)
+        self._slot = self.parse_weapon_constants(
+            properties.get('slot', None), WeaponSlot)
 
         # Store the weapon's max ammo amount
         self._maxammo = properties.get('maxammo', None)
@@ -46,8 +59,8 @@ class WeaponClass(object):
         # Store the weapon's cost
         self._cost = properties.get('cost', None)
 
-        # Store the weapon's item definition index
-        self._item_definition_index = properties.get('item_definition_index', None)
+        # Store the weapon's parent_class
+        self._parent_class = properties.get('parent_class', None)
 
         # Store the weapon's tags
         self._tags = properties.get('tags', 'all').split(',')
@@ -69,10 +82,26 @@ class WeaponClass(object):
         return self._basename
 
     @property
+    def id(self):
+        """Return the id of the weapon.
+
+        :rtype: int/WeaponID
+        """
+        return self._id
+
+    @property
+    def type(self):
+        """Return the type of the weapon.
+
+        :rtype: int/WeaponType
+        """
+        return self._type
+
+    @property
     def slot(self):
         """Return the slot of the weapon.
 
-        :rtype: int
+        :rtype: int/WeaponSlot
         """
         return self._slot
 
@@ -124,6 +153,16 @@ class WeaponClass(object):
         return self._cost
 
     @property
+    def parent_class(self):
+        """Return the parent class of the weapon.
+
+        :return:
+            None if the parent class data is missing.
+        :rtype: str
+        """
+        return self._parent_class
+
+    @property
     def item_definition_index(self):
         """Return the item definition index of the weapon.
 
@@ -131,7 +170,7 @@ class WeaponClass(object):
             None if the item defition index data is missing.
         :rtype: int
         """
-        return self._item_definition_index
+        return int(self._id) if self._id is not None else None
 
     @property
     def tags(self):
@@ -140,3 +179,23 @@ class WeaponClass(object):
         :rtype: list
         """
         return self._tags
+
+    @staticmethod
+    def parse_weapon_constants(value, weapon_constants):
+        """Parses weapon constants.
+
+        :return:
+            Returns the value as it is if weapon constants cannot be found.
+        """
+        if isinstance(value, int):
+            try:
+                return weapon_constants(value)
+            except ValueError:
+                pass
+        elif isinstance(value, str):
+            try:
+                return getattr(weapon_constants, value)
+            except AttributeError:
+                pass
+
+        return value
