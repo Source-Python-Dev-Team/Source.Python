@@ -214,7 +214,9 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	// ------------------------------------------------------------------
 #elif __linux__
 	// See issue #466.
-	//SPLoadLibrary(engine, ZLIB_LIB);
+	if (SPLoadLibrary(engine, ZLIB_LIB) == NULL) {
+		return false;
+	}
 #endif
 
 	// ------------------------------------------------------------------
