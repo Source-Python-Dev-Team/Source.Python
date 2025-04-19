@@ -30,6 +30,7 @@ from core.version import GIT_COMMIT
 #   Engines
 from engines.server import execute_server_command
 from engines.server import queue_command_string
+from engines.server import engine_server
 #   Paths
 from paths import SP_DATA_PATH
 #   Plugins
@@ -133,24 +134,25 @@ def _sp_help(command_info, command=None, *server_sub_commands):
 @core_command.server_sub_command(['info'])
 def print_info(info):
     """Print information about OS, SP and installed plugins."""
-    result = '\nDate          : {}'.format(datetime.now(UTC))
-    result += '\nOS            : {}'.format(platform.platform())
-    result += '\nGame          : {}'.format(SOURCE_ENGINE_BRANCH)
-    result += '\nSP version    : {}'.format(VERSION)
-    result += '\nGithub commit : {}'.format(GIT_COMMIT)
+    result =  f'\nDate          : {datetime.now(UTC)}'
+    result += f'\nOS            : {platform.platform()}'
+    result += f'\nGame          : {SOURCE_ENGINE_BRANCH}'
+    result += f'\nDedicated     : {engine_server.is_dedicated_server()}'
+    result += f'\nSP version    : {VERSION}'
+    result += f'\nGithub commit : {GIT_COMMIT}'
     result += '\nServer plugins:'
     for index, plugin in enumerate(server_plugin_manager.loaded_plugins):
-        result += '\n   {:02d}: {}'.format(index, plugin.name)
+        result += f'\n   {index:02d}: {plugin.name}'
 
     result += '\nSP plugins:'
     for index, plugin in enumerate(plugin_manager.loaded_plugins):
-        result += '\n   {:02d}: {}'.format(index, plugin.name)
+        result += f'\n   {index:02d}: {plugin.name}'
         info = plugin.info
         if info.version != 'unversioned':
-            result += ', {}'.format(info.version)
+            result += f', {info.version}'
 
         if info.url is not None:
-            result += ', {}'.format(info.url)
+            result += f', {info.url}'
 
     # Create a checksum for all the the essential information (from 'Date' to
     # the last SP plugin)
