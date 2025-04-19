@@ -238,7 +238,7 @@ class _BaseSound:
 
         :rtype: str
         """
-        return self.full_path.ext[1:]
+        return self.full_path.suffix[1:]
 
     @property
     def full_path(self):
