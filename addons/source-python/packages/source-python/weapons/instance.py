@@ -190,7 +190,7 @@ class WeaponClass(object):
         if isinstance(value, int):
             try:
                 return weapon_constants(value)
-            except ValueError:
+            except (ValueError, TypeError):
                 pass
         elif isinstance(value, str):
             try:
