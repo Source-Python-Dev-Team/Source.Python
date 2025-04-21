@@ -8,6 +8,8 @@
 # Source.Python Imports
 #   Cvars
 from cvars import ConVar
+#   Core
+from core import GAME_NAME
 #   Weapons
 from weapons.constants import WeaponID
 from weapons.constants import WeaponSlot
@@ -42,10 +44,13 @@ class WeaponClass(object):
         # Store the weapon's type number
         self._type = self.parse_weapon_constants(
             properties.get('type', None), WeaponType)
-
-        # Store the weapon's slot number
-        self._slot = self.parse_weapon_constants(
+        if GAME_NAME in ('cstrike', 'csgo', 'tf'):
+           # Store the weapon's slot number
+            self._slot = self.parse_weapon_constants(
             properties.get('slot', None), WeaponSlot)
+        else:
+           # Store the weapon's slot number
+            self._slot = properties.get('slot', None)
 
         # Store the weapon's max ammo amount
         self._maxammo = properties.get('maxammo', None)
