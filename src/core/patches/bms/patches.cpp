@@ -23,9 +23,3 @@
 * all respects for all other code used.  Additionally, the Source.Python
 * Development Team grants this exception to all derivative works.
 */
-
-#include "public/tier0/threadtools.h"
-#ifndef PATCH_UPDATE_AUTO_LOCK
-// TODO: Create a real fix for this!
-#error "Fix typeof compiler error."
-#endif

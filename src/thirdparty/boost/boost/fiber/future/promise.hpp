@@ -12,8 +12,8 @@
 #include <utility>
 
 #include <boost/config.hpp>
+#include <boost/core/pointer_traits.hpp>
 
-#include <boost/fiber/detail/convert.hpp>
 #include <boost/fiber/exceptions.hpp>
 #include <boost/fiber/future/detail/shared_state.hpp>
 #include <boost/fiber/future/detail/shared_state_object.hpp>
@@ -38,20 +38,22 @@ struct promise_base {
     promise_base( std::allocator_arg_t, Allocator alloc) {
         typedef detail::shared_state_object< R, Allocator >  object_type;
         typedef std::allocator_traits< typename object_type::allocator_type > traits_type;
+        typedef pointer_traits< typename traits_type::pointer > ptrait_type;
         typename object_type::allocator_type a{ alloc };
         typename traits_type::pointer ptr{ traits_type::allocate( a, 1) };
+        typename ptrait_type::element_type* p = boost::to_address(ptr);
 
         try {
-            traits_type::construct( a, ptr, a);
+            traits_type::construct( a, p, a);
         } catch (...) {
             traits_type::deallocate( a, ptr, 1);
             throw;
         }
-        future_.reset( convert( ptr) );
+        future_.reset(p);
     }
 
     ~promise_base() {
-        if ( future_) {
+        if ( future_ && obtained_) {
             future_->owner_destroyed();
         }
     }
@@ -66,7 +68,7 @@ struct promise_base {
     }
 
     promise_base & operator=( promise_base && other) noexcept {
-        if ( this != & other) {
+        if ( BOOST_LIKELY( this != & other) ) {
             promise_base tmp{ std::move( other) };
             swap( tmp);
         }
@@ -74,10 +76,10 @@ struct promise_base {
     }
 
     future< R > get_future() {
-        if ( obtained_) {
+        if ( BOOST_UNLIKELY( obtained_) ) {
             throw future_already_retrieved{};
         }
-        if ( ! future_) {
+        if ( BOOST_UNLIKELY( ! future_) ) {
             throw promise_uninitialized{};
         }
         obtained_ = true;
@@ -90,7 +92,7 @@ struct promise_base {
     }
 
     void set_exception( std::exception_ptr p) {
-        if ( ! future_) {
+        if ( BOOST_UNLIKELY( ! future_) ) {
             throw promise_uninitialized{};
         }
         future_->set_exception( p);
@@ -115,18 +117,18 @@ public:
     promise( promise const&) = delete;
     promise & operator=( promise const&) = delete;
 
-    promise( promise && other) noexcept = default;
+    promise( promise && other) = default;
     promise & operator=( promise && other) = default;
 
     void set_value( R const& value) {
-        if ( ! base_type::future_) {
+        if ( BOOST_UNLIKELY( ! base_type::future_) ) {
             throw promise_uninitialized{};
         }
         base_type::future_->set_value( value);
     }
 
     void set_value( R && value) {
-        if ( ! base_type::future_) {
+        if ( BOOST_UNLIKELY( ! base_type::future_) ) {
             throw promise_uninitialized{};
         }
         base_type::future_->set_value( std::move( value) );
@@ -156,11 +158,11 @@ public:
     promise( promise const&) = delete;
     promise & operator=( promise const&) = delete;
 
-    promise( promise && other) noexcept = default;
-    promise & operator=( promise && other) noexcept = default;
+    promise( promise && other) = default;
+    promise & operator=( promise && other) = default;
 
     void set_value( R & value) {
-        if ( ! base_type::future_) {
+        if ( BOOST_UNLIKELY( ! base_type::future_) ) {
             throw promise_uninitialized{};
         }
         base_type::future_->set_value( value);
@@ -190,12 +192,12 @@ public:
     promise( promise const&) = delete;
     promise & operator=( promise const&) = delete;
 
-    promise( promise && other) noexcept = default;
-    promise & operator=( promise && other) noexcept = default;
+    promise( promise && other)  = default;
+    promise & operator=( promise && other) = default;
 
     inline
     void set_value() {
-        if ( ! base_type::future_) {
+        if ( BOOST_UNLIKELY( ! base_type::future_) ) {
             throw promise_uninitialized{};
         }
         base_type::future_->set_value();

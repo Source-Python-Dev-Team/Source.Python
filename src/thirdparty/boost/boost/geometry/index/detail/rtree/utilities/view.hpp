@@ -4,6 +4,10 @@
 //
 // Copyright (c) 2011-2013 Adam Wulkiewicz, Lodz, Poland.
 //
+// This file was modified by Oracle on 2019.
+// Modifications copyright (c) 2019 Oracle and/or its affiliates.
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+//
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -19,13 +23,15 @@ template <typename Rtree>
 class view
 {
 public:
+    typedef typename Rtree::members_holder members_holder;
+
     typedef typename Rtree::size_type size_type;
 
     typedef typename Rtree::translator_type translator_type;
     typedef typename Rtree::value_type value_type;
     typedef typename Rtree::options_type options_type;
     typedef typename Rtree::box_type box_type;
-    typedef typename Rtree::allocators_type allocators_type;    
+    typedef typename Rtree::allocators_type allocators_type;
 
     view(Rtree const& rt) : m_rtree(rt) {}
 

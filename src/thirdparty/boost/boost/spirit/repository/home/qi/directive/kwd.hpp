@@ -5,8 +5,8 @@
     Distributed under the Boost Software License, Version 1.0. (See accompanying
     file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
 =============================================================================*/
-#if !defined(SPIRIT_KWD_NOVEMBER_14_2008_1148AM)
-#define SPIRIT_KWD_NOVEMBER_14_2008_1148AM
+#ifndef BOOST_SPIRIT_REPOSITORY_QI_DIRECTIVE_KWD_HPP
+#define BOOST_SPIRIT_REPOSITORY_QI_DIRECTIVE_KWD_HPP
 
 #if defined(_MSC_VER)
 #pragma once
@@ -16,14 +16,20 @@
 #include <boost/spirit/home/qi/parser.hpp>
 #include <boost/spirit/home/qi/auxiliary/lazy.hpp>
 #include <boost/spirit/home/qi/operator/kleene.hpp>
+#include <boost/spirit/home/qi/string/lit.hpp>
 #include <boost/spirit/home/support/container.hpp>
 #include <boost/spirit/home/qi/detail/attributes.hpp>
 #include <boost/spirit/home/qi/detail/fail_function.hpp>
 #include <boost/spirit/home/support/info.hpp>
 #include <boost/spirit/repository/home/support/kwd.hpp>
 #include <boost/fusion/include/at.hpp>
-#include <boost/foreach.hpp>
 #include <vector>
+
+#if defined(_MSC_VER)
+# pragma warning(push)
+# pragma warning(disable: 4127) // conditional expression is constant
+# pragma warning(disable: 4512) // assignment operator could not be generated.
+#endif
 
 namespace boost { namespace spirit
 {
@@ -148,11 +154,17 @@ namespace boost { namespace spirit
 
 namespace boost { namespace spirit { namespace repository { namespace qi
 {
+#ifndef BOOST_SPIRIT_NO_PREDEFINED_TERMINALS
     using repository::kwd;
     using repository::ikwd;
     using repository::dkwd;
     using repository::idkwd;
     using spirit::inf;
+#endif
+    using repository::kwd_type;
+    using repository::ikwd_type;
+    using repository::dkwd_type;
+    using repository::idkwd_type;
     using spirit::inf_type;
 
 template <typename T>
@@ -160,15 +172,10 @@ template <typename T>
     {
         kwd_pass_iterator() {}
         bool flag_init() const { return true; }
-        bool register_successful_parse(bool &flag,T &i) const {
+        bool register_successful_parse(bool &flag,T &/*i*/) const {
             flag=true;
             return true;
         }
-
-
-    private:
-        // silence MSVC warning C4512: assignment operator could not be generated
-        kwd_pass_iterator& operator= (kwd_pass_iterator const&);
     };
 
     template <typename T>
@@ -196,10 +203,6 @@ template <typename T>
 
         }
         T const exact;
-
-    private:
-        // silence MSVC warning C4512: assignment operator could not be generated
-        kwd_exact_iterator& operator= (kwd_exact_iterator const&);
     };
 
     template <typename T>
@@ -228,10 +231,6 @@ template <typename T>
         }
         T const min;
         T const max;
-
-    private:
-        // silence MSVC warning C4512: assignment operator could not be generated
-        kwd_finite_iterator& operator= (kwd_finite_iterator const&);
     };
 
     template <typename T>
@@ -248,10 +247,6 @@ template <typename T>
             return true;
         }
         T const min;
-
-    private:
-        // silence MSVC warning C4512: assignment operator could not be generated
-        kwd_infinite_iterator& operator= (kwd_infinite_iterator const&);
     };
 
     // This class enables the transportation of parameters needed to call
@@ -433,11 +428,9 @@ template <typename T>
                 no_case_keyword,
                 spirit::qi::no_case_literal_string< KeywordType, true>,
                 spirit::qi::literal_string<KeywordType, true> >::type keyword_string_type;
-       keyword_string_type keyword;
-    private:
-        // silence MSVC warning C4512: assignment operator could not be generated
-        kwd_parser& operator= (kwd_parser const&);
+        keyword_string_type keyword;
 
+    private:
         template <typename Iterator, typename Context, typename Skipper>
         static spirit::qi::detail::fail_function<Iterator, Context, Skipper>
         fail_function(
@@ -579,10 +572,8 @@ template <typename Subject, typename KeywordType, typename LoopIter, typename Di
         LoopIter iter;
 
         KeywordType keyword;
-    private:
-        // silence MSVC warning C4512: assignment operator could not be generated
-        complex_kwd_parser& operator= (complex_kwd_parser const&);
 
+    private:
         template <typename Iterator, typename Context, typename Skipper>
         static spirit::qi::detail::fail_function<Iterator, Context, Skipper>
         fail_function(
@@ -650,7 +641,7 @@ namespace boost { namespace spirit { namespace qi
                         );
         }
         template <typename Terminal>
-        result_type create_kwd(Terminal const &term, Subject const & subject, Modifiers const& modifiers, boost::mpl::true_ ) const
+        result_type create_kwd(Terminal const &term, Subject const & subject, Modifiers const& /*modifiers*/, boost::mpl::true_ ) const
         {
            return create_kwd_string(term,subject,no_case());
         }
@@ -721,7 +712,7 @@ namespace boost { namespace spirit { namespace qi
                         );
         }
         template <typename Terminal>
-        result_type create_kwd(Terminal const &term, Subject const & subject, Modifiers const& modifiers, boost::mpl::true_ ) const
+        result_type create_kwd(Terminal const &term, Subject const & subject, Modifiers const& /*modifiers*/, boost::mpl::true_ ) const
         {
            return create_kwd_string(term,subject,no_case());
         }
@@ -896,7 +887,7 @@ namespace boost { namespace spirit { namespace qi
 
         template <typename Terminal>
         result_type operator()(
-            Terminal const& term, Subject const& subject, Modifiers const& modifiers) const
+            Terminal const& term, Subject const& subject, Modifiers const& /*modifiers*/) const
         {
             typename spirit::detail::get_encoding<Modifiers,
                 spirit::char_encoding::standard>::type encoding;
@@ -919,7 +910,7 @@ namespace boost { namespace spirit { namespace qi
 
         template <typename Terminal>
         result_type operator()(
-            Terminal const& term, Subject const& subject, Modifiers const& modifiers) const
+            Terminal const& term, Subject const& subject, Modifiers const& /*modifiers*/) const
         {
             typename spirit::detail::get_encoding<Modifiers,
                 spirit::char_encoding::standard>::type encoding;
@@ -1194,6 +1185,10 @@ namespace boost { namespace spirit { namespace traits
       : unary_handles_container<Subject, Attribute, Context, Iterator> {};
 
 }}}
+
+#if defined(_MSC_VER)
+# pragma warning(pop)
+#endif
 
 #endif
 

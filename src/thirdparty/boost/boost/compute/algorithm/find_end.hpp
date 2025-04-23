@@ -11,6 +11,8 @@
 #ifndef BOOST_COMPUTE_ALGORITHM_FIND_END_HPP
 #define BOOST_COMPUTE_ALGORITHM_FIND_END_HPP
 
+#include <boost/static_assert.hpp>
+
 #include <boost/compute/algorithm/copy.hpp>
 #include <boost/compute/algorithm/detail/search_all.hpp>
 #include <boost/compute/container/detail/scalar.hpp>
@@ -18,6 +20,7 @@
 #include <boost/compute/detail/iterator_range_size.hpp>
 #include <boost/compute/detail/meta_kernel.hpp>
 #include <boost/compute/system.hpp>
+#include <boost/compute/type_traits/is_device_iterator.hpp>
 
 namespace boost {
 namespace compute {
@@ -26,8 +29,8 @@ namespace detail {
 ///
 /// \brief Helper function for find_end
 ///
-/// Basically a copy of find_if which returns last occurence
-/// instead of first occurence
+/// Basically a copy of find_if which returns last occurrence
+/// instead of first occurrence
 ///
 template<class InputIterator, class UnaryPredicate>
 inline InputIterator find_end_helper(InputIterator first,
@@ -90,6 +93,8 @@ inline InputIterator find_end_helper(InputIterator first,
 /// \param p_last Iterator pointing to end of pattern
 /// \param queue Queue on which to execute
 ///
+/// Space complexity: \Omega(n)
+///
 template<class TextIterator, class PatternIterator>
 inline TextIterator find_end(TextIterator t_first,
                              TextIterator t_last,
@@ -97,6 +102,9 @@ inline TextIterator find_end(TextIterator t_first,
                              PatternIterator p_last,
                              command_queue &queue = system::default_queue())
 {
+    BOOST_STATIC_ASSERT(is_device_iterator<TextIterator>::value);
+    BOOST_STATIC_ASSERT(is_device_iterator<PatternIterator>::value);
+
     const context &context = queue.get_context();
 
     // there is no need to check if pattern starts at last n - 1 indices

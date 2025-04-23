@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::Metafunction`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -13,7 +13,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/config.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @ingroup group-concepts
     //! @defgroup group-Metafunction Metafunction
     //! A `Metafunction` is a function that takes `hana::type`s as inputs and
@@ -90,10 +90,10 @@ BOOST_HANA_NAMESPACE_BEGIN
     //! deep comparison. Hence, we adopt a conservative stance and avoid
     //! providing comparison for `Metafunction`s.
     //!
-    //! [1]: http://en.cppreference.com/w/cpp/concept/FunctionObject
+    //! [1]: http://en.cppreference.com/w/cpp/named_req/FunctionObject
     //! [2]: http://www.boost.org/doc/libs/release/libs/mpl/doc/refmanual/metafunction-class.html
     template <typename F>
     struct Metafunction;
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_CONCEPT_METAFUNCTION_HPP

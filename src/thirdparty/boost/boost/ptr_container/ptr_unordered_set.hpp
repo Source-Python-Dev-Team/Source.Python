@@ -18,27 +18,35 @@
 
 #include <boost/ptr_container/indirect_fun.hpp>
 #include <boost/ptr_container/ptr_set_adapter.hpp>
+#include <boost/ptr_container/detail/ptr_container_disable_deprecated.hpp>
 #include <boost/unordered_set.hpp>
+
+#if defined(BOOST_PTR_CONTAINER_DISABLE_DEPRECATED)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
+#endif
 
 namespace boost
 {
 
     template
-    < 
-        class Key, 
+    <
+        class Key,
         class Hash           = boost::hash<Key>,
         class Pred           = std::equal_to<Key>,
         class CloneAllocator = heap_clone_allocator,
-        class Allocator      = std::allocator<void*>
+        class Allocator      = std::allocator< typename ptr_container_detail::void_ptr<Key>::type >
     >
-    class ptr_unordered_set : 
-        public ptr_set_adapter< Key, 
-                                boost::unordered_set<void*,void_ptr_indirect_fun<Hash,Key>,
-                                                     void_ptr_indirect_fun<Pred,Key>,Allocator>,
+    class ptr_unordered_set :
+        public ptr_set_adapter< Key, boost::unordered_set<
+            typename ptr_container_detail::void_ptr<Key>::type,
+            void_ptr_indirect_fun<Hash,Key>,
+            void_ptr_indirect_fun<Pred,Key>,Allocator>,
                                 CloneAllocator, false >
     {
-        typedef ptr_set_adapter< Key, 
-                                 boost::unordered_set<void*,void_ptr_indirect_fun<Hash,Key>,
+        typedef ptr_set_adapter< Key, boost::unordered_set<
+                           typename ptr_container_detail::void_ptr<Key>::type,
+                                 void_ptr_indirect_fun<Hash,Key>,
                                  void_ptr_indirect_fun<Pred,Key>,Allocator>,
                                  CloneAllocator, false >
              base_type;
@@ -59,7 +67,7 @@ namespace boost
         using base_type::value_comp;
         using base_type::front;
         using base_type::back;
-        
+
     public:
         using base_type::begin;
         using base_type::end;
@@ -74,7 +82,7 @@ namespace boost
         using base_type::rehash;
         using base_type::key_eq;
         using base_type::hash_function;
-        
+
     public:
         ptr_unordered_set()
         {}
@@ -82,12 +90,12 @@ namespace boost
         explicit ptr_unordered_set( size_type n )
         : base_type( n, ptr_container_detail::unordered_associative_container_tag() )
         { }
-        
+
         ptr_unordered_set( size_type n,
                            const Hash& comp,
-                           const Pred& pred   = Pred(),                                         
+                           const Pred& pred   = Pred(),
                            const Allocator& a = Allocator() )
-         : base_type( n, comp, pred, a ) 
+         : base_type( n, comp, pred, a )
         { }
 
         template< typename InputIterator >
@@ -100,34 +108,34 @@ namespace boost
                            const Hash& comp,
                            const Pred& pred   = Pred(),
                            const Allocator& a = Allocator() )
-         : base_type( first, last, comp, pred, a ) 
+         : base_type( first, last, comp, pred, a )
         { }
 
         BOOST_PTR_CONTAINER_DEFINE_RELEASE_AND_CLONE( ptr_unordered_set,
                                                       base_type,
                                                       this_type )
-        
-        BOOST_PTR_CONTAINER_DEFINE_COPY_CONSTRUCTORS( ptr_unordered_set, 
+
+        BOOST_PTR_CONTAINER_DEFINE_COPY_CONSTRUCTORS( ptr_unordered_set,
                                                       base_type )
-                
+
     };
-        
-        
+
+
     template
-    < 
-        class Key, 
+    <
+        class Key,
         class Hash           = boost::hash<Key>,
         class Pred           = std::equal_to<Key>,
         class CloneAllocator = heap_clone_allocator,
         class Allocator      = std::allocator<void*>
     >
-    class ptr_unordered_multiset : 
-          public ptr_multiset_adapter< Key, 
+    class ptr_unordered_multiset :
+          public ptr_multiset_adapter< Key,
                                 boost::unordered_multiset<void*,void_ptr_indirect_fun<Hash,Key>,
                                                                 void_ptr_indirect_fun<Pred,Key>,Allocator>,
                                             CloneAllocator, false >
     {
-      typedef ptr_multiset_adapter< Key, 
+      typedef ptr_multiset_adapter< Key,
               boost::unordered_multiset<void*,void_ptr_indirect_fun<Hash,Key>,
                                         void_ptr_indirect_fun<Pred,Key>,Allocator>,
                                         CloneAllocator, false >
@@ -148,7 +156,7 @@ namespace boost
         using base_type::value_comp;
         using base_type::front;
         using base_type::back;
-        
+
     public:
         using base_type::begin;
         using base_type::end;
@@ -163,20 +171,20 @@ namespace boost
         using base_type::rehash;
         using base_type::key_eq;
         using base_type::hash_function;
-        
+
     public:
         ptr_unordered_multiset()
         { }
-        
+
         explicit ptr_unordered_multiset( size_type n )
-         : base_type( n, ptr_container_detail::unordered_associative_container_tag() ) 
+         : base_type( n, ptr_container_detail::unordered_associative_container_tag() )
         { }
 
         ptr_unordered_multiset( size_type n,
                                 const Hash& comp,
-                                const Pred& pred   = Pred(),                                         
+                                const Pred& pred   = Pred(),
                                 const Allocator& a = Allocator() )
-         : base_type( n, comp, pred, a ) 
+         : base_type( n, comp, pred, a )
         { }
 
         template< typename InputIterator >
@@ -189,15 +197,15 @@ namespace boost
                                 const Hash& comp,
                                 const Pred& pred   = Pred(),
                                 const Allocator& a = Allocator() )
-         : base_type( first, last, comp, pred, a ) 
+         : base_type( first, last, comp, pred, a )
         { }
 
-        BOOST_PTR_CONTAINER_DEFINE_RELEASE_AND_CLONE( ptr_unordered_multiset, 
+        BOOST_PTR_CONTAINER_DEFINE_RELEASE_AND_CLONE( ptr_unordered_multiset,
                                                       base_type,
                                                       this_type )
-         
-        BOOST_PTR_CONTAINER_DEFINE_COPY_CONSTRUCTORS( ptr_unordered_multiset, 
-                                                      base_type )     
+
+        BOOST_PTR_CONTAINER_DEFINE_COPY_CONSTRUCTORS( ptr_unordered_multiset,
+                                                      base_type )
 
     };
 
@@ -205,36 +213,40 @@ namespace boost
     // clonability
 
     template< typename K, typename H, typename P, typename CA, typename A >
-    inline ptr_unordered_set<K,H,P,CA,A>* 
+    inline ptr_unordered_set<K,H,P,CA,A>*
     new_clone( const ptr_unordered_set<K,H,P,CA,A>& r )
     {
         return r.clone().release();
     }
 
     template< typename K, typename H, typename P, typename CA, typename A >
-    inline ptr_unordered_multiset<K,H,P,CA,A>* 
+    inline ptr_unordered_multiset<K,H,P,CA,A>*
     new_clone( const ptr_unordered_multiset<K,H,P,CA,A>& r )
     {
         return r.clone().release();
     }
-    
+
     /////////////////////////////////////////////////////////////////////////
     // swap
 
     template< typename K, typename H, typename P, typename CA, typename A >
-    inline void swap( ptr_unordered_set<K,H,P,CA,A>& l, 
+    inline void swap( ptr_unordered_set<K,H,P,CA,A>& l,
                       ptr_unordered_set<K,H,P,CA,A>& r )
     {
         l.swap(r);
     }
 
     template< typename K, typename H, typename P, typename CA, typename A >
-    inline void swap( ptr_unordered_multiset<K,H,P,CA,A>& l, 
+    inline void swap( ptr_unordered_multiset<K,H,P,CA,A>& l,
                       ptr_unordered_multiset<K,H,P,CA,A>& r )
     {
         l.swap(r);
     }
 
 }
+
+#if defined(BOOST_PTR_CONTAINER_DISABLE_DEPRECATED)
+#pragma GCC diagnostic pop
+#endif
 
 #endif

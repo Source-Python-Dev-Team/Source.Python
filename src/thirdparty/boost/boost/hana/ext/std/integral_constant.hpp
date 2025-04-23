@@ -2,7 +2,7 @@
 @file
 Adapts `std::integral_constant` for use with Hana.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -39,7 +39,7 @@ namespace std {
 #endif
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     namespace ext { namespace std {
         template <typename T>
         struct integral_constant_tag { using value_type = T; };
@@ -91,6 +91,6 @@ BOOST_HANA_NAMESPACE_BEGIN
             return std::integral_constant<T, N::value>{};
         }
     };
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_EXT_STD_INTEGRAL_CONSTANT_HPP

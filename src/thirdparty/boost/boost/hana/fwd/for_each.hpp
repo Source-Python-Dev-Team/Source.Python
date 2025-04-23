@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::for_each`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -14,7 +14,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/core/when.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! Perform an action on each element of a foldable, discarding
     //! the result each time.
     //! @ingroup group-Foldable
@@ -48,8 +48,8 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr void operator()(Xs&& xs, F&& f) const;
     };
 
-    constexpr for_each_t for_each{};
+    BOOST_HANA_INLINE_VARIABLE constexpr for_each_t for_each{};
 #endif
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_FOR_EACH_HPP

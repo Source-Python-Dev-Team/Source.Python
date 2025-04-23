@@ -13,7 +13,12 @@
 
 #include <sstream>
 #include <iomanip>
-#include <boost/uuid/sha1.hpp>
+#include <boost/version.hpp>
+#if BOOST_VERSION >= 106600
+#  include <boost/uuid/detail/sha1.hpp>
+#else
+#  include <boost/uuid/sha1.hpp>
+#endif
 
 namespace boost {
 namespace compute {
@@ -32,13 +37,22 @@ class sha1 {
         }
 
         operator std::string() {
+            #if BOOST_VERSION >= 108600
+            boost::uuids::detail::sha1::digest_type digest;
+            #else
             unsigned int digest[5];
+            #endif
+
             h.get_digest(digest);
 
             std::ostringstream buf;
+            #if BOOST_VERSION >= 108600
+            for(int i = 0; i < 20; ++i)
+                buf << std::hex << std::setfill('0') << std::setw(2) << +digest[i];
+            #else
             for(int i = 0; i < 5; ++i)
                 buf << std::hex << std::setfill('0') << std::setw(8) << digest[i];
-
+            #endif
             return buf.str();
         }
     private:

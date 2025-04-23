@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::intersection`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -14,40 +14,19 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/core/when.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
-    //! Returns the intersection of two sets.
-    //! @relates hana::set
-    //!
-    //! Given two sets `xs` and `ys`, `intersection(xs, ys)` is a new set
-    //! containing exactly those elements that are present both in `xs` and
-    //! in `ys`. In other words, the following holds for any object `x`:
-    //! @code
-    //!     x ^in^ intersection(xs, ys) if and only if x ^in^ xs && x ^in^ ys
-    //! @endcode
-    //!
-    //!
-    //! @param xs, ys
-    //! Two sets to intersect.
-    //!
-    //!
-    //! Example
-    //! -------
-    //! @include example/intersection.cpp
-#ifdef BOOST_HANA_DOXYGEN_INVOKED
-    constexpr auto intersection = [](auto&& xs, auto&& ys) {
-        return tag-dispatched;
-    };
-#else
+namespace boost { namespace hana {
+    // Note: This function is documented per datatype/concept only.
+    //! @cond
     template <typename S, typename = void>
     struct intersection_impl : intersection_impl<S, when<true>> { };
+    //! @endcond
 
     struct intersection_t {
         template <typename Xs, typename Ys>
-        constexpr auto operator()(Xs&& xs, Ys&& ys) const;
+        constexpr auto operator()(Xs&&, Ys&&) const;
     };
 
-    constexpr intersection_t intersection{};
-#endif
-BOOST_HANA_NAMESPACE_END
+    BOOST_HANA_INLINE_VARIABLE constexpr intersection_t intersection{};
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_INTERSECTION_HPP

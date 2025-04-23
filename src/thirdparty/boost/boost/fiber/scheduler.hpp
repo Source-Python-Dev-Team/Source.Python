@@ -13,11 +13,7 @@
 #include <vector>
 
 #include <boost/config.hpp>
-#if (BOOST_EXECUTION_CONTEXT==1)
-# include <boost/context/execution_context.hpp>
-#else
-# include <boost/context/continuation.hpp>
-#endif
+#include <boost/context/fiber.hpp>
 #include <boost/intrusive/list.hpp>
 #include <boost/intrusive_ptr.hpp>
 #include <boost/intrusive/set.hpp>
@@ -90,11 +86,11 @@ private:
     detail::spinlock                                            remote_ready_splk_{};
     remote_ready_queue_type                                     remote_ready_queue_{};
 #endif
-    alignas(cache_alignment) std::unique_ptr< algo::algorithm > algo_;
+    algo::algorithm::ptr_t             algo_;
     // sleep-queue contains context' which have been called
     // scheduler::wait_until()
     sleep_queue_type                                            sleep_queue_{};
-    // worker-queue contains all context' mananged by this scheduler
+    // worker-queue contains all context' managed by this scheduler
     // except main-context and dispatcher-context
     // unlink happens on destruction of a context
     worker_queue_type                                           worker_queue_{};
@@ -113,7 +109,7 @@ private:
     void sleep2ready_() noexcept;
 
 public:
-    scheduler() noexcept;
+    scheduler(algo::algorithm::ptr_t algo) noexcept;
 
     scheduler( scheduler const&) = delete;
     scheduler & operator=( scheduler const&) = delete;
@@ -126,30 +122,26 @@ public:
     void schedule_from_remote( context *) noexcept;
 #endif
 
-#if (BOOST_EXECUTION_CONTEXT==1)
-    void dispatch() noexcept;
+    boost::context::fiber dispatch() noexcept;
 
-    void terminate( detail::spinlock_lock &, context *) noexcept;
-#else
-    boost::context::continuation dispatch() noexcept;
-
-    boost::context::continuation terminate( detail::spinlock_lock &, context *) noexcept;
-#endif
+    boost::context::fiber terminate( detail::spinlock_lock &, context *) noexcept;
 
     void yield( context *) noexcept;
 
     bool wait_until( context *,
                      std::chrono::steady_clock::time_point const&) noexcept;
+
     bool wait_until( context *,
                      std::chrono::steady_clock::time_point const&,
-                     detail::spinlock_lock &) noexcept;
+                     detail::spinlock_lock &,
+                     waker &&) noexcept;
 
     void suspend() noexcept;
     void suspend( detail::spinlock_lock &) noexcept;
 
     bool has_ready_fibers() const noexcept;
 
-    void set_algo( std::unique_ptr< algo::algorithm >) noexcept;
+    void set_algo( algo::algorithm::ptr_t) noexcept;
 
     void attach_main_context( context *) noexcept;
 

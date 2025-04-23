@@ -4,6 +4,10 @@
 // Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
 
+// This file was modified by Oracle on 2020-2021.
+// Modifications copyright (c) 2020-2021 Oracle and/or its affiliates.
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
 
@@ -18,26 +22,17 @@
 
 #include <boost/concept_check.hpp>
 #include <boost/range/concepts.hpp>
-#include <boost/range/metafunctions.hpp>
+#include <boost/range/value_type.hpp>
 
+#include <boost/geometry/core/mutable_range.hpp>
 
+#include <boost/geometry/geometries/concepts/concept_type.hpp>
 #include <boost/geometry/geometries/concepts/point_concept.hpp>
 
 
 namespace boost { namespace geometry { namespace concepts
 {
 
-
-/*!
-\brief MultiPoint concept
-\ingroup concepts
-\par Formal definition:
-The multi point concept is defined as following:
-- there must be a specialization of traits::tag defining multi_point_tag as type
-- it must behave like a Boost.Range
-- its range value must fulfil the Point concept
-
-*/
 template <typename Geometry>
 class MultiPoint
 {
@@ -83,6 +78,20 @@ public :
     }
 #endif
 };
+
+
+template <typename Geometry>
+struct concept_type<Geometry, multi_point_tag>
+{
+    using type = MultiPoint<Geometry>;
+};
+
+template <typename Geometry>
+struct concept_type<Geometry const, multi_point_tag>
+{
+    using type = ConstMultiPoint<Geometry>;
+};
+
 
 }}} // namespace boost::geometry::concepts
 

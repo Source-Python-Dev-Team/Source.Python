@@ -23,9 +23,9 @@
 #include <boost/multi_index/sequenced_index.hpp>
 #include <boost/multi_index/ordered_index.hpp>
 #include <boost/multi_index/member.hpp>
-#include <boost/utility/enable_if.hpp>
+#include <boost/core/enable_if.hpp>
 #include <boost/throw_exception.hpp>
-#include <boost/optional.hpp>
+#include <boost/optional/optional.hpp>
 #include <utility>                  // for std::pair
 
 namespace boost { namespace property_tree
@@ -269,6 +269,10 @@ namespace boost { namespace property_tree
         /** Get the child at the given path, or return @p default_value. */
         const self_type &get_child(const path_type &path,
                                    const self_type &default_value) const;
+
+        /** Prevents calls to get_child with temporary default values */
+        void get_child(const path_type &path,
+                       const self_type &&default_value) const = delete;
 
         /** Get the child at the given path, or return boost::null. */
         optional<self_type &> get_child_optional(const path_type &path);

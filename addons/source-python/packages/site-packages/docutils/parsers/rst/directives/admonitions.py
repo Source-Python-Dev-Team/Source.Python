@@ -1,4 +1,4 @@
-# $Id: admonitions.py 7681 2013-07-12 07:52:27Z milde $
+# $Id: admonitions.py 9475 2023-11-13 22:30:00Z milde $
 # Author: David Goodger <goodger@python.org>
 # Copyright: This module has been placed in the public domain.
 
@@ -10,7 +10,7 @@ __docformat__ = 'reStructuredText'
 
 
 from docutils.parsers.rst import Directive
-from docutils.parsers.rst import states, directives
+from docutils.parsers.rst import directives
 from docutils.parsers.rst.roles import set_classes
 from docutils import nodes
 
@@ -31,6 +31,8 @@ class BaseAdmonition(Directive):
         text = '\n'.join(self.content)
         admonition_node = self.node_class(text, **self.options)
         self.add_name(admonition_node)
+        admonition_node.source, admonition_node.line = \
+            self.state_machine.get_source_and_line(self.lineno)
         if self.node_class is nodes.admonition:
             title_text = self.arguments[0]
             textnodes, messages = self.state.inline_text(title_text,
@@ -40,9 +42,9 @@ class BaseAdmonition(Directive):
                     self.state_machine.get_source_and_line(self.lineno))
             admonition_node += title
             admonition_node += messages
-            if not 'classes' in self.options:
-                admonition_node['classes'] += ['admonition-' +
-                                               nodes.make_id(title_text)]
+            if 'classes' not in self.options:
+                admonition_node['classes'] += ['admonition-'
+                                               + nodes.make_id(title_text)]
         self.state.nested_parse(self.content, self.content_offset,
                                 admonition_node)
         return [admonition_node]

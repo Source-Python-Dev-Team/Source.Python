@@ -127,10 +127,14 @@ goto CloneRepo
     if not exist %BUILDDIR% mkdir %BUILDDIR%
 
     :: Create the build files
-    cmake . -B%BUILDDIR% -G"Visual Studio 10" -DBRANCH=%branch%
+    cmake . -B%BUILDDIR% -G"Visual Studio 17" -A Win32 -DBRANCH=%branch%
 
     if %use_msbuild% == 1 (
-        msbuild %BUILDDIR%\source-python.sln /p:Configuration="Release" /p:VCTargetsPath="C:\Program Files (x86)\MSBuild\Microsoft.Cpp\v4.0"
+        cd %BUILDDIR%
+        
+        :: devenv is located in your Visual Studio installaton directory.
+        :: If it's missing, add it to your PATH environment variable.
+        devenv source-python.sln /build "Release"
     ) else (
         :: Pause to show the process is completed
         pause

@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::detail::has_duplicates`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -18,7 +18,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <utility>
 
 
-BOOST_HANA_NAMESPACE_BEGIN namespace detail {
+namespace boost { namespace hana { namespace detail {
     template <typename T, typename ...U>
     constexpr std::size_t pack_count() {
         std::size_t c = 0;
@@ -60,6 +60,6 @@ BOOST_HANA_NAMESPACE_BEGIN namespace detail {
             !detail::fast_and<(detail::pack_count<T, T...>() == 1)...>::value
         ;
     };
-} BOOST_HANA_NAMESPACE_END
+} }} // end namespace boost::hana
 
 #endif // !BOOST_HANA_DETAIL_HAS_DUPLICATES_HPP

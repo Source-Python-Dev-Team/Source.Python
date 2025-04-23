@@ -4,6 +4,11 @@
 // Copyright (c) 2008-2012 Barend Gehrels, Amsterdam, the Netherlands.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
 
+// This file was modified by Oracle on 2018-2020.
+// Modifications copyright (c) 2018-2020, Oracle and/or its affiliates.
+
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
 
@@ -16,9 +21,11 @@
 
 
 #include <cstddef>
+#include <type_traits>
 
 #include <boost/tuple/tuple.hpp>
 
+#include <boost/geometry/core/access.hpp>
 #include <boost/geometry/core/coordinate_dimension.hpp>
 #include <boost/geometry/core/coordinate_type.hpp>
 #include <boost/geometry/core/point_type.hpp>
@@ -53,13 +60,14 @@ struct coordinate_type<boost::tuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> >
 template <typename T1, typename T2, typename T3, typename T4, typename T5,
           typename T6, typename T7, typename T8, typename T9, typename T10>
 struct dimension<boost::tuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10> >
-    : boost::mpl::int_
-          <
-              boost::tuples::length
-                  <
-                      boost::tuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>
-                  >::value
-          >
+    : std::integral_constant
+        <
+            std::size_t,
+            boost::tuples::length
+                <
+                    boost::tuple<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>
+                >::value
+        >
 {};
 
 

@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <chrono>
 #include <exception>
+#include <utility>
 
 #include <boost/config.hpp>
 
@@ -30,8 +31,8 @@ struct future_base {
 
     future_base() = default;
 
-    explicit future_base( ptr_type const& p) noexcept :
-        state_{ p } {
+    explicit future_base( ptr_type  p) noexcept :
+        state_{std::move( p )} {
     }
 
     ~future_base() = default;
@@ -46,14 +47,14 @@ struct future_base {
     }
 
     future_base & operator=( future_base const& other) noexcept {
-        if ( this != & other) {
+        if ( BOOST_LIKELY( this != & other) ) {
             state_ = other.state_;
         }
         return * this;
     }
 
     future_base & operator=( future_base && other) noexcept {
-        if ( this != & other) {
+        if ( BOOST_LIKELY( this != & other) ) {
             state_ = other.state_;
             other.state_.reset();
         }
@@ -65,14 +66,14 @@ struct future_base {
     }
 
     std::exception_ptr get_exception_ptr() {
-        if ( ! valid() ) {
+        if ( BOOST_UNLIKELY( ! valid() ) ) {
             throw future_uninitialized{};
         }
         return state_->get_exception_ptr();
     }
 
     void wait() const {
-        if ( ! valid() ) {
+        if ( BOOST_UNLIKELY( ! valid() ) ) {
             throw future_uninitialized{};
         }
         state_->wait();
@@ -80,7 +81,7 @@ struct future_base {
 
     template< typename Rep, typename Period >
     future_status wait_for( std::chrono::duration< Rep, Period > const& timeout_duration) const {
-        if ( ! valid() ) {
+        if ( BOOST_UNLIKELY( ! valid() ) ) {
             throw future_uninitialized{};
         }
         return state_->wait_for( timeout_duration);
@@ -88,7 +89,7 @@ struct future_base {
 
     template< typename Clock, typename Duration >
     future_status wait_until( std::chrono::time_point< Clock, Duration > const& timeout_time) const {
-        if ( ! valid() ) {
+        if ( BOOST_UNLIKELY( ! valid() ) ) {
             throw future_uninitialized{};
         }
         return state_->wait_until( timeout_time);
@@ -131,7 +132,7 @@ public:
     }
 
     future & operator=( future && other) noexcept {
-        if ( this != & other) {
+        if ( BOOST_LIKELY( this != & other) ) {
             base_type::operator=( std::move( other) );
         }
         return * this;
@@ -140,7 +141,7 @@ public:
     shared_future< R > share();
 
     R get() {
-        if ( ! base_type::valid() ) {
+        if ( BOOST_UNLIKELY( ! base_type::valid() ) ) {
             throw future_uninitialized{};
         }
         typename base_type::ptr_type tmp{};
@@ -180,7 +181,7 @@ public:
     }
 
     future & operator=( future && other) noexcept {
-        if ( this != & other) {
+        if ( BOOST_LIKELY( this != & other) ) {
             base_type::operator=( std::move( other) );
         }
         return * this;
@@ -189,7 +190,7 @@ public:
     shared_future< R & > share();
 
     R & get() {
-        if ( ! base_type::valid() ) {
+        if ( BOOST_UNLIKELY( ! base_type::valid() ) ) {
             throw future_uninitialized{};
         }
         typename base_type::ptr_type tmp{};
@@ -231,7 +232,7 @@ public:
 
     inline
     future & operator=( future && other) noexcept {
-        if ( this != & other) {
+        if ( BOOST_LIKELY( this != & other) ) {
             base_type::operator=( std::move( other) );
         }
         return * this;
@@ -241,7 +242,7 @@ public:
 
     inline
     void get() {
-        if ( ! base_type::valid() ) {
+        if ( BOOST_UNLIKELY( ! base_type::valid() ) ) {
             throw future_uninitialized{};
         }
         base_type::ptr_type tmp{};
@@ -284,14 +285,14 @@ public:
     }
 
     shared_future & operator=( shared_future const& other) noexcept {
-        if ( this != & other) {
+        if ( BOOST_LIKELY( this != & other) ) {
             base_type::operator=( other); 
         }
         return * this;
     }
 
     shared_future & operator=( shared_future && other) noexcept {
-        if ( this != & other) {
+        if ( BOOST_LIKELY( this != & other) ) {
             base_type::operator=( std::move( other) ); 
         }
         return * this;
@@ -303,7 +304,7 @@ public:
     }
 
     R const& get() const {
-        if ( ! valid() ) {
+        if ( BOOST_UNLIKELY( ! valid() ) ) {
             throw future_uninitialized{};
         }
         return base_type::state_->get();
@@ -343,14 +344,14 @@ public:
     }
 
     shared_future & operator=( shared_future const& other) noexcept {
-        if ( this != & other) {
+        if ( BOOST_LIKELY( this != & other) ) {
             base_type::operator=( other);
         }
         return * this;
     }
 
     shared_future & operator=( shared_future && other) noexcept {
-        if ( this != & other) {
+        if ( BOOST_LIKELY( this != & other) ) {
             base_type::operator=( std::move( other) );
         }
         return * this;
@@ -362,7 +363,7 @@ public:
     }
 
     R & get() const {
-        if ( ! valid() ) {
+        if ( BOOST_UNLIKELY( ! valid() ) ) {
             throw future_uninitialized{};
         }
         return base_type::state_->get();
@@ -406,7 +407,7 @@ public:
 
     inline
     shared_future & operator=( shared_future const& other) noexcept {
-        if ( this != & other) {
+        if ( BOOST_LIKELY( this != & other) ) {
             base_type::operator=( other);
         }
         return * this;
@@ -414,7 +415,7 @@ public:
 
     inline
     shared_future & operator=( shared_future && other) noexcept {
-        if ( this != & other) {
+        if ( BOOST_LIKELY( this != & other) ) {
             base_type::operator=( std::move( other) );
         }
         return * this;
@@ -428,7 +429,7 @@ public:
 
     inline
     void get() const {
-        if ( ! valid() ) {
+        if ( BOOST_UNLIKELY( ! valid() ) ) {
             throw future_uninitialized{};
         }
         base_type::state_->get();
@@ -445,7 +446,7 @@ public:
 template< typename R >
 shared_future< R >
 future< R >::share() {
-    if ( ! base_type::valid() ) {
+    if ( BOOST_UNLIKELY( ! base_type::valid() ) ) {
         throw future_uninitialized{};
     }
     return shared_future< R >{ std::move( * this) };
@@ -454,7 +455,7 @@ future< R >::share() {
 template< typename R >
 shared_future< R & >
 future< R & >::share() {
-    if ( ! base_type::valid() ) {
+    if ( BOOST_UNLIKELY( ! base_type::valid() ) ) {
         throw future_uninitialized{};
     }
     return shared_future< R & >{ std::move( * this) };
@@ -463,7 +464,7 @@ future< R & >::share() {
 inline
 shared_future< void >
 future< void >::share() {
-    if ( ! base_type::valid() ) {
+    if ( BOOST_UNLIKELY( ! base_type::valid() ) ) {
         throw future_uninitialized{};
     }
     return shared_future< void >{ std::move( * this) };

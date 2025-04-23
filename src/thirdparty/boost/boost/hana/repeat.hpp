@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::repeat`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -20,7 +20,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <utility>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     template <typename I, bool condition>
     struct repeat_impl<I, when<condition>> : default_ {
         template <typename F, std::size_t ...i>
@@ -53,6 +53,6 @@ BOOST_HANA_NAMESPACE_BEGIN
         return Repeat::apply(n, static_cast<F&&>(f));
     }
     //! @endcond
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_REPEAT_HPP

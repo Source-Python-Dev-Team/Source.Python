@@ -159,8 +159,7 @@ class Delay(WeakAutoUnload):
         :rtype: float
         """
         if not self.running:
-            # TODO: what should we return here, or should we raise an error?
-            return None
+            return 0
         return self.exec_time - time.time()
 
     @property
@@ -170,8 +169,7 @@ class Delay(WeakAutoUnload):
         :rtype: float
         """
         if not self.running:
-            # TODO: what should we return here, or should we raise an error?
-            return None
+            return 0
         return time.time() - self._start_time
 
     def _unload_instance(self):
@@ -292,10 +290,10 @@ class Repeat(AutoUnload):
 
         :rtype: float
         """
-        if self.delay_time_remaining is None:
-            return None
+        if not self.delay_time_remaining:
+            return 0
         return (
-            self.loops_remaining * self.interval +
+            (self.loops_remaining - 1) * self.interval +
             self.delay_time_remaining
         )
 

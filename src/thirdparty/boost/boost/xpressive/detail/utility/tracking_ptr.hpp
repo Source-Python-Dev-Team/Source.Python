@@ -24,8 +24,8 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/mpl/assert.hpp>
 #include <boost/intrusive_ptr.hpp>
-#include <boost/detail/workaround.hpp>
-#include <boost/detail/atomic_count.hpp>
+#include <boost/config/workaround.hpp>
+#include <boost/smart_ptr/detail/atomic_count.hpp>
 #include <boost/iterator/iterator_facade.hpp>
 #include <boost/iterator/filter_iterator.hpp>
 #include <boost/type_traits/is_base_and_derived.hpp>
@@ -112,8 +112,10 @@ private:
 //  for use with a filter_iterator to filter a node out of a list of dependencies
 template<typename Derived>
 struct filter_self
-  : std::unary_function<shared_ptr<Derived>, bool>
 {
+    typedef shared_ptr<Derived> argument_type;
+    typedef bool result_type;
+
     filter_self(enable_reference_tracking<Derived> *self)
       : self_(self)
     {

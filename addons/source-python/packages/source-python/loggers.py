@@ -398,7 +398,7 @@ class LogManager(AutoUnload, _LogInstance):
             log_path = LOG_PATH / filepath + '.log'
 
             # Does the parent directory exist?
-            if not log_path.parent.isdir():
+            if not log_path.parent.is_dir():
 
                 # Create the parent directory
                 log_path.parent.makedirs()

@@ -11,20 +11,26 @@
 #pragma once
 #endif
 
-#include <utility>
-#include <boost/config/no_tr1/cmath.hpp>
+#include <boost/math/tools/config.hpp>
+#include <boost/math/tools/cstdint.hpp>
+#include <boost/math/tools/tuple.hpp>
+#include <boost/math/tools/numeric_limits.hpp>
 #include <boost/math/tools/precision.hpp>
+#include <boost/math/tools/utility.hpp>
 #include <boost/math/policies/policy.hpp>
-#include <boost/cstdint.hpp>
 
 namespace boost{ namespace math{ namespace tools{
 
 template <class F, class T>
-std::pair<T, T> brent_find_minima(F f, T min, T max, int bits, boost::uintmax_t& max_iter)
-   BOOST_NOEXCEPT_IF(BOOST_MATH_IS_FLOAT(T) && noexcept(std::declval<F>()(std::declval<T>())))
+BOOST_MATH_GPU_ENABLED boost::math::pair<T, T> brent_find_minima(F f, T min, T max, int bits, boost::math::uintmax_t& max_iter)
+   noexcept(BOOST_MATH_IS_FLOAT(T) 
+   #ifndef BOOST_MATH_HAS_GPU_SUPPORT
+   && noexcept(std::declval<F>()(std::declval<T>()))
+   #endif
+   )
 {
    BOOST_MATH_STD_USING
-   bits = (std::min)(policies::digits<T, policies::policy<> >() / 2, bits);
+   bits = (boost::math::min)(policies::digits<T, policies::policy<> >() / 2, bits);
    T tolerance = static_cast<T>(ldexp(1.0, 1-bits));
    T x;  // minima so far
    T w;  // second best point
@@ -42,7 +48,7 @@ std::pair<T, T> brent_find_minima(F f, T min, T max, int bits, boost::uintmax_t&
    fw = fv = fx = f(x);
    delta2 = delta = 0;
 
-   uintmax_t count = max_iter;
+   boost::math::uintmax_t count = max_iter;
 
    do{
       // get midpoint
@@ -65,7 +71,7 @@ std::pair<T, T> brent_find_minima(F f, T min, T max, int bits, boost::uintmax_t&
          q = fabs(q);
          T td = delta2;
          delta2 = delta;
-         // determine whether a parabolic step is acceptible or not:
+         // determine whether a parabolic step is acceptable or not:
          if((fabs(p) >= fabs(q * td / 2)) || (p <= q * (min - x)) || (p >= q * (max - x)))
          {
             // nope, try golden section instead
@@ -134,14 +140,18 @@ std::pair<T, T> brent_find_minima(F f, T min, T max, int bits, boost::uintmax_t&
 
    max_iter -= count;
 
-   return std::make_pair(x, fx);
+   return boost::math::make_pair(x, fx);
 }
 
 template <class F, class T>
-inline std::pair<T, T> brent_find_minima(F f, T min, T max, int digits)
-   BOOST_NOEXCEPT_IF(BOOST_MATH_IS_FLOAT(T) && noexcept(std::declval<F>()(std::declval<T>())))
+BOOST_MATH_GPU_ENABLED inline boost::math::pair<T, T> brent_find_minima(F f, T min, T max, int digits)
+   noexcept(BOOST_MATH_IS_FLOAT(T)
+   #ifndef BOOST_MATH_HAS_GPU_SUPPORT
+   && noexcept(std::declval<F>()(std::declval<T>()))
+   #endif
+   )
 {
-   boost::uintmax_t m = (std::numeric_limits<boost::uintmax_t>::max)();
+   boost::math::uintmax_t m = (boost::math::numeric_limits<boost::math::uintmax_t>::max)();
    return brent_find_minima(f, min, max, digits, m);
 }
 

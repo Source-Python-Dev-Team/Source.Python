@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::monadic_compose`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -19,7 +19,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/functional/partial.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     namespace detail {
         struct monadic_compose_helper {
             template <typename F, typename G, typename X>
@@ -46,6 +46,6 @@ BOOST_HANA_NAMESPACE_BEGIN
         );
     }
     //! @endcond
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_MONADIC_COMPOSE_HPP

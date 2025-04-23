@@ -8,9 +8,9 @@
 # include <boost/python/converter/constructor_function.hpp>
 # include <boost/python/detail/referent_storage.hpp>
 # include <boost/python/detail/destroy.hpp>
+# include <boost/python/detail/type_traits.hpp>
+# include <boost/align/align.hpp>
 # include <boost/static_assert.hpp>
-# include <boost/type_traits/add_reference.hpp>
-# include <boost/type_traits/add_cv.hpp>
 # include <cstddef>
 
 // Data management for potential rvalue conversions from Python to C++
@@ -78,7 +78,7 @@ struct rvalue_from_python_storage
 
     // Storage for the result, in case an rvalue must be constructed
     typename python::detail::referent_storage<
-        typename add_reference<T>::type
+        typename boost::python::detail::add_lvalue_reference<T>::type
     >::type storage;
 };
 
@@ -110,7 +110,8 @@ struct rvalue_from_python_data : rvalue_from_python_storage<T>
     // Destroys any object constructed in the storage.
     ~rvalue_from_python_data();
  private:
-    typedef typename add_reference<typename add_cv<T>::type>::type ref_type;
+    typedef typename boost::python::detail::add_lvalue_reference<
+                typename boost::python::detail::add_cv<T>::type>::type ref_type;
 };
 
 //
@@ -132,7 +133,13 @@ template <class T>
 inline rvalue_from_python_data<T>::~rvalue_from_python_data()
 {
     if (this->stage1.convertible == this->storage.bytes)
-        python::detail::destroy_referent<ref_type>(this->storage.bytes);
+    {
+        size_t allocated = sizeof(this->storage);
+        void *ptr = this->storage.bytes;
+        void *aligned_storage =
+            ::boost::alignment::align(boost::python::detail::alignment_of<T>::value, 0, ptr, allocated);
+        python::detail::destroy_referent<ref_type>(aligned_storage);
+    }
 }
 
 }}} // namespace boost::python::converter

@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::monadic_fold_right`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -14,7 +14,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/core/when.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! Monadic right-fold of a structure with a binary operation and an
     //! optional initial reduction state.
     //! @ingroup group-Foldable
@@ -96,11 +96,17 @@ BOOST_HANA_NAMESPACE_BEGIN
     struct monadic_fold_right_impl : monadic_fold_right_impl<T, when<true>> { };
 
     template <typename M>
-    struct monadic_fold_right_t;
+    struct monadic_fold_right_t {
+        template <typename Xs, typename State, typename F>
+        constexpr decltype(auto) operator()(Xs&& xs, State&& state, F&& f) const;
+
+        template <typename Xs, typename F>
+        constexpr decltype(auto) operator()(Xs&& xs, F&& f) const;
+    };
 
     template <typename M>
-    constexpr monadic_fold_right_t<M> monadic_fold_right{};
+    BOOST_HANA_INLINE_VARIABLE constexpr monadic_fold_right_t<M> monadic_fold_right{};
 #endif
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_MONADIC_FOLD_RIGHT_HPP

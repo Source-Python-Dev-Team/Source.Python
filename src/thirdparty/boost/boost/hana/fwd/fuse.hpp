@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::fuse`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -13,7 +13,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/config.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! Transform a function taking multiple arguments into a function that
     //! can be called with a compile-time `Foldable`.
     //! @ingroup group-Foldable
@@ -48,8 +48,8 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr auto operator()(F&& f) const;
     };
 
-    constexpr fuse_t fuse{};
+    BOOST_HANA_INLINE_VARIABLE constexpr fuse_t fuse{};
 #endif
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_FUSE_HPP

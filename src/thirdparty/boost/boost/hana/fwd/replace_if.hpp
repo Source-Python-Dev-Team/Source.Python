@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::replace_if`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -14,7 +14,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/core/when.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! Replace all the elements of a structure satisfying a `predicate`
     //! with a fixed value.
     //! @ingroup group-Functor
@@ -24,7 +24,7 @@ BOOST_HANA_NAMESPACE_BEGIN
     //! ---------
     //! Given `F` a Functor and `Bool` a Logical, the signature is
     //! \f$
-    //!     \mathtt{replace_if} : F(T) \times (T \to Bool) \times T \to F(T)
+    //!     \mathtt{replace\_if} : F(T) \times (T \to Bool) \times T \to F(T)
     //! \f$
     //!
     //! @param xs
@@ -56,8 +56,8 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr auto operator()(Xs&& xs, Pred&& pred, Value&& value) const;
     };
 
-    constexpr replace_if_t replace_if{};
+    BOOST_HANA_INLINE_VARIABLE constexpr replace_if_t replace_if{};
 #endif
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_REPLACE_IF_HPP

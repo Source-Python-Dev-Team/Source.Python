@@ -5,8 +5,8 @@
 // Copyright (c) 2009-2014 Mateusz Loskot, London, UK.
 // Copyright (c) 2013-2014 Adam Wulkiewicz, Lodz, Poland.
 
-// This file was modified by Oracle on 2013-2017.
-// Modifications copyright (c) 2013-2017, Oracle and/or its affiliates.
+// This file was modified by Oracle on 2013-2022.
+// Modifications copyright (c) 2013-2022, Oracle and/or its affiliates.
 
 // Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 // Contributed and/or modified by Menelaos Karavelas, on behalf of Oracle
@@ -23,11 +23,16 @@
 
 #include <boost/geometry/core/point_type.hpp>
 
-#include <boost/geometry/algorithms/covered_by.hpp>
+#include <boost/geometry/algorithms/detail/covered_by/implementation.hpp>
 #include <boost/geometry/algorithms/detail/for_each_range.hpp>
 #include <boost/geometry/algorithms/detail/point_on_border.hpp>
 
 #include <boost/geometry/algorithms/detail/disjoint/linear_linear.hpp>
+#include <boost/geometry/algorithms/detail/disjoint/segment_box.hpp>
+
+#include <boost/geometry/geometries/helper_geometry.hpp>
+
+#include <boost/geometry/algorithms/for_each.hpp>
 
 
 namespace boost { namespace geometry
@@ -38,82 +43,36 @@ namespace boost { namespace geometry
 namespace detail { namespace disjoint
 {
 
-
-template <typename Geometry, typename Tag = typename tag<Geometry>::type>
-struct check_each_ring_for_within_call_covered_by
+template <typename Geometry1, typename Geometry2, typename Strategy>
+inline bool point_on_border_covered_by(Geometry1 const& geometry1,
+                                       Geometry2 const& geometry2,
+                                       Strategy const& strategy)
 {
-    /*!
-    \tparam Strategy point_in_geometry strategy
-    */
-    template <typename Point, typename Strategy>
-    static inline bool apply(Point const& p, Geometry const& g, Strategy const& strategy)
-    {
-        return geometry::covered_by(p, g, strategy);
-    }
-};
-
-template <typename Geometry>
-struct check_each_ring_for_within_call_covered_by<Geometry, box_tag>
-{
-    template <typename Point, typename Strategy>
-    static inline bool apply(Point const& p, Geometry const& g, Strategy const& )
-    {
-        return geometry::covered_by(p, g);
-    }
-};
+    using point_type = typename geometry::point_type<Geometry1>::type;
+    typename helper_geometry<point_type>::type pt;
+    return geometry::point_on_border(pt, geometry1)
+        && geometry::covered_by(pt, geometry2, strategy);
+}
 
 
 /*!
 \tparam Strategy point_in_geometry strategy
 */
-template<typename Geometry, typename Strategy>
-struct check_each_ring_for_within
-{
-    bool not_disjoint;
-    Geometry const& m_geometry;
-    Strategy const& m_strategy;
-
-    inline check_each_ring_for_within(Geometry const& g,
-                                      Strategy const& strategy)
-        : not_disjoint(false)
-        , m_geometry(g)
-        , m_strategy(strategy)
-    {}
-
-    template <typename Range>
-    inline void apply(Range const& range)
-    {
-        typename point_type<Range>::type pt;
-        not_disjoint = not_disjoint
-                || ( geometry::point_on_border(pt, range)
-                  && check_each_ring_for_within_call_covered_by
-                        <
-                            Geometry
-                        >::apply(pt, m_geometry, m_strategy) );
-    }
-};
-
-
-/*!
-\tparam Strategy point_in_geometry strategy
-*/
-template <typename FirstGeometry, typename SecondGeometry, typename Strategy>
-inline bool rings_containing(FirstGeometry const& geometry1,
-                             SecondGeometry const& geometry2,
+template <typename Geometry1, typename Geometry2, typename Strategy>
+inline bool rings_containing(Geometry1 const& geometry1,
+                             Geometry2 const& geometry2,
                              Strategy const& strategy)
 {
-    check_each_ring_for_within
-        <
-            FirstGeometry, Strategy
-        > checker(geometry1, strategy);
-    geometry::detail::for_each_range(geometry2, checker);
-    return checker.not_disjoint;
+    return geometry::detail::any_range_of(geometry2, [&](auto const& range)
+    {
+        return point_on_border_covered_by(range, geometry1, strategy);
+    });
 }
 
 
 
 template <typename Geometry1, typename Geometry2>
-struct general_areal
+struct areal_areal
 {
     /*!
     \tparam Strategy relate (segments intersection) strategy
@@ -134,10 +93,40 @@ struct general_areal
         // We check that using a point on the border (external boundary),
         // and see if that is contained in the other geometry. And vice versa.
 
-        if ( rings_containing(geometry1, geometry2,
-                              strategy.template get_point_in_geometry_strategy<Geometry2, Geometry1>())
-          || rings_containing(geometry2, geometry1,
-                              strategy.template get_point_in_geometry_strategy<Geometry1, Geometry2>()) )
+        if ( rings_containing(geometry1, geometry2, strategy)
+          || rings_containing(geometry2, geometry1, strategy) )
+        {
+            return false;
+        }
+
+        return true;
+    }
+};
+
+
+template <typename Areal, typename Box>
+struct areal_box
+{
+    /*!
+    \tparam Strategy relate (segments intersection) strategy
+    */
+    template <typename Strategy>
+    static inline bool apply(Areal const& areal,
+                             Box const& box,
+                             Strategy const& strategy)
+    {
+        if (! geometry::all_segments_of(areal, [&](auto const& s)
+              {
+                  return disjoint_segment_box::apply(s, box, strategy);
+              }) )
+        {
+            return false;
+        }
+
+        // If there is no intersection of any segment and box,
+        // the box might be located inside areal geometry
+
+        if ( point_on_border_covered_by(box, areal, strategy) )
         {
             return false;
         }
@@ -160,13 +149,13 @@ namespace dispatch
 
 template <typename Areal1, typename Areal2>
 struct disjoint<Areal1, Areal2, 2, areal_tag, areal_tag, false>
-    : detail::disjoint::general_areal<Areal1, Areal2>
+    : detail::disjoint::areal_areal<Areal1, Areal2>
 {};
 
 
 template <typename Areal, typename Box>
 struct disjoint<Areal, Box, 2, areal_tag, box_tag, false>
-    : detail::disjoint::general_areal<Areal, Box>
+    : detail::disjoint::areal_box<Areal, Box>
 {};
 
 

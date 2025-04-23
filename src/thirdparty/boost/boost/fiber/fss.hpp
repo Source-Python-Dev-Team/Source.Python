@@ -25,7 +25,7 @@ template< typename T >
 class fiber_specific_ptr {
 private:
     struct default_cleanup_function : public detail::fss_cleanup_function {
-        void operator()( void * data) noexcept {
+        void operator()( void * data) noexcept override {
             delete static_cast< T * >( data);
         }
     };
@@ -37,8 +37,8 @@ private:
             fn{ fn_ } {
         }
 
-        void operator()( void* data) {
-            if ( fn) {
+        void operator()( void * data) override {
+            if ( BOOST_LIKELY( nullptr != fn) ) {
                 fn( static_cast< T * >( data) );
             }
         }
@@ -47,7 +47,7 @@ private:
     detail::fss_cleanup_function::ptr_t cleanup_fn_;
 
 public:
-    typedef T   element_type;
+    using element_type = T;
 
     fiber_specific_ptr() :
         cleanup_fn_{ new default_cleanup_function() } {
@@ -91,7 +91,7 @@ public:
 
     void reset( T * t) {
         T * c = get();
-        if ( c != t) {
+        if ( BOOST_LIKELY( c != t) ) {
             context::active()->set_fss_data(
                 this, cleanup_fn_, t, true);
         }

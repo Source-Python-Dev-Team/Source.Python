@@ -22,10 +22,7 @@ __version__ = "6"
 
 import os
 import sys
-import getopt
 import tokenize
-if not hasattr(tokenize, 'NL'):
-    raise ValueError("tokenize.NL doesn't exist -- tokenize module too old")
 
 __all__ = ["check", "NannyNag", "process_tokens"]
 
@@ -38,14 +35,16 @@ def errprint(*args):
         sys.stderr.write(sep + str(arg))
         sep = " "
     sys.stderr.write("\n")
+    sys.exit(1)
 
 def main():
+    import getopt
+
     global verbose, filename_only
     try:
         opts, args = getopt.getopt(sys.argv[1:], "qv")
     except getopt.error as msg:
         errprint(msg)
-        return
     for o, a in opts:
         if o == '-q':
             filename_only = filename_only + 1
@@ -53,13 +52,12 @@ def main():
             verbose = verbose + 1
     if not args:
         errprint("Usage:", sys.argv[0], "[-v] file_or_directory ...")
-        return
     for arg in args:
         check(arg)
 
 class NannyNag(Exception):
     """
-    Raised by tokeneater() if detecting an ambiguous indent.
+    Raised by process_tokens() if detecting an ambiguous indent.
     Captured and handled in check().
     """
     def __init__(self, lineno, msg, line):
@@ -111,6 +109,10 @@ def check(file):
 
     except IndentationError as msg:
         errprint("%r: Indentation Error: %s" % (file, msg))
+        return
+
+    except SyntaxError as msg:
+        errprint("%r: Syntax Error: %s" % (file, msg))
         return
 
     except NannyNag as nag:
@@ -274,6 +276,12 @@ def format_witnesses(w):
     return prefix + " " + ', '.join(firsts)
 
 def process_tokens(tokens):
+    try:
+        _process_tokens(tokens)
+    except TabError as e:
+        raise NannyNag(e.lineno, e.msg, e.text)
+
+def _process_tokens(tokens):
     INDENT = tokenize.INDENT
     DEDENT = tokenize.DEDENT
     NEWLINE = tokenize.NEWLINE

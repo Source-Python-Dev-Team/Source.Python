@@ -2,8 +2,8 @@
 @file
 Adapts `std::vector` for use with Hana.
 
-@copyright Louis Dionne 2013-2017
-@copyright Gonzalo Brito Gadeschi 2015
+Copyright Louis Dionne 2013-2022
+Copyright Gonzalo Brito Gadeschi 2015
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -24,7 +24,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <vector>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     namespace ext { namespace std { struct vector_tag; }}
 
     template <typename T, typename Allocator>
@@ -105,6 +105,6 @@ BOOST_HANA_NAMESPACE_BEGIN
         }
     };
 #endif
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_EXT_STD_VECTOR_HPP

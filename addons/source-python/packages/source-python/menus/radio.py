@@ -13,6 +13,7 @@ from menus.base import Text
 from menus.base import _BaseMenu
 from menus.base import _PagedMenuBase
 from menus.base import _BaseOption
+from menus.base import _format_paged_title
 from menus.base import _translate_text
 from menus.queue import _radio_queues
 #   Messages
@@ -144,7 +145,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
             self, data=None, select_callback=None,
             build_callback=None, close_callback=None, description=None,
             title=None, top_separator='-' * 30, bottom_separator='-' * 30,
-            fill=True, parent_menu=None):
+            fill=True, parent_menu=None, show_pages=True):
         """Initialize the object.
 
         :param iterable|None data: See :meth:`menus.base._BaseMenu.__init__`.
@@ -175,6 +176,7 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         self.bottom_separator = bottom_separator
         self.fill = fill
         self.parent_menu = parent_menu
+        self.show_pages = show_pages
 
     @staticmethod
     def _get_max_item_count():
@@ -189,11 +191,10 @@ class PagedRadioMenu(SimpleRadioMenu, _PagedMenuBase):
         :param slots: A set to which slots can be added.
         :type slots: :class:`set`
         """
-        # Create the page info string
-        info = '[{0}/{1}]\n'.format(page.index + 1, self.page_count)
+        buffer = _format_paged_title(self, player_index, page)
 
-        buffer = '{0} {1}'.format(_translate_text(
-            self.title, player_index), info) if self.title else info
+        if buffer:
+            buffer += '\n'
 
         # Set description if present
         if self.description is not None:
@@ -328,7 +329,7 @@ class ListRadioMenu(PagedRadioMenu):
             self, data=None, select_callback=None, build_callback=None, close_callback=None,
             description=None, title=None, top_separator='-' * 30,
             bottom_separator='-' * 30, fill=True, parent_menu=None,
-            items_per_page=10):
+            items_per_page=10, show_pages=True):
         """Initialize the object.
 
         :param iterable|None data: See :meth:`menus.base._BaseMenu.__init__`.
@@ -348,7 +349,7 @@ class ListRadioMenu(PagedRadioMenu):
             on a single page.
         """
         super().__init__(data, select_callback, build_callback, close_callback, description,
-            title, top_separator, bottom_separator, fill, parent_menu)
+            title, top_separator, bottom_separator, fill, parent_menu, show_pages)
         self.items_per_page = items_per_page
 
     def _get_max_item_count(self):

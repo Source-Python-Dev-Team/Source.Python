@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::lift`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -14,7 +14,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/core/when.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! Lift a value into an `Applicative` structure.
     //! @ingroup group-Applicative
     //!
@@ -49,11 +49,14 @@ BOOST_HANA_NAMESPACE_BEGIN
     struct lift_impl : lift_impl<A, when<true>> { };
 
     template <typename A>
-    struct lift_t;
+    struct lift_t {
+        template <typename X>
+        constexpr auto operator()(X&& x) const;
+    };
 
     template <typename A>
-    constexpr lift_t<A> lift{};
+    BOOST_HANA_INLINE_VARIABLE constexpr lift_t<A> lift{};
 #endif
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_LIFT_HPP

@@ -58,7 +58,7 @@ namespace container {
 //! to detect if a type should be constructed with suffix or prefix allocator arguments.
 template <class T>
 struct constructible_with_allocator_suffix
-{  static const bool value = false; };
+{  BOOST_STATIC_CONSTEXPR bool value = false; };
 
 //! <b>Remark</b>: if a specialization constructible_with_allocator_prefix<X>::value is true, indicates that T may be constructed
 //! with allocator_arg and T::allocator_type as its first two constructor arguments.
@@ -108,11 +108,11 @@ struct constructible_with_allocator_suffix
 //! to detect if a type should be constructed with suffix or prefix allocator arguments.
 template <class T>
 struct constructible_with_allocator_prefix
-{  static const bool value = false; };
+{  BOOST_STATIC_CONSTEXPR bool value = false; };
 
 #ifndef BOOST_CONTAINER_DOXYGEN_INVOKED
 
-namespace container_detail {
+namespace dtl {
 
 template<typename T, typename Allocator>
 struct uses_allocator_imp
@@ -130,8 +130,8 @@ struct uses_allocator_imp
 
    // Match this function if T::allocator_type exists and it's type is `erased_type`.
    template <class U, class V>
-   static typename container_detail::enable_if
-      < container_detail::is_same<typename U::allocator_type, erased_type>
+   static typename dtl::enable_if
+      < dtl::is_same<typename U::allocator_type, erased_type>
       , yes_type
       >::type  test(const V&);
 
@@ -142,10 +142,10 @@ struct uses_allocator_imp
    static Allocator alloc;  // Declared but not defined
 
    public:
-   static const bool value = sizeof(test<T>(alloc)) == sizeof(yes_type);
+   BOOST_STATIC_CONSTEXPR bool value = sizeof(test<T>(alloc)) == sizeof(yes_type);
 };
 
-}  //namespace container_detail {
+}  //namespace dtl {
 
 #endif   //#ifndef BOOST_CONTAINER_DOXYGEN_INVOKED
 
@@ -161,7 +161,7 @@ struct uses_allocator_imp
 //! is an alias `erased_type`. False otherwise.
 template <typename T, typename Allocator>
 struct uses_allocator
-   : container_detail::uses_allocator_imp<T, Allocator>
+   : dtl::uses_allocator_imp<T, Allocator>
 {};
 
 }} //namespace boost::container

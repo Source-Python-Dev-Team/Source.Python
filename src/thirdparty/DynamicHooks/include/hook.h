@@ -40,6 +40,8 @@
 #include "registers.h"
 #include "convention.h"
 
+#include "x86.h"
+
 
 // ============================================================================
 // >> HookType_t
@@ -68,11 +70,6 @@ typedef bool (*HookHandlerFn)(HookType_t, CHook*);
 // ============================================================================
 // >> CLASSES
 // ============================================================================
-namespace AsmJit {
-	struct Assembler;
-}
-using namespace AsmJit;
-
 class CHook
 {
 private:
@@ -153,14 +150,14 @@ public:
 	}
 
 private:
-	void* CreateBridge();
+	bool CreateBridge();
 
-	void Write_ModifyReturnAddress(Assembler& a);
-	void Write_CallHandler(Assembler& a, HookType_t type, CRegisters* pRegisters);
-	void Write_SaveRegisters(Assembler& a, CRegisters* pRegisters);
-	void Write_RestoreRegisters(Assembler& a, CRegisters* pRegisters);
+	void Write_ModifyReturnAddress(asmjit::x86::Assembler& a);
+	void Write_CallHandler(asmjit::x86::Assembler& a, HookType_t type, CRegisters* pRegisters);
+	void Write_SaveRegisters(asmjit::x86::Assembler& a, CRegisters* pRegisters);
+	void Write_RestoreRegisters(asmjit::x86::Assembler& a, CRegisters* pRegisters);
 
-	void* CreatePostCallback();
+	bool CreatePostCallback();
 
 	bool __cdecl HookHandler(HookType_t type);
 
@@ -191,6 +188,8 @@ public:
 	std::map<void*, std::vector<void*> > m_RetAddr;
 
 	bool m_bUsePreRegisters;
+
+	asmjit::JitRuntime m_asmjit_rt;
 };
 
 #endif // _HOOK_H

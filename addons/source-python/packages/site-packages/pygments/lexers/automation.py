@@ -1,11 +1,10 @@
-# -*- coding: utf-8 -*-
 """
     pygments.lexers.automation
     ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     Lexers for automation scripting languages.
 
-    :copyright: Copyright 2006-2015 by the Pygments team, see AUTHORS.
+    :copyright: Copyright 2006-2025 by the Pygments team, see AUTHORS.
     :license: BSD, see LICENSE for details.
 """
 
@@ -18,21 +17,21 @@ __all__ = ['AutohotkeyLexer', 'AutoItLexer']
 
 class AutohotkeyLexer(RegexLexer):
     """
-    For `autohotkey <http://www.autohotkey.com/>`_ source code.
-
-    .. versionadded:: 1.4
+    For autohotkey source code.
     """
     name = 'autohotkey'
-    aliases = ['ahk', 'autohotkey']
+    url = 'http://www.autohotkey.com/'
+    aliases = ['autohotkey', 'ahk']
     filenames = ['*.ahk', '*.ahkl']
     mimetypes = ['text/x-autohotkey']
+    version_added = '1.4'
 
     tokens = {
         'root': [
             (r'^(\s*)(/\*)', bygroups(Text, Comment.Multiline), 'incomment'),
             (r'^(\s*)(\()', bygroups(Text, Generic), 'incontinuation'),
-            (r'\s+;.*?$', Comment.Singleline),
-            (r'^;.*?$', Comment.Singleline),
+            (r'\s+;.*?$', Comment.Single),
+            (r'^;.*?$', Comment.Single),
             (r'[]{}(),;[]', Punctuation),
             (r'(in|is|and|or|not)\b', Operator.Word),
             (r'\%[a-zA-Z_#@$][\w#@$]*\%', Name.Variable),
@@ -50,8 +49,8 @@ class AutohotkeyLexer(RegexLexer):
         ],
         'incomment': [
             (r'^\s*\*/', Comment.Multiline, '#pop'),
-            (r'[^*/]', Comment.Multiline),
-            (r'[*/]', Comment.Multiline)
+            (r'[^*]+', Comment.Multiline),
+            (r'\*', Comment.Multiline)
         ],
         'incontinuation': [
             (r'^\s*\)', Generic, '#pop'),
@@ -195,17 +194,17 @@ class AutohotkeyLexer(RegexLexer):
 
 class AutoItLexer(RegexLexer):
     """
-    For `AutoIt <http://www.autoitscript.com/site/autoit/>`_ files.
+    For AutoIt files.
 
     AutoIt is a freeware BASIC-like scripting language
     designed for automating the Windows GUI and general scripting
-
-    .. versionadded:: 1.6
     """
     name = 'AutoIt'
+    url = 'http://www.autoitscript.com/site/autoit/'
     aliases = ['autoit']
     filenames = ['*.au3']
     mimetypes = ['text/x-autoit']
+    version_added = '1.6'
 
     # Keywords, functions, macros from au3.keywords.properties
     # which can be found in AutoIt installed directory, e.g.
@@ -327,6 +326,7 @@ class AutoItLexer(RegexLexer):
             include('builtInFunctions'),
             include('builtInMarcros'),
             (r'"', String, combined('stringescape', 'dqs')),
+            (r"'", String, 'sqs'),
             include('numbers'),
             (r'[a-zA-Z_#@$][\w#@$]*', Name),
             (r'\\|\'', Text),
@@ -335,15 +335,15 @@ class AutoItLexer(RegexLexer):
             include('garbage'),
         ],
         'commands': [
-            (r'(?i)(\s*)(%s)\b' % '|'.join(keywords),
+            (r'(?i)(\s*)({})\b'.format('|'.join(keywords)),
              bygroups(Text, Name.Builtin)),
         ],
         'builtInFunctions': [
-            (r'(?i)(%s)\b' % '|'.join(functions),
+            (r'(?i)({})\b'.format('|'.join(functions)),
              Name.Function),
         ],
         'builtInMarcros': [
-            (r'(?i)(%s)\b' % '|'.join(macros),
+            (r'(?i)({})\b'.format('|'.join(macros)),
              Name.Variable.Global),
         ],
         'labels': [
@@ -367,6 +367,11 @@ class AutoItLexer(RegexLexer):
         'dqs': [
             (r'"', String, '#pop'),
             include('strings')
+        ],
+        'sqs': [
+            (r'\'\'|\`([,%`abfnrtv])', String.Escape),
+            (r"'", String, '#pop'),
+            (r"[^'\n]+", String)
         ],
         'garbage': [
             (r'[^\S\n]', Text),

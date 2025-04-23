@@ -30,7 +30,7 @@ system_clock::time_point
 system_clock::now() BOOST_NOEXCEPT
 {
     timeval tv;
-    gettimeofday(&tv, 0);
+    gettimeofday(&tv, BOOST_NULLPTR);
     return time_point(seconds(tv.tv_sec) + microseconds(tv.tv_usec));
 }
 
@@ -39,8 +39,8 @@ system_clock::time_point
 system_clock::now(system::error_code & ec)
 {
     timeval tv;
-    gettimeofday(&tv, 0);
-    if (!BOOST_CHRONO_IS_THROWS(ec))
+    gettimeofday(&tv, BOOST_NULLPTR);
+    if (!::boost::chrono::is_throws(ec))
     {
         ec.clear();
     }
@@ -89,7 +89,7 @@ BOOST_CHRONO_STATIC
 steady_clock::rep
 steady_simplified_ec(system::error_code & ec)
 {
-    if (!BOOST_CHRONO_IS_THROWS(ec))
+    if (!::boost::chrono::is_throws(ec))
     {
         ec.clear();
     }
@@ -131,21 +131,21 @@ steady_full_ec(system::error_code & ec)
     const double factor = chrono_detail::compute_steady_factor(err);
     if (err != 0)
     {
-        if (BOOST_CHRONO_IS_THROWS(ec))
+        if (::boost::chrono::is_throws(ec))
         {
             boost::throw_exception(
                     system::system_error(
                             err,
-                            BOOST_CHRONO_SYSTEM_CATEGORY,
+                            ::boost::system::system_category(),
                             "chrono::steady_clock" ));
         }
         else
         {
-            ec.assign( errno, BOOST_CHRONO_SYSTEM_CATEGORY );
+            ec.assign( errno, ::boost::system::system_category() );
             return steady_clock::rep();
         }
     }
-    if (!BOOST_CHRONO_IS_THROWS(ec))
+    if (!::boost::chrono::is_throws(ec))
     {
         ec.clear();
     }
@@ -166,7 +166,7 @@ init_steady_clock(kern_return_t & err)
     err = mach_timebase_info(&MachInfo);
     if ( err != 0  )
     {
-        return 0;
+        return BOOST_NULLPTR;
     }
 
     if (MachInfo.numer == MachInfo.denom)
@@ -185,7 +185,7 @@ init_steady_clock_ec(kern_return_t & err)
     err = mach_timebase_info(&MachInfo);
     if ( err != 0  )
     {
-        return 0;
+        return BOOST_NULLPTR;
     }
 
     if (MachInfo.numer == MachInfo.denom)
@@ -217,21 +217,21 @@ steady_clock::now(system::error_code & ec)
     chrono_detail::FP_ec fp = chrono_detail::init_steady_clock_ec(err);
     if ( err != 0  )
     {
-        if (BOOST_CHRONO_IS_THROWS(ec))
+        if (::boost::chrono::is_throws(ec))
         {
             boost::throw_exception(
                     system::system_error(
                             err,
-                            BOOST_CHRONO_SYSTEM_CATEGORY,
+                            ::boost::system::system_category(),
                             "chrono::steady_clock" ));
         }
         else
         {
-            ec.assign( err, BOOST_CHRONO_SYSTEM_CATEGORY );
+            ec.assign( err, ::boost::system::system_category() );
             return time_point();
         }
     }
-    if (!BOOST_CHRONO_IS_THROWS(ec))
+    if (!::boost::chrono::is_throws(ec))
     {
         ec.clear();
     }

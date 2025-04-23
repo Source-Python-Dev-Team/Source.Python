@@ -3,11 +3,12 @@
 // Copyright (c) 2007-2014 Barend Gehrels, Amsterdam, the Netherlands.
 // Copyright (c) 2008-2014 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2014 Mateusz Loskot, London, UK.
+// Copyright (c) 2024 Adam Wulkiewicz, Lodz, Poland.
 
-// This file was modified by Oracle on 2014.
-// Modifications copyright (c) 2014, Oracle and/or its affiliates.
-
+// This file was modified by Oracle on 2014-2020.
+// Modifications copyright (c) 2014-2020, Oracle and/or its affiliates.
 // Contributed and/or modified by Menelaos Karavelas, on behalf of Oracle
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
@@ -19,12 +20,11 @@
 #ifndef BOOST_GEOMETRY_CORE_CS_HPP
 #define BOOST_GEOMETRY_CORE_CS_HPP
 
+
 #include <cstddef>
 
-#include <boost/mpl/assert.hpp>
-#include <boost/type_traits/integral_constant.hpp>
-
 #include <boost/geometry/core/coordinate_system.hpp>
+#include <boost/geometry/core/static_assert.hpp>
 #include <boost/geometry/core/tags.hpp>
 
 
@@ -56,22 +56,21 @@ namespace core_detail
 {
 
 template <typename DegreeOrRadian>
-struct coordinate_system_units
+struct define_angular_units
 {
-    BOOST_MPL_ASSERT_MSG
-        ((false),
-         COORDINATE_SYSTEM_UNITS_MUST_BE_DEGREES_OR_RADIANS,
-         (types<DegreeOrRadian>));
+    BOOST_GEOMETRY_STATIC_ASSERT_FALSE(
+        "Coordinate system unit must be degree or radian.",
+        DegreeOrRadian);
 };
 
 template <>
-struct coordinate_system_units<geometry::degree>
+struct define_angular_units<geometry::degree>
 {
     typedef geometry::degree units;
 };
 
 template <>
-struct coordinate_system_units<geometry::radian>
+struct define_angular_units<geometry::radian>
 {
     typedef geometry::radian units;
 };
@@ -107,12 +106,8 @@ known as lat,long or lo,la or phi,lambda
 */
 template<typename DegreeOrRadian>
 struct geographic
-{
-    typedef typename core_detail::coordinate_system_units
-        <
-            DegreeOrRadian
-        >::units units;
-};
+    : core_detail::define_angular_units<DegreeOrRadian>
+{};
 
 
 
@@ -136,12 +131,8 @@ struct geographic
 */
 template<typename DegreeOrRadian>
 struct spherical
-{
-    typedef typename core_detail::coordinate_system_units
-        <
-            DegreeOrRadian
-        >::units units;
-};
+    : core_detail::define_angular_units<DegreeOrRadian>
+{};
 
 
 /*!
@@ -156,12 +147,8 @@ struct spherical
 */
 template<typename DegreeOrRadian>
 struct spherical_equatorial
-{
-    typedef typename core_detail::coordinate_system_units
-        <
-            DegreeOrRadian
-        >::units units;
-};
+    : core_detail::define_angular_units<DegreeOrRadian>
+{};
 
 
 
@@ -174,12 +161,15 @@ struct spherical_equatorial
 */
 template<typename DegreeOrRadian>
 struct polar
-{
-    typedef typename core_detail::coordinate_system_units
-        <
-            DegreeOrRadian
-        >::units units;
-};
+    : core_detail::define_angular_units<DegreeOrRadian>
+{};
+
+
+/*!
+\brief Undefined coordinate system
+\ingroup cs
+*/
+struct undefined {};
 
 
 } // namespace cs
@@ -227,8 +217,17 @@ struct cs_tag<cs::cartesian>
 };
 
 
+template <>
+struct cs_tag<cs::undefined>
+{
+    typedef cs_undefined_tag type;
+};
+
 #endif // DOXYGEN_NO_TRAITS_SPECIALIZATIONS
+
+
 } // namespace traits
+
 
 /*!
 \brief Meta-function returning coordinate system tag (cs family) of any geometry
@@ -238,31 +237,117 @@ struct cs_tag<cs::cartesian>
 template <typename Geometry>
 struct cs_tag
 {
-    typedef typename traits::cs_tag
+    using type = typename traits::cs_tag
         <
-            typename geometry::coordinate_system<Geometry>::type
-        >::type type;
+            geometry::coordinate_system_t<Geometry>
+        >::type;
 };
 
 
-/*!
-\brief Meta-function to verify if a coordinate system is radian
-\tparam CoordinateSystem Any coordinate system.
-\ingroup core
-*/
-template <typename CoordinateSystem>
-struct is_radian : boost::true_type {};
+template <typename Geometry>
+using cs_tag_t = typename cs_tag<Geometry>::type;
 
 
-#ifndef DOXYGEN_NO_SPECIALIZATIONS
-
-// Specialization for any degree coordinate systems
-template <template<typename> class CoordinateSystem>
-struct is_radian< CoordinateSystem<degree> > : boost::false_type
+namespace traits
 {
+
+// cartesian or undefined
+template <typename CoordinateSystem>
+struct cs_angular_units
+{
+    typedef geometry::radian type;
 };
 
-#endif // DOXYGEN_NO_SPECIALIZATIONS
+#ifndef DOXYGEN_NO_TRAITS_SPECIALIZATIONS
+
+template<typename DegreeOrRadian>
+struct cs_angular_units<cs::geographic<DegreeOrRadian> >
+{
+    typedef DegreeOrRadian type;
+};
+
+template<typename DegreeOrRadian>
+struct cs_angular_units<cs::spherical<DegreeOrRadian> >
+{
+    typedef DegreeOrRadian type;
+};
+
+template<typename DegreeOrRadian>
+struct cs_angular_units<cs::spherical_equatorial<DegreeOrRadian> >
+{
+    typedef DegreeOrRadian type;
+};
+
+#endif // DOXYGEN_NO_TRAITS_SPECIALIZATIONS
+
+
+} // namespace traits
+
+
+#ifndef DOXYGEN_NO_DETAIL
+namespace detail
+{
+
+template <typename Geometry>
+struct cs_angular_units
+{
+    using type = typename traits::cs_angular_units
+        <
+            geometry::coordinate_system_t<Geometry>
+        >::type;
+};
+
+
+template <typename Geometry>
+using cs_angular_units_t = typename cs_angular_units<Geometry>::type;
+
+
+template <typename Units, typename CsTag>
+struct cs_tag_to_coordinate_system
+{
+    BOOST_GEOMETRY_STATIC_ASSERT_FALSE(
+        "Not implemented for this coordinate system.",
+        Units, CsTag);
+};
+
+template <typename Units>
+struct cs_tag_to_coordinate_system<Units, cs_undefined_tag>
+{
+    typedef cs::undefined type;
+};
+
+template <typename Units>
+struct cs_tag_to_coordinate_system<Units, cartesian_tag>
+{
+    typedef cs::cartesian type;
+};
+
+template <typename Units>
+struct cs_tag_to_coordinate_system<Units, spherical_equatorial_tag>
+{
+    typedef cs::spherical_equatorial<Units> type;
+};
+
+template <typename Units>
+struct cs_tag_to_coordinate_system<Units, spherical_polar_tag>
+{
+    typedef cs::spherical<Units> type;
+};
+
+template <typename Units>
+struct cs_tag_to_coordinate_system<Units, geographic_tag>
+{
+    typedef cs::geographic<Units> type;
+};
+
+
+template <typename Units, typename CsTag>
+using cs_tag_to_coordinate_system_t = typename cs_tag_to_coordinate_system<Units, CsTag>::type;
+
+
+} // namespace detail
+#endif // DOXYGEN_NO_DETAIL
+
 
 }} // namespace boost::geometry
 

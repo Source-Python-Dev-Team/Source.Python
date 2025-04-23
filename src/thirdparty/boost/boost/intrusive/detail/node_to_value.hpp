@@ -59,7 +59,7 @@ struct constptr
    {}
 
    const void *get_ptr() const
-   {  return boost::intrusive::detail::to_raw_pointer(const_void_ptr_);  }
+   {  return boost::movelib::to_raw_pointer(const_void_ptr_);  }
 
    ConstVoidPtr const_void_ptr_;
 };
@@ -103,7 +103,7 @@ struct node_to_value
    typedef typename pointer_traits<npointer>::
       template rebind_pointer<const ValueTraits>::type const_value_traits_ptr;
 
-   node_to_value(const const_value_traits_ptr &ptr)
+   node_to_value(const_value_traits_ptr ptr)
       :  Base(ptr)
    {}
 

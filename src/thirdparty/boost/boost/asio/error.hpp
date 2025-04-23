@@ -2,7 +2,7 @@
 // error.hpp
 // ~~~~~~~~~
 //
-// Copyright (c) 2003-2017 Christopher M. Kohlhoff (chris at kohlhoff dot com)
+// Copyright (c) 2003-2024 Christopher M. Kohlhoff (chris at kohlhoff dot com)
 //
 // Distributed under the Boost Software License, Version 1.0. (See accompanying
 // file LICENSE_1_0.txt or copy at http://www.boost.org/LICENSE_1_0.txt)
@@ -225,6 +225,35 @@ enum misc_errors
   fd_set_failure
 };
 
+#if !defined(BOOST_ASIO_ERROR_LOCATION) \
+  && !defined(BOOST_ASIO_DISABLE_ERROR_LOCATION) \
+  && defined(BOOST_ASIO_HAS_BOOST_CONFIG) \
+  && (BOOST_VERSION >= 107900)
+
+# define BOOST_ASIO_ERROR_LOCATION(e) \
+  do { \
+    BOOST_STATIC_CONSTEXPR boost::source_location loc \
+      = BOOST_CURRENT_LOCATION; \
+    (e).assign((e), &loc); \
+  } while (false)
+
+#else // !defined(BOOST_ASIO_ERROR_LOCATION)
+      //   && !defined(BOOST_ASIO_DISABLE_ERROR_LOCATION)
+      //   && defined(BOOST_ASIO_HAS_BOOST_CONFIG)
+      //   && (BOOST_VERSION >= 107900)
+
+# define BOOST_ASIO_ERROR_LOCATION(e) (void)0
+
+#endif // !defined(BOOST_ASIO_ERROR_LOCATION)
+       //   && !defined(BOOST_ASIO_DISABLE_ERROR_LOCATION)
+       //   && defined(BOOST_ASIO_HAS_BOOST_CONFIG)
+       //   && (BOOST_VERSION >= 107900)
+
+inline void clear(boost::system::error_code& ec)
+{
+  ec = boost::system::error_code();
+}
+
 inline const boost::system::error_category& get_system_category()
 {
   return boost::system::system_category();
@@ -327,6 +356,22 @@ inline boost::system::error_code make_error_code(misc_errors e)
 }
 
 } // namespace error
+namespace stream_errc {
+  // Simulates the proposed stream_errc scoped enum.
+  using error::eof;
+  using error::not_found;
+} // namespace stream_errc
+namespace socket_errc {
+  // Simulates the proposed socket_errc scoped enum.
+  using error::already_open;
+  using error::not_found;
+} // namespace socket_errc
+namespace resolver_errc {
+  // Simulates the proposed resolver_errc scoped enum.
+  using error::host_not_found;
+  const error::netdb_errors try_again = error::host_not_found_try_again;
+  using error::service_not_found;
+} // namespace resolver_errc
 } // namespace asio
 } // namespace boost
 

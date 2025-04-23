@@ -214,7 +214,9 @@ bool CSourcePython::Load( CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 	// ------------------------------------------------------------------
 #elif __linux__
 	// See issue #466.
-	SPLoadLibrary(engine, ZLIB_LIB);
+	if (SPLoadLibrary(engine, ZLIB_LIB) == NULL) {
+		return false;
+	}
 #endif
 
 	// ------------------------------------------------------------------
@@ -463,7 +465,7 @@ void CSourcePython::ClientFullyConnect( edict_t *pEntity )
 }
 #endif
 
-#if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_BLADE)
+#if defined(ENGINE_CSGO) || defined(ENGINE_BMS) || defined(ENGINE_BLADE) || defined(ENGINE_ORANGEBOX)
 void CSourcePython::OnEdictAllocated( edict_t *edict )
 {
 	if (m_pCorePlugin != NULL)

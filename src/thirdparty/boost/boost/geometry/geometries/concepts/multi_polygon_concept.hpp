@@ -4,6 +4,10 @@
 // Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
 
+// This file was modified by Oracle on 2020-2021.
+// Modifications copyright (c) 2020-2021 Oracle and/or its affiliates.
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
 
@@ -18,26 +22,15 @@
 
 #include <boost/concept_check.hpp>
 #include <boost/range/concepts.hpp>
-#include <boost/range/metafunctions.hpp>
+#include <boost/range/value_type.hpp>
 
+#include <boost/geometry/geometries/concepts/concept_type.hpp>
 #include <boost/geometry/geometries/concepts/polygon_concept.hpp>
 
 
 namespace boost { namespace geometry { namespace concepts
 {
 
-
-/*!
-\brief multi-polygon concept
-\ingroup concepts
-\par Formal definition:
-The multi polygon concept is defined as following:
-- there must be a specialization of traits::tag defining multi_polygon_tag
-  as type
-- it must behave like a Boost.Range
-- its range value must fulfil the Polygon concept
-
-*/
 template <typename Geometry>
 class MultiPolygon
 {
@@ -55,8 +48,9 @@ public :
         Geometry* mp = 0;
         traits::clear<Geometry>::apply(*mp);
         traits::resize<Geometry>::apply(*mp, 0);
+        // The concept should support the second version of push_back, using &&
         polygon_type* poly = 0;
-        traits::push_back<Geometry>::apply(*mp, *poly);
+        traits::push_back<Geometry>::apply(*mp, std::move(*poly));
     }
 #endif
 };
@@ -82,6 +76,19 @@ public :
     {
     }
 #endif
+};
+
+
+template <typename Geometry>
+struct concept_type<Geometry, multi_polygon_tag>
+{
+    using type = MultiPolygon<Geometry>;
+};
+
+template <typename Geometry>
+struct concept_type<Geometry const, multi_polygon_tag>
+{
+    using type = ConstMultiPolygon<Geometry>;
 };
 
 

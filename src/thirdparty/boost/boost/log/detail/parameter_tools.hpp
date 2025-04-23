@@ -16,7 +16,10 @@
 #ifndef BOOST_LOG_DETAIL_PARAMETER_TOOLS_HPP_INCLUDED_
 #define BOOST_LOG_DETAIL_PARAMETER_TOOLS_HPP_INCLUDED_
 
+#include <boost/mpl/or.hpp>
+#include <boost/core/enable_if.hpp>
 #include <boost/parameter/keyword.hpp>
+#include <boost/type_traits/is_base_of.hpp>
 #include <boost/preprocessor/control/if.hpp>
 #include <boost/preprocessor/comparison/equal.hpp>
 #include <boost/preprocessor/repetition/enum_params.hpp>
@@ -43,36 +46,36 @@
     public:\
         BOOST_PP_REPEAT_FROM_TO(1, BOOST_LOG_MAX_PARAMETER_ARGS, macro, args)
 
-#define BOOST_LOG_CTOR_FORWARD_1(n, types)\
+#define BOOST_LOG_CTOR_FORWARD_1(z, n, types)\
     template< typename T0 >\
     explicit BOOST_PP_TUPLE_ELEM(2, 0, types)(T0 const& arg0, typename boost::log::aux::enable_if_named_parameters< T0, boost::log::aux::sfinae_dummy >::type = boost::log::aux::sfinae_dummy()) :\
-        BOOST_PP_TUPLE_ELEM(2, 1, types)((BOOST_PP_ENUM_PARAMS(n, arg))) {}
+        BOOST_PP_TUPLE_ELEM(2, 1, types)((BOOST_PP_ENUM_PARAMS_Z(z, n, arg))) {}
 
-#define BOOST_LOG_CTOR_FORWARD_N(n, types)\
-    template< BOOST_PP_ENUM_PARAMS(n, typename T) >\
-    explicit BOOST_PP_TUPLE_ELEM(2, 0, types)(BOOST_PP_ENUM_BINARY_PARAMS(n, T, const& arg)) :\
-        BOOST_PP_TUPLE_ELEM(2, 1, types)((BOOST_PP_ENUM_PARAMS(n, arg))) {}
+#define BOOST_LOG_CTOR_FORWARD_N(z, n, types)\
+    template< BOOST_PP_ENUM_PARAMS_Z(z, n, typename T) >\
+    explicit BOOST_PP_TUPLE_ELEM(2, 0, types)(BOOST_PP_ENUM_BINARY_PARAMS_Z(z, n, T, const& arg)) :\
+        BOOST_PP_TUPLE_ELEM(2, 1, types)((BOOST_PP_ENUM_PARAMS_Z(z, n, arg))) {}
 
 #define BOOST_LOG_CTOR_FORWARD(z, n, types)\
-    BOOST_PP_IF(BOOST_PP_EQUAL(n, 1), BOOST_LOG_CTOR_FORWARD_1, BOOST_LOG_CTOR_FORWARD_N)(n, types)
+    BOOST_PP_IF(BOOST_PP_EQUAL(n, 1), BOOST_LOG_CTOR_FORWARD_1, BOOST_LOG_CTOR_FORWARD_N)(z, n, types)
 
 // The macro expands to a number of templated constructors that aggregate their named arguments
 // into an ArgumentsPack and pass it to the base class constructor.
 #define BOOST_LOG_PARAMETRIZED_CONSTRUCTORS_FORWARD(class_type, base_type)\
     BOOST_LOG_PARAMETRIZED_CONSTRUCTORS_GEN(BOOST_LOG_CTOR_FORWARD, (class_type, base_type))
 
-#define BOOST_LOG_CTOR_CALL_1(n, types)\
+#define BOOST_LOG_CTOR_CALL_1(z, n, types)\
     template< typename T0 >\
     explicit BOOST_PP_TUPLE_ELEM(2, 0, types)(T0 const& arg0, typename boost::log::aux::enable_if_named_parameters< T0, boost::log::aux::sfinae_dummy >::type = boost::log::aux::sfinae_dummy())\
-    { BOOST_PP_TUPLE_ELEM(2, 1, types)((BOOST_PP_ENUM_PARAMS(n, arg))); }
+    { BOOST_PP_TUPLE_ELEM(2, 1, types)((BOOST_PP_ENUM_PARAMS_Z(z, n, arg))); }
 
-#define BOOST_LOG_CTOR_CALL_N(n, types)\
-    template< BOOST_PP_ENUM_PARAMS(n, typename T) >\
-    explicit BOOST_PP_TUPLE_ELEM(2, 0, types)(BOOST_PP_ENUM_BINARY_PARAMS(n, T, const& arg))\
-    { BOOST_PP_TUPLE_ELEM(2, 1, types)((BOOST_PP_ENUM_PARAMS(n, arg))); }
+#define BOOST_LOG_CTOR_CALL_N(z, n, types)\
+    template< BOOST_PP_ENUM_PARAMS_Z(z, n, typename T) >\
+    explicit BOOST_PP_TUPLE_ELEM(2, 0, types)(BOOST_PP_ENUM_BINARY_PARAMS_Z(z, n, T, const& arg))\
+    { BOOST_PP_TUPLE_ELEM(2, 1, types)((BOOST_PP_ENUM_PARAMS_Z(z, n, arg))); }
 
 #define BOOST_LOG_CTOR_CALL(z, n, types)\
-    BOOST_PP_IF(BOOST_PP_EQUAL(n, 1), BOOST_LOG_CTOR_CALL_1, BOOST_LOG_CTOR_CALL_N)(n, types)
+    BOOST_PP_IF(BOOST_PP_EQUAL(n, 1), BOOST_LOG_CTOR_CALL_1, BOOST_LOG_CTOR_CALL_N)(z, n, types)
 
 // The macro expands to a number of templated constructors that aggregate their named arguments
 // into an ArgumentsPack and pass it to a function call.
@@ -121,26 +124,20 @@ struct make_arg_list< ArgT0, BOOST_PP_ENUM_PARAMS(BOOST_PP_DEC(BOOST_LOG_MAX_PAR
 
 #endif
 
+#if !defined(BOOST_NO_CXX11_TEMPLATE_ALIASES)
+
 template< typename T, typename R >
-struct enable_if_named_parameters {};
+using enable_if_named_parameters = boost::enable_if_c< boost::mpl::or_< boost::is_base_of< boost::parameter::aux::tagged_argument_base, T >, boost::is_base_of< empty_arg_list, T > >::value, R >;
 
-template< typename R >
-struct enable_if_named_parameters< empty_arg_list, R >
+#else // !defined(BOOST_NO_CXX11_TEMPLATE_ALIASES)
+
+template< typename T, typename R >
+struct enable_if_named_parameters :
+    public boost::enable_if_c< boost::mpl::or_< boost::is_base_of< boost::parameter::aux::tagged_argument_base, T >, boost::is_base_of< empty_arg_list, T > >::value, R >
 {
-    typedef R type;
 };
 
-template< typename Keyword, typename Arg, typename R >
-struct enable_if_named_parameters< boost::parameter::aux::tagged_argument< Keyword, Arg >, R >
-{
-    typedef R type;
-};
-
-template< typename TaggedArg, typename Next, typename R >
-struct enable_if_named_parameters< boost::parameter::aux::arg_list< TaggedArg, Next >, R >
-{
-    typedef R type;
-};
+#endif // !defined(BOOST_NO_CXX11_TEMPLATE_ALIASES)
 
 } // namespace aux
 

@@ -37,6 +37,7 @@
 #include <boost/intrusive/pointer_traits.hpp>
 #include <boost/interprocess/mem_algo/detail/mem_algo_common.hpp>
 #include <boost/move/detail/type_traits.hpp> //make_unsigned, alignment_of
+#include <boost/move/detail/force_ptr.hpp>
 #include <boost/intrusive/detail/minimal_pair_header.hpp>
 #include <cstring>
 #include <boost/assert.hpp>
@@ -72,11 +73,11 @@ class simple_seq_fit_impl
    typedef MutexFamily        mutex_family;
    //!Pointer type to be used with the rest of the Interprocess framework
    typedef VoidPointer        void_pointer;
-   typedef boost::container::container_detail::
+   typedef boost::container::dtl::
       basic_multiallocation_chain<VoidPointer>     multiallocation_chain;
 
    typedef typename boost::intrusive::pointer_traits<char_ptr>::difference_type difference_type;
-   typedef typename boost::container::container_detail::make_unsigned<difference_type>::type size_type;
+   typedef typename boost::container::dtl::make_unsigned<difference_type>::type size_type;
 
 
    private:
@@ -91,6 +92,7 @@ class simple_seq_fit_impl
    class block_ctrl
    {
       public:
+      static const size_type size_mask = size_type(-1);
       //!Offset pointer to the next block.
       block_ctrl_ptr m_next;
       //!This block's memory size (including block_ctrl
@@ -144,7 +146,15 @@ class simple_seq_fit_impl
 
    #if !defined(BOOST_INTERPROCESS_DOXYGEN_INVOKED)
 
+   template<class T>
+   T *allocation_command  (boost::interprocess::allocation_type command,   size_type limit_size,
+                           size_type &prefer_in_recvd_out_size, T *&reuse);
+
+   void * raw_allocation_command  (boost::interprocess::allocation_type command,   size_type limit_size,
+                               size_type &prefer_in_recvd_out_size, void *&reuse_ptr, size_type sizeof_object = 1);
+
    //!Multiple element allocation, same size
+   //!Experimental. Dont' use
    void allocate_many(size_type elem_bytes, size_type num_elements, multiallocation_chain &chain)
    {
       //-----------------------
@@ -154,6 +164,7 @@ class simple_seq_fit_impl
    }
 
    //!Multiple element allocation, different size
+   //!Experimental. Dont' use
    void allocate_many(const size_type *elem_sizes, size_type n_elements, size_type sizeof_element, multiallocation_chain &chain)
    {
       //-----------------------
@@ -163,6 +174,7 @@ class simple_seq_fit_impl
    }
 
    //!Multiple element deallocation
+   //!Experimental. Dont' use
    void deallocate_many(multiallocation_chain &chain);
 
    #endif   //#ifndef BOOST_INTERPROCESS_DOXYGEN_INVOKED
@@ -191,13 +203,6 @@ class simple_seq_fit_impl
    //!Initializes to zero all the memory that's not in use.
    //!This function is normally used for security reasons.
    void zero_free_memory();
-
-   template<class T>
-   T *allocation_command  (boost::interprocess::allocation_type command,   size_type limit_size,
-                           size_type &prefer_in_recvd_out_size, T *&reuse);
-
-   void * raw_allocation_command  (boost::interprocess::allocation_type command,   size_type limit_size,
-                               size_type &prefer_in_recvd_out_size, void *&reuse_ptr, size_type sizeof_object = 1);
 
    //!Returns the size of the buffer previously allocated pointed by ptr
    size_type size(const void *ptr) const;
@@ -270,13 +275,11 @@ class simple_seq_fit_impl
    void priv_mark_new_allocated_block(block_ctrl *block);
 
    public:
-   static const size_type Alignment      = ::boost::container::container_detail::alignment_of
-      < ::boost::container::container_detail::max_align_t>::value;
+   static const size_type Alignment      = ::boost::container::dtl::alignment_of
+      < ::boost::container::dtl::max_align_t>::value;
    private:
    static const size_type BlockCtrlBytes = ipcdetail::ct_rounded_size<sizeof(block_ctrl), Alignment>::value;
    static const size_type BlockCtrlUnits = BlockCtrlBytes/Alignment;
-   static const size_type MinBlockUnits  = BlockCtrlUnits;
-   static const size_type MinBlockSize   = MinBlockUnits*Alignment;
    static const size_type AllocatedCtrlBytes = BlockCtrlBytes;
    static const size_type AllocatedCtrlUnits = BlockCtrlUnits;
    static const size_type UsableByPreviousChunk = 0;
@@ -329,7 +332,7 @@ inline simple_seq_fit_impl<MutexFamily, VoidPointer>::
    //Initialize pointers
    size_type block1_off = priv_first_block_offset(this, extra_hdr_bytes);
 
-   m_header.m_root.m_next  = reinterpret_cast<block_ctrl*>
+   m_header.m_root.m_next  = move_detail::force_ptr<block_ctrl*>
       ((reinterpret_cast<char*>(this) + block1_off));
    algo_impl_t::assert_alignment(ipcdetail::to_raw_pointer(m_header.m_root.m_next));
    m_header.m_root.m_next->m_size  = (segment_size - block1_off)/Alignment;
@@ -354,13 +357,13 @@ inline void simple_seq_fit_impl<MutexFamily, VoidPointer>::grow(size_type extra_
    m_header.m_size += extra_size;
 
    //We need at least MinBlockSize blocks to create a new block
-   if((m_header.m_size - old_end) < MinBlockSize){
+   if((m_header.m_size - old_end) < BlockCtrlBytes){
       return;
    }
 
    //We'll create a new free block with extra_size bytes
 
-   block_ctrl *new_block = reinterpret_cast<block_ctrl*>
+   block_ctrl *new_block = move_detail::force_ptr<block_ctrl*>
       (reinterpret_cast<char*>(this) + old_end);
 
    algo_impl_t::assert_alignment(new_block);
@@ -438,7 +441,7 @@ inline
 typename simple_seq_fit_impl<MutexFamily, VoidPointer>::block_ctrl *
    simple_seq_fit_impl<MutexFamily, VoidPointer>::priv_get_block(const void *ptr)
 {
-   return const_cast<block_ctrl*>(reinterpret_cast<const block_ctrl*>
+   return const_cast<block_ctrl*>(move_detail::force_ptr<const block_ctrl*>
       (reinterpret_cast<const char*>(ptr) - AllocatedCtrlBytes));
 }
 
@@ -455,8 +458,8 @@ inline void simple_seq_fit_impl<MutexFamily, VoidPointer>::priv_add_segment(void
 {
    algo_impl_t::assert_alignment(addr);
    //Check size
-   BOOST_ASSERT(!(segment_size < MinBlockSize));
-   if(segment_size < MinBlockSize)
+   BOOST_ASSERT(!(segment_size < BlockCtrlBytes));
+   if(segment_size < BlockCtrlBytes)
       return;
    //Construct big block using the new segment
    block_ctrl *new_block   = static_cast<block_ctrl *>(addr);
@@ -488,7 +491,7 @@ simple_seq_fit_impl<MutexFamily, VoidPointer>::
 {
    return ipcdetail::get_rounded_size((size_type)sizeof(simple_seq_fit_impl),Alignment) +
           ipcdetail::get_rounded_size(extra_hdr_bytes,Alignment)
-          + MinBlockSize;
+          + BlockCtrlBytes;
 }
 
 template<class MutexFamily, class VoidPointer>
@@ -590,7 +593,7 @@ inline T* simple_seq_fit_impl<MutexFamily, VoidPointer>::
    void *raw_reuse = reuse_ptr;
    void * const ret = priv_allocation_command
       (command, limit_size, prefer_in_recvd_out_size, raw_reuse, sizeof(T));
-   BOOST_ASSERT(0 == ((std::size_t)ret % ::boost::container::container_detail::alignment_of<T>::value));
+   BOOST_ASSERT(0 == ((std::size_t)ret % ::boost::container::dtl::alignment_of<T>::value));
    reuse_ptr = static_cast<T*>(raw_reuse);
    return static_cast<T*>(ret);
 }
@@ -707,7 +710,7 @@ void* simple_seq_fit_impl<MutexFamily, VoidPointer>::
 
          //We need a minimum size to split the previous one
          if((prev->get_user_bytes() - needs_backwards) > 2*BlockCtrlBytes){
-             block_ctrl *new_block = reinterpret_cast<block_ctrl*>
+             block_ctrl *new_block = move_detail::force_ptr<block_ctrl*>
                   (reinterpret_cast<char*>(reuse) - needs_backwards - BlockCtrlBytes);
 
             new_block->m_next = 0;
@@ -850,7 +853,7 @@ inline typename simple_seq_fit_impl<MutexFamily, VoidPointer>::block_ctrl *
          (typename simple_seq_fit_impl<MutexFamily, VoidPointer>::block_ctrl *ptr)
 {
    //Take the address where the next block should go
-   block_ctrl *next_block = reinterpret_cast<block_ctrl*>
+   block_ctrl *next_block = move_detail::force_ptr<block_ctrl*>
       (reinterpret_cast<char*>(ptr) + ptr->m_size*Alignment);
 
    //Check if the adjacent block is in the managed segment
@@ -912,7 +915,7 @@ inline bool simple_seq_fit_impl<MutexFamily, VoidPointer>::
 {
    size_type preferred_size = received_size;
    //Obtain the real size of the block
-   block_ctrl *block = reinterpret_cast<block_ctrl*>(priv_get_block(ptr));
+   block_ctrl *block = move_detail::force_ptr<block_ctrl*>(priv_get_block(ptr));
    size_type old_block_size = block->m_size;
 
    //All used blocks' next is marked with 0 so check it
@@ -995,7 +998,7 @@ void* simple_seq_fit_impl<MutexFamily, VoidPointer>::priv_check_and_allocate
       size_type total_size = block->m_size;
       block->m_size  = nunits;
 
-      block_ctrl *new_block = reinterpret_cast<block_ctrl*>
+      block_ctrl *new_block = move_detail::force_ptr<block_ctrl*>
          (reinterpret_cast<char*>(block) + Alignment*nunits);
       new_block->m_size  = total_size - nunits;
       new_block->m_next  = block->m_next;
@@ -1044,7 +1047,7 @@ void simple_seq_fit_impl<MutexFamily, VoidPointer>::priv_deallocate(void* addr)
    //(lower address) block
    block_ctrl * prev  = &m_header.m_root;
    block_ctrl * pos   = ipcdetail::to_raw_pointer(m_header.m_root.m_next);
-   block_ctrl * block = reinterpret_cast<block_ctrl*>(priv_get_block(addr));
+   block_ctrl * block = move_detail::force_ptr<block_ctrl*>(priv_get_block(addr));
 
    //All used blocks' next is marked with 0 so check it
    BOOST_ASSERT(block->m_next == 0);

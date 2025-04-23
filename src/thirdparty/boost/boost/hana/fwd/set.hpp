@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::set`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -16,7 +16,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/fwd/erase_key.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @ingroup group-datatypes
     //! Basic unordered container requiring unique, `Comparable` and
     //! `Hashable` keys.
@@ -30,7 +30,8 @@ BOOST_HANA_NAMESPACE_BEGIN
     //! In particular, one should not take for granted the order of the
     //! template parameters and the presence of any additional constructors
     //! or assignment operators than what is documented. The canonical way of
-    //! creating a `hana::set` is through `hana::make_set`.
+    //! creating a `hana::set` is through `hana::make_set`. More details
+    //! [in the tutorial](@ref tutorial-containers-types).
     //!
     //!
     //! Modeled concepts
@@ -132,7 +133,7 @@ BOOST_HANA_NAMESPACE_BEGIN
     //! Example
     //! -------
     //! @include example/set/make.cpp
-    constexpr auto make_set = make<set_tag>;
+    BOOST_HANA_INLINE_VARIABLE constexpr auto make_set = make<set_tag>;
 
     //! Insert an element in a `hana::set`.
     //! @relates hana::set
@@ -182,9 +183,116 @@ BOOST_HANA_NAMESPACE_BEGIN
     };
 #endif
 
+    //! Returns the union of two sets.
+    //! @relates hana::set
+    //!
+    //! Given two sets `xs` and `ys`, `union_(xs, ys)` is a new set containing
+    //! all the elements of `xs` and all the elements of `ys`, without
+    //! duplicates. For any object `x`, the following holds: `x` is in
+    //! `hana::union_(xs, ys)` if and only if `x` is in `xs` or `x` is in `ys`.
+    //!
+    //!
+    //! @param xs, ys
+    //! Two sets to compute the union of.
+    //!
+    //!
+    //! Example
+    //! -------
+    //! @include example/set/union.cpp
+#ifdef BOOST_HANA_DOXYGEN_INVOKED
+    constexpr auto union_ = [](auto&& xs, auto&& ys) {
+        return tag-dispatched;
+    };
+#endif
+
+    //! Returns the intersection of two sets.
+    //! @relates hana::set
+    //!
+    //! Given two sets `xs` and `ys`, `intersection(xs, ys)` is a new set
+    //! containing exactly those elements that are present both in `xs` and
+    //! in `ys`.
+    //! In other words, the following holds for any object `x`:
+    //! @code
+    //!     x ^in^ intersection(xs, ys) if and only if x ^in^ xs && x ^in^ ys
+    //! @endcode
+    //!
+    //!
+    //! @param xs, ys
+    //! Two sets to intersect.
+    //!
+    //!
+    //! Example
+    //! -------
+    //! @include example/set/intersection.cpp
+#ifdef BOOST_HANA_DOXYGEN_INVOKED
+    constexpr auto intersection = [](auto&& xs, auto&& ys) {
+        return tag-dispatched;
+    };
+#endif
     //! Equivalent to `to<set_tag>`; provided for convenience.
     //! @relates hana::set
     constexpr auto to_set = to<set_tag>;
-BOOST_HANA_NAMESPACE_END
+
+    //! Returns the set-theoretic difference of two sets.
+    //! @relates hana::set
+    //!
+    //! Given two sets `xs` and `ys`, `difference(xs, ys)` is a new set
+    //! containing all the elements of `xs` that are _not_ contained in `ys`.
+    //! For any object `x`, the following holds:
+    //! @code
+    //!     x ^in^ difference(xs, ys) if and only if x ^in^ xs && !(x ^in^ ys)
+    //! @endcode
+    //!
+    //!
+    //! This operation is not commutative, i.e. `difference(xs, ys)` is not
+    //! necessarily the same as `difference(ys, xs)`. Indeed, consider the
+    //! case where `xs` is empty and `ys` isn't. Then, `difference(xs, ys)`
+    //! is empty but `difference(ys, xs)` is equal to `ys`. For the symmetric
+    //! version of this operation, see `symmetric_difference`.
+    //!
+    //!
+    //! @param xs
+    //! A set param to remove values from.
+    //!
+    //! @param ys
+    //! The set whose values are removed from `xs`.
+    //!
+    //!
+    //! Example
+    //! -------
+    //! @include example/set/difference.cpp
+#ifdef BOOST_HANA_DOXYGEN_INVOKED
+    constexpr auto difference = [](auto&& xs, auto&& ys) {
+        return tag-dispatched;
+};
+#endif
+
+    //! Returns the symmetric set-theoretic difference of two sets.
+    //! @relates hana::set
+    //!
+    //! Given two sets `xs` and `ys`, `symmetric_difference(xs, ys)` is a new
+    //! set containing all the elements of `xs` that are not contained in `ys`,
+    //! and all the elements of `ys` that are not contained in `xs`. The
+    //! symmetric difference of two sets satisfies the following:
+    //! @code
+    //!     symmetric_difference(xs, ys) == union_(difference(xs, ys), difference(ys, xs))
+    //! @endcode
+    //!
+    //!
+    //! @param xs, ys
+    //! Two sets to compute the symmetric difference of.
+    //!
+    //!
+    //! Example
+    //! -------
+    //! @include example/set/symmetric_difference.cpp
+#ifdef BOOST_HANA_DOXYGEN_INVOKED
+constexpr auto symmetric_difference = [](auto&& xs, auto&& ys) {
+        return tag-dispatched;
+    };
+#endif
+
+
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_SET_HPP

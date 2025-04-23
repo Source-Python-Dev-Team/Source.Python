@@ -3,7 +3,7 @@
 // Copyright (c) 2007-2012 Barend Gehrels, Amsterdam, the Netherlands.
 // Copyright (c) 2008-2012 Bruno Lalande, Paris, France.
 // Copyright (c) 2009-2012 Mateusz Loskot, London, UK.
-// Copyright (c) 2014 Adam Wulkiewicz, Lodz, Poland.
+// Copyright (c) 2014-2018 Adam Wulkiewicz, Lodz, Poland.
 
 // Parts of Boost.Geometry are redesigned from Geodan's Geographic Library
 // (geolib/GGL), copyright (c) 1995-2010 Geodan, Amsterdam, the Netherlands.
@@ -28,9 +28,9 @@
 #include <boost/geometry/geometries/ring.hpp>
 
 #include <boost/config.hpp>
-#ifndef BOOST_NO_CXX11_HDR_INITIALIZER_LIST
+
 #include <initializer_list>
-#endif
+
 
 namespace boost { namespace geometry
 {
@@ -47,9 +47,9 @@ namespace model
 \tparam Closed true for closed polygons (last point == first point),
             false open points
 \tparam PointList container type for points,
-            for example std::vector, std::list, std::deque
+            for example std::vector, std::deque
 \tparam RingList container type for inner rings,
-            for example std::vector, std::list, std::deque
+            for example std::vector, std::deque
 \tparam PointAlloc container-allocator-type, for the points
 \tparam RingAlloc container-allocator-type, for the rings
 \note The container collecting the points in the rings can be different
@@ -90,8 +90,6 @@ public:
     inline ring_type& outer() { return m_outer; }
     inline inner_container_type & inners() { return m_inners; }
 
-#ifndef BOOST_NO_CXX11_HDR_INITIALIZER_LIST
-
     // default constructor definition is required only
     // if the constructor taking std::initializer_list is defined
 
@@ -128,8 +126,6 @@ public:
 //        return *this;
 //    }
 //#endif
-
-#endif
 
     /// Utility method, clears outer and inner rings
     inline void clear()

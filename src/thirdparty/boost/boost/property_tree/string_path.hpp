@@ -19,7 +19,7 @@
 #include <boost/static_assert.hpp>
 #include <boost/assert.hpp>
 #include <boost/type_traits/is_same.hpp>
-#include <boost/optional.hpp>
+#include <boost/optional/optional.hpp>
 #include <boost/throw_exception.hpp>
 #include <algorithm>
 #include <string>
@@ -127,6 +127,13 @@ namespace boost { namespace property_tree
 
         std::string dump() const {
             return detail::dump_sequence(m_value);
+        }
+
+        /// Concatenates two path components
+        friend string_path operator /(string_path p1, const string_path &p2)
+        {
+            p1 /= p2;
+            return p1;
         }
 
         /// Append a second path to this one.
@@ -243,36 +250,6 @@ namespace boost { namespace property_tree
         typedef std::basic_string<Ch, Traits, Alloc> _string;
         typedef string_path< _string, id_translator<_string> > type;
     };
-
-    template <typename String, typename Translator> inline
-    string_path<String, Translator> operator /(
-                                  string_path<String, Translator> p1,
-                                  const string_path<String, Translator> &p2)
-    {
-        p1 /= p2;
-        return p1;
-    }
-
-    // These shouldn't be necessary, but GCC won't find the one above.
-    template <typename String, typename Translator> inline
-    string_path<String, Translator> operator /(
-                                  string_path<String, Translator> p1,
-                                  const typename String::value_type *p2)
-    {
-        p1 /= p2;
-        return p1;
-    }
-
-    template <typename String, typename Translator> inline
-    string_path<String, Translator> operator /(
-                                  const typename String::value_type *p1,
-                                  const string_path<String, Translator> &p2)
-    {
-        string_path<String, Translator> t(p1);
-        t /= p2;
-        return t;
-    }
-
 }}
 
 #endif

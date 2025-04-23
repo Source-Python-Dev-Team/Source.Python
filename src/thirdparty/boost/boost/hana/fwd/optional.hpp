@@ -2,7 +2,7 @@
 @file
 Forward declares `boost::hana::optional`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -15,7 +15,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <boost/hana/fwd/core/make.hpp>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @ingroup group-datatypes
     //! Optional value whose optional-ness is known at compile-time.
     //!
@@ -37,6 +37,11 @@ BOOST_HANA_NAMESPACE_BEGIN
     //! at compile-time for the return type of that function to be computable
     //! by the compiler. This makes `hana::optional` well suited for static
     //! metaprogramming tasks, but very poor for anything dynamic.
+    //!
+    //! @note
+    //! When you use a container, remember not to make assumptions about its
+    //! representation, unless the documentation gives you those guarantees.
+    //! More details [in the tutorial](@ref tutorial-containers-types).
     //!
     //!
     //! Interoperation with `type`s
@@ -305,7 +310,7 @@ BOOST_HANA_NAMESPACE_BEGIN
     //! Example
     //! -------
     //! @include example/optional/make.cpp
-    constexpr auto make_optional = make<optional_tag>;
+    BOOST_HANA_INLINE_VARIABLE constexpr auto make_optional = make<optional_tag>;
 
     //! Create an optional value containing `x`.
     //! @relates hana::optional
@@ -324,7 +329,7 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr auto operator()(T&&) const;
     };
 
-    constexpr make_just_t just{};
+    BOOST_HANA_INLINE_VARIABLE constexpr make_just_t just{};
 #endif
 
     //! An empty optional value.
@@ -361,7 +366,7 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr U&& value_or(U&& u) const;
     };
 
-    constexpr optional<> nothing{};
+    BOOST_HANA_INLINE_VARIABLE constexpr optional<> nothing{};
 #endif
 
     //! Apply a function to the contents of an optional, with a fallback
@@ -416,7 +421,7 @@ BOOST_HANA_NAMESPACE_BEGIN
         { return static_cast<Def&&>(def); }
     };
 
-    constexpr maybe_t maybe{};
+    BOOST_HANA_INLINE_VARIABLE constexpr maybe_t maybe{};
 #endif
 
     //! Calls a function if the call expression is well-formed.
@@ -457,7 +462,7 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr decltype(auto) operator()(F&& f) const;
     };
 
-    constexpr sfinae_t sfinae{};
+    BOOST_HANA_INLINE_VARIABLE constexpr sfinae_t sfinae{};
 #endif
 
     //! Return whether an `optional` contains a value.
@@ -480,7 +485,7 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr auto operator()(optional<T...> const&) const;
     };
 
-    constexpr is_just_t is_just{};
+    BOOST_HANA_INLINE_VARIABLE constexpr is_just_t is_just{};
 #endif
 
     //! Return whether an `optional` is empty.
@@ -503,8 +508,8 @@ BOOST_HANA_NAMESPACE_BEGIN
         constexpr auto operator()(optional<T...> const&) const;
     };
 
-    constexpr is_nothing_t is_nothing{};
+    BOOST_HANA_INLINE_VARIABLE constexpr is_nothing_t is_nothing{};
 #endif
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FWD_OPTIONAL_HPP

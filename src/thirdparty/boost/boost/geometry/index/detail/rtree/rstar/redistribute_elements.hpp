@@ -2,7 +2,11 @@
 //
 // R-tree R*-tree split algorithm implementation
 //
-// Copyright (c) 2011-2017 Adam Wulkiewicz, Lodz, Poland.
+// Copyright (c) 2011-2022 Adam Wulkiewicz, Lodz, Poland.
+//
+// This file was modified by Oracle on 2019-2020.
+// Modifications copyright (c) 2019-2020 Oracle and/or its affiliates.
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 //
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
@@ -10,6 +14,10 @@
 
 #ifndef BOOST_GEOMETRY_INDEX_DETAIL_RTREE_RSTAR_REDISTRIBUTE_ELEMENTS_HPP
 #define BOOST_GEOMETRY_INDEX_DETAIL_RTREE_RSTAR_REDISTRIBUTE_ELEMENTS_HPP
+
+#include <boost/core/ignore_unused.hpp>
+
+#include <boost/geometry/core/static_assert.hpp>
 
 #include <boost/geometry/index/detail/algorithms/intersection_content.hpp>
 #include <boost/geometry/index/detail/algorithms/margin.hpp>
@@ -28,37 +36,43 @@ namespace detail { namespace rtree {
 
 namespace rstar {
 
-template <typename Element, typename Translator, typename Tag, size_t Corner, size_t AxisIndex>
+template <typename Element, typename Parameters, typename Translator, typename Tag, size_t Corner, size_t AxisIndex>
 class element_axis_corner_less
 {
     typedef typename rtree::element_indexable_type<Element, Translator>::type indexable_type;
     typedef typename geometry::point_type<indexable_type>::type point_type;
     typedef geometry::model::box<point_type> bounds_type;
-    typedef index::detail::bounded_view<indexable_type, bounds_type> bounded_view_type;
+    typedef typename index::detail::strategy_type<Parameters>::type strategy_type;
+    typedef index::detail::bounded_view
+        <
+            indexable_type, bounds_type, strategy_type
+        > bounded_view_type;
 
 public:
-    element_axis_corner_less(Translator const& tr)
-        : m_tr(tr)
+    element_axis_corner_less(Translator const& tr, strategy_type const& strategy)
+        : m_tr(tr), m_strategy(strategy)
     {}
 
     bool operator()(Element const& e1, Element const& e2) const
     {
-        bounded_view_type bounded_ind1(rtree::element_indexable(e1, m_tr));
-        bounded_view_type bounded_ind2(rtree::element_indexable(e2, m_tr));
-
-        return geometry::get<Corner, AxisIndex>(bounded_ind1)
-            < geometry::get<Corner, AxisIndex>(bounded_ind2);
+        indexable_type const& ind1 = rtree::element_indexable(e1, m_tr);
+        indexable_type const& ind2 = rtree::element_indexable(e2, m_tr);
+        return geometry::get<Corner, AxisIndex>(bounded_view_type(ind1, m_strategy))
+            < geometry::get<Corner, AxisIndex>(bounded_view_type(ind2, m_strategy));
     }
 
 private:
     Translator const& m_tr;
+    strategy_type const& m_strategy;
 };
 
-template <typename Element, typename Translator, size_t Corner, size_t AxisIndex>
-class element_axis_corner_less<Element, Translator, box_tag, Corner, AxisIndex>
+template <typename Element, typename Parameters, typename Translator, size_t Corner, size_t AxisIndex>
+class element_axis_corner_less<Element, Parameters, Translator, box_tag, Corner, AxisIndex>
 {
+    typedef typename index::detail::strategy_type<Parameters>::type strategy_type;
+
 public:
-    element_axis_corner_less(Translator const& tr)
+    element_axis_corner_less(Translator const& tr, strategy_type const&)
         : m_tr(tr)
     {}
 
@@ -72,11 +86,13 @@ private:
     Translator const& m_tr;
 };
 
-template <typename Element, typename Translator, size_t Corner, size_t AxisIndex>
-class element_axis_corner_less<Element, Translator, point_tag, Corner, AxisIndex>
+template <typename Element, typename Parameters, typename Translator, size_t Corner, size_t AxisIndex>
+class element_axis_corner_less<Element, Parameters, Translator, point_tag, Corner, AxisIndex>
 {
+    typedef typename index::detail::strategy_type<Parameters>::type strategy_type;
+
 public:
-    element_axis_corner_less(Translator const& tr)
+    element_axis_corner_less(Translator const& tr, strategy_type const& )
         : m_tr(tr)
     {}
 
@@ -111,14 +127,20 @@ struct choose_split_axis_and_index_for_corner
 
         BOOST_GEOMETRY_INDEX_ASSERT(elements.size() == parameters.get_max_elements() + 1, "wrong number of elements");
 
+        typename index::detail::strategy_type<Parameters>::type const&
+            strategy = index::detail::get_strategy(parameters);
+
         // copy elements
         Elements elements_copy(elements);                                                                       // MAY THROW, STRONG (alloc, copy)
-        
+
         size_t const index_first = parameters.get_min_elements();
         size_t const index_last = parameters.get_max_elements() - parameters.get_min_elements() + 2;
 
         // sort elements
-        element_axis_corner_less<element_type, Translator, indexable_tag, Corner, AxisIndex> elements_less(translator);
+        element_axis_corner_less
+            <
+                element_type, Parameters, Translator, indexable_tag, Corner, AxisIndex
+            > elements_less(translator, strategy);
         std::sort(elements_copy.begin(), elements_copy.end(), elements_less);                                   // MAY THROW, BASIC (copy)
 //        {
 //            typename Elements::iterator f = elements_copy.begin() + index_first;
@@ -141,12 +163,14 @@ struct choose_split_axis_and_index_for_corner
             // TODO - awulkiew: may be optimized - box of group 1 may be initialized with
             // box of min_elems number of elements and expanded for each iteration by another element
 
-            Box box1 = rtree::elements_box<Box>(elements_copy.begin(), elements_copy.begin() + i, translator);
-            Box box2 = rtree::elements_box<Box>(elements_copy.begin() + i, elements_copy.end(), translator);
-            
+            Box box1 = rtree::elements_box<Box>(elements_copy.begin(), elements_copy.begin() + i,
+                                                translator, strategy);
+            Box box2 = rtree::elements_box<Box>(elements_copy.begin() + i, elements_copy.end(),
+                                                translator, strategy);
+
             sum_of_margins += index::detail::comparable_margin(box1) + index::detail::comparable_margin(box2);
 
-            content_type ovl = index::detail::intersection_content(box1, box2);
+            content_type ovl = index::detail::intersection_content(box1, box2, strategy);
             content_type con = index::detail::content(box1) + index::detail::content(box2);
 
             // TODO - shouldn't here be < instead of <= ?
@@ -158,14 +182,14 @@ struct choose_split_axis_and_index_for_corner
             }
         }
 
-        ::boost::ignore_unused_variable_warning(parameters);
+        ::boost::ignore_unused(parameters);
     }
 };
 
 //template <typename Box, size_t AxisIndex, typename ElementIndexableTag>
 //struct choose_split_axis_and_index_for_axis
 //{
-//    BOOST_MPL_ASSERT_MSG(false, NOT_IMPLEMENTED_FOR_THIS_TAG, (ElementIndexableTag));
+//    BOOST_GEOMETRY_STATIC_ASSERT_FALSE("Not implemented for this Tag type.", ElementIndexableTag);
 //};
 
 template <typename Box, size_t AxisIndex, typename ElementIndexableTag>
@@ -335,14 +359,15 @@ struct nth_element
     BOOST_STATIC_ASSERT(0 < Dimension);
     BOOST_STATIC_ASSERT(I < Dimension);
 
-    template <typename Elements, typename Translator>
-    static inline void apply(Elements & elements, const size_t axis, const size_t index, Translator const& tr)
+    template <typename Elements, typename Parameters, typename Translator>
+    static inline void apply(Elements & elements, Parameters const& parameters,
+                             const size_t axis, const size_t index, Translator const& tr)
     {
         //BOOST_GEOMETRY_INDEX_ASSERT(axis < Dimension, "unexpected axis value");
 
         if ( axis != I )
         {
-            nth_element<Corner, Dimension, I + 1>::apply(elements, axis, index, tr);                          // MAY THROW, BASIC (copy)
+            nth_element<Corner, Dimension, I + 1>::apply(elements, parameters, axis, index, tr);                     // MAY THROW, BASIC (copy)
         }
         else
         {
@@ -350,7 +375,13 @@ struct nth_element
             typedef typename rtree::element_indexable_type<element_type, Translator>::type indexable_type;
             typedef typename tag<indexable_type>::type indexable_tag;
 
-            element_axis_corner_less<element_type, Translator, indexable_tag, Corner, I> less(tr);
+            typename index::detail::strategy_type<Parameters>::type
+                strategy = index::detail::get_strategy(parameters);
+
+            element_axis_corner_less
+                <
+                    element_type, Parameters, Translator, indexable_tag, Corner, I
+                > less(tr, strategy);
             index::detail::nth_element(elements.begin(), elements.begin() + index, elements.end(), less);            // MAY THROW, BASIC (copy)
         }
     }
@@ -359,40 +390,44 @@ struct nth_element
 template <size_t Corner, size_t Dimension>
 struct nth_element<Corner, Dimension, Dimension>
 {
-    template <typename Elements, typename Translator>
-    static inline void apply(Elements & /*elements*/, const size_t /*axis*/, const size_t /*index*/, Translator const& /*tr*/)
+    template <typename Elements, typename Parameters, typename Translator>
+    static inline void apply(Elements & /*elements*/, Parameters const& /*parameters*/,
+                             const size_t /*axis*/, const size_t /*index*/, Translator const& /*tr*/)
     {}
 };
 
 } // namespace rstar
 
-template <typename Value, typename Options, typename Translator, typename Box, typename Allocators>
-struct redistribute_elements<Value, Options, Translator, Box, Allocators, rstar_tag>
+template <typename MembersHolder>
+struct redistribute_elements<MembersHolder, rstar_tag>
 {
-    typedef typename rtree::node<Value, typename Options::parameters_type, Box, Allocators, typename Options::node_tag>::type node;
-    typedef typename rtree::internal_node<Value, typename Options::parameters_type, Box, Allocators, typename Options::node_tag>::type internal_node;
-    typedef typename rtree::leaf<Value, typename Options::parameters_type, Box, Allocators, typename Options::node_tag>::type leaf;
+    typedef typename MembersHolder::box_type box_type;
+    typedef typename MembersHolder::parameters_type parameters_type;
+    typedef typename MembersHolder::translator_type translator_type;
+    typedef typename MembersHolder::allocators_type allocators_type;
 
-    typedef typename Options::parameters_type parameters_type;
+    typedef typename MembersHolder::node node;
+    typedef typename MembersHolder::internal_node internal_node;
+    typedef typename MembersHolder::leaf leaf;
 
-    static const size_t dimension = geometry::dimension<Box>::value;
+    static const size_t dimension = geometry::dimension<box_type>::value;
 
-    typedef typename index::detail::default_margin_result<Box>::type margin_type;
-    typedef typename index::detail::default_content_result<Box>::type content_type;
+    typedef typename index::detail::default_margin_result<box_type>::type margin_type;
+    typedef typename index::detail::default_content_result<box_type>::type content_type;
 
     template <typename Node>
     static inline void apply(
         Node & n,
         Node & second_node,
-        Box & box1,
-        Box & box2,
+        box_type & box1,
+        box_type & box2,
         parameters_type const& parameters,
-        Translator const& translator,
-        Allocators & allocators)
+        translator_type const& translator,
+        allocators_type & allocators)
     {
         typedef typename rtree::elements_type<Node>::type elements_type;
         typedef typename elements_type::value_type element_type;
-        
+
         elements_type & elements1 = rtree::elements(n);
         elements_type & elements2 = rtree::elements(second_node);
 
@@ -415,7 +450,7 @@ struct redistribute_elements<Value, Options, Translator, Box, Allocators, rstar_
         //       and again, the same below calling partial_sort/nth_element
         //       It would be even possible to not re-sort/find nth_element if the axis/corner
         //       was found for the last sorting - last combination of axis/corner
-        rstar::choose_split_axis_and_index<Box, dimension>
+        rstar::choose_split_axis_and_index<box_type, dimension>
             ::apply(elements_copy,
                     split_axis, split_corner, split_index,
                     smallest_sum_of_margins, smallest_overlap, smallest_content,
@@ -430,23 +465,28 @@ struct redistribute_elements<Value, Options, Translator, Box, Allocators, rstar_
         if ( split_corner == static_cast<size_t>(min_corner) )
         {
             rstar::nth_element<min_corner, dimension>
-                ::apply(elements_copy, split_axis, split_index, translator);                            // MAY THROW, BASIC (copy)
+                ::apply(elements_copy, parameters, split_axis, split_index, translator);                // MAY THROW, BASIC (copy)
         }
         else
         {
             rstar::nth_element<max_corner, dimension>
-                ::apply(elements_copy, split_axis, split_index, translator);                            // MAY THROW, BASIC (copy)
+                ::apply(elements_copy, parameters, split_axis, split_index, translator);                // MAY THROW, BASIC (copy)
         }
 
         BOOST_TRY
         {
+            typename index::detail::strategy_type<parameters_type>::type const&
+                strategy = index::detail::get_strategy(parameters);
+
             // copy elements to nodes
             elements1.assign(elements_copy.begin(), elements_copy.begin() + split_index);               // MAY THROW, BASIC
             elements2.assign(elements_copy.begin() + split_index, elements_copy.end());                 // MAY THROW, BASIC
 
             // calculate boxes
-            box1 = rtree::elements_box<Box>(elements1.begin(), elements1.end(), translator);
-            box2 = rtree::elements_box<Box>(elements2.begin(), elements2.end(), translator);
+            box1 = rtree::elements_box<box_type>(elements1.begin(), elements1.end(),
+                                                 translator, strategy);
+            box2 = rtree::elements_box<box_type>(elements2.begin(), elements2.end(),
+                                                 translator, strategy);
         }
         BOOST_CATCH(...)
         {
@@ -454,7 +494,7 @@ struct redistribute_elements<Value, Options, Translator, Box, Allocators, rstar_
             elements1.clear();
             elements2.clear();
 
-            rtree::destroy_elements<Value, Options, Translator, Box, Allocators>::apply(elements_backup, allocators);
+            rtree::destroy_elements<MembersHolder>::apply(elements_backup, allocators);
             //elements_backup.clear();
 
             BOOST_RETHROW                                                                                 // RETHROW, BASIC

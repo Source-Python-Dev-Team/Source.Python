@@ -2,7 +2,11 @@
 //
 // R-tree nodes based on Boost.Variant, storing static-size containers
 //
-// Copyright (c) 2011-2014 Adam Wulkiewicz, Lodz, Poland.
+// Copyright (c) 2011-2023 Adam Wulkiewicz, Lodz, Poland.
+//
+// This file was modified by Oracle on 2021.
+// Modifications copyright (c) 2021 Oracle and/or its affiliates.
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
 //
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
@@ -10,6 +14,15 @@
 
 #ifndef BOOST_GEOMETRY_INDEX_DETAIL_RTREE_NODE_VARIANT_STATIC_HPP
 #define BOOST_GEOMETRY_INDEX_DETAIL_RTREE_NODE_VARIANT_STATIC_HPP
+
+#include <utility>
+#include <boost/container/allocator_traits.hpp>
+#include <boost/core/invoke_swap.hpp>
+#include <boost/variant/static_visitor.hpp>
+#include <boost/variant/variant.hpp>
+
+#include <boost/geometry/index/detail/rtree/node/variant_dynamic.hpp>
+#include <boost/geometry/index/detail/varray.hpp>
 
 namespace boost { namespace geometry { namespace index {
 
@@ -80,36 +93,37 @@ struct visitor<Value, Parameters, Box, Allocators, node_variant_static_tag, IsVi
 
 template <typename Allocator, typename Value, typename Parameters, typename Box>
 class allocators<Allocator, Value, Parameters, Box, node_variant_static_tag>
-    : public Allocator::template rebind<
-        typename node<
-            Value, Parameters, Box,
-            allocators<Allocator, Value, Parameters, Box, node_variant_static_tag>,
-            node_variant_static_tag
+    : public detail::rtree::node_alloc
+        <
+            Allocator, Value, Parameters, Box, node_variant_static_tag
         >::type
-    >::other
 {
-    typedef typename Allocator::template rebind<
-        Value
-    >::other value_allocator_type;
+    typedef detail::rtree::node_alloc
+        <
+            Allocator, Value, Parameters, Box, node_variant_static_tag
+        > node_alloc;
+
+public:
+    typedef typename node_alloc::type node_allocator_type;
+    typedef typename node_alloc::traits::pointer node_pointer;
+
+private:
+    typedef typename boost::container::allocator_traits
+        <
+            node_allocator_type
+        >::template rebind_alloc<Value> value_allocator_type;
+    typedef boost::container::allocator_traits<value_allocator_type> value_allocator_traits;
 
 public:
     typedef Allocator allocator_type;
 
     typedef Value value_type;
-    typedef value_type & reference;
-    typedef const value_type & const_reference;
-    typedef typename value_allocator_type::size_type size_type;
-    typedef typename value_allocator_type::difference_type difference_type;
-    typedef typename value_allocator_type::pointer pointer;
-    typedef typename value_allocator_type::const_pointer const_pointer;
-
-    typedef typename Allocator::template rebind<
-        typename node<Value, Parameters, Box, allocators, node_variant_static_tag>::type
-    >::other::pointer node_pointer;
-
-    typedef typename Allocator::template rebind<
-        typename node<Value, Parameters, Box, allocators, node_variant_static_tag>::type
-    >::other node_allocator_type;
+    typedef typename value_allocator_traits::reference reference;
+    typedef typename value_allocator_traits::const_reference const_reference;
+    typedef typename value_allocator_traits::size_type size_type;
+    typedef typename value_allocator_traits::difference_type difference_type;
+    typedef typename value_allocator_traits::pointer pointer;
+    typedef typename value_allocator_traits::const_pointer const_pointer;
 
     inline allocators()
         : node_allocator_type()
@@ -120,27 +134,25 @@ public:
         : node_allocator_type(alloc)
     {}
 
-    inline allocators(BOOST_FWD_REF(allocators) a)
-        : node_allocator_type(boost::move(a.node_allocator()))
+    inline allocators(allocators&& a)
+        : node_allocator_type(std::move(a.node_allocator()))
     {}
 
-    inline allocators & operator=(BOOST_FWD_REF(allocators) a)
+    inline allocators & operator=(allocators&& a)
     {
-        node_allocator() = boost::move(a.node_allocator());
+        node_allocator() = std::move(a.node_allocator());
         return *this;
     }
 
-#ifndef BOOST_NO_CXX11_RVALUE_REFERENCES
     inline allocators & operator=(allocators const& a)
     {
         node_allocator() = a.node_allocator();
         return *this;
     }
-#endif
 
     void swap(allocators & a)
     {
-        boost::swap(node_allocator(), a.node_allocator());
+        boost::core::invoke_swap(node_allocator(), a.node_allocator());
     }
 
     bool operator==(allocators const& a) const { return node_allocator() == a.node_allocator(); }

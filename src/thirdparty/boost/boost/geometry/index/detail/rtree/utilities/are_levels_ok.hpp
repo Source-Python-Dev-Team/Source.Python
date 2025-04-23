@@ -4,6 +4,11 @@
 //
 // Copyright (c) 2011-2013 Adam Wulkiewicz, Lodz, Poland.
 //
+// This file was modified by Oracle on 2019-2023.
+// Modifications copyright (c) 2019-2023 Oracle and/or its affiliates.
+// Contributed and/or modified by Vissarion Fysikopoulos, on behalf of Oracle
+// Contributed and/or modified by Adam Wulkiewicz, on behalf of Oracle
+//
 // Use, modification and distribution is subject to the Boost Software License,
 // Version 1.0. (See accompanying file LICENSE_1_0.txt or copy at
 // http://www.boost.org/LICENSE_1_0.txt)
@@ -12,17 +17,18 @@
 #define BOOST_GEOMETRY_INDEX_DETAIL_RTREE_UTILITIES_ARE_LEVELS_OK_HPP
 
 #include <boost/geometry/index/detail/rtree/node/node.hpp>
+#include <boost/geometry/index/detail/rtree/utilities/view.hpp>
 
 namespace boost { namespace geometry { namespace index { namespace detail { namespace rtree { namespace utilities {
 
 namespace visitors {
 
-template <typename Value, typename Options, typename Box, typename Allocators>
+template <typename MembersHolder>
 class are_levels_ok
-    : public rtree::visitor<Value, typename Options::parameters_type, Box, Allocators, typename Options::node_tag, true>::type
+    : public MembersHolder::visitor_const
 {
-    typedef typename rtree::internal_node<Value, typename Options::parameters_type, Box, Allocators, typename Options::node_tag>::type internal_node;
-    typedef typename rtree::leaf<Value, typename Options::parameters_type, Box, Allocators, typename Options::node_tag>::type leaf;
+    typedef typename MembersHolder::internal_node internal_node;
+    typedef typename MembersHolder::leaf leaf;
 
 public:
     inline are_levels_ok()
@@ -93,12 +99,9 @@ bool are_levels_ok(Rtree const& tree)
     RTV rtv(tree);
 
     visitors::are_levels_ok<
-        typename RTV::value_type,
-        typename RTV::options_type,
-        typename RTV::box_type,
-        typename RTV::allocators_type
+        typename RTV::members_holder
     > v;
-    
+
     rtv.apply_visitor(v);
 
     return v.result;

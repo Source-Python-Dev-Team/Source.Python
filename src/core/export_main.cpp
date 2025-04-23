@@ -85,3 +85,12 @@ bool modulsp_init( void )
 	END_BOOST_PY(false)
 	return true;
 }
+
+
+dict& DeferredDict::get() {
+	if (!_pDict) {
+		_pDict = std::make_shared<dict>();
+	}
+
+	return *_pDict;
+}

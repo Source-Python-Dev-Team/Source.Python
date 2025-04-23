@@ -133,27 +133,27 @@ namespace boost { namespace fusion
 
             BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             store(store const& rhs)
-                : elem(rhs.get())
+                : elem(rhs.elem)
             {}
 
             BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             store&
             operator=(store const& rhs)
             {
-                elem = rhs.get();
+                elem = rhs.elem;
                 return *this;
             }
 
             BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             store(store&& rhs)
-                : elem(static_cast<T&&>(rhs.get()))
+                : elem(static_cast<T&&>(rhs.elem))
             {}
 
             BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
             store&
             operator=(store&& rhs)
             {
-                elem = static_cast<T&&>(rhs.get());
+                elem = static_cast<T&&>(rhs.elem);
                 return *this;
             }
 
@@ -168,13 +168,14 @@ namespace boost { namespace fusion
                 : elem(std::forward<U>(rhs))
             {}
 
-            BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            T      & get()       { return elem; }
-            BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            T const& get() const { return elem; }
-
+            using elem_type = T;
             T elem;
         };
+
+        // placed outside of vector_data due to GCC < 6 bug
+        template <std::size_t J, typename U>
+        static inline BOOST_FUSION_GPU_ENABLED
+        store<J, U> store_at_impl(store<J, U>*);
 
         template <typename I, typename ...T>
         struct vector_data;
@@ -192,8 +193,7 @@ namespace boost { namespace fusion
             typedef vector<T...>                type_sequence;
 
             BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            vector_data()
-            {}
+            BOOST_DEFAULTED_FUNCTION(vector_data(), {})
 
             template <
                 typename Sequence
@@ -220,54 +220,32 @@ namespace boost { namespace fusion
             void
             assign_sequence(Sequence&& seq)
             {
-                assign(std::forward<Sequence>(seq), detail::index_sequence<I...>());
+#ifndef BOOST_NO_CXX17_FOLD_EXPRESSIONS
+                (void(store<I, T>::elem = vector_detail::forward_at_c<I>(static_cast<Sequence&&>(seq))), ...);
+#else
+                int nofold[] = { (void(store<I, T>::elem = vector_detail::forward_at_c<I>(static_cast<Sequence&&>(seq))), 0)..., 0 };
+                (void)nofold;
+#endif
             }
 
-            template <typename Sequence>
-            BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            void
-            assign(Sequence&&, detail::index_sequence<>) {}
+        private:
+            template <std::size_t J>
+            using store_at = decltype(store_at_impl<J>(static_cast<vector_data*>(nullptr)));
 
-            template <typename Sequence, std::size_t N, std::size_t ...M>
-            BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            void
-            assign(Sequence&& seq, detail::index_sequence<N, M...>)
-            {
-                at_impl(mpl::int_<N>()) = vector_detail::forward_at_c<N>(seq);
-                assign(std::forward<Sequence>(seq), detail::index_sequence<M...>());
-            }
-
-            template <std::size_t N, typename U>
-            static BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            auto at_detail(store<N, U>* this_) -> decltype(this_->get())
-            {
-                return this_->get();
-            }
-
-            template <std::size_t N, typename U>
-            static BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            auto at_detail(store<N, U> const* this_) -> decltype(this_->get())
-            {
-                return this_->get();
-            }
-
+        public:
             template <typename J>
             BOOST_CXX14_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            auto at_impl(J) -> decltype(at_detail<J::value>(this))
+            typename store_at<J::value>::elem_type& at_impl(J)
             {
-                return at_detail<J::value>(this);
+                return store_at<J::value>::elem;
             }
 
             template <typename J>
             BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-            auto at_impl(J) const -> decltype(at_detail<J::value>(this))
+            typename store_at<J::value>::elem_type const& at_impl(J) const
             {
-                return at_detail<J::value>(this);
+                return store_at<J::value>::elem;
             }
-
-            template <std::size_t N, typename U>
-            static BOOST_FUSION_GPU_ENABLED
-            mpl::identity<U> value_at_impl(store<N, U>*);
         };
     } // namespace boost::fusion::vector_detail
 
@@ -284,8 +262,7 @@ namespace boost { namespace fusion
         > base;
 
         BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
-        vector()
-        {}
+        BOOST_DEFAULTED_FUNCTION(vector(), {})
 
         template <
             typename... U
@@ -306,13 +283,11 @@ namespace boost { namespace fusion
 
         template <
             typename Sequence
-          , typename Sequence_ = typename remove_reference<Sequence>::type
-          , typename = typename boost::enable_if_c<(
-                !is_base_of<vector, Sequence_>::value &&
+          , typename = typename boost::enable_if_c<
                 vector_detail::is_longer_sequence<
-                    Sequence_, sizeof...(T)
+                    typename remove_reference<Sequence>::type, sizeof...(T)
                 >::value
-            )>::type
+            >::type
         >
         BOOST_CONSTEXPR BOOST_FUSION_GPU_ENABLED
         vector(Sequence&& seq)

@@ -1,7 +1,7 @@
 // boost\math\distributions\non_central_beta.hpp
 
 // Copyright John Maddock 2008.
-
+// Copyright Matt Borland 2024.
 // Use, modification and distribution are subject to the
 // Boost Software License, Version 1.0.
 // (See accompanying file LICENSE_1_0.txt
@@ -10,6 +10,10 @@
 #ifndef BOOST_MATH_SPECIAL_NON_CENTRAL_BETA_HPP
 #define BOOST_MATH_SPECIAL_NON_CENTRAL_BETA_HPP
 
+#include <boost/math/tools/config.hpp>
+#include <boost/math/tools/tuple.hpp>
+#include <boost/math/tools/cstdint.hpp>
+#include <boost/math/tools/numeric_limits.hpp>
 #include <boost/math/distributions/fwd.hpp>
 #include <boost/math/special_functions/beta.hpp> // for incomplete gamma. gamma_q
 #include <boost/math/distributions/complement.hpp> // complements
@@ -17,8 +21,10 @@
 #include <boost/math/distributions/detail/generic_mode.hpp>
 #include <boost/math/distributions/detail/common_error_handling.hpp> // error checks
 #include <boost/math/special_functions/fpclassify.hpp> // isnan.
+#include <boost/math/special_functions/trunc.hpp>
 #include <boost/math/tools/roots.hpp> // for root finding.
 #include <boost/math/tools/series.hpp>
+#include <boost/math/policies/error_handling.hpp>
 
 namespace boost
 {
@@ -31,14 +37,14 @@ namespace boost
       namespace detail{
 
          template <class T, class Policy>
-         T non_central_beta_p(T a, T b, T lam, T x, T y, const Policy& pol, T init_val = 0)
+         BOOST_MATH_GPU_ENABLED T non_central_beta_p(T a, T b, T lam, T x, T y, const Policy& pol, T init_val = 0)
          {
             BOOST_MATH_STD_USING
                using namespace boost::math;
             //
             // Variables come first:
             //
-            boost::uintmax_t max_iter = policies::get_max_series_iterations<Policy>();
+            boost::math::uintmax_t max_iter = policies::get_max_series_iterations<Policy>();
             T errtol = boost::math::policies::get_epsilon<T, Policy>();
             T l2 = lam / 2;
             //
@@ -48,7 +54,7 @@ namespace boost
             // k to zero, when l2 is small, as forward iteration
             // is unstable:
             //
-            int k = itrunc(l2);
+            long long k = lltrunc(l2);
             if(k == 0)
                k = 1;
                // Starting Poisson weight:
@@ -62,6 +68,17 @@ namespace boost
                ? detail::ibeta_imp(T(a + k), b, x, pol, false, true, &xterm)
                : detail::ibeta_imp(b, T(a + k), y, pol, true, true, &xterm);
 
+            while (fabs(beta * pois) < tools::min_value<T>())
+            {
+               if ((k == 0) || (pois == 0))
+                  return init_val;
+               k /= 2;
+               pois = gamma_p_derivative(T(k + 1), l2, pol);
+               beta = x < y
+                  ? detail::ibeta_imp(T(a + k), b, x, pol, false, true, &xterm)
+                  : detail::ibeta_imp(b, T(a + k), y, pol, true, true, &xterm);
+            }
+
             xterm *= y / (a + b + k - 1);
             T poisf(pois), betaf(beta), xtermf(xterm);
             T sum = init_val;
@@ -74,22 +91,28 @@ namespace boost
             // direction for recursion:
             //
             T last_term = 0;
-            boost::uintmax_t count = k;
-            for(int i = k; i >= 0; --i)
+            boost::math::uintmax_t count = k;
+            for(auto i = k; i >= 0; --i)
             {
                T term = beta * pois;
                sum += term;
-               if(((fabs(term/sum) < errtol) && (last_term >= term)) || (term == 0))
+               if(((fabs(term/sum) < errtol) && (fabs(last_term) >= fabs(term))) || (term == 0))
                {
                   count = k - i;
                   break;
                }
                pois *= i / l2;
                beta += xterm;
-               xterm *= (a + i - 1) / (x * (a + b + i - 2));
+
+               if (a + b + i != 2)
+               {
+                  xterm *= (a + i - 1) / (x * (a + b + i - 2));
+               }
+               
                last_term = term;
             }
-            for(int i = k + 1; ; ++i)
+            last_term = 0;
+            for(auto i = k + 1; ; ++i)
             {
                poisf *= l2 / i;
                xtermf *= (x * (a + b + i - 2)) / (a + i - 1);
@@ -97,36 +120,35 @@ namespace boost
 
                T term = poisf * betaf;
                sum += term;
-               if((fabs(term/sum) < errtol) || (term == 0))
+               if(((fabs(term/sum) < errtol) && (fabs(last_term) >= fabs(term))) || (term == 0))
                {
                   break;
                }
-               if(static_cast<boost::uintmax_t>(count + i - k) > max_iter)
+               last_term = term;
+               if(static_cast<boost::math::uintmax_t>(count + i - k) > max_iter)
                {
-                  return policies::raise_evaluation_error(
-                     "cdf(non_central_beta_distribution<%1%>, %1%)",
-                     "Series did not converge, closest value was %1%", sum, pol);
+                  return policies::raise_evaluation_error("cdf(non_central_beta_distribution<%1%>, %1%)", "Series did not converge, closest value was %1%", sum, pol); // LCOV_EXCL_LINE
                }
             }
             return sum;
          }
 
          template <class T, class Policy>
-         T non_central_beta_q(T a, T b, T lam, T x, T y, const Policy& pol, T init_val = 0)
+         BOOST_MATH_GPU_ENABLED T non_central_beta_q(T a, T b, T lam, T x, T y, const Policy& pol, T init_val = 0)
          {
             BOOST_MATH_STD_USING
                using namespace boost::math;
             //
             // Variables come first:
             //
-            boost::uintmax_t max_iter = policies::get_max_series_iterations<Policy>();
+            boost::math::uintmax_t max_iter = policies::get_max_series_iterations<Policy>();
             T errtol = boost::math::policies::get_epsilon<T, Policy>();
             T l2 = lam / 2;
             //
             // k is the starting point for iteration, and is the
             // maximum of the poisson weighting term:
             //
-            int k = itrunc(l2);
+            long long k = lltrunc(l2);
             T pois;
             if(k <= 30)
             {
@@ -168,8 +190,8 @@ namespace boost
             // of the bulk of the sum:
             //
             T last_term = 0;
-            boost::uintmax_t count = 0;
-            for(int i = k + 1; ; ++i)
+            boost::math::uintmax_t count = 0;
+            for(auto i = k + 1; ; ++i)
             {
                poisf *= l2 / i;
                xtermf *= (x * (a + b + i - 2)) / (a + i - 1);
@@ -182,15 +204,13 @@ namespace boost
                   count = i - k;
                   break;
                }
-               if(static_cast<boost::uintmax_t>(i - k) > max_iter)
+               if(static_cast<boost::math::uintmax_t>(i - k) > max_iter)
                {
-                  return policies::raise_evaluation_error(
-                     "cdf(non_central_beta_distribution<%1%>, %1%)",
-                     "Series did not converge, closest value was %1%", sum, pol);
+                  return policies::raise_evaluation_error("cdf(non_central_beta_distribution<%1%>, %1%)", "Series did not converge, closest value was %1%", sum, pol); // LCOV_EXCL_LINE
                }
                last_term = term;
             }
-            for(int i = k; i >= 0; --i)
+            for(auto i = k; i >= 0; --i)
             {
                T term = beta * pois;
                sum += term;
@@ -198,21 +218,22 @@ namespace boost
                {
                   break;
                }
-               if(static_cast<boost::uintmax_t>(count + k - i) > max_iter)
+               if(static_cast<boost::math::uintmax_t>(count + k - i) > max_iter)
                {
-                  return policies::raise_evaluation_error(
-                     "cdf(non_central_beta_distribution<%1%>, %1%)",
-                     "Series did not converge, closest value was %1%", sum, pol);
+                  return policies::raise_evaluation_error("cdf(non_central_beta_distribution<%1%>, %1%)", "Series did not converge, closest value was %1%", sum, pol); // LCOV_EXCL_LINE
                }
                pois *= i / l2;
                beta -= xterm;
-               xterm *= (a + i - 1) / (x * (a + b + i - 2));
+               if (a + b + i - 2 != 0)
+               {
+                   xterm *= (a + i - 1) / (x * (a + b + i - 2));
+               }
             }
             return sum;
          }
 
          template <class RealType, class Policy>
-         inline RealType non_central_beta_cdf(RealType x, RealType y, RealType a, RealType b, RealType l, bool invert, const Policy&)
+         BOOST_MATH_GPU_ENABLED inline RealType non_central_beta_cdf(RealType x, RealType y, RealType a, RealType b, RealType l, bool invert, const Policy&)
          {
             typedef typename policies::evaluation<RealType, Policy>::type value_type;
             typedef typename policies::normalise<
@@ -267,10 +288,10 @@ namespace boost
          template <class T, class Policy>
          struct nc_beta_quantile_functor
          {
-            nc_beta_quantile_functor(const non_central_beta_distribution<T,Policy>& d, T t, bool c)
+            BOOST_MATH_GPU_ENABLED nc_beta_quantile_functor(const non_central_beta_distribution<T,Policy>& d, T t, bool c)
                : dist(d), target(t), comp(c) {}
 
-            T operator()(const T& x)
+            BOOST_MATH_GPU_ENABLED T operator()(const T& x)
             {
                return comp ?
                   T(target - cdf(complement(dist, x)))
@@ -289,12 +310,12 @@ namespace boost
          // heuristics.
          //
          template <class F, class T, class Tol, class Policy>
-         std::pair<T, T> bracket_and_solve_root_01(F f, const T& guess, T factor, bool rising, Tol tol, boost::uintmax_t& max_iter, const Policy& pol)
+         BOOST_MATH_GPU_ENABLED boost::math::pair<T, T> bracket_and_solve_root_01(F f, const T& guess, T factor, bool rising, Tol tol, boost::math::uintmax_t& max_iter, const Policy& pol)
          {
             BOOST_MATH_STD_USING
-               static const char* function = "boost::math::tools::bracket_and_solve_root_01<%1%>";
+               constexpr auto function = "boost::math::tools::bracket_and_solve_root_01<%1%>";
             //
-            // Set up inital brackets:
+            // Set up initial brackets:
             //
             T a = guess;
             T b = a;
@@ -303,7 +324,7 @@ namespace boost
             //
             // Set up invocation count:
             //
-            boost::uintmax_t count = max_iter - 1;
+            boost::math::uintmax_t count = max_iter - 1;
 
             if((fa < 0) == (guess < 0 ? !rising : rising))
             {
@@ -315,8 +336,8 @@ namespace boost
                {
                   if(count == 0)
                   {
-                     b = policies::raise_evaluation_error(function, "Unable to bracket root, last nearest value was %1%", b, pol);
-                     return std::make_pair(a, b);
+                     b = policies::raise_evaluation_error(function, "Unable to bracket root, last nearest value was %1%", b, pol); // LCOV_EXCL_LINE
+                     return boost::math::make_pair(a, b);
                   }
                   //
                   // Heuristic: every 20 iterations we double the growth factor in case the
@@ -349,12 +370,12 @@ namespace boost
                      // Escape route just in case the answer is zero!
                      max_iter -= count;
                      max_iter += 1;
-                     return a > 0 ? std::make_pair(T(0), T(a)) : std::make_pair(T(a), T(0));
+                     return a > 0 ? boost::math::make_pair(T(0), T(a)) : boost::math::make_pair(T(a), T(0));
                   }
                   if(count == 0)
                   {
-                     a = policies::raise_evaluation_error(function, "Unable to bracket root, last nearest value was %1%", a, pol);
-                     return std::make_pair(a, b);
+                     a = policies::raise_evaluation_error(function, "Unable to bracket root, last nearest value was %1%", a, pol); // LCOV_EXCL_LINE
+                     return boost::math::make_pair(a, b);
                   }
                   //
                   // Heuristic: every 20 iterations we double the growth factor in case the
@@ -375,7 +396,7 @@ namespace boost
             }
             max_iter -= count;
             max_iter += 1;
-            std::pair<T, T> r = toms748_solve(
+            boost::math::pair<T, T> r = toms748_solve(
                f,
                (a < 0 ? b : a),
                (a < 0 ? a : b),
@@ -390,9 +411,9 @@ namespace boost
          }
 
          template <class RealType, class Policy>
-         RealType nc_beta_quantile(const non_central_beta_distribution<RealType, Policy>& dist, const RealType& p, bool comp)
+         BOOST_MATH_GPU_ENABLED RealType nc_beta_quantile(const non_central_beta_distribution<RealType, Policy>& dist, const RealType& p, bool comp)
          {
-            static const char* function = "quantile(non_central_beta_distribution<%1%>, %1%)";
+            constexpr auto function = "quantile(non_central_beta_distribution<%1%>, %1%)";
             typedef typename policies::evaluation<RealType, Policy>::type value_type;
             typedef typename policies::normalise<
                Policy,
@@ -424,7 +445,7 @@ namespace boost
                static_cast<value_type>(p),
                &r,
                Policy()))
-                  return (RealType)r;
+                  return static_cast<RealType>(r);
             //
             // Special cases first:
             //
@@ -489,9 +510,9 @@ namespace boost
             detail::nc_beta_quantile_functor<value_type, Policy>
                f(non_central_beta_distribution<value_type, Policy>(a, b, l), p, comp);
             tools::eps_tolerance<value_type> tol(policies::digits<RealType, Policy>());
-            boost::uintmax_t max_iter = policies::get_max_root_iterations<Policy>();
+            boost::math::uintmax_t max_iter = policies::get_max_root_iterations<Policy>();
 
-            std::pair<value_type, value_type> ir
+            boost::math::pair<value_type, value_type> ir
                = bracket_and_solve_root_01(
                   f, guess, value_type(2.5), true, tol,
                   max_iter, Policy());
@@ -499,12 +520,14 @@ namespace boost
 
             if(max_iter >= policies::get_max_root_iterations<Policy>())
             {
+               // LCOV_EXCL_START
                return policies::raise_evaluation_error<RealType>(function, "Unable to locate solution in a reasonable time:"
                   " either there is no answer to quantile of the non central beta distribution"
                   " or the answer is infinite.  Current best guess is %1%",
                   policies::checked_narrowing_cast<RealType, forwarding_policy>(
                      result,
                      function), Policy());
+               // LCOV_EXCL_STOP
             }
             return policies::checked_narrowing_cast<RealType, forwarding_policy>(
                result,
@@ -512,7 +535,7 @@ namespace boost
          }
 
          template <class T, class Policy>
-         T non_central_beta_pdf(T a, T b, T lam, T x, T y, const Policy& pol)
+         BOOST_MATH_GPU_ENABLED T non_central_beta_pdf(T a, T b, T lam, T x, T y, const Policy& pol)
          {
             BOOST_MATH_STD_USING
             //
@@ -523,20 +546,38 @@ namespace boost
             //
             // Variables come first:
             //
-            boost::uintmax_t max_iter = policies::get_max_series_iterations<Policy>();
+            boost::math::uintmax_t max_iter = policies::get_max_series_iterations<Policy>();
             T errtol = boost::math::policies::get_epsilon<T, Policy>();
             T l2 = lam / 2;
             //
             // k is the starting point for iteration, and is the
             // maximum of the poisson weighting term:
             //
-            int k = itrunc(l2);
+            long long k = lltrunc(l2);
             // Starting Poisson weight:
             T pois = gamma_p_derivative(T(k+1), l2, pol);
             // Starting beta term:
             T beta = x < y ?
                ibeta_derivative(a + k, b, x, pol)
                : ibeta_derivative(b, a + k, y, pol);
+
+            while (fabs(beta * pois) < tools::min_value<T>())
+            {
+               if ((k == 0) || (pois == 0))
+                  return 0;  // Nothing else we can do!
+               //
+               // We only get here when a+k and b are large and x is small,
+               // in that case reduce k (bisect) until both terms are finite:
+               //
+               k /= 2;
+               pois = gamma_p_derivative(T(k + 1), l2, pol);
+               // Starting beta term:
+               beta = x < y ?
+                  ibeta_derivative(a + k, b, x, pol)
+                  : ibeta_derivative(b, a + k, y, pol);
+            }
+
+
             T sum = 0;
             T poisf(pois);
             T betaf(beta);
@@ -544,45 +585,54 @@ namespace boost
             //
             // Stable backwards recursion first:
             //
-            boost::uintmax_t count = k;
-            for(int i = k; i >= 0; --i)
+            boost::math::uintmax_t count = k;
+            T ratio = 0;
+            T old_ratio = 0;
+            for(auto i = k; i >= 0; --i)
             {
                T term = beta * pois;
                sum += term;
-               if((fabs(term/sum) < errtol) || (term == 0))
+               ratio = fabs(term / sum);
+               if(((ratio < errtol) && (ratio < old_ratio)) || (term == 0))
                {
                   count = k - i;
                   break;
                }
+               ratio = old_ratio;
                pois *= i / l2;
-               beta *= (a + i - 1) / (x * (a + i + b - 1));
+
+               if (a + b + i != 1)
+               {
+                  beta *= (a + i - 1) / (x * (a + i + b - 1));
+               }
             }
-            for(int i = k + 1; ; ++i)
+            old_ratio = 0;
+            for(auto i = k + 1; ; ++i)
             {
                poisf *= l2 / i;
                betaf *= x * (a + b + i - 1) / (a + i - 1);
 
                T term = poisf * betaf;
                sum += term;
-               if((fabs(term/sum) < errtol) || (term == 0))
+               ratio = fabs(term / sum);
+               if(((ratio < errtol) && (ratio < old_ratio)) || (term == 0))
                {
                   break;
                }
-               if(static_cast<boost::uintmax_t>(count + i - k) > max_iter)
+               old_ratio = ratio;
+               if(static_cast<boost::math::uintmax_t>(count + i - k) > max_iter)
                {
-                  return policies::raise_evaluation_error(
-                     "pdf(non_central_beta_distribution<%1%>, %1%)",
-                     "Series did not converge, closest value was %1%", sum, pol);
+                  return policies::raise_evaluation_error("pdf(non_central_beta_distribution<%1%>, %1%)", "Series did not converge, closest value was %1%", sum, pol); // LCOV_EXCL_LINE
                }
             }
             return sum;
          }
 
          template <class RealType, class Policy>
-         RealType nc_beta_pdf(const non_central_beta_distribution<RealType, Policy>& dist, const RealType& x)
+         BOOST_MATH_GPU_ENABLED RealType nc_beta_pdf(const non_central_beta_distribution<RealType, Policy>& dist, const RealType& x)
          {
             BOOST_MATH_STD_USING
-            static const char* function = "pdf(non_central_beta_distribution<%1%>, %1%)";
+            constexpr auto function = "pdf(non_central_beta_distribution<%1%>, %1%)";
             typedef typename policies::evaluation<RealType, Policy>::type value_type;
             typedef typename policies::normalise<
                Policy,
@@ -614,7 +664,7 @@ namespace boost
                static_cast<value_type>(x),
                &r,
                Policy()))
-                  return (RealType)r;
+                  return static_cast<RealType>(r);
 
             if(l == 0)
                return pdf(boost::math::beta_distribution<RealType, Policy>(dist.alpha(), dist.beta()), x);
@@ -627,8 +677,8 @@ namespace boost
          struct hypergeometric_2F2_sum
          {
             typedef T result_type;
-            hypergeometric_2F2_sum(T a1_, T a2_, T b1_, T b2_, T z_) : a1(a1_), a2(a2_), b1(b1_), b2(b2_), z(z_), term(1), k(0) {}
-            T operator()()
+            BOOST_MATH_GPU_ENABLED hypergeometric_2F2_sum(T a1_, T a2_, T b1_, T b2_, T z_) : a1(a1_), a2(a2_), b1(b1_), b2(b2_), z(z_), term(1), k(0) {}
+            BOOST_MATH_GPU_ENABLED T operator()()
             {
                T result = term;
                term *= a1 * a2 / (b1 * b2);
@@ -645,20 +695,17 @@ namespace boost
          };
 
          template <class T, class Policy>
-         T hypergeometric_2F2(T a1, T a2, T b1, T b2, T z, const Policy& pol)
+         BOOST_MATH_GPU_ENABLED T hypergeometric_2F2(T a1, T a2, T b1, T b2, T z, const Policy& pol)
          {
             typedef typename policies::evaluation<T, Policy>::type value_type;
 
             const char* function = "boost::math::detail::hypergeometric_2F2<%1%>(%1%,%1%,%1%,%1%,%1%)";
 
             hypergeometric_2F2_sum<value_type> s(a1, a2, b1, b2, z);
-            boost::uintmax_t max_iter = policies::get_max_series_iterations<Policy>();
-#if BOOST_WORKAROUND(__BORLANDC__, BOOST_TESTED_AT(0x582))
-            value_type zero = 0;
-            value_type result = boost::math::tools::sum_series(s, boost::math::policies::get_epsilon<value_type, Policy>(), max_iter, zero);
-#else
+            boost::math::uintmax_t max_iter = policies::get_max_series_iterations<Policy>();
+
             value_type result = boost::math::tools::sum_series(s, boost::math::policies::get_epsilon<value_type, Policy>(), max_iter);
-#endif
+
             policies::check_series_iterations<T>(function, max_iter, pol);
             return policies::checked_narrowing_cast<T, Policy>(result, function);
          }
@@ -672,7 +719,7 @@ namespace boost
          typedef RealType value_type;
          typedef Policy policy_type;
 
-         non_central_beta_distribution(RealType a_, RealType b_, RealType lambda) : a(a_), b(b_), ncp(lambda)
+         BOOST_MATH_GPU_ENABLED non_central_beta_distribution(RealType a_, RealType b_, RealType lambda) : a(a_), b(b_), ncp(lambda)
          {
             const char* function = "boost::math::non_central_beta_distribution<%1%>::non_central_beta_distribution(%1%,%1%)";
             RealType r;
@@ -689,15 +736,15 @@ namespace boost
                Policy());
          } // non_central_beta_distribution constructor.
 
-         RealType alpha() const
+         BOOST_MATH_GPU_ENABLED RealType alpha() const
          { // Private data getter function.
             return a;
          }
-         RealType beta() const
+         BOOST_MATH_GPU_ENABLED RealType beta() const
          { // Private data getter function.
             return b;
          }
-         RealType non_centrality() const
+         BOOST_MATH_GPU_ENABLED RealType non_centrality() const
          { // Private data getter function.
             return ncp;
          }
@@ -710,27 +757,32 @@ namespace boost
 
       typedef non_central_beta_distribution<double> non_central_beta; // Reserved name of type double.
 
+      #ifdef __cpp_deduction_guides
+      template <class RealType>
+      non_central_beta_distribution(RealType,RealType,RealType)->non_central_beta_distribution<typename boost::math::tools::promote_args<RealType>::type>;
+      #endif
+
       // Non-member functions to give properties of the distribution.
 
       template <class RealType, class Policy>
-      inline const std::pair<RealType, RealType> range(const non_central_beta_distribution<RealType, Policy>& /* dist */)
+      BOOST_MATH_GPU_ENABLED inline const boost::math::pair<RealType, RealType> range(const non_central_beta_distribution<RealType, Policy>& /* dist */)
       { // Range of permissible values for random variable k.
          using boost::math::tools::max_value;
-         return std::pair<RealType, RealType>(static_cast<RealType>(0), static_cast<RealType>(1));
+         return boost::math::pair<RealType, RealType>(static_cast<RealType>(0), static_cast<RealType>(1));
       }
 
       template <class RealType, class Policy>
-      inline const std::pair<RealType, RealType> support(const non_central_beta_distribution<RealType, Policy>& /* dist */)
+      BOOST_MATH_GPU_ENABLED inline const boost::math::pair<RealType, RealType> support(const non_central_beta_distribution<RealType, Policy>& /* dist */)
       { // Range of supported values for random variable k.
          // This is range where cdf rises from 0 to 1, and outside it, the pdf is zero.
          using boost::math::tools::max_value;
-         return std::pair<RealType, RealType>(static_cast<RealType>(0), static_cast<RealType>(1));
+         return boost::math::pair<RealType, RealType>(static_cast<RealType>(0), static_cast<RealType>(1));
       }
 
       template <class RealType, class Policy>
-      inline RealType mode(const non_central_beta_distribution<RealType, Policy>& dist)
+      BOOST_MATH_GPU_ENABLED inline RealType mode(const non_central_beta_distribution<RealType, Policy>& dist)
       { // mode.
-         static const char* function = "mode(non_central_beta_distribution<%1%> const&)";
+         constexpr auto function = "mode(non_central_beta_distribution<%1%> const&)";
 
          RealType a = dist.alpha();
          RealType b = dist.beta();
@@ -749,7 +801,7 @@ namespace boost
                l,
                &r,
                Policy()))
-                  return (RealType)r;
+                  return static_cast<RealType>(r);
          RealType c = a + b + l / 2;
          RealType mean = 1 - (b / c) * (1 + l / (2 * c * c));
          return detail::generic_find_mode_01(
@@ -765,7 +817,7 @@ namespace boost
       // later:
       //
       template <class RealType, class Policy>
-      inline RealType mean(const non_central_beta_distribution<RealType, Policy>& dist)
+      BOOST_MATH_GPU_ENABLED inline RealType mean(const non_central_beta_distribution<RealType, Policy>& dist)
       {
          BOOST_MATH_STD_USING
          RealType a = dist.alpha();
@@ -776,10 +828,10 @@ namespace boost
       } // mean
 
       template <class RealType, class Policy>
-      inline RealType variance(const non_central_beta_distribution<RealType, Policy>& dist)
+      BOOST_MATH_GPU_ENABLED inline RealType variance(const non_central_beta_distribution<RealType, Policy>& dist)
       { 
          //
-         // Relative error of this function may be arbitarily large... absolute
+         // Relative error of this function may be arbitrarily large... absolute
          // error will be small however... that's the best we can do for now.
          //
          BOOST_MATH_STD_USING
@@ -796,45 +848,41 @@ namespace boost
       // RealType standard_deviation(const non_central_beta_distribution<RealType, Policy>& dist)
       // standard_deviation provided by derived accessors.
       template <class RealType, class Policy>
-      inline RealType skewness(const non_central_beta_distribution<RealType, Policy>& /*dist*/)
+      BOOST_MATH_GPU_ENABLED inline RealType skewness(const non_central_beta_distribution<RealType, Policy>& /*dist*/)
       { // skewness = sqrt(l).
          const char* function = "boost::math::non_central_beta_distribution<%1%>::skewness()";
          typedef typename Policy::assert_undefined_type assert_type;
-         BOOST_STATIC_ASSERT(assert_type::value == 0);
+         static_assert(assert_type::value == 0, "The Non Central Beta Distribution has no skewness.");
 
-         return policies::raise_evaluation_error<RealType>(
-            function,
-            "This function is not yet implemented, the only sensible result is %1%.",
-            std::numeric_limits<RealType>::quiet_NaN(), Policy()); // infinity?
+         return policies::raise_evaluation_error<RealType>(function, "This function is not yet implemented, the only sensible result is %1%.", // LCOV_EXCL_LINE
+            boost::math::numeric_limits<RealType>::quiet_NaN(), Policy()); // infinity?  LCOV_EXCL_LINE
       }
 
       template <class RealType, class Policy>
-      inline RealType kurtosis_excess(const non_central_beta_distribution<RealType, Policy>& /*dist*/)
+      BOOST_MATH_GPU_ENABLED inline RealType kurtosis_excess(const non_central_beta_distribution<RealType, Policy>& /*dist*/)
       {
          const char* function = "boost::math::non_central_beta_distribution<%1%>::kurtosis_excess()";
          typedef typename Policy::assert_undefined_type assert_type;
-         BOOST_STATIC_ASSERT(assert_type::value == 0);
+         static_assert(assert_type::value == 0, "The Non Central Beta Distribution has no kurtosis excess.");
 
-         return policies::raise_evaluation_error<RealType>(
-            function,
-            "This function is not yet implemented, the only sensible result is %1%.",
-            std::numeric_limits<RealType>::quiet_NaN(), Policy()); // infinity?
+         return policies::raise_evaluation_error<RealType>(function, "This function is not yet implemented, the only sensible result is %1%.", // LCOV_EXCL_LINE
+            boost::math::numeric_limits<RealType>::quiet_NaN(), Policy()); // infinity?  LCOV_EXCL_LINE
       } // kurtosis_excess
 
       template <class RealType, class Policy>
-      inline RealType kurtosis(const non_central_beta_distribution<RealType, Policy>& dist)
+      BOOST_MATH_GPU_ENABLED inline RealType kurtosis(const non_central_beta_distribution<RealType, Policy>& dist)
       {
          return kurtosis_excess(dist) + 3;
       }
 
       template <class RealType, class Policy>
-      inline RealType pdf(const non_central_beta_distribution<RealType, Policy>& dist, const RealType& x)
+      BOOST_MATH_GPU_ENABLED inline RealType pdf(const non_central_beta_distribution<RealType, Policy>& dist, const RealType& x)
       { // Probability Density/Mass Function.
          return detail::nc_beta_pdf(dist, x);
       } // pdf
 
       template <class RealType, class Policy>
-      RealType cdf(const non_central_beta_distribution<RealType, Policy>& dist, const RealType& x)
+      BOOST_MATH_GPU_ENABLED RealType cdf(const non_central_beta_distribution<RealType, Policy>& dist, const RealType& x)
       {
          const char* function = "boost::math::non_central_beta_distribution<%1%>::cdf(%1%)";
             RealType a = dist.alpha();
@@ -860,7 +908,7 @@ namespace boost
                x,
                &r,
                Policy()))
-                  return (RealType)r;
+                  return static_cast<RealType>(r);
 
          if(l == 0)
             return cdf(beta_distribution<RealType, Policy>(a, b), x);
@@ -869,7 +917,7 @@ namespace boost
       } // cdf
 
       template <class RealType, class Policy>
-      RealType cdf(const complemented2_type<non_central_beta_distribution<RealType, Policy>, RealType>& c)
+      BOOST_MATH_GPU_ENABLED RealType cdf(const complemented2_type<non_central_beta_distribution<RealType, Policy>, RealType>& c)
       { // Complemented Cumulative Distribution Function
          const char* function = "boost::math::non_central_beta_distribution<%1%>::cdf(%1%)";
          non_central_beta_distribution<RealType, Policy> const& dist = c.dist;
@@ -897,7 +945,7 @@ namespace boost
                x,
                &r,
                Policy()))
-                  return (RealType)r;
+                  return static_cast<RealType>(r);
 
          if(l == 0)
             return cdf(complement(beta_distribution<RealType, Policy>(a, b), x));
@@ -906,13 +954,13 @@ namespace boost
       } // ccdf
 
       template <class RealType, class Policy>
-      inline RealType quantile(const non_central_beta_distribution<RealType, Policy>& dist, const RealType& p)
+      BOOST_MATH_GPU_ENABLED inline RealType quantile(const non_central_beta_distribution<RealType, Policy>& dist, const RealType& p)
       { // Quantile (or Percent Point) function.
          return detail::nc_beta_quantile(dist, p, false);
       } // quantile
 
       template <class RealType, class Policy>
-      inline RealType quantile(const complemented2_type<non_central_beta_distribution<RealType, Policy>, RealType>& c)
+      BOOST_MATH_GPU_ENABLED inline RealType quantile(const complemented2_type<non_central_beta_distribution<RealType, Policy>, RealType>& c)
       { // Quantile (or Percent Point) function.
          return detail::nc_beta_quantile(c.dist, c.param, true);
       } // quantile complement.

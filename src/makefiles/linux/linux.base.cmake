@@ -51,6 +51,14 @@ If(SOURCE_ENGINE MATCHES "bms")
         ${SOURCESDK_LIB}/public/linux32/libtier0_srv.so
         ${SOURCESDK_LIB}/public/linux32/libvstdlib_srv.so
     )
+ElseIf(SOURCE_ENGINE MATCHES "orangebox")
+    Set(SOURCEPYTHON_LINK_LIBRARIES
+        "${SOURCEPYTHON_LINK_LIBRARIES}"
+         ${SOURCESDK_LIB}/public/linux/mathlib_i486.a
+         ${SOURCESDK_LIB}/public/linux/tier1_i486.a
+         ${SOURCESDK_LIB}/public/linux/libtier0_srv.so
+         ${SOURCESDK_LIB}/public/linux/libvstdlib_srv.so
+    )
 Else()
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
@@ -62,7 +70,7 @@ EndIf()
 # ------------------------------------------------------------------
 # Game specific library hacks.
 # ------------------------------------------------------------------
-If(SOURCE_ENGINE MATCHES "orangebox" OR SOURCE_ENGINE MATCHES "l4d2" OR SOURCE_ENGINE MATCHES "gmod")
+If(SOURCE_ENGINE MATCHES "l4d2" OR SOURCE_ENGINE MATCHES "gmod")
     # Orangebox has all the tier libraries.
     Set(SOURCEPYTHON_LINK_LIBRARIES
         "${SOURCEPYTHON_LINK_LIBRARIES}"
@@ -79,12 +87,6 @@ If(SOURCE_ENGINE MATCHES "csgo" OR SOURCE_ENGINE MATCHES "blade")
          ${SOURCESDK_LIB}/linux/interfaces_i486.a
          ${SOURCESDK_LIB}/linux/libtier0.so
          ${SOURCESDK_LIB}/linux/libvstdlib.so
-    )
-EndIf()
-
-If(SOURCE_ENGINE MATCHES "csgo" OR SOURCE_ENGINE MATCHES "blade")
-    Set(SOURCEPYTHON_LINK_LIBRARIES
-        "${SOURCEPYTHON_LINK_LIBRARIES}"
          ${SOURCESDK_LIB}/linux32/release/libprotobuf.a
     )
 EndIf()
@@ -114,7 +116,7 @@ Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-offsetof -Wno-reorder")
 
 # Others
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpmath=sse -msse -m32 -fno-strict-aliasing")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++0x -fno-threadsafe-statics -v -fvisibility=hidden")
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fno-threadsafe-statics -v -fvisibility=hidden")
 
 
 # ------------------------------------------------------------------
@@ -133,12 +135,13 @@ Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -D_NDEBUG")
 # correctly...
 # ------------------------------------------------------------------
 Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
-    ${PYTHONSDK_LIB}/libpython3.6m.a
-    ${PYTHONSDK_LIB}/libpython3.6m.so.1.0
-    ${BOOSTSDK_LIB}/libboost_python.a
+    ${PYTHONSDK_LIB}/libpython3.13.a
+    ${PYTHONSDK_LIB}/libpython3.13.so.1.0
+    ${BOOSTSDK_LIB}/libboost_python313.a
     ${DYNAMICHOOKSSDK_LIB}/libDynamicHooks.a
-    ${ASMJITSDK_LIB}/libAsmJit.a
+    ${ASMJITSDK_LIB}/libasmjit.a
     ${DYNCALLSDK_LIB}/libdyncall_s.a
     ${DYNCALLSDK_LIB}/libdyncallback_s.a
     ${DYNCALLSDK_LIB}/libdynload_s.a
+    rt
 )

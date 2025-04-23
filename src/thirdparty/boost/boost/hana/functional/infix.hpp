@@ -2,7 +2,7 @@
 @file
 Defines `boost::hana::infix`.
 
-@copyright Louis Dionne 2013-2017
+Copyright Louis Dionne 2013-2022
 Distributed under the Boost Software License, Version 1.0.
 (See accompanying file LICENSE.md or copy at http://boost.org/LICENSE_1_0.txt)
  */
@@ -19,7 +19,7 @@ Distributed under the Boost Software License, Version 1.0.
 #include <utility>
 
 
-BOOST_HANA_NAMESPACE_BEGIN
+namespace boost { namespace hana {
     //! @ingroup group-functional
     //! Return an equivalent function that can also be applied in infix
     //! notation.
@@ -178,8 +178,8 @@ BOOST_HANA_NAMESPACE_BEGIN
         }
     } // end namespace infix_detail
 
-    constexpr infix_detail::make_infix<false, false> infix{};
+    BOOST_HANA_INLINE_VARIABLE constexpr infix_detail::make_infix<false, false> infix{};
 #endif
-BOOST_HANA_NAMESPACE_END
+}} // end namespace boost::hana
 
 #endif // !BOOST_HANA_FUNCTIONAL_INFIX_HPP
