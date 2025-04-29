@@ -45,4 +45,14 @@ void export_engine_specific_take_damage_info(T _entities, U TakeDamageInfo)
 }
 
 
+//-----------------------------------------------------------------------------
+// Exports CGlobalEntityList.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_global_entity_list(T _entities, U GlobalEntityList)
+{
+	// Nothing specific to GMOD...
+}
+
+
 #endif // _ENTITIES_WRAP_GMOD_H

@@ -404,17 +404,20 @@ def setup_entities_listener():
     """Set up entities listener."""
     _sp_logger.log_debug('Setting up entities listener...')
 
-    import sys
     from warnings import warn
     from _core import _sp_plugin
     from memory.manager import manager
 
     try:
-        manager.get_global_pointer('GlobalEntityList').add_entity_listener(
-            _sp_plugin
-        )
-    except NameError:
-        warn(str(sys.exc_info()[1]))
+        from _entities import _global_entity_list
+        _global_entity_list.add_entity_listener(_sp_plugin)
+    except ImportError:
+        try:
+            manager.get_global_pointer(
+                'GlobalEntityList'
+            ).add_entity_listener(_sp_plugin)
+        except NameError as e:
+            warn(e)
 
 
 def remove_entities_listener():
