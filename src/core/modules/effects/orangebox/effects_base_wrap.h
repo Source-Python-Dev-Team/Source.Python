@@ -45,9 +45,9 @@ extern IServerTools *servertools;
 // Exports CBaseTempEntity.
 //-----------------------------------------------------------------------------
 template<class T, class U>
-void export_engine_specific_temp_entity(T _effects, U TempEntity)
+void export_engine_specific_temp_entity(T _base, U TempEntity)
 {
-	_effects.attr("_first_temp_entity") = object(ptr(servertools->GetTempEntList()));
+	_base.attr("_first_temp_entity") = object(ptr(servertools->GetTempEntList()));
 }
 
 

@@ -180,6 +180,11 @@ void PlayerMixin::SetDeaths(int value)
 {
 	static int offset = FindDatamapPropertyOffset("m_iDeaths");
 	SetDatamapPropertyByOffset<int>(offset, value);
+
+	CPlayerState *pState = servergameclients->GetPlayerState(GetEdict());
+	if (pState) {
+		pState->deaths = value;
+	}
 }
 
 
@@ -193,6 +198,11 @@ void PlayerMixin::SetKills(int value)
 {
 	static int offset = FindDatamapPropertyOffset("m_iFrags");
 	SetDatamapPropertyByOffset<int>(offset, value);
+
+	CPlayerState *pState = servergameclients->GetPlayerState(GetEdict());
+	if (pState) {
+		pState->frags = value;
+	}
 }
 
 

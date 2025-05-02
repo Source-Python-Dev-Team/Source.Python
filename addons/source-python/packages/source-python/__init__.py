@@ -256,23 +256,6 @@ def setup_exception_hooks():
     from hooks.exceptions import except_hooks
     from hooks.warnings import warning_hooks
 
-    # Temporary workaround for sys.excepthook bug:
-    # https://bugs.python.org/issue1230540
-    import sys
-    import threading
-
-    run_old = threading.Thread.run
-
-    def run(*args, **kwargs):
-        try:
-            run_old(*args, **kwargs)
-        except (KeyboardInterrupt, SystemExit):
-            raise
-        except:
-            sys.excepthook(*sys.exc_info())
-
-    threading.Thread.run = run
-
 
 # =============================================================================
 # >> TRANSLATIONS
@@ -406,13 +389,13 @@ def setup_entities_listener():
 
     from warnings import warn
     from _core import _sp_plugin
-    from memory.manager import manager
 
     try:
         from _entities import _global_entity_list
         _global_entity_list.add_entity_listener(_sp_plugin)
     except ImportError:
         try:
+            from memory.manager import manager
             manager.get_global_pointer(
                 'GlobalEntityList'
             ).add_entity_listener(_sp_plugin)
@@ -425,13 +408,18 @@ def remove_entities_listener():
     _sp_logger.log_debug('Removing entities listener...')
 
     from _core import _sp_plugin
-    from memory.manager import manager
 
     try:
-        manager.get_global_pointer('GlobalEntityList').remove_entity_listener(
-            _sp_plugin)
-    except NameError:
-        pass
+        from _entities import _global_entity_list
+        _global_entity_list.remove_entity_listener(_sp_plugin)
+    except ImportError:
+        try:
+            from memory.manager import manager
+            manager.get_global_pointer(
+                'GlobalEntityList'
+            ).remove_entity_listener(_sp_plugin)
+        except NameError:
+            pass
 
 
 # =============================================================================
