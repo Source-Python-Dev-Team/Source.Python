@@ -11,6 +11,7 @@ import binascii
 
 # Source.Python
 #   Core
+from core import GameConfigObj
 from core import PLATFORM
 #   Memory
 from memory import Convention
@@ -18,6 +19,7 @@ from memory import DataType
 from memory import Function
 from memory import Pointer
 from memory import TYPE_SIZES
+from memory import find_binary
 from memory import make_object
 
 
@@ -30,6 +32,8 @@ __all__ = ('Array',
            'MemberFunction',
            'NO_DEFAULT',
            'Type',
+           'check_pipe_signature_from_file',
+           'check_type_signature_from_file',
            'parse_data',
            )
 
@@ -403,6 +407,85 @@ def parse_data(manager, raw_data, keys):
                 value if value is default else converter(manager, value))
 
         yield (name, temp_data)
+
+def check_type_signature_from_file(file):
+    """Checks if the data signatures are valid."""
+    raw_data = GameConfigObj(file)
+
+    # get the binary name from the data(defaults to server if not present)
+    _binary = Key.as_str(None, raw_data.get(
+        Key.BINARY + '_' + PLATFORM, raw_data.get(Key.BINARY, 'server')))
+    _srv_check = Key.as_bool(None, raw_data.get(
+        Key.SRV_CHECK + '_' + PLATFORM, raw_data.get(Key.SRV_CHECK, 'True')))
+
+    key = Key.IDENTIFIER
+    binary = None
+
+    for method, default in (('function', NO_DEFAULT), ):
+        for name, data in raw_data.get(method, {}).items():
+            identifier = data.get(key + '_' + PLATFORM, data.get(key, default))
+
+            # ignore identifier
+            if identifier is None:
+                continue
+
+            # if the identifier is NO_DEFAULT, the key is obviously missing
+            if identifier is NO_DEFAULT:
+                raise KeyError(
+                    'Missing identifier for "{0}".\nFile: {1}'.format(
+                    name, file))
+
+            if binary is None:
+                try:
+                    binary = find_binary(_binary, _srv_check)
+                except OSError as error:
+                    print(error)
+                    raise ValueError(
+                        'Could not find the binary.\nFile: {0}'.format(file))
+
+            try:
+                identifier = Key.as_identifier(None, identifier)
+                binary[identifier]
+            except ValueError:
+                yield (name, identifier)
+
+def check_pipe_signature_from_file(file):
+    """Checks if the data signatures are valid."""
+    raw_data = GameConfigObj(file)
+
+    key = Key.IDENTIFIER
+
+    for name, data in raw_data.items():
+        identifier = data.get(key + '_' + PLATFORM, data.get(key, NO_DEFAULT))
+
+        # if the identifier is NO_DEFAULT, the key is obviously missing
+        if identifier is NO_DEFAULT:
+            raise KeyError(
+                'Missing identifier for "{0}".\nFile: {1}'.format(
+                name, file))
+
+        _binary = Key.as_str(None, data.get(
+            Key.BINARY + '_' + PLATFORM, data.get(Key.BINARY, NO_DEFAULT)))
+        if _binary is NO_DEFAULT:
+            raise KeyError(
+                'Missing binary for "{0}".\nFile: {1}'.format(
+                name, file))
+
+        _srv_check = Key.as_bool(None, data.get(
+            Key.SRV_CHECK + '_' + PLATFORM, data.get(Key.SRV_CHECK, 'True')))
+
+        try:
+            binary = find_binary(_binary, _srv_check)
+        except OSError as error:
+            print(error)
+            raise ValueError(
+                'Could not find the binary.\nFile: {0}'.format(file))
+
+        try:
+            identifier = Key.as_identifier(None, identifier)
+            binary[identifier]
+        except ValueError:
+            yield (name, identifier)
 
 # Use this as a default value if the key is not allowed to have a default
 # value
