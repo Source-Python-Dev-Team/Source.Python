@@ -69,7 +69,7 @@ class LangStrings(dict):
 
         # Get the path to the server specific file
         self._serverfile = self._mainfile.parent / '{0}_server.ini'.format(
-            self._mainfile.name)
+            self._mainfile.stem)
 
         # Get the strings from the main file
         main_strings = GameConfigObj(self._mainfile, encoding=encoding)
