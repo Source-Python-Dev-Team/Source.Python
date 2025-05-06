@@ -91,6 +91,10 @@ from _players._constants import OBS_MODE_IN_EYE
 from _players._constants import OBS_MODE_CHASE
 from _players._constants import OBS_MODE_ROAMING
 from _players._constants import PlayerAnimation
+from _players._constants import WL_NOT_IN_WATER
+from _players._constants import WL_FEET
+from _players._constants import WL_WAIST
+from _players._constants import WL_EYES
 
 
 # =============================================================================
@@ -105,6 +109,7 @@ __all__ = ('FixAngle',
            'PlayerAnimation',
            'PlayerButtons',
            'PlayerStates',
+           'PlayerWaterLevel',
            )
 
 
@@ -217,3 +222,12 @@ class ObserverMode(IntEnum):
     IN_EYE = OBS_MODE_IN_EYE
     CHASE = OBS_MODE_CHASE
     ROAMING = OBS_MODE_ROAMING
+
+
+class PlayerWaterLevel(IntEnum):
+    """Player water levels wrapper enumerator."""
+
+    NOT_IN_WATER = WL_NOT_IN_WATER
+    FEET = WL_FEET
+    WAIST = WL_WAIST
+    EYES = WL_EYES

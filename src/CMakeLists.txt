@@ -57,6 +57,9 @@ Set(SOURCEPYTHON_UTILITIES_HEADERS
     core/utilities/wrap_macros.h
     core/utilities/conversions.h
     core/utilities/ipythongenerator.h
+    core/utilities/convar.h
+    core/utilities/baseentity.h
+    core/utilities/baseplayer.h
 )
 
 Set(SOURCEPYTHON_UTILITIES_SOURCES
@@ -405,6 +408,9 @@ Set(SOURCEPYTHON_PLAYERS_MODULE_HEADERS
     core/modules/players/players_generator.h
     core/modules/players/${SOURCE_ENGINE}/players_constants_wrap.h
     core/modules/players/${SOURCE_ENGINE}/players_wrap.h
+    core/modules/players/players_movements.h
+    core/modules/players/${SOURCE_ENGINE}/players_movements.h
+    core/modules/players/${SOURCE_ENGINE}/players_movements_wrap.h
 )
 
 Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
@@ -415,6 +421,8 @@ Set(SOURCEPYTHON_PLAYERS_MODULE_SOURCES
     core/modules/players/players_wrap.cpp
     core/modules/players/players_generator.cpp
     core/modules/players/players_voice.cpp
+    core/modules/players/players_movements.cpp
+    core/modules/players/players_movements_wrap.cpp
 )
 
 # ------------------------------------------------------------------

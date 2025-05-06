@@ -29,6 +29,7 @@
 // ============================================================================
 // Source.Python
 #include "players_entity.h"
+#include "players_movements.h"
 
 // SDK
 #include "eiface.h"
@@ -128,6 +129,19 @@ void PlayerMixin::SetIsDucking(bool value)
 {
 	static int offset = FindDatamapPropertyOffset("m_Local.m_bDucking");
 	SetDatamapPropertyByOffset<bool>(offset, value);
+}
+
+
+float PlayerMixin::GetDuckTime()
+{
+	static int offset = FindDatamapPropertyOffset("m_Local.m_flDucktime");
+	return GetDatamapPropertyByOffset<float>(offset);
+}
+
+void PlayerMixin::SetDuckTime(float value)
+{
+	static int offset = FindDatamapPropertyOffset("m_Local.m_flDucktime");
+	SetDatamapPropertyByOffset<float>(offset, value);
 }
 
 
@@ -280,6 +294,19 @@ int PlayerMixin::GetButtons()
 void PlayerMixin::SetButtons(int value)
 {
 	static int offset = FindDatamapPropertyOffset("m_nButtons");
+	SetDatamapPropertyByOffset<int>(offset, value);
+}
+
+
+int PlayerMixin::GetLastButtons()
+{
+	static int offset = FindDatamapPropertyOffset("m_afButtonLast");
+	return GetDatamapPropertyByOffset<int>(offset);
+}
+
+void PlayerMixin::SetLastButtons(int value)
+{
+	static int offset = FindDatamapPropertyOffset("m_afButtonLast");
 	SetDatamapPropertyByOffset<int>(offset, value);
 }
 
@@ -726,6 +753,12 @@ void PlayerMixin::SetRagdoll(int value)
 	SetNetworkPropertyByOffset<int>(offset, value);
 }
 
+
+CMoveData *PlayerMixin::GetMoveData()
+{
+	static CGameMovementWrapper *s_pGameMovement = GetGameMovement();
+	return s_pGameMovement->player == GetThis() ? s_pGameMovement->mv : NULL;
+}
 
 unsigned char PlayerMixin::GetActiveDevices()
 {

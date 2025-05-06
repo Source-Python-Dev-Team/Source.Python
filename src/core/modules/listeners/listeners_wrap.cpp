@@ -32,6 +32,7 @@
 #include "listeners_manager.h"
 #include "modules/entities/entities_collisions.h"
 #include "modules/entities/entities_transmit.h"
+#include "modules/players/players_movements.h"
 
 
 //-----------------------------------------------------------------------------
@@ -194,4 +195,43 @@ void export_listener_managers(scope _listeners)
 	_listeners.attr("on_player_run_command_listener_manager") = object(ptr(GetOnPlayerRunCommandListenerManager()));
 	_listeners.attr("on_player_post_run_command_listener_manager") = object(ptr(GetOnPlayerPostRunCommandListenerManager()));
 	_listeners.attr("on_button_state_changed_listener_manager") = object(ptr(GetOnButtonStateChangedListenerManager()));
+
+	// Movement listeners...
+	_listeners.attr("on_player_jump_listener_manager") = object(ptr(GetOnPlayerJumpListenerManager()));
+	_listeners.attr("on_player_land_listener_manager") = object(ptr(GetOnPlayerLandListenerManager()));
+	_listeners.attr("on_player_duck_listener_manager") = object(ptr(GetOnPlayerDuckListenerManager()));
+	_listeners.attr("on_player_ducked_listener_manager") = object(ptr(GetOnPlayerDuckedListenerManager()));
+	_listeners.attr("on_player_unduck_listener_manager") = object(ptr(GetOnPlayerUnduckListenerManager()));
+	_listeners.attr("on_player_unducked_listener_manager") = object(ptr(GetOnPlayerUnduckedListenerManager()));
+	_listeners.attr("on_player_water_jump_listener_manager") = object(ptr(GetOnPlayerWaterJumpListenerManager()));
+	_listeners.attr("on_player_ground_entity_changed_listener_manager") = object(ptr(GetOnPlayerGroundEntityChangedListenerManager()));
+	_listeners.attr("on_player_water_level_changed_listener_manager") = object(ptr(GetOnPlayerWaterLevelChangedListenerManager()));
+	_listeners.attr("on_player_start_climbing_ladder_listener_manager") = object(ptr(GetOnPlayerStartClimbingLadderListenerManager()));
+	_listeners.attr("on_player_stop_climbing_ladder_listener_manager") = object(ptr(GetOnPlayerStopClimbingLadderListenerManager()));
+	_listeners.attr("on_player_check_jump_button_listener_manager") = object(ptr(GetOnPlayerCheckJumpButtonListenerManager()));
+	_listeners.attr("on_player_rough_landing_effects_listener_manager") = object(ptr(GetOnPlayerRoughLandingEffectsListenerManager()));
+	_listeners.attr("on_player_accelerate_listener_manager") = object(ptr(GetOnPlayerAccelerateListenerManager()));
+	_listeners.attr("on_player_post_accelerate_listener_manager") = object(ptr(GetOnPlayerPostAccelerateListenerManager()));
+	_listeners.attr("on_player_air_accelerate_listener_manager") = object(ptr(GetOnPlayerAirAccelerateListenerManager()));
+	_listeners.attr("on_player_post_air_accelerate_listener_manager") = object(ptr(GetOnPlayerPostAirAccelerateListenerManager()));
+	_listeners.attr("on_player_move_listener_manager") = object(ptr(GetOnPlayerMoveListenerManager()));
+	_listeners.attr("on_player_finish_move_listener_manager") = object(ptr(GetOnPlayerFinishMoveListenerManager()));
+	_listeners.attr("on_player_water_move_listener_manager") = object(ptr(GetOnPlayerWaterMoveListenerManager()));
+	_listeners.attr("on_player_finish_water_move_listener_manager") = object(ptr(GetOnPlayerFinishWaterMoveListenerManager()));
+	_listeners.attr("on_player_air_move_listener_manager") = object(ptr(GetOnPlayerAirMoveListenerManager()));
+	_listeners.attr("on_player_finish_air_move_listener_manager") = object(ptr(GetOnPlayerFinishAirMoveListenerManager()));
+	_listeners.attr("on_player_fall_move_listener_manager") = object(ptr(GetOnPlayerFallMoveListenerManager()));
+	_listeners.attr("on_player_finish_fall_move_listener_manager") = object(ptr(GetOnPlayerFinishFallMoveListenerManager()));
+	_listeners.attr("on_player_walk_move_listener_manager") = object(ptr(GetOnPlayerWalkMoveListenerManager()));
+	_listeners.attr("on_player_finish_walk_move_listener_manager") = object(ptr(GetOnPlayerFinishWalkMoveListenerManager()));
+	_listeners.attr("on_player_full_walk_move_listener_manager") = object(ptr(GetOnPlayerFullWalkMoveListenerManager()));
+	_listeners.attr("on_player_finish_full_walk_move_listener_manager") = object(ptr(GetOnPlayerFinishFullWalkMoveListenerManager()));
+	_listeners.attr("on_player_toss_move_listener_manager") = object(ptr(GetOnPlayerTossMoveListenerManager()));
+	_listeners.attr("on_player_finish_toss_move_listener_manager") = object(ptr(GetOnPlayerFinishTossMoveListenerManager()));
+	_listeners.attr("on_player_ladder_move_listener_manager") = object(ptr(GetOnPlayerLadderMoveListenerManager()));
+	_listeners.attr("on_player_finish_ladder_move_listener_manager") = object(ptr(GetOnPlayerFinishLadderMoveListenerManager()));
+	_listeners.attr("on_player_full_ladder_move_listener_manager") = object(ptr(GetOnPlayerFullLadderMoveListenerManager()));
+	_listeners.attr("on_player_finish_full_ladder_move_listener_manager") = object(ptr(GetOnPlayerFinishFullLadderMoveListenerManager()));
+	_listeners.attr("on_player_step_move_listener_manager") = object(ptr(GetOnPlayerStepMoveListenerManager()));
+	_listeners.attr("on_player_finish_step_move_listener_manager") = object(ptr(GetOnPlayerFinishStepMoveListenerManager()));
 }

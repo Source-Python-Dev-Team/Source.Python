@@ -40,6 +40,7 @@
 #include "isaverestore.h"
 #include "datamap.h"
 #include "game/shared/shareddefs.h"
+#include "game/shared/imovehelper.h"
 
 #include ENGINE_INCLUDE_PATH(players_constants_wrap.h)
 
@@ -55,6 +56,7 @@ void export_hit_groups(scope);
 void export_player_animation(scope);
 void export_observer_modes(scope);
 void export_fixangle(scope);
+void export_player_water_level(scope);
 void export_players_miscellaneous_constants(scope);
 
 
@@ -71,6 +73,7 @@ DECLARE_SP_SUBMODULE(_players, _constants)
 	export_player_animation(_constants);
 	export_observer_modes(_constants);
 	export_fixangle(_constants);
+	export_player_water_level(_constants);
 	export_players_miscellaneous_constants(_constants);
 }
 
@@ -233,6 +236,18 @@ void export_fixangle(scope _constants)
 	_constants.attr("FIXANGLE_NONE") = FIXANGLE_NONE;
 	_constants.attr("FIXANGLE_ABSOLUTE") = FIXANGLE_ABSOLUTE;
 	_constants.attr("FIXANGLE_RELATIVE") = FIXANGLE_RELATIVE;
+}
+
+
+//-----------------------------------------------------------------------------
+// Exports player water level constants.
+//-----------------------------------------------------------------------------
+void export_player_water_level(scope _constants)
+{
+	_constants.attr("WL_NOT_IN_WATER") = (unsigned char)WL_NotInWater;
+	_constants.attr("WL_FEET") = (unsigned char)WL_Feet;
+	_constants.attr("WL_WAIST") = (unsigned char)WL_Waist;
+	_constants.attr("WL_EYES") = (unsigned char)WL_Eyes;
 }
 
 

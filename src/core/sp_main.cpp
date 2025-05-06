@@ -54,6 +54,7 @@
 #include "datacache/imdlcache.h"
 #include "ivoiceserver.h"
 #include "tier0/threadtools.h"
+#include "game/shared/igamemovement.h"
 
 #include "manager.h"
 
@@ -103,6 +104,7 @@ IPhysicsCollision*		physcollision		= NULL;
 IPhysicsSurfaceProps*	physprops			= NULL;
 IMDLCache*				modelcache			= NULL;
 IVoiceServer*			voiceserver			= NULL;
+IGameMovement*			g_pGameMovement		= NULL;
 INetworkStringTableContainer* networkstringtable = NULL;
 
 //-----------------------------------------------------------------------------
@@ -162,6 +164,7 @@ InterfaceHelper_t gGameInterfaces[] = {
 	{INTERFACEVERSION_SERVERGAMECLIENTS, (void **)&servergameclients},
 	{VSERVERTOOLS_INTERFACE_VERSION, (void **)&servertools},
 	{INTERFACEVERSION_SERVERGAMEENTS, (void **)&gameents},
+	{INTERFACENAME_GAMEMOVEMENT, (void **)&g_pGameMovement},
 	{NULL, NULL}
 };
 

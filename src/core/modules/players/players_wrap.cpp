@@ -466,8 +466,15 @@ void export_player_wrapper(scope _players)
 		"is_ducking",
 		&PlayerMixin::GetIsDucking,
 		&PlayerMixin::SetIsDucking,
-		"Return whether the player is duckeding.\n\n"
+		"Return whether the player is ducking.\n\n"
 		":rtype: bool");
+
+	_PlayerMixin.add_property(
+		"duck_time",
+		&PlayerMixin::GetDuckTime,
+		&PlayerMixin::SetDuckTime,
+		"Return the player's duck time.\n\n"
+		":rtype: float");
 
 	_PlayerMixin.add_property(
 		"flags",
@@ -544,7 +551,14 @@ void export_player_wrapper(scope _players)
 		&PlayerMixin::GetButtons,
 		&PlayerMixin::SetButtons,
 		"Get/set the player's currently pressed buttons.\n\n"
-		":rtype: float");
+		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"last_buttons",
+		&PlayerMixin::GetLastButtons,
+		&PlayerMixin::SetLastButtons,
+		"Get/set the player's previously pressed buttons.\n\n"
+		":rtype: int");
 
 	_PlayerMixin.add_property(
 		"hidden_huds",
@@ -802,6 +816,13 @@ void export_player_wrapper(scope _players)
 		&PlayerMixin::SetRagdoll,
 		"Get/set the player's ragdoll.\n\n"
 		":rtype: int");
+
+	_PlayerMixin.add_property(
+		"move_data",
+		make_function(&PlayerMixin::GetMoveData, reference_existing_object_policy()),
+		"Return the player's movement data or ``None`` if the player "
+		"is not currently processing a movement.\n\n"
+		":rtype: MoveData");
 
 	_PlayerMixin.add_property(
 		"active_devices",
