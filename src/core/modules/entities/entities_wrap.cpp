@@ -525,17 +525,22 @@ void export_take_damage_info(scope _entities)
 //-----------------------------------------------------------------------------
 void export_global_entity_list(scope _entities)
 {
-	class_<CGlobalEntityList, boost::noncopyable>("GlobalEntityList", no_init)
-		.def("add_entity_listener",
-			&CGlobalEntityList::AddListenerEntity
-		)
+	class_<CGlobalEntityList, boost::noncopyable> GlobalEntityList("GlobalEntityList", no_init);
 
-		.def("remove_entity_listener",
-			&CGlobalEntityList::RemoveListenerEntity
-		)
+	// Methods...
+	GlobalEntityList.def("add_entity_listener",
+		&CGlobalEntityList::AddListenerEntity
+	);
 
-		ADD_MEM_TOOLS(CGlobalEntityList);
-	;
+	GlobalEntityList.def("remove_entity_listener",
+		&CGlobalEntityList::RemoveListenerEntity
+	);
+
+	// Add memory tools...
+	GlobalEntityList ADD_MEM_TOOLS(CGlobalEntityList);
+
+	// Engine specific stuff...
+	export_engine_specific_global_entity_list(_entities, GlobalEntityList);
 }
 
 

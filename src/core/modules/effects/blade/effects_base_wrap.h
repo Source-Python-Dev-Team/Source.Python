@@ -28,12 +28,26 @@
 #define _EFFECTS_BASE_WRAP_BLADE_H
 
 //-----------------------------------------------------------------------------
+// Includes.
+//-----------------------------------------------------------------------------
+#include "game/shared/itempents.h"
+#include "toolframework/itoolentity.h"
+#include "game/server/basetempentity.h"
+
+
+//-----------------------------------------------------------------------------
+// External variables.
+//-----------------------------------------------------------------------------
+extern IServerTools *servertools;
+
+
+//-----------------------------------------------------------------------------
 // Exports CBaseTempEntity.
 //-----------------------------------------------------------------------------
 template<class T, class U>
 void export_engine_specific_temp_entity(T _base, U TempEntity)
 {
-	// Nothing specific to Blade...
+	_base.attr("_first_temp_entity") = object(ptr(servertools->GetTempEntList()));
 }
 
 

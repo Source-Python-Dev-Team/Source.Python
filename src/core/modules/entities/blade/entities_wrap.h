@@ -30,7 +30,17 @@
 //-----------------------------------------------------------------------------
 // Includes.
 //-----------------------------------------------------------------------------
+// Source.Python
 #include "entities.h"
+
+// SDK
+#include "toolframework/itoolentity.h"
+
+
+//-----------------------------------------------------------------------------
+// External variables.
+//-----------------------------------------------------------------------------
+extern IServerTools *servertools;
 
 
 //-----------------------------------------------------------------------------
@@ -40,6 +50,19 @@ template<class T, class U>
 void export_engine_specific_take_damage_info(T _entities, U TakeDamageInfo)
 {
 	TakeDamageInfo.add_property("radius", &CTakeDamageInfo::GetRadius, &CTakeDamageInfo::SetRadius);
+}
+
+
+
+
+//-----------------------------------------------------------------------------
+// Exports CGlobalEntityList.
+//-----------------------------------------------------------------------------
+template<class T, class U>
+void export_engine_specific_global_entity_list(T _entities, U GlobalEntityList)
+{
+	// Singleton...
+	_entities.attr("_global_entity_list") = object(ptr(servertools->GetEntityList()));
 }
 
 
