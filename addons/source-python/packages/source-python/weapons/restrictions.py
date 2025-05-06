@@ -401,9 +401,13 @@ if GAME_NAME in ('cstrike', 'csgo'):
         # the function sets it to some value:
         #if ( a3 )
         #        *(_DWORD *)a3 = v16;
+        weapon_name = args[1 if SOURCE_ENGINE != 'csgo' else 2]
+        if weapon_name is None:
+            return
+
         return weapon_restriction_manager.on_player_purchasing_weapon(
             make_object(Player, args[0]),
-            args[1 if SOURCE_ENGINE != 'csgo' else 2]
+            weapon_name
         )
 
 
