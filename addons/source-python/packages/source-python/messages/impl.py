@@ -156,7 +156,7 @@ class SayText2Impl(UserMessageImpl):
         return UserMessageData(
             index=buffer.read_byte(),
             chat=buffer.read_byte(),
-            message=buffer.read_string(),
+            message=buffer.read_string('ignore'),
             # See issues #27, #186 and #452.
             param1=buffer.read_string('ignore'),
             param2=buffer.read_string('ignore'),
