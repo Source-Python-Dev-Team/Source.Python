@@ -32,6 +32,7 @@
 #include "listeners_manager.h"
 #include "modules/entities/entities_collisions.h"
 #include "modules/entities/entities_transmit.h"
+#include "modules/players/players_movements.h"
 
 
 //-----------------------------------------------------------------------------
@@ -194,4 +195,22 @@ void export_listener_managers(scope _listeners)
 	_listeners.attr("on_player_run_command_listener_manager") = object(ptr(GetOnPlayerRunCommandListenerManager()));
 	_listeners.attr("on_player_post_run_command_listener_manager") = object(ptr(GetOnPlayerPostRunCommandListenerManager()));
 	_listeners.attr("on_button_state_changed_listener_manager") = object(ptr(GetOnButtonStateChangedListenerManager()));
+
+	_listeners.attr("on_player_move_listener_manager") = object(ptr(GetOnPlayerMoveListenerManager()));
+	_listeners.attr("on_player_finish_move_listener_manager") = object(ptr(GetOnPlayerFinishMoveListenerManager()));
+	_listeners.attr("on_player_water_move_listener_manager") = object(ptr(GetOnPlayerWaterMoveListenerManager()));
+	_listeners.attr("on_player_air_accelerate_listener_manager") = object(ptr(GetOnPlayerAirAccelerateListenerManager()));
+	_listeners.attr("on_player_air_move_listener_manager") = object(ptr(GetOnPlayerAirMoveListenerManager()));
+	_listeners.attr("on_player_accelerate_listener_manager") = object(ptr(GetOnPlayerAccelerateListenerManager()));
+	_listeners.attr("on_player_walk_move_listener_manager") = object(ptr(GetOnPlayerWalkMoveListenerManager()));
+	_listeners.attr("on_player_toss_move_listener_manager") = object(ptr(GetOnPlayerTossMoveListenerManager()));
+	_listeners.attr("on_player_ladder_move_listener_manager") = object(ptr(GetOnPlayerLadderMoveListenerManager()));
+	_listeners.attr("on_player_duck_listener_manager") = object(ptr(GetOnPlayerDuckListenerManager()));
+	_listeners.attr("on_player_unduck_listener_manager") = object(ptr(GetOnPlayerUnduckListenerManager()));
+	_listeners.attr("on_player_step_move_listener_manager") = object(ptr(GetOnPlayerStepMoveListenerManager()));
+	_listeners.attr("on_player_fall_move_listener_manager") = object(ptr(GetOnPlayerFallMoveListenerManager()));
+	_listeners.attr("on_player_jump_listener_manager") = object(ptr(GetOnPlayerJumpListenerManager()));
+	_listeners.attr("on_player_land_listener_manager") = object(ptr(GetOnPlayerLandListenerManager()));
+	_listeners.attr("on_player_ground_changed_listener_manager") = object(ptr(GetOnPlayerGroundChangedListenerManager()));
+	_listeners.attr("on_player_check_jump_button_listener_manager") = object(ptr(GetOnPlayerCheckJumpButtonListenerManager()));
 }

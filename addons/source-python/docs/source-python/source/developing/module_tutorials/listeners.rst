@@ -520,6 +520,244 @@ Called after a player ran a command.
         pass
 
 
+OnPlayerJump
+------------
+
+Called when a player jumps.
+
+.. code-block:: python
+
+    from listeners import OnPlayerJump
+
+    @OnPlayerJump
+    def on_player_jump(player):
+        ...
+
+
+OnPlayerLand
+------------
+
+Called when a player lands.
+
+.. code-block:: python
+
+    from listeners import OnPlayerLand
+
+    @OnPlayerLand
+    def on_player_land(player):
+        ...
+
+
+OnPlayerDuck
+------------
+
+Called when a player is fully ducked.
+
+.. code-block:: python
+
+    from listeners import OnPlayerDuck
+
+    @OnPlayerDuck
+    def on_player_duck(player):
+        ...
+
+
+OnPlayerUnduck
+--------------
+
+Called when a player is fully unducked.
+
+.. code-block:: python
+
+    from listeners import OnPlayerUnduck
+
+    @OnPlayerUnduck
+    def on_player_unduck(player):
+        ...
+
+
+OnPlayerGroundChanged
+---------------------
+
+Called when the ground entity of a player changes.
+
+.. code-block:: python
+
+    from listeners import OnPlayerGroundChanged
+
+    @OnPlayerGroundChanged
+    def on_player_ground_changed(player, old, new):
+        ...
+
+
+OnPlayerMove
+------------
+
+Called when a player is about to process a movement.
+
+.. code-block:: python
+
+    from listeners import OnPlayerMove
+
+    @OnPlayerMove
+    def on_player_move(player, move_data):
+        ...
+
+
+OnPlayerFinishMove
+------------------
+
+Called when a player is done processing a movement.
+
+.. code-block:: python
+
+    from listeners import OnPlayerFinishMove
+
+    @OnPlayerFinishMove
+    def on_player_finish_move(player, move_data):
+        ...
+
+
+OnPlayerWaterMove
+-----------------
+
+Called when a player is processing a movement in water.
+
+.. code-block:: python
+
+    from listeners import OnPlayerWaterMove
+
+    @OnPlayerWaterMove
+    def on_player_water_move(player, move_data):
+        ...
+
+
+OnPlayerAirAccelerate
+---------------------
+
+Called when a player accelerates in the air.
+
+.. code-block:: python
+
+    from listeners import OnPlayerAirAccelerate
+
+    @OnPlayerAirAccelerate
+    def on_player_air_accelerate(player, direction, speed, acceleration):
+        ...
+
+
+OnPlayerAirMove
+---------------
+
+Called when a player is processing a movement in the air.
+
+.. code-block:: python
+
+    from listeners import OnPlayerAirMove
+
+    @OnPlayerAirMove
+    def on_player_air_move(player, move_data):
+        ...
+
+
+OnPlayerAccelerate
+------------------
+
+Called when a player accelerates.
+
+.. code-block:: python
+
+    from listeners import OnPlayerAccelerate
+
+    @OnPlayerAccelerate
+    def on_player_accelerate(player, direction, speed, acceleration):
+        ...
+
+
+OnWalkMove
+----------
+
+Called when a player is processing a movement on the ground.
+
+.. code-block:: python
+
+    from listeners import OnWalkMove
+
+    @OnWalkMove
+    def on_player_walk_move(player, move_data):
+        ...
+
+
+OnPlayerTossMove
+----------------
+
+Called when a player is processing a movement while flying.
+
+.. code-block:: python
+
+    from listeners import OnPlayerTossMove
+
+    @OnPlayerTossMove
+    def on_player_toss_move(player, move_data):
+        ...
+
+
+OnPlayerLadderMove
+------------------
+
+Called when a player is processing a movement while on a ladder.
+
+.. code-block:: python
+
+    from listeners import OnPlayerLadderMove
+
+    @OnPlayerLadderMove
+    def on_player_ladder_move(player, move_data):
+        ...
+
+
+OnPlayerStepMove
+----------------
+
+Called when a player is processing a movement on uneven ground.
+
+.. code-block:: python
+
+    from listeners import OnPlayerStepMove
+
+    @OnPlayerStepMove
+    def on_player_step_move(player, move_data, destination, trace):
+        ...
+
+
+OnPlayerFallMove
+----------------
+
+Called when a player is processing a movement while falling.
+
+.. code-block:: python
+
+    from listeners import OnPlayerFallMove
+
+    @OnPlayerFallMove
+    def on_player_fall_move(player, move_data):
+        ...
+
+
+OnPlayerCheckJumpButton
+-----------------------
+
+Called when the jump button of a player is checked.
+
+.. code-block:: python
+
+    from listeners import OnPlayerCheckJumpButton
+
+    @OnPlayerCheckJumpButton
+    def on_player_check_jump_button(player):
+        ...
+
+
 OnPluginLoaded
 --------------
 

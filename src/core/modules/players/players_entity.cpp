@@ -29,6 +29,7 @@
 // ============================================================================
 // Source.Python
 #include "players_entity.h"
+#include "players_movements.h"
 
 // SDK
 #include "eiface.h"
@@ -726,6 +727,12 @@ void PlayerMixin::SetRagdoll(int value)
 	SetNetworkPropertyByOffset<int>(offset, value);
 }
 
+
+CMoveData *PlayerMixin::GetMoveData()
+{
+	static CGameMovementWrapper *s_pGameMovement = GetGameMovement();
+	return s_pGameMovement->player == GetThis() ? s_pGameMovement->mv : NULL;
+}
 
 unsigned char PlayerMixin::GetActiveDevices()
 {

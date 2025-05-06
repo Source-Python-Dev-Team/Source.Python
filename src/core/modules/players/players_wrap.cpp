@@ -804,6 +804,13 @@ void export_player_wrapper(scope _players)
 		":rtype: int");
 
 	_PlayerMixin.add_property(
+		"move_data",
+		make_function(&PlayerMixin::GetMoveData, reference_existing_object_policy()),
+		"Return the player's movement data or ``None`` if the player "
+		"is not currently processing a movement.\n\n"
+		":rtype: MoveData");
+
+	_PlayerMixin.add_property(
 		"active_devices",
 		&PlayerMixin::GetActiveDevices,
 		&PlayerMixin::SetActiveDevices,

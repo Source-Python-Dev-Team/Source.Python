@@ -34,6 +34,7 @@
 using namespace boost::python;
 
 #include "modules/entities/entities_entity.h"
+#include "game/shared/igamemovement.h"
 
 
 //-----------------------------------------------------------------------------
@@ -228,6 +229,8 @@ public:
 
 	int GetRagdoll();
 	void SetRagdoll(int value);
+
+	CMoveData *GetMoveData();
 
 	// HL2
 	unsigned char GetActiveDevices();

@@ -79,6 +79,23 @@ from _listeners import on_player_transmit_listener_manager
 from _listeners import on_player_run_command_listener_manager
 from _listeners import on_player_post_run_command_listener_manager
 from _listeners import on_button_state_changed_listener_manager
+from _listeners import on_player_move_listener_manager
+from _listeners import on_player_finish_move_listener_manager
+from _listeners import on_player_water_move_listener_manager
+from _listeners import on_player_air_accelerate_listener_manager
+from _listeners import on_player_air_move_listener_manager
+from _listeners import on_player_accelerate_listener_manager
+from _listeners import on_player_walk_move_listener_manager
+from _listeners import on_player_toss_move_listener_manager
+from _listeners import on_player_ladder_move_listener_manager
+from _listeners import on_player_duck_listener_manager
+from _listeners import on_player_unduck_listener_manager
+from _listeners import on_player_step_move_listener_manager
+from _listeners import on_player_fall_move_listener_manager
+from _listeners import on_player_jump_listener_manager
+from _listeners import on_player_land_listener_manager
+from _listeners import on_player_ground_changed_listener_manager
+from _listeners import on_player_check_jump_button_listener_manager
 
 
 # =============================================================================
@@ -129,6 +146,23 @@ __all__ = ('ButtonStatus',
            'OnTick',
            'OnVersionUpdate',
            'OnServerOutput',
+           'OnPlayerJump',
+           'OnPlayerLand',
+           'OnPlayerDuck',
+           'OnPlayerUnduck',
+           'OnPlayerMove',
+           'OnPlayerFinishMove',
+           'OnPlayerWaterMove',
+           'OnPlayerAirAccelerate',
+           'OnPlayerAirMove',
+           'OnPlayerAccelerate',
+           'OnWalkMove',
+           'OnPlayerTossMove',
+           'OnPlayerLadderMove',
+           'OnPlayerStepMove',
+           'OnPlayerFallMove',
+           'OnPlayerGroundChanged',
+           'OnPlayerCheckJumpButton',
            'get_button_combination_status',
            'on_client_active_listener_manager',
            'on_client_connect_listener_manager',
@@ -170,6 +204,23 @@ __all__ = ('ButtonStatus',
            'on_player_transmit_listener_manager',
            'on_player_run_command_listener_manager',
            'on_button_state_changed_listener_manager',
+           'on_player_move_listener_manager',
+           'on_player_finish_move_listener_manager',
+           'on_player_water_move_listener_manager',
+           'on_player_air_accelerate_listener_manager',
+           'on_player_air_move_listener_manager',
+           'on_player_accelerate_listener_manager',
+           'on_player_walk_move_listener_manager',
+           'on_player_toss_move_listener_manager',
+           'on_player_ladder_move_listener_manager',
+           'on_player_duck_listener_manager',
+           'on_player_unduck_listener_manager',
+           'on_player_step_move_listener_manager',
+           'on_player_fall_move_listener_manager',
+           'on_player_jump_listener_manager',
+           'on_player_land_listener_manager',
+           'on_player_ground_changed_listener_manager',
+           'on_player_check_jump_button_listener_manager',
            )
 
 
@@ -547,6 +598,108 @@ class OnServerOutput(ListenerManagerDecorator):
     """Register/unregister a server output listener."""
 
     manager = on_server_output_listener_manager
+
+
+class OnPlayerMove(ListenerManagerDecorator):
+    """Register/unregister a player move listener."""
+
+    manager = on_player_move_listener_manager
+
+
+class OnPlayerFinishMove(ListenerManagerDecorator):
+    """Register/unregister a player finish move listener."""
+
+    manager = on_player_finish_move_listener_manager
+
+
+class OnPlayerWaterMove(ListenerManagerDecorator):
+    """Register/unregister a player water move listener."""
+
+    manager = on_player_water_move_listener_manager
+
+
+class OnPlayerAirAccelerate(ListenerManagerDecorator):
+    """Register/unregister a player air accelerate listener."""
+
+    manager = on_player_air_accelerate_listener_manager
+
+
+class OnPlayerAirMove(ListenerManagerDecorator):
+    """Register/unregister a player air move listener."""
+
+    manager = on_player_air_move_listener_manager
+
+
+class OnPlayerAccelerate(ListenerManagerDecorator):
+    """Register/unregister a player accelerate listener."""
+
+    manager = on_player_accelerate_listener_manager
+
+
+class OnWalkMove(ListenerManagerDecorator):
+    """Register/unregister a player walk move listener."""
+
+    manager = on_player_walk_move_listener_manager
+
+
+class OnPlayerTossMove(ListenerManagerDecorator):
+    """Register/unregister a player toss move listener."""
+
+    manager = on_player_toss_move_listener_manager
+
+
+class OnPlayerLadderMove(ListenerManagerDecorator):
+    """Register/unregister a player ladder move listener."""
+
+    manager = on_player_ladder_move_listener_manager
+
+
+class OnPlayerDuck(ListenerManagerDecorator):
+    """Register/unregister a player duck listener."""
+
+    manager = on_player_duck_listener_manager
+
+
+class OnPlayerUnduck(ListenerManagerDecorator):
+    """Register/unregister a player unduck listener."""
+
+    manager = on_player_unduck_listener_manager
+
+
+class OnPlayerStepMove(ListenerManagerDecorator):
+    """Register/unregister a player step move listener."""
+
+    manager = on_player_step_move_listener_manager
+
+
+class OnPlayerFallMove(ListenerManagerDecorator):
+    """Register/unregister a player fall move listener."""
+
+    manager = on_player_fall_move_listener_manager
+
+
+class OnPlayerJump(ListenerManagerDecorator):
+    """Register/unregister a player jump listener."""
+
+    manager = on_player_jump_listener_manager
+
+
+class OnPlayerLand(ListenerManagerDecorator):
+    """Register/unregister a player land listener."""
+
+    manager = on_player_land_listener_manager
+
+
+class OnPlayerGroundChanged(ListenerManagerDecorator):
+    """Register/unregister a player ground changed listener."""
+
+    manager = on_player_ground_changed_listener_manager
+
+
+class OnPlayerCheckJumpButton(ListenerManagerDecorator):
+    """Register/unregister a player check jump button listener."""
+
+    manager = on_player_check_jump_button_listener_manager
 
 
 # =============================================================================
