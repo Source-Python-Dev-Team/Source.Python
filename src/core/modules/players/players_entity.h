@@ -46,6 +46,8 @@ using namespace boost::python;
 	#define EYE_ANGLE_PROPERTY(index) "blackmesalocaldata.m_angEyeAngles[" #index "]"
 #elif defined(ENGINE_BRANCH_GMOD)
 	#define EYE_ANGLE_PROPERTY(index) "hl2mplocaldata.m_angEyeAngles[" #index "]"
+#elif defined(ENGINE_BRANCH_HL2DM)
+	#define EYE_ANGLE_PROPERTY(index) "hl2mpnonlocaldata.m_angEyeAngles[" #index "]"
 #else 
 	#define EYE_ANGLE_PROPERTY(index) "m_angEyeAngles[" #index "]"
 #endif
