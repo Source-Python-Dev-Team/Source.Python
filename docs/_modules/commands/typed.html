@@ -1,0 +1,921 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>commands.typed &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">commands.typed</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for commands.typed</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../commands/typed.py</span>
+
+<span class="c1">#: .. todo:: Add the ability to define prefixes for messages.</span>
+<span class="c1">#: .. todo:: Add callback to the Node class. It could be called when a sub-command is required.</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Inspect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">Parameter</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">textwrap</span>
+
+<span class="c1"># Source.Python</span>
+<span class="c1">#   Auth</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">auth.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">auth_manager</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoUnload</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Tokenize</span>
+<span class="c1">#   Commands</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">commands</span><span class="w"> </span><span class="kn">import</span> <span class="n">commands_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">commands</span><span class="w"> </span><span class="kn">import</span> <span class="n">CommandReturn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">commands.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">server_command_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">commands.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">client_command_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">commands.say</span><span class="w"> </span><span class="kn">import</span> <span class="n">say_command_manager</span>
+<span class="c1">#   Filters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.players</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_filter</span>
+<span class="c1">#   Messages</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SayText2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">TextMsg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">HudDestination</span>
+<span class="c1">#   Translations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">translations.strings</span><span class="w"> </span><span class="kn">import</span> <span class="n">TranslationStrings</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;PRIVATE_COMMAND_PREFIX&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SUPPORTED_KINDS&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ArgumentError&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ArgumentNumberMismatch&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;CommandInfo&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;CommandNode&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;CommandParser&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;filter_str&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;InvalidArgumentValue&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Node&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Store&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SubCommandError&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SubCommandExpectedError&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SubCommandNotFound&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TypedClientCommand&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TypedSayCommand&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TypedServerCommand&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ValidationError&#39;</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CONSTANTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">SUPPORTED_KINDS</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="c1"># There is no syntax for this in Python, but a PEP. If it ever gets added,</span>
+    <span class="c1"># this implementation will already support it (unless</span>
+    <span class="c1"># &lt;Parameter object&gt;.name is empty).</span>
+    <span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_ONLY</span><span class="p">,</span>
+    <span class="n">Parameter</span><span class="o">.</span><span class="n">POSITIONAL_OR_KEYWORD</span><span class="p">,</span>
+    <span class="n">Parameter</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">PRIVATE_COMMAND_PREFIX</span> <span class="o">=</span> <span class="s1">&#39;/&#39;</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">commands_logger</span><span class="o">.</span><span class="n">typed</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; EXCEPTIONS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="ValidationError">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.ValidationError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ValidationError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<div class="viewcode-block" id="ValidationError.__init__">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.ValidationError.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message</span> <span class="o">=</span> <span class="n">message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">language</span> <span class="o">=</span> <span class="n">language</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">tokens</span> <span class="o">=</span> <span class="n">tokens</span></div>
+</div>
+
+
+<div class="viewcode-block" id="ArgumentError">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.ArgumentError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ArgumentError</span><span class="p">(</span><span class="n">ValidationError</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="ArgumentNumberMismatch">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.ArgumentNumberMismatch">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ArgumentNumberMismatch</span><span class="p">(</span><span class="n">ArgumentError</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="InvalidArgumentValue">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.InvalidArgumentValue">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">InvalidArgumentValue</span><span class="p">(</span><span class="n">ArgumentError</span><span class="p">):</span> <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="SubCommandError">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.SubCommandError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SubCommandError</span><span class="p">(</span><span class="n">ValidationError</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="SubCommandNotFound">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.SubCommandNotFound">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SubCommandNotFound</span><span class="p">(</span><span class="n">SubCommandError</span><span class="p">):</span> <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="SubCommandExpectedError">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.SubCommandExpectedError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SubCommandExpectedError</span><span class="p">(</span><span class="n">SubCommandError</span><span class="p">):</span> <span class="k">pass</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="Node">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.Node">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Node</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<div class="viewcode-block" id="Node.__init__">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.Node.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="p">,</span> <span class="n">description</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">commands</span> <span class="o">=</span> <span class="n">commands</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">signature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the signature of the node.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Must be implemented by a sub class.&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Store">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.Store">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Store</span><span class="p">(</span><span class="n">Node</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+<div class="viewcode-block" id="Store.__init__">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.Store.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">commands</span><span class="p">,</span> <span class="n">description</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">signature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the signature of the node.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">commands</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; &lt;sub-command&gt;&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">help_text</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the help text of the node.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">wrapper</span> <span class="o">=</span> <span class="n">textwrap</span><span class="o">.</span><span class="n">TextWrapper</span><span class="p">(</span>
+            <span class="mi">40</span><span class="p">,</span> <span class="n">subsequent_indent</span><span class="o">=</span><span class="s1">&#39;  &#39;</span><span class="p">,</span> <span class="n">break_long_words</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="n">result</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">node</span><span class="p">:</span> <span class="n">node</span><span class="o">.</span><span class="n">signature</span><span class="p">):</span>
+            <span class="n">sig_lines</span> <span class="o">=</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">signature</span><span class="p">)</span>
+            <span class="n">desc_lines</span> <span class="o">=</span> <span class="n">wrapper</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">sig</span><span class="p">,</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">zip_longest</span><span class="p">(</span>
+                    <span class="n">sig_lines</span><span class="p">,</span> <span class="n">desc_lines</span><span class="p">,</span> <span class="n">fillvalue</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+                <span class="n">result</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">  &#39;</span> <span class="o">+</span> <span class="n">sig</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">40</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;  &#39;</span> <span class="o">+</span> <span class="n">desc</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+
+<div class="viewcode-block" id="CommandNode">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.CommandNode">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CommandNode</span><span class="p">(</span><span class="n">Node</span><span class="p">):</span>
+<div class="viewcode-block" id="CommandNode.__init__">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.CommandNode.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">permission</span><span class="p">,</span>
+            <span class="n">fail_callback</span><span class="p">,</span> <span class="n">requires_registration</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the object.</span>
+
+<span class="sd">        .. seealso:: :meth:`CommandParser.add_command`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">commands</span><span class="p">,</span> <span class="n">description</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">params</span> <span class="o">=</span> <span class="n">params</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">callback</span>
+
+        <span class="c1"># Explicitly check against True, because &lt;permission&gt; can also be a</span>
+        <span class="c1"># non-empty string</span>
+        <span class="k">if</span> <span class="n">permission</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">permission</span> <span class="o">=</span> <span class="s1">&#39;.&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">permission</span> <span class="o">=</span> <span class="n">permission</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fail_callback</span> <span class="o">=</span> <span class="n">fail_callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">requires_registration</span> <span class="o">=</span> <span class="n">requires_registration</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command_to_register</span> <span class="o">=</span> <span class="n">commands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">signature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the full signature of a command.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">commands</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">params</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_param_to_str</span><span class="p">(</span><span class="n">param</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_param_to_str</span><span class="p">(</span><span class="n">param</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Represent a parameter as a string.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{open_char}{arg_name}{type_name}{default}{close_char}</span><span class="s1">&#39;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">param</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span> <span class="ow">or</span>
+                <span class="n">param</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">param</span><span class="o">.</span><span class="n">empty</span><span class="p">):</span>
+            <span class="n">open_char</span> <span class="o">=</span> <span class="s1">&#39;[&#39;</span>
+            <span class="n">close_char</span> <span class="o">=</span> <span class="s1">&#39;]&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">open_char</span> <span class="o">=</span> <span class="s1">&#39;&lt;&#39;</span>
+            <span class="n">close_char</span> <span class="o">=</span> <span class="s1">&#39;&gt;&#39;</span>
+
+        <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">param</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">default</span> <span class="o">=</span> <span class="s1">&#39;=&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">default</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">default</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">param</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+            <span class="n">type_name</span> <span class="o">=</span> <span class="s1">&#39;:&#39;</span> <span class="o">+</span> <span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="vm">__name__</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">type_name</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+        <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <span class="n">param</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
+            <span class="n">arg_name</span> <span class="o">=</span> <span class="s1">&#39;*&#39;</span> <span class="o">+</span> <span class="n">param</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">arg_name</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">open_char</span><span class="o">=</span><span class="n">open_char</span><span class="p">,</span> <span class="n">arg_name</span><span class="o">=</span><span class="n">arg_name</span><span class="p">,</span>
+            <span class="n">type_name</span><span class="o">=</span><span class="n">type_name</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="n">default</span><span class="p">,</span> <span class="n">close_char</span><span class="o">=</span><span class="n">close_char</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># TODO: This base class is not quite correct.</span>
+<div class="viewcode-block" id="CommandParser">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.CommandParser">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CommandParser</span><span class="p">(</span><span class="n">Store</span><span class="p">):</span>
+<div class="viewcode-block" id="CommandParser.add_command">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.CommandParser.add_command">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="p">,</span> <span class="n">params</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">permission</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fail_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a command to the parser.</span>
+
+<span class="sd">        :param str/list/tuple commands:</span>
+<span class="sd">            Command to register.</span>
+<span class="sd">        :param iterable params:</span>
+<span class="sd">            Parameters of the command.</span>
+<span class="sd">        :param callable callback:</span>
+<span class="sd">            The callback for the command.</span>
+<span class="sd">        :param str description:</span>
+<span class="sd">            Description of the command.</span>
+<span class="sd">        :param str permission:</span>
+<span class="sd">            Required permission to use the command.</span>
+<span class="sd">        :param callable fail_callback:</span>
+<span class="sd">            Callback that gets called if authorization failed.</span>
+<span class="sd">        :rtype: CommandNode</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">commands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_commands</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">kind</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">SUPPORTED_KINDS</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="s1">&#39;Unsupported argument type &quot;</span><span class="si">{}</span><span class="s1">&quot; for argument.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">param</span><span class="o">.</span><span class="n">kind</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="n">command</span> <span class="o">=</span> <span class="n">CommandNode</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">commands</span><span class="p">),</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">params</span><span class="p">),</span> <span class="n">callback</span><span class="p">,</span>
+            <span class="n">description</span><span class="p">,</span> <span class="n">permission</span><span class="p">,</span> <span class="n">fail_callback</span><span class="p">,</span> <span class="n">commands</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+
+        <span class="n">parsed_commands</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">while</span> <span class="n">commands</span><span class="p">:</span>
+            <span class="n">command_name</span> <span class="o">=</span> <span class="n">commands</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="n">parsed_commands</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">command_name</span> <span class="ow">in</span> <span class="n">store</span><span class="p">:</span>
+                <span class="n">store</span> <span class="o">=</span> <span class="n">store</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span>
+                <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">CommandNode</span><span class="p">)</span> <span class="ow">or</span>
+                        <span class="p">(</span><span class="ow">not</span> <span class="n">commands</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">Store</span><span class="p">))):</span>
+                    <span class="c1"># We can&#39;t support multiple callbacks, because they might</span>
+                    <span class="c1"># have different signatures.</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Command already exists.&#39;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">commands</span><span class="p">:</span>
+                    <span class="c1"># We need to split these two lines to prevent recursive</span>
+                    <span class="c1"># dicts</span>
+                    <span class="n">new_store</span> <span class="o">=</span> <span class="n">store</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">Store</span><span class="p">(</span>
+                        <span class="nb">tuple</span><span class="p">(</span><span class="n">parsed_commands</span><span class="p">))</span>
+                    <span class="n">store</span> <span class="o">=</span> <span class="n">new_store</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">store</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">command</span>
+
+        <span class="k">return</span> <span class="n">command</span></div>
+
+
+<div class="viewcode-block" id="CommandParser.remove_command">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.CommandParser.remove_command">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a command.</span>
+
+<span class="sd">        :param str/list/tuple:</span>
+<span class="sd">            Command to remove.</span>
+
+<span class="sd">        .. seealso:: :meth:`_remove_command`</span>
+<span class="sd">        .. seealso:: :meth:`_validate_commands`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_command</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_validate_commands</span><span class="p">(</span><span class="n">commands</span><span class="p">))</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_remove_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a command.</span>
+
+<span class="sd">        :param list commands:</span>
+<span class="sd">            Command to remove.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the node does not exist.</span>
+<span class="sd">        :return:</span>
+<span class="sd">            Return whether the base command needs to be unregistered.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">for</span> <span class="n">command_name</span> <span class="ow">in</span> <span class="n">commands</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">store</span> <span class="o">=</span> <span class="n">store</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Command does not exist.&#39;</span><span class="p">)</span>
+
+        <span class="k">del</span> <span class="n">store</span><span class="p">[</span><span class="n">commands</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">store</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_remove_command</span><span class="p">(</span><span class="n">commands</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="CommandParser.get_node">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.CommandParser.get_node">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_node</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a node.</span>
+
+<span class="sd">        :param str/list/tuple:</span>
+<span class="sd">            Node to seach.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the node does not exist.</span>
+<span class="sd">        :rtype: Node</span>
+
+<span class="sd">        .. seealso:: :meth:`_validate_command`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">for</span> <span class="n">command_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_commands</span><span class="p">(</span><span class="n">commands</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">store</span> <span class="o">=</span> <span class="n">store</span><span class="p">[</span><span class="n">command_name</span><span class="p">]</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">KeyError</span><span class="p">):</span>
+                <span class="c1"># The TypeError happens if &quot;store&quot; is already a CommandNode</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Node does not exist.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">store</span></div>
+
+
+<div class="viewcode-block" id="CommandParser.set_node_description">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.CommandParser.set_node_description">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_node_description</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="p">,</span> <span class="n">description</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the description of a node.</span>
+
+<span class="sd">        :param str/list/tuple:</span>
+<span class="sd">            Node to seach.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the node does not exist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span></div>
+
+
+<div class="viewcode-block" id="CommandParser.get_command">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.CommandParser.get_command">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a command.</span>
+
+<span class="sd">        :param str/list/tuple:</span>
+<span class="sd">            Command to search.</span>
+<span class="sd">        :rtype: CommandNode</span>
+
+<span class="sd">        .. seealso:: :meth:`get_node`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">CommandNode</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">command</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_commands</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate a string, list or tuple of commands.</span>
+
+<span class="sd">        :param str/list/tuple:</span>
+<span class="sd">            The command name or command path to validate.</span>
+<span class="sd">        :raise TypeError:</span>
+<span class="sd">            Raised if ``commands`` is not a str, list or tuple.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if ``commands`` is an empty list or tuple.</span>
+
+<span class="sd">        .. seealso:: :meth:`_validate_command`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">commands</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_validate_command</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span>
+            <span class="n">commands</span> <span class="o">=</span> <span class="p">[</span><span class="n">commands</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">commands</span><span class="p">,</span> <span class="p">(</span><span class="nb">list</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;&lt;commands&gt; must be str, list or tuple.&#39;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">commands</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&lt;commands&gt; must not be empty.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">command_name</span> <span class="ow">in</span> <span class="n">commands</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_validate_command</span><span class="p">(</span><span class="n">command_name</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate a command name.</span>
+
+<span class="sd">        :param str command_name:</span>
+<span class="sd">            The command name to check.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the command name is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">command_name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Command name cannot be empty.&#39;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="s1">&#39; &#39;</span> <span class="ow">in</span> <span class="n">command_name</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Command cannot contain spaces.&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CommandParser.clean_command">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.CommandParser.clean_command">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clean_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clean a command and its passed arguments.</span>
+
+<span class="sd">        :param CommandNode command:</span>
+<span class="sd">        :param iterable args:</span>
+<span class="sd">            The arguments to clean.</span>
+<span class="sd">        :rtype: list</span>
+<span class="sd">        :raise InvalidArgumentValue:</span>
+<span class="sd">            Raised if the value is invalid for an argument.</span>
+<span class="sd">        :raise ArgumentNumberMismatch:</span>
+<span class="sd">            Raised if too many/less arguments have been passed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">params</span><span class="p">)</span>
+        <span class="n">param</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">param</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">param</span><span class="o">.</span><span class="n">kind</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">param</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">param</span> <span class="o">=</span> <span class="n">params</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">ArgumentNumberMismatch</span><span class="p">(</span>
+                        <span class="s1">&#39;Too many arguments:</span><span class="se">\n</span><span class="s1">  </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">signature</span><span class="p">))</span>
+
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">annotation</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">param</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">arg</span> <span class="o">=</span> <span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+                <span class="k">except</span> <span class="n">ValidationError</span><span class="p">:</span>
+                    <span class="k">raise</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">InvalidArgumentValue</span><span class="p">(</span>
+                        <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is an invalid value for &quot;</span><span class="si">{}</span><span class="s1">:</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">arg</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">param</span><span class="o">.</span><span class="n">annotation</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">param</span> <span class="ow">in</span> <span class="n">params</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">kind</span> <span class="ow">is</span> <span class="n">param</span><span class="o">.</span><span class="n">VAR_POSITIONAL</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="k">if</span> <span class="n">param</span><span class="o">.</span><span class="n">default</span> <span class="ow">is</span> <span class="n">param</span><span class="o">.</span><span class="n">empty</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ArgumentNumberMismatch</span><span class="p">(</span>
+                    <span class="s1">&#39;Not enough arguments:</span><span class="se">\n</span><span class="s1">  </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">signature</span><span class="p">))</span>
+
+            <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">param</span><span class="o">.</span><span class="n">default</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">result</span></div>
+
+
+<div class="viewcode-block" id="CommandParser.parse_command">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.CommandParser.parse_command">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parse_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse a :class:`Command` object.</span>
+
+<span class="sd">        Splits the command into the actual command and its arguments.</span>
+
+<span class="sd">        :param Command command:</span>
+<span class="sd">            A command to parse.</span>
+<span class="sd">        :raise SubCommandNotFound:</span>
+<span class="sd">            Raised if a sub command was not found.</span>
+<span class="sd">        :raise SubCommandExpected:</span>
+<span class="sd">            Raised if a sub command was expected, but more arguments have been</span>
+<span class="sd">            passed.</span>
+<span class="sd">        :rtype: tuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">Tokenize</span><span class="p">(</span><span class="n">command</span><span class="o">.</span><span class="n">command_string</span><span class="p">)</span>
+        <span class="n">store</span> <span class="o">=</span> <span class="bp">self</span>
+        <span class="k">while</span> <span class="n">args</span> <span class="ow">and</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">Store</span><span class="p">):</span>
+            <span class="n">sub_command</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">store</span> <span class="o">=</span> <span class="n">store</span><span class="p">[</span><span class="n">sub_command</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">SubCommandNotFound</span><span class="p">(</span>
+                    <span class="s1">&#39;Sub command &quot;</span><span class="si">{}</span><span class="s1">&quot; not found.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">sub_command</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">Store</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">SubCommandExpectedError</span><span class="p">(</span>
+                <span class="s1">&#39;A sub-command is required:</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">store</span><span class="o">.</span><span class="n">help_text</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="p">(</span><span class="n">store</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="CommandInfo">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.CommandInfo">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CommandInfo</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stores command information for typed commands.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CommandInfo.__init__">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.CommandInfo.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">typed_command_cls</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">team_only</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the instance.</span>
+
+<span class="sd">        :param Command command:</span>
+<span class="sd">            The actual Command instance.</span>
+<span class="sd">        :param _TypedCommand typed_command_cls:</span>
+<span class="sd">            Command this instance belongs to.</span>
+<span class="sd">        :param int index:</span>
+<span class="sd">            The index of the player that issued the command. None, if it&#39;s a</span>
+<span class="sd">            server command.</span>
+<span class="sd">        :param bool team_only:</span>
+<span class="sd">            Indicates whether the command was issued in team chat. None, if</span>
+<span class="sd">            it&#39;s a server or client command.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command</span> <span class="o">=</span> <span class="n">command</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">typed_command_cls</span> <span class="o">=</span> <span class="n">typed_command_cls</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">team_only</span> <span class="o">=</span> <span class="n">team_only</span></div>
+
+
+<div class="viewcode-block" id="CommandInfo.reply">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.CommandInfo.reply">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reply to the command issuer.</span>
+
+<span class="sd">        :param str/TranslationStrings msg:</span>
+<span class="sd">            Message to send.</span>
+<span class="sd">        :param str language:</span>
+<span class="sd">            Language to be used.</span>
+<span class="sd">        :param tokens:</span>
+<span class="sd">            Translation tokens for message.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">typed_command_cls</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">language</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CommandInfo.is_private_command">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.CommandInfo.is_private_command">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_private_command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ``True`` if it&#39;s a private command.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">PRIVATE_COMMAND_PREFIX</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">auto_command_return</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Determine the probably most desired ``CommandReturn`` value.</span>
+
+<span class="sd">        For server commands it will always return ``CommandReturn.CONTINUE``.</span>
+<span class="sd">        Client commands will always use ``CommandReturn.BLOCK``. For say</span>
+<span class="sd">        commands it&#39;s determined by checking the prefix. If the command starts</span>
+<span class="sd">        with a slash (``/``) it&#39;s handled as a private command. Thus,</span>
+<span class="sd">        ``CommandReturn.BLOCK`` is returned. Otherwise</span>
+<span class="sd">        ``CommandReturn.CONTINUE`` is used.</span>
+
+<span class="sd">        :rtype: CommandReturn</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">typed_command_cls</span><span class="o">.</span><span class="n">get_auto_command_return</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># We can&#39;t integrate this into SayCommand, ServerCommand and ClientCommand,</span>
+<span class="c1"># because multiple callbacks are not supported by this system (because of the</span>
+<span class="c1"># possibility of different function signatures). But multiple callbacks are</span>
+<span class="c1"># important e.g. for ClientCommand, because that can actually hook client</span>
+<span class="c1"># commands and multiple plugins might want to hook a client command.</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_TypedCommand</span><span class="p">(</span><span class="n">AutoUnload</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator class to create typed commands.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fail_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a typed command callback.</span>
+
+<span class="sd">        :param str/list/tuple commands:</span>
+<span class="sd">            (Sub-) command to register.</span>
+<span class="sd">        :param str/bool permission:</span>
+<span class="sd">            A permission that is required to execute the command. If True, the</span>
+<span class="sd">            permission string will be generated from the given command.</span>
+<span class="sd">        :param callable fail_callback:</span>
+<span class="sd">            Called when the executer does not have the required permission.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">commands</span> <span class="o">=</span> <span class="n">commands</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">permission</span> <span class="o">=</span> <span class="n">permission</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fail_callback</span> <span class="o">=</span> <span class="n">fail_callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">command</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Finish registering a typed command callback.</span>
+
+<span class="sd">        :param callable callback:</span>
+<span class="sd">            A callback that get called when the command has been issued.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the callback does not accept at least one argument</span>
+<span class="sd">            (command info).</span>
+<span class="sd">        :return:</span>
+<span class="sd">            Return the passed callback.</span>
+<span class="sd">        :rtype: callable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">params</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">inspect</span><span class="o">.</span><span class="n">signature</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">params</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Callback must at least accept 1 argument (command_info).&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">command</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">commands</span><span class="p">,</span> <span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">:],</span> <span class="n">callback</span><span class="p">,</span> <span class="n">inspect</span><span class="o">.</span><span class="n">getdoc</span><span class="p">(</span><span class="n">callback</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">permission</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">fail_callback</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">command</span><span class="o">.</span><span class="n">requires_registration</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">register_commands</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">command</span><span class="o">.</span><span class="n">command_to_register</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_command</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">callback</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">remove_command</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">commands</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">unregister_commands</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">command</span><span class="o">.</span><span class="n">command_to_register</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_command</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_command</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when a (base) command has been executed.</span>
+
+<span class="sd">        Parse the command, clean its arguments and execute the callback.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">CommandInfo</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">command_node</span><span class="p">,</span> <span class="n">args</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">parse_command</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">command</span><span class="p">)</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">on_clean_command</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">command_node</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">ValidationError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">reply</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">language</span><span class="p">,</span> <span class="o">**</span><span class="n">e</span><span class="o">.</span><span class="n">tokens</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">info</span><span class="o">.</span><span class="n">auto_command_return</span>
+
+            <span class="k">return</span> <span class="n">result</span>
+
+        <span class="k">return</span> <span class="n">CommandReturn</span><span class="o">.</span><span class="n">CONTINUE</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_clean_command</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">command_info</span><span class="p">,</span> <span class="n">command_node</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when the arguments of the parsed command should be cleaned.</span>
+
+<span class="sd">        :rtype: CommandReturn</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cleaned_args</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">clean_command</span><span class="p">(</span><span class="n">command_node</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">command_node</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="o">*</span><span class="n">cleaned_args</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">parser</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the parser to use.</span>
+
+<span class="sd">        :rtype: CommandParser</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Needs to be implemented by a sub class.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the manager that registers the commands.</span>
+
+<span class="sd">        :rtype: _BaseCommandManager</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Needs to be implemented by a sub class.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send_message</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a message.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Needs to be implemented by a sub class.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_auto_command_return</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the most desired ``CommandReturn`` value.</span>
+
+<span class="sd">        :rtype: CommandReturn</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Needs to be implemented by a sub class.&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="TypedServerCommand">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.TypedServerCommand">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TypedServerCommand</span><span class="p">(</span><span class="n">_TypedCommand</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator class to create typed server commands.&quot;&quot;&quot;</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">CommandParser</span><span class="p">()</span>
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">server_command_manager</span>
+
+<div class="viewcode-block" id="TypedServerCommand.send_message">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.TypedServerCommand.send_message">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send_message</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">):</span>
+        <span class="c1"># Translate the message if it&#39;s a :class:`TranslationStrings` object.</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">TranslationStrings</span><span class="p">):</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">language</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypedServerCommand.get_auto_command_return">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.TypedServerCommand.get_auto_command_return">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_auto_command_return</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">CommandReturn</span><span class="o">.</span><span class="n">CONTINUE</span></div>
+</div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_TypedPlayerCommand</span><span class="p">(</span><span class="n">_TypedCommand</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator class to create typed player based commands.&quot;&quot;&quot;</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_clean_command</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">command_info</span><span class="p">,</span> <span class="n">command_node</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">command_node</span><span class="o">.</span><span class="n">permission</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span>
+                <span class="n">auth_manager</span><span class="o">.</span><span class="n">is_player_authorized</span><span class="p">(</span>
+                    <span class="n">command_info</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">command_node</span><span class="o">.</span><span class="n">permission</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">on_clean_command</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">command_node</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">handle_fail_callback</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">command_node</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_fail_callback</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">command_info</span><span class="p">,</span> <span class="n">command_node</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">command_node</span><span class="o">.</span><span class="n">fail_callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">command_node</span><span class="o">.</span><span class="n">fail_callback</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+
+        <span class="c1"># TODO: Send &quot;Required permission: &lt;permission&gt;&quot; or write it to the</span>
+        <span class="c1">#       logs?</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">send_message</span><span class="p">(</span>
+            <span class="n">command_info</span><span class="p">,</span>
+            <span class="s1">&#39;You are not authorized to use this command.</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;Required permission: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">command_node</span><span class="o">.</span><span class="n">permission</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">CommandReturn</span><span class="o">.</span><span class="n">CONTINUE</span>
+
+
+<div class="viewcode-block" id="TypedClientCommand">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.TypedClientCommand">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TypedClientCommand</span><span class="p">(</span><span class="n">_TypedPlayerCommand</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator class to create typed client commands.&quot;&quot;&quot;</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">CommandParser</span><span class="p">()</span>
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">client_command_manager</span>
+
+<div class="viewcode-block" id="TypedClientCommand.send_message">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.TypedClientCommand.send_message">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send_message</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">):</span>
+        <span class="n">TextMsg</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">HudDestination</span><span class="o">.</span><span class="n">CONSOLE</span><span class="p">)</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">command_info</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypedClientCommand.get_auto_command_return">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.TypedClientCommand.get_auto_command_return">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_auto_command_return</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">CommandReturn</span><span class="o">.</span><span class="n">BLOCK</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TypedSayCommand">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.TypedSayCommand">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TypedSayCommand</span><span class="p">(</span><span class="n">_TypedPlayerCommand</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator class to create typed say commands.&quot;&quot;&quot;</span>
+
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">CommandParser</span><span class="p">()</span>
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">say_command_manager</span>
+
+<div class="viewcode-block" id="TypedSayCommand.send_message">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.TypedSayCommand.send_message">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send_message</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">language</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">):</span>
+        <span class="n">SayText2</span><span class="p">(</span><span class="n">message</span><span class="p">)</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">command_info</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypedSayCommand.get_auto_command_return">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.TypedSayCommand.get_auto_command_return">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_auto_command_return</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">info</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">is_private_command</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">CommandReturn</span><span class="o">.</span><span class="n">BLOCK</span>
+
+        <span class="k">return</span> <span class="n">CommandReturn</span><span class="o">.</span><span class="n">CONTINUE</span></div>
+</div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; COMMAND ANNOTATIONS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="filter_str">
+<a class="viewcode-back" href="../../developing/modules/commands.typed.html#commands.typed.filter_str">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">filter_str</span><span class="p">(</span><span class="n">expr</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;.. seealso:: :func:`filters.players.parse_filter`&quot;&quot;&quot;</span>
+    <span class="c1"># A simple wrapper for parse_filter for a better looking command signature</span>
+    <span class="k">return</span> <span class="n">parse_filter</span><span class="p">(</span><span class="n">expr</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">commands.typed</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>stringtables package &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">stringtables package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="stringtables-package">
+<h1>stringtables package<a class="headerlink" href="#stringtables-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="stringtables.downloads.html">stringtables.downloads module</a></li>
+</ul>
+</div>
+</section>
+<section id="module-stringtables">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-stringtables" title="Link to this heading">¶</a></h2>
+<p>Provides access to server stringtables.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="stringtables.StringTable">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">stringtables.</span></span><span class="sig-name descname"><span class="pre">StringTable</span></span><a class="headerlink" href="#stringtables.StringTable" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="stringtables.StringTable.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#stringtables.StringTable.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stringtables.StringTable.add_string">
+<span class="sig-name descname"><span class="pre">add_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(StringTable)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)user_data=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)length=-1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(bool)is_server=True</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(bool)auto_unlock=True</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#stringtables.StringTable.add_string" title="Link to this definition">¶</a></dt>
+<dd><p>Adds the given string to the table.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stringtables.StringTable.changed_since_tick">
+<span class="sig-name descname"><span class="pre">changed_since_tick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(StringTable)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#stringtables.StringTable.changed_since_tick" title="Link to this definition">¶</a></dt>
+<dd><p>Returns True if the table has been modified since the given tick, False otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stringtables.StringTable.get_user_data">
+<span class="sig-name descname"><span class="pre">get_user_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(StringTable)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span> <span class="pre">:</span></span></span><a class="headerlink" href="#stringtables.StringTable.get_user_data" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the user data of the given string index.</p>
+<dl class="simple">
+<dt>get_user_data( (StringTable)arg1, (str)arg2) -&gt; str :</dt><dd><p>Returns the user data of the given string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stringtables.StringTable.get_user_data_length">
+<span class="sig-name descname"><span class="pre">get_user_data_length</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(StringTable)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#stringtables.StringTable.get_user_data_length" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the length of the user data of the given string index.</p>
+<dl class="simple">
+<dt>get_user_data_length( (StringTable)arg1, (str)arg2) -&gt; int :</dt><dd><p>Returns the length of the user data of the given string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stringtables.StringTable.set_tick">
+<span class="sig-name descname"><span class="pre">set_tick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(StringTable)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#stringtables.StringTable.set_tick" title="Link to this definition">¶</a></dt>
+<dd><p>Set the tick on which the table has been last modified.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="stringtables.StringTable.set_user_data">
+<span class="sig-name descname"><span class="pre">set_user_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(StringTable)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg3</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)length=-1</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#stringtables.StringTable.set_user_data" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the user data of the given string index.</p>
+<dl class="simple">
+<dt>set_user_data( (StringTable)arg1, (str)arg2, (str)arg3 [, (_engines._sound.Channel)length=-1]) -&gt; None :</dt><dd><p>Sets the user data of the given string.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="stringtables.StringTable.entry_bits">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">entry_bits</span></span><a class="headerlink" href="#stringtables.StringTable.entry_bits" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the maximum entries of the table (read-only).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="stringtables.StringTable.index">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">index</span></span><a class="headerlink" href="#stringtables.StringTable.index" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the index of the table (read-only).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="stringtables.StringTable.max_strings">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_strings</span></span><a class="headerlink" href="#stringtables.StringTable.max_strings" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the max length of the table (read-only).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="stringtables.StringTable.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#stringtables.StringTable.name" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the name of the table (read-only).</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">stringtables package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-stringtables">Module contents</a><ul>
+<li><a class="reference internal" href="#stringtables.StringTable"><code class="docutils literal notranslate"><span class="pre">StringTable</span></code></a><ul>
+<li><a class="reference internal" href="#stringtables.StringTable.__init__"><code class="docutils literal notranslate"><span class="pre">StringTable.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#stringtables.StringTable.add_string"><code class="docutils literal notranslate"><span class="pre">StringTable.add_string()</span></code></a></li>
+<li><a class="reference internal" href="#stringtables.StringTable.changed_since_tick"><code class="docutils literal notranslate"><span class="pre">StringTable.changed_since_tick()</span></code></a></li>
+<li><a class="reference internal" href="#stringtables.StringTable.get_user_data"><code class="docutils literal notranslate"><span class="pre">StringTable.get_user_data()</span></code></a></li>
+<li><a class="reference internal" href="#stringtables.StringTable.get_user_data_length"><code class="docutils literal notranslate"><span class="pre">StringTable.get_user_data_length()</span></code></a></li>
+<li><a class="reference internal" href="#stringtables.StringTable.set_tick"><code class="docutils literal notranslate"><span class="pre">StringTable.set_tick()</span></code></a></li>
+<li><a class="reference internal" href="#stringtables.StringTable.set_user_data"><code class="docutils literal notranslate"><span class="pre">StringTable.set_user_data()</span></code></a></li>
+<li><a class="reference internal" href="#stringtables.StringTable.entry_bits"><code class="docutils literal notranslate"><span class="pre">StringTable.entry_bits</span></code></a></li>
+<li><a class="reference internal" href="#stringtables.StringTable.index"><code class="docutils literal notranslate"><span class="pre">StringTable.index</span></code></a></li>
+<li><a class="reference internal" href="#stringtables.StringTable.max_strings"><code class="docutils literal notranslate"><span class="pre">StringTable.max_strings</span></code></a></li>
+<li><a class="reference internal" href="#stringtables.StringTable.name"><code class="docutils literal notranslate"><span class="pre">StringTable.name</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/stringtables.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">stringtables package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

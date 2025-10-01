@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>events package &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">events package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="events-package">
+<h1>events package<a class="headerlink" href="#events-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="events.custom.html">events.custom module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events.hooks.html">events.hooks module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events.listener.html">events.listener module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events.manager.html">events.manager module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events.resource.html">events.resource module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events.variable.html">events.variable module</a></li>
+</ul>
+</div>
+</section>
+<section id="module-events">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-events" title="Link to this heading">¶</a></h2>
+<p>Provides event based functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="events.EventVarType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">events.</span></span><span class="sig-name descname"><span class="pre">EventVarType</span></span><a class="headerlink" href="#events.EventVarType" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="events.EventVarType.BOOL">
+<span class="sig-name descname"><span class="pre">BOOL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_events.EventVarType.BOOL</span></em><a class="headerlink" href="#events.EventVarType.BOOL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="events.EventVarType.BYTE">
+<span class="sig-name descname"><span class="pre">BYTE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_events.EventVarType.BYTE</span></em><a class="headerlink" href="#events.EventVarType.BYTE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="events.EventVarType.FLOAT">
+<span class="sig-name descname"><span class="pre">FLOAT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_events.EventVarType.FLOAT</span></em><a class="headerlink" href="#events.EventVarType.FLOAT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="events.EventVarType.LOCAL">
+<span class="sig-name descname"><span class="pre">LOCAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_events.EventVarType.LOCAL</span></em><a class="headerlink" href="#events.EventVarType.LOCAL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="events.EventVarType.LONG">
+<span class="sig-name descname"><span class="pre">LONG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_events.EventVarType.LONG</span></em><a class="headerlink" href="#events.EventVarType.LONG" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="events.EventVarType.SHORT">
+<span class="sig-name descname"><span class="pre">SHORT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_events.EventVarType.SHORT</span></em><a class="headerlink" href="#events.EventVarType.SHORT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="events.EventVarType.STRING">
+<span class="sig-name descname"><span class="pre">STRING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_events.EventVarType.STRING</span></em><a class="headerlink" href="#events.EventVarType.STRING" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="events.EventVarType.UINT64">
+<span class="sig-name descname"><span class="pre">UINT64</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_events.EventVarType.UINT64</span></em><a class="headerlink" href="#events.EventVarType.UINT64" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="events.EventVarType.WSTRING">
+<span class="sig-name descname"><span class="pre">WSTRING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_events.EventVarType.WSTRING</span></em><a class="headerlink" href="#events.EventVarType.WSTRING" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="events.EventVarType.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'BOOL':</span> <span class="pre">_events.EventVarType.BOOL,</span> <span class="pre">'BYTE':</span> <span class="pre">_events.EventVarType.BYTE,</span> <span class="pre">'FLOAT':</span> <span class="pre">_events.EventVarType.FLOAT,</span> <span class="pre">'LOCAL':</span> <span class="pre">_events.EventVarType.LOCAL,</span> <span class="pre">'LONG':</span> <span class="pre">_events.EventVarType.LONG,</span> <span class="pre">'SHORT':</span> <span class="pre">_events.EventVarType.SHORT,</span> <span class="pre">'STRING':</span> <span class="pre">_events.EventVarType.STRING,</span> <span class="pre">'UINT64':</span> <span class="pre">_events.EventVarType.UINT64,</span> <span class="pre">'WSTRING':</span> <span class="pre">_events.EventVarType.WSTRING}</span></em><a class="headerlink" href="#events.EventVarType.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="events.EventVarType.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">_events.EventVarType.LOCAL,</span> <span class="pre">1:</span> <span class="pre">_events.EventVarType.STRING,</span> <span class="pre">2:</span> <span class="pre">_events.EventVarType.FLOAT,</span> <span class="pre">3:</span> <span class="pre">_events.EventVarType.LONG,</span> <span class="pre">4:</span> <span class="pre">_events.EventVarType.SHORT,</span> <span class="pre">5:</span> <span class="pre">_events.EventVarType.BYTE,</span> <span class="pre">6:</span> <span class="pre">_events.EventVarType.BOOL,</span> <span class="pre">7:</span> <span class="pre">_events.EventVarType.UINT64,</span> <span class="pre">8:</span> <span class="pre">_events.EventVarType.WSTRING}</span></em><a class="headerlink" href="#events.EventVarType.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="events.GameEvent">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">events.</span></span><span class="sig-name descname"><span class="pre">GameEvent</span></span><a class="headerlink" href="#events.GameEvent" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEvent.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GameEvent)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#events.GameEvent.__getitem__" title="Link to this definition">¶</a></dt>
+<dd><p>Return an event variables in its proper data type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEvent.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#events.GameEvent.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEvent.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#events.GameEvent.__reduce__" title="Link to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEvent.__setitem__">
+<span class="sig-name descname"><span class="pre">__setitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GameEvent)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)arg3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#events.GameEvent.__setitem__" title="Link to this definition">¶</a></dt>
+<dd><p>Sets an event variable.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEvent.get_bool">
+<span class="sig-name descname"><span class="pre">get_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GameEvent)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(bool)default_value=False</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#events.GameEvent.get_bool" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the value of the key name as a bool.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEvent.get_float">
+<span class="sig-name descname"><span class="pre">get_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GameEvent)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(float)default_value=0.0</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span> <span class="pre">:</span></span></span><a class="headerlink" href="#events.GameEvent.get_float" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the value of the key name as a float.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEvent.get_int">
+<span class="sig-name descname"><span class="pre">get_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GameEvent)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)default_value=0</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#events.GameEvent.get_int" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the value of the key name as an int.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEvent.get_string">
+<span class="sig-name descname"><span class="pre">get_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GameEvent)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)default_value=''</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#events.GameEvent.get_string" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the value of the key name as a string.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEvent.is_empty">
+<span class="sig-name descname"><span class="pre">is_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GameEvent)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name=None</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#events.GameEvent.is_empty" title="Link to this definition">¶</a></dt>
+<dd><p>Returns true if the given key exists. If no key name was passed, it will check if the whole event is empty.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEvent.is_local">
+<span class="sig-name descname"><span class="pre">is_local</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GameEvent)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#events.GameEvent.is_local" title="Link to this definition">¶</a></dt>
+<dd><p>Returns true if the event never networked.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEvent.is_reliable">
+<span class="sig-name descname"><span class="pre">is_reliable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GameEvent)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#events.GameEvent.is_reliable" title="Link to this definition">¶</a></dt>
+<dd><p>Returns true if the event handled reliably.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEvent.set_bool">
+<span class="sig-name descname"><span class="pre">set_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GameEvent)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(bool)value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#events.GameEvent.set_bool" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the given key name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEvent.set_float">
+<span class="sig-name descname"><span class="pre">set_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GameEvent)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#events.GameEvent.set_float" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the given key name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEvent.set_int">
+<span class="sig-name descname"><span class="pre">set_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GameEvent)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#events.GameEvent.set_int" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the given key name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEvent.set_string">
+<span class="sig-name descname"><span class="pre">set_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GameEvent)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#events.GameEvent.set_string" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the given key name.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="events.GameEvent.descriptor">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">descriptor</span></span><a class="headerlink" href="#events.GameEvent.descriptor" title="Link to this definition">¶</a></dt>
+<dd><p>Return the event’s descriptor.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="events.GameEvent.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#events.GameEvent.name" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the event name.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="events.GameEvent.variables">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">variables</span></span><a class="headerlink" href="#events.GameEvent.variables" title="Link to this definition">¶</a></dt>
+<dd><p>Return all event variables as a KeyValues instance.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="events.GameEventDescriptor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">events.</span></span><span class="sig-name descname"><span class="pre">GameEventDescriptor</span></span><a class="headerlink" href="#events.GameEventDescriptor" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEventDescriptor.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#events.GameEventDescriptor.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.GameEventDescriptor.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#events.GameEventDescriptor.__reduce__" title="Link to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="events.GameEventDescriptor.event_id">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">event_id</span></span><a class="headerlink" href="#events.GameEventDescriptor.event_id" title="Link to this definition">¶</a></dt>
+<dd><p>Return the ID of the event.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="events.GameEventDescriptor.local">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">local</span></span><a class="headerlink" href="#events.GameEventDescriptor.local" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if the event is local only (server only).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="events.GameEventDescriptor.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#events.GameEventDescriptor.name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the name of the event.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="events.GameEventDescriptor.reliable">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reliable</span></span><a class="headerlink" href="#events.GameEventDescriptor.reliable" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if the event is sent as a reliable message.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="events.GameEventDescriptor.variables">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">variables</span></span><a class="headerlink" href="#events.GameEventDescriptor.variables" title="Link to this definition">¶</a></dt>
+<dd><p>Return the variables of the event.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="events.Event">
+<span class="sig-prename descclassname"><span class="pre">&#64;</span></span><span class="sig-prename descclassname"><span class="pre">events.</span></span><span class="sig-name descname"><span class="pre">Event</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">event_names</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/events.html#Event"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#events.Event" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#core.AutoUnload" title="core.AutoUnload"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.AutoUnload</span></code></a></p>
+<p>Fired when any event in <code class="docutils literal notranslate"><span class="pre">event_names</span></code> is fired on the server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>event_names</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – An event name or any number of
+event names to register to the decorated function.</p>
+</dd>
+</dl>
+<p>The decorated function is passed the following parameters when
+an event in <code class="docutils literal notranslate"><span class="pre">event_names</span></code> is fired on the server:</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>game_event</strong> (<a class="reference internal" href="#events.GameEvent" title="events.GameEvent"><em>GameEvent</em></a>) – The fired event.</p>
+</dd>
+</dl>
+<p>Examples:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
+
+<span class="nd">@Event</span><span class="p">(</span><span class="s1">&#39;player_death&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">player_died</span><span class="p">(</span><span class="n">game_event</span><span class="p">):</span>
+    <span class="c1"># Code...</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@Event</span><span class="p">(</span><span class="s1">&#39;round_start&#39;</span><span class="p">,</span> <span class="s1">&#39;round_freeze_end&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">some_function</span><span class="p">(</span><span class="n">game_event</span><span class="p">):</span>
+    <span class="c1"># Code...</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="../events.html"><span class="doc">Events</span></a> for a list of supported events per game.</p>
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">events package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-events">Module contents</a><ul>
+<li><a class="reference internal" href="#events.EventVarType"><code class="docutils literal notranslate"><span class="pre">EventVarType</span></code></a><ul>
+<li><a class="reference internal" href="#events.EventVarType.BOOL"><code class="docutils literal notranslate"><span class="pre">EventVarType.BOOL</span></code></a></li>
+<li><a class="reference internal" href="#events.EventVarType.BYTE"><code class="docutils literal notranslate"><span class="pre">EventVarType.BYTE</span></code></a></li>
+<li><a class="reference internal" href="#events.EventVarType.FLOAT"><code class="docutils literal notranslate"><span class="pre">EventVarType.FLOAT</span></code></a></li>
+<li><a class="reference internal" href="#events.EventVarType.LOCAL"><code class="docutils literal notranslate"><span class="pre">EventVarType.LOCAL</span></code></a></li>
+<li><a class="reference internal" href="#events.EventVarType.LONG"><code class="docutils literal notranslate"><span class="pre">EventVarType.LONG</span></code></a></li>
+<li><a class="reference internal" href="#events.EventVarType.SHORT"><code class="docutils literal notranslate"><span class="pre">EventVarType.SHORT</span></code></a></li>
+<li><a class="reference internal" href="#events.EventVarType.STRING"><code class="docutils literal notranslate"><span class="pre">EventVarType.STRING</span></code></a></li>
+<li><a class="reference internal" href="#events.EventVarType.UINT64"><code class="docutils literal notranslate"><span class="pre">EventVarType.UINT64</span></code></a></li>
+<li><a class="reference internal" href="#events.EventVarType.WSTRING"><code class="docutils literal notranslate"><span class="pre">EventVarType.WSTRING</span></code></a></li>
+<li><a class="reference internal" href="#events.EventVarType.names"><code class="docutils literal notranslate"><span class="pre">EventVarType.names</span></code></a></li>
+<li><a class="reference internal" href="#events.EventVarType.values"><code class="docutils literal notranslate"><span class="pre">EventVarType.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#events.GameEvent"><code class="docutils literal notranslate"><span class="pre">GameEvent</span></code></a><ul>
+<li><a class="reference internal" href="#events.GameEvent.__getitem__"><code class="docutils literal notranslate"><span class="pre">GameEvent.__getitem__()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.__init__"><code class="docutils literal notranslate"><span class="pre">GameEvent.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.__reduce__"><code class="docutils literal notranslate"><span class="pre">GameEvent.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.__setitem__"><code class="docutils literal notranslate"><span class="pre">GameEvent.__setitem__()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.get_bool"><code class="docutils literal notranslate"><span class="pre">GameEvent.get_bool()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.get_float"><code class="docutils literal notranslate"><span class="pre">GameEvent.get_float()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.get_int"><code class="docutils literal notranslate"><span class="pre">GameEvent.get_int()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.get_string"><code class="docutils literal notranslate"><span class="pre">GameEvent.get_string()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.is_empty"><code class="docutils literal notranslate"><span class="pre">GameEvent.is_empty()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.is_local"><code class="docutils literal notranslate"><span class="pre">GameEvent.is_local()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.is_reliable"><code class="docutils literal notranslate"><span class="pre">GameEvent.is_reliable()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.set_bool"><code class="docutils literal notranslate"><span class="pre">GameEvent.set_bool()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.set_float"><code class="docutils literal notranslate"><span class="pre">GameEvent.set_float()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.set_int"><code class="docutils literal notranslate"><span class="pre">GameEvent.set_int()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.set_string"><code class="docutils literal notranslate"><span class="pre">GameEvent.set_string()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.descriptor"><code class="docutils literal notranslate"><span class="pre">GameEvent.descriptor</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.name"><code class="docutils literal notranslate"><span class="pre">GameEvent.name</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEvent.variables"><code class="docutils literal notranslate"><span class="pre">GameEvent.variables</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#events.GameEventDescriptor"><code class="docutils literal notranslate"><span class="pre">GameEventDescriptor</span></code></a><ul>
+<li><a class="reference internal" href="#events.GameEventDescriptor.__init__"><code class="docutils literal notranslate"><span class="pre">GameEventDescriptor.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEventDescriptor.__reduce__"><code class="docutils literal notranslate"><span class="pre">GameEventDescriptor.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEventDescriptor.event_id"><code class="docutils literal notranslate"><span class="pre">GameEventDescriptor.event_id</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEventDescriptor.local"><code class="docutils literal notranslate"><span class="pre">GameEventDescriptor.local</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEventDescriptor.name"><code class="docutils literal notranslate"><span class="pre">GameEventDescriptor.name</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEventDescriptor.reliable"><code class="docutils literal notranslate"><span class="pre">GameEventDescriptor.reliable</span></code></a></li>
+<li><a class="reference internal" href="#events.GameEventDescriptor.variables"><code class="docutils literal notranslate"><span class="pre">GameEventDescriptor.variables</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#events.Event"><code class="docutils literal notranslate"><span class="pre">Event()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/events.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">events package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>listeners package &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">listeners package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="listeners-package">
+<h1>listeners package<a class="headerlink" href="#listeners-package" title="Link to this heading">¶</a></h1>
+<section id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="listeners.tick.html">listeners.tick package</a></li>
+</ul>
+</div>
+</section>
+<section id="module-listeners">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-listeners" title="Link to this heading">¶</a></h2>
+<p>Provides listener based functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.ButtonStatus">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">ButtonStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#ButtonStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.ButtonStatus" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/enum.html#enum.IntEnum" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntEnum</span></code></a></p>
+<p>Indicate whether a button has been pressed or released.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.ButtonStatus.PRESSED">
+<span class="sig-name descname"><span class="pre">PRESSED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#listeners.ButtonStatus.PRESSED" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.ButtonStatus.RELEASED">
+<span class="sig-name descname"><span class="pre">RELEASED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#listeners.ButtonStatus.RELEASED" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.ListenerManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">ListenerManager</span></span><a class="headerlink" href="#listeners.ListenerManager" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.ListenerManager.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#listeners.ListenerManager.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.ListenerManager.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ListenerManager)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#listeners.ListenerManager.clear" title="Link to this definition">¶</a></dt>
+<dd><p>Remove all registered callbacks.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.ListenerManager.finalize">
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ListenerManager)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#listeners.ListenerManager.finalize" title="Link to this definition">¶</a></dt>
+<dd><p>Called when the last callback is being unregistered.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.ListenerManager.initialize">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ListenerManager)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#listeners.ListenerManager.initialize" title="Link to this definition">¶</a></dt>
+<dd><p>Called when the first callback is being registered.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.ListenerManager.notify">
+<span class="sig-name descname"><span class="pre">notify</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#listeners.ListenerManager.notify" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>object notify(tuple args, dict kwds) :</dt><dd><p>Notifies all registered listeners.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.ListenerManager.register_listener">
+<span class="sig-name descname"><span class="pre">register_listener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ListenerManager)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#listeners.ListenerManager.register_listener" title="Link to this definition">¶</a></dt>
+<dd><p>Registers a callable object. If it was already registered it will be ignored.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.ListenerManager.unregister_listener">
+<span class="sig-name descname"><span class="pre">unregister_listener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ListenerManager)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#listeners.ListenerManager.unregister_listener" title="Link to this definition">¶</a></dt>
+<dd><p>Removes a callable object. If it was not registered nothing will happen.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.ListenerManagerDecorator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">ListenerManagerDecorator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#ListenerManagerDecorator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.ListenerManagerDecorator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#core.AutoUnload" title="core.AutoUnload"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoUnload</span></code></a></p>
+<p>Base decorator class used to register/unregister a listener.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.ListenerManagerDecorator.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#ListenerManagerDecorator.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.ListenerManagerDecorator.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Store the callback and register the listener.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.ListenerManagerDecorator.manager">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">manager</span></span><a class="headerlink" href="#listeners.ListenerManagerDecorator.manager" title="Link to this definition">¶</a></dt>
+<dd><p>Return a <a class="reference internal" href="#listeners.ListenerManager" title="listeners.ListenerManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManager</span></code></a> object.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.ListenerManagerDecorator.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#listeners.ListenerManagerDecorator.name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the class name of the instance.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnButtonStateChanged">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnButtonStateChanged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnButtonStateChanged"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnButtonStateChanged" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a button state change listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnButtonStateChanged.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnButtonStateChanged.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnClientActive">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnClientActive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnClientActive"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnClientActive" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a ClientActive listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnClientActive.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnClientActive.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnClientConnect">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnClientConnect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnClientConnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnClientConnect" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a ClientConnect listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnClientConnect.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnClientConnect.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnClientDisconnect">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnClientDisconnect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnClientDisconnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnClientDisconnect" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a ClientDisconnect listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnClientDisconnect.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnClientDisconnect.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnClientFullyConnect">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnClientFullyConnect</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnClientFullyConnect"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnClientFullyConnect" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a ClientFullyConnect listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnClientFullyConnect.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnClientFullyConnect.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnClientPutInServer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnClientPutInServer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnClientPutInServer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnClientPutInServer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a ClientPutInServer listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnClientPutInServer.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnClientPutInServer.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnClientSettingsChanged">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnClientSettingsChanged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnClientSettingsChanged"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnClientSettingsChanged" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a ClientSettingsChanged listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnClientSettingsChanged.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnClientSettingsChanged.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnCombinerPreCache">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnCombinerPreCache</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnCombinerPreCache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnCombinerPreCache" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a OnCombinerPreCache listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnCombinerPreCache.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnCombinerPreCache.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnConVarChanged">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnConVarChanged</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnConVarChanged"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnConVarChanged" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a ConVar listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnConVarChanged.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnConVarChanged.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnDataLoaded">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnDataLoaded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnDataLoaded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnDataLoaded" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a OnDataLoaded listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnDataLoaded.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnDataLoaded.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnDataUnloaded">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnDataUnloaded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnDataUnloaded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnDataUnloaded" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a OnDataUnloaded listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnDataUnloaded.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnDataUnloaded.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnEdictAllocated">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnEdictAllocated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnEdictAllocated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnEdictAllocated" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister an OnEdictAllocated listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnEdictAllocated.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnEdictAllocated.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnEdictFreed">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnEdictFreed</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnEdictFreed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnEdictFreed" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister an OnEdictFreed listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnEdictFreed.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnEdictFreed.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnEntityCollision">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnEntityCollision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnEntityCollision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnEntityCollision" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a OnEntityCollision listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnEntityCollision.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnEntityCollision.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnEntityCreated">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnEntityCreated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnEntityCreated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnEntityCreated" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a OnEntityCreated listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnEntityCreated.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnEntityCreated.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnEntityDeleted">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnEntityDeleted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnEntityDeleted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnEntityDeleted" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a OnEntityDeleted listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnEntityDeleted.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnEntityDeleted.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnEntityOutput">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnEntityOutput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnEntityOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnEntityOutput" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister an EntityOutput listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnEntityOutput.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;listeners.OnEntityOutputListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnEntityOutput.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnEntityOutputListenerManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnEntityOutputListenerManager</span></span><a class="reference internal" href="../../_modules/listeners.html#OnEntityOutputListenerManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnEntityOutputListenerManager" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManager" title="_listeners.ListenerManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManager</span></code></a></p>
+<p>Register/unregister an EntityOutput listener.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.OnEntityOutputListenerManager.finalize">
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnEntityOutputListenerManager.finalize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnEntityOutputListenerManager.finalize" title="Link to this definition">¶</a></dt>
+<dd><p>Called when the last callback is being unregistered.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.OnEntityOutputListenerManager.initialize">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnEntityOutputListenerManager.initialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnEntityOutputListenerManager.initialize" title="Link to this definition">¶</a></dt>
+<dd><p>Called when the first callback is being registered.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnEntityPreSpawned">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnEntityPreSpawned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnEntityPreSpawned"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnEntityPreSpawned" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a OnEntityPreSpawned listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnEntityPreSpawned.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnEntityPreSpawned.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnEntitySpawned">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnEntitySpawned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnEntitySpawned"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnEntitySpawned" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a OnEntitySpawned listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnEntitySpawned.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnEntitySpawned.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnEntityTransmit">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnEntityTransmit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnEntityTransmit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnEntityTransmit" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a OnEntityTransmit listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnEntityTransmit.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnEntityTransmit.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnLevelEnd">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnLevelEnd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnLevelEnd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnLevelEnd" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a map end listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnLevelEnd.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnLevelEnd.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnLevelInit">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnLevelInit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnLevelInit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnLevelInit" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a LevelInit listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnLevelInit.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnLevelInit.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnLevelShutdown">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnLevelShutdown</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnLevelShutdown"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnLevelShutdown" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a LevelShutdown listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnLevelShutdown.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnLevelShutdown.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnNetworkedEntityCreated">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnNetworkedEntityCreated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnNetworkedEntityCreated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnNetworkedEntityCreated" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a OnNetworkedEntityCreated listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnNetworkedEntityCreated.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnNetworkedEntityCreated.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnNetworkedEntityDeleted">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnNetworkedEntityDeleted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnNetworkedEntityDeleted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnNetworkedEntityDeleted" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a OnNetworkedEntityDeleted listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnNetworkedEntityDeleted.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnNetworkedEntityDeleted.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnNetworkedEntityPreSpawned">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnNetworkedEntityPreSpawned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnNetworkedEntityPreSpawned"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnNetworkedEntityPreSpawned" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a OnNetworkedEntityPreSpawned listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnNetworkedEntityPreSpawned.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnNetworkedEntityPreSpawned.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnNetworkedEntitySpawned">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnNetworkedEntitySpawned</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnNetworkedEntitySpawned"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnNetworkedEntitySpawned" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a OnNetworkedEntitySpawned listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnNetworkedEntitySpawned.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnNetworkedEntitySpawned.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnNetworkidValidated">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnNetworkidValidated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnNetworkidValidated"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnNetworkidValidated" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a NetworkidValidated listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnNetworkidValidated.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnNetworkidValidated.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnPlayerCollision">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnPlayerCollision</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnPlayerCollision"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnPlayerCollision" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a OnPlayerCollision listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnPlayerCollision.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnPlayerCollision.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnPlayerPostRunCommand">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnPlayerPostRunCommand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnPlayerPostRunCommand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnPlayerPostRunCommand" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a post run command listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnPlayerPostRunCommand.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnPlayerPostRunCommand.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnPlayerRunCommand">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnPlayerRunCommand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnPlayerRunCommand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnPlayerRunCommand" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a run command listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnPlayerRunCommand.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnPlayerRunCommand.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnPlayerTransmit">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnPlayerTransmit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnPlayerTransmit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnPlayerTransmit" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a OnPlayerTransmit listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnPlayerTransmit.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnPlayerTransmit.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnPluginLoaded">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnPluginLoaded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnPluginLoaded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnPluginLoaded" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a plugin loaded listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnPluginLoaded.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnPluginLoaded.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnPluginLoading">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnPluginLoading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnPluginLoading"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnPluginLoading" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a plugin loading listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnPluginLoading.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnPluginLoading.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnPluginUnloaded">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnPluginUnloaded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnPluginUnloaded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnPluginUnloaded" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a plugin unloaded listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnPluginUnloaded.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnPluginUnloaded.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnPluginUnloading">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnPluginUnloading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnPluginUnloading"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnPluginUnloading" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a plugin unloading listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnPluginUnloading.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnPluginUnloading.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnQueryCvarValueFinished">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnQueryCvarValueFinished</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnQueryCvarValueFinished"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnQueryCvarValueFinished" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister an OnQueryCvarValueFinished listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnQueryCvarValueFinished.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnQueryCvarValueFinished.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnServerActivate">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnServerActivate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnServerActivate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnServerActivate" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a ServerActivate listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnServerActivate.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnServerActivate.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnServerOutput">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnServerOutput</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnServerOutput"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnServerOutput" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a server output listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnServerOutput.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnServerOutput.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnTick">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnTick</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnTick"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnTick" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a Tick listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnTick.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnTick.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.OnVersionUpdate">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">OnVersionUpdate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#OnVersionUpdate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.OnVersionUpdate" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#listeners.ListenerManagerDecorator" title="listeners.ListenerManagerDecorator"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a></p>
+<p>Register/unregister a version update listener.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.OnVersionUpdate.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_listeners.ListenerManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#listeners.OnVersionUpdate.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="listeners.get_button_combination_status">
+<span class="sig-prename descclassname"><span class="pre">listeners.</span></span><span class="sig-name descname"><span class="pre">get_button_combination_status</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">old_buttons</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_buttons</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">combination</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners.html#get_button_combination_status"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.get_button_combination_status" title="Link to this definition">¶</a></dt>
+<dd><p>Return the status of a button combination.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>old_buttons</strong> (<a class="reference internal" href="players.constants.html#players.constants.PlayerButtons" title="players.constants.PlayerButtons"><em>PlayerButtons</em></a>) – Previously pressed buttons.</p></li>
+<li><p><strong>new_buttons</strong> (<a class="reference internal" href="players.constants.html#players.constants.PlayerButtons" title="players.constants.PlayerButtons"><em>PlayerButtons</em></a>) – Now pressed buttons.</p></li>
+<li><p><strong>combination</strong> (<a class="reference internal" href="players.constants.html#players.constants.PlayerButtons" title="players.constants.PlayerButtons"><em>PlayerButtons</em></a>) – Button combination to check.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Return the status of the button combination. If the combination was
+neither pressed nor released, None will be returned.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#listeners.ButtonStatus" title="listeners.ButtonStatus">ButtonStatus</a></p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@OnButtonStateChanged</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_buttons_state_changed</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">old_buttons</span><span class="p">,</span> <span class="n">new_buttons</span><span class="p">):</span>
+    <span class="n">status</span> <span class="o">=</span> <span class="n">get_button_combination_status</span><span class="p">(</span><span class="n">old_buttons</span><span class="p">,</span> <span class="n">new_buttons</span><span class="p">,</span>
+        <span class="n">PlayerButtons</span><span class="o">.</span><span class="n">ATTACK</span><span class="o">|</span><span class="n">PlayerButtons</span><span class="o">.</span><span class="n">JUMP</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ButtonStatus</span><span class="o">.</span><span class="n">PRESSED</span><span class="p">:</span>
+        <span class="n">SayText2</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> is jumping and attacking.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">name</span><span class="p">))</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+
+    <span class="k">elif</span> <span class="n">status</span> <span class="o">==</span> <span class="n">ButtonStatus</span><span class="o">.</span><span class="n">RELEASED</span><span class="p">:</span>
+        <span class="n">SayText2</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> stopped jumping and attacking at the same time.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">name</span><span class="p">))</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">listeners package</a><ul>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#module-listeners">Module contents</a><ul>
+<li><a class="reference internal" href="#listeners.ButtonStatus"><code class="docutils literal notranslate"><span class="pre">ButtonStatus</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.ButtonStatus.PRESSED"><code class="docutils literal notranslate"><span class="pre">ButtonStatus.PRESSED</span></code></a></li>
+<li><a class="reference internal" href="#listeners.ButtonStatus.RELEASED"><code class="docutils literal notranslate"><span class="pre">ButtonStatus.RELEASED</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.ListenerManager"><code class="docutils literal notranslate"><span class="pre">ListenerManager</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.ListenerManager.__init__"><code class="docutils literal notranslate"><span class="pre">ListenerManager.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.ListenerManager.clear"><code class="docutils literal notranslate"><span class="pre">ListenerManager.clear()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.ListenerManager.finalize"><code class="docutils literal notranslate"><span class="pre">ListenerManager.finalize()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.ListenerManager.initialize"><code class="docutils literal notranslate"><span class="pre">ListenerManager.initialize()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.ListenerManager.notify"><code class="docutils literal notranslate"><span class="pre">ListenerManager.notify()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.ListenerManager.register_listener"><code class="docutils literal notranslate"><span class="pre">ListenerManager.register_listener()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.ListenerManager.unregister_listener"><code class="docutils literal notranslate"><span class="pre">ListenerManager.unregister_listener()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.ListenerManagerDecorator"><code class="docutils literal notranslate"><span class="pre">ListenerManagerDecorator</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.ListenerManagerDecorator.__init__"><code class="docutils literal notranslate"><span class="pre">ListenerManagerDecorator.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.ListenerManagerDecorator.manager"><code class="docutils literal notranslate"><span class="pre">ListenerManagerDecorator.manager</span></code></a></li>
+<li><a class="reference internal" href="#listeners.ListenerManagerDecorator.name"><code class="docutils literal notranslate"><span class="pre">ListenerManagerDecorator.name</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnButtonStateChanged"><code class="docutils literal notranslate"><span class="pre">OnButtonStateChanged</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnButtonStateChanged.manager"><code class="docutils literal notranslate"><span class="pre">OnButtonStateChanged.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnClientActive"><code class="docutils literal notranslate"><span class="pre">OnClientActive</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnClientActive.manager"><code class="docutils literal notranslate"><span class="pre">OnClientActive.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnClientConnect"><code class="docutils literal notranslate"><span class="pre">OnClientConnect</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnClientConnect.manager"><code class="docutils literal notranslate"><span class="pre">OnClientConnect.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnClientDisconnect"><code class="docutils literal notranslate"><span class="pre">OnClientDisconnect</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnClientDisconnect.manager"><code class="docutils literal notranslate"><span class="pre">OnClientDisconnect.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnClientFullyConnect"><code class="docutils literal notranslate"><span class="pre">OnClientFullyConnect</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnClientFullyConnect.manager"><code class="docutils literal notranslate"><span class="pre">OnClientFullyConnect.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnClientPutInServer"><code class="docutils literal notranslate"><span class="pre">OnClientPutInServer</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnClientPutInServer.manager"><code class="docutils literal notranslate"><span class="pre">OnClientPutInServer.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnClientSettingsChanged"><code class="docutils literal notranslate"><span class="pre">OnClientSettingsChanged</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnClientSettingsChanged.manager"><code class="docutils literal notranslate"><span class="pre">OnClientSettingsChanged.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnCombinerPreCache"><code class="docutils literal notranslate"><span class="pre">OnCombinerPreCache</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnCombinerPreCache.manager"><code class="docutils literal notranslate"><span class="pre">OnCombinerPreCache.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnConVarChanged"><code class="docutils literal notranslate"><span class="pre">OnConVarChanged</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnConVarChanged.manager"><code class="docutils literal notranslate"><span class="pre">OnConVarChanged.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnDataLoaded"><code class="docutils literal notranslate"><span class="pre">OnDataLoaded</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnDataLoaded.manager"><code class="docutils literal notranslate"><span class="pre">OnDataLoaded.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnDataUnloaded"><code class="docutils literal notranslate"><span class="pre">OnDataUnloaded</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnDataUnloaded.manager"><code class="docutils literal notranslate"><span class="pre">OnDataUnloaded.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnEdictAllocated"><code class="docutils literal notranslate"><span class="pre">OnEdictAllocated</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnEdictAllocated.manager"><code class="docutils literal notranslate"><span class="pre">OnEdictAllocated.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnEdictFreed"><code class="docutils literal notranslate"><span class="pre">OnEdictFreed</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnEdictFreed.manager"><code class="docutils literal notranslate"><span class="pre">OnEdictFreed.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnEntityCollision"><code class="docutils literal notranslate"><span class="pre">OnEntityCollision</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnEntityCollision.manager"><code class="docutils literal notranslate"><span class="pre">OnEntityCollision.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnEntityCreated"><code class="docutils literal notranslate"><span class="pre">OnEntityCreated</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnEntityCreated.manager"><code class="docutils literal notranslate"><span class="pre">OnEntityCreated.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnEntityDeleted"><code class="docutils literal notranslate"><span class="pre">OnEntityDeleted</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnEntityDeleted.manager"><code class="docutils literal notranslate"><span class="pre">OnEntityDeleted.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnEntityOutput"><code class="docutils literal notranslate"><span class="pre">OnEntityOutput</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnEntityOutput.manager"><code class="docutils literal notranslate"><span class="pre">OnEntityOutput.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnEntityOutputListenerManager"><code class="docutils literal notranslate"><span class="pre">OnEntityOutputListenerManager</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnEntityOutputListenerManager.finalize"><code class="docutils literal notranslate"><span class="pre">OnEntityOutputListenerManager.finalize()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.OnEntityOutputListenerManager.initialize"><code class="docutils literal notranslate"><span class="pre">OnEntityOutputListenerManager.initialize()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnEntityPreSpawned"><code class="docutils literal notranslate"><span class="pre">OnEntityPreSpawned</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnEntityPreSpawned.manager"><code class="docutils literal notranslate"><span class="pre">OnEntityPreSpawned.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnEntitySpawned"><code class="docutils literal notranslate"><span class="pre">OnEntitySpawned</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnEntitySpawned.manager"><code class="docutils literal notranslate"><span class="pre">OnEntitySpawned.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnEntityTransmit"><code class="docutils literal notranslate"><span class="pre">OnEntityTransmit</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnEntityTransmit.manager"><code class="docutils literal notranslate"><span class="pre">OnEntityTransmit.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnLevelEnd"><code class="docutils literal notranslate"><span class="pre">OnLevelEnd</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnLevelEnd.manager"><code class="docutils literal notranslate"><span class="pre">OnLevelEnd.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnLevelInit"><code class="docutils literal notranslate"><span class="pre">OnLevelInit</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnLevelInit.manager"><code class="docutils literal notranslate"><span class="pre">OnLevelInit.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnLevelShutdown"><code class="docutils literal notranslate"><span class="pre">OnLevelShutdown</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnLevelShutdown.manager"><code class="docutils literal notranslate"><span class="pre">OnLevelShutdown.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnNetworkedEntityCreated"><code class="docutils literal notranslate"><span class="pre">OnNetworkedEntityCreated</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnNetworkedEntityCreated.manager"><code class="docutils literal notranslate"><span class="pre">OnNetworkedEntityCreated.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnNetworkedEntityDeleted"><code class="docutils literal notranslate"><span class="pre">OnNetworkedEntityDeleted</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnNetworkedEntityDeleted.manager"><code class="docutils literal notranslate"><span class="pre">OnNetworkedEntityDeleted.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnNetworkedEntityPreSpawned"><code class="docutils literal notranslate"><span class="pre">OnNetworkedEntityPreSpawned</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnNetworkedEntityPreSpawned.manager"><code class="docutils literal notranslate"><span class="pre">OnNetworkedEntityPreSpawned.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnNetworkedEntitySpawned"><code class="docutils literal notranslate"><span class="pre">OnNetworkedEntitySpawned</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnNetworkedEntitySpawned.manager"><code class="docutils literal notranslate"><span class="pre">OnNetworkedEntitySpawned.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnNetworkidValidated"><code class="docutils literal notranslate"><span class="pre">OnNetworkidValidated</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnNetworkidValidated.manager"><code class="docutils literal notranslate"><span class="pre">OnNetworkidValidated.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnPlayerCollision"><code class="docutils literal notranslate"><span class="pre">OnPlayerCollision</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnPlayerCollision.manager"><code class="docutils literal notranslate"><span class="pre">OnPlayerCollision.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnPlayerPostRunCommand"><code class="docutils literal notranslate"><span class="pre">OnPlayerPostRunCommand</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnPlayerPostRunCommand.manager"><code class="docutils literal notranslate"><span class="pre">OnPlayerPostRunCommand.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnPlayerRunCommand"><code class="docutils literal notranslate"><span class="pre">OnPlayerRunCommand</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnPlayerRunCommand.manager"><code class="docutils literal notranslate"><span class="pre">OnPlayerRunCommand.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnPlayerTransmit"><code class="docutils literal notranslate"><span class="pre">OnPlayerTransmit</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnPlayerTransmit.manager"><code class="docutils literal notranslate"><span class="pre">OnPlayerTransmit.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnPluginLoaded"><code class="docutils literal notranslate"><span class="pre">OnPluginLoaded</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnPluginLoaded.manager"><code class="docutils literal notranslate"><span class="pre">OnPluginLoaded.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnPluginLoading"><code class="docutils literal notranslate"><span class="pre">OnPluginLoading</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnPluginLoading.manager"><code class="docutils literal notranslate"><span class="pre">OnPluginLoading.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnPluginUnloaded"><code class="docutils literal notranslate"><span class="pre">OnPluginUnloaded</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnPluginUnloaded.manager"><code class="docutils literal notranslate"><span class="pre">OnPluginUnloaded.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnPluginUnloading"><code class="docutils literal notranslate"><span class="pre">OnPluginUnloading</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnPluginUnloading.manager"><code class="docutils literal notranslate"><span class="pre">OnPluginUnloading.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnQueryCvarValueFinished"><code class="docutils literal notranslate"><span class="pre">OnQueryCvarValueFinished</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnQueryCvarValueFinished.manager"><code class="docutils literal notranslate"><span class="pre">OnQueryCvarValueFinished.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnServerActivate"><code class="docutils literal notranslate"><span class="pre">OnServerActivate</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnServerActivate.manager"><code class="docutils literal notranslate"><span class="pre">OnServerActivate.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnServerOutput"><code class="docutils literal notranslate"><span class="pre">OnServerOutput</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnServerOutput.manager"><code class="docutils literal notranslate"><span class="pre">OnServerOutput.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnTick"><code class="docutils literal notranslate"><span class="pre">OnTick</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnTick.manager"><code class="docutils literal notranslate"><span class="pre">OnTick.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.OnVersionUpdate"><code class="docutils literal notranslate"><span class="pre">OnVersionUpdate</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.OnVersionUpdate.manager"><code class="docutils literal notranslate"><span class="pre">OnVersionUpdate.manager</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.get_button_combination_status"><code class="docutils literal notranslate"><span class="pre">get_button_combination_status()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/listeners.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">listeners package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

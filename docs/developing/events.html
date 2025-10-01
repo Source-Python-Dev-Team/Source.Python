@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Events &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=2780edc4" />
+    
+    <script src="../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Blade Symphony" href="events/blade.html" />
+    <link rel="prev" title="Getting started" href="getting-started.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="events/blade.html" title="Blade Symphony"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="getting-started.html" title="Getting started"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Events</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="events">
+<h1>Events<a class="headerlink" href="#events" title="Link to this heading">¶</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<p>Events are probably one of the most important tools when you want to write a
+plugin for a game. The game fires them in specific situations (e.g. when a
+player was hurt, died or the round started) and Source.Python is able to
+listen to them. An event might provide various event variables, which contain
+more information about the event. E.g. the event “player_hurt” always provides
+the user ID of the attacker and the user ID of the victim, which can be used
+to interact with these players. A basic example could look like this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
+
+<span class="nd">@Event</span><span class="p">(</span><span class="s1">&#39;player_hurt&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_player_hurt</span><span class="p">(</span><span class="n">game_event</span><span class="p">):</span>
+    <span class="c1"># Retrieve the user ID of the victim</span>
+    <span class="n">userid</span> <span class="o">=</span> <span class="n">game_event</span><span class="p">[</span><span class="s1">&#39;userid&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Retrieve the user ID of the attacker</span>
+    <span class="n">attacker</span> <span class="o">=</span> <span class="n">game_event</span><span class="p">[</span><span class="s1">&#39;attacker&#39;</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;user ID &quot;</span><span class="si">{}</span><span class="s1">&quot; was hurt by attacker ID &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">userid</span><span class="p">,</span> <span class="n">attacker</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>In order to listen to an event, you have to import the <a class="reference internal" href="modules/events.html#events.Event" title="events.Event"><code class="xref py py-class docutils literal notranslate"><span class="pre">events.Event</span></code></a>
+decorator. The decorator requires a name, which is the name of the event you
+want to listen to. All event callbacks require exactly one argument, which is
+a <a class="reference internal" href="modules/events.html#events.GameEvent" title="events.GameEvent"><code class="xref py py-class docutils literal notranslate"><span class="pre">events.GameEvent</span></code></a> object. This object can be used to access the
+specific event variables.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="modules/events.html#events.GameEvent.__getitem__" title="events.GameEvent.__getitem__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">events.GameEvent.__getitem__()</span></code></a> will raise a <a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#KeyError" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">KeyError</span></code></a> if you
+are trying to access an event variable that doesn’t exist.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><a class="reference internal" href="modules/events.html#events.GameEvent.__getitem__" title="events.GameEvent.__getitem__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">events.GameEvent.__getitem__()</span></code></a> will return the value in the type
+that has been defined in the event resource files.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>All games provide different events. Some events might exist on all games,
+but they can still provide different event variables.</p>
+</div>
+</section>
+<section id="printing-event-variables">
+<h2>Printing event variables<a class="headerlink" href="#printing-event-variables" title="Link to this heading">¶</a></h2>
+<p>Sometimes you might want to print all event variables and their values.
+Fortunately, there is a <a class="reference internal" href="modules/events.html#events.GameEvent.variables" title="events.GameEvent.variables"><code class="xref py py-attr docutils literal notranslate"><span class="pre">events.GameEvent.variables</span></code></a> attribute, which
+contains all event variables. You can use this little snippet to display them.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span>
+
+<span class="nd">@Event</span><span class="p">(</span><span class="s1">&#39;player_hurt&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_player_hurt</span><span class="p">(</span><span class="n">game_event</span><span class="p">):</span>
+    <span class="n">pprint</span><span class="p">(</span><span class="n">game_event</span><span class="o">.</span><span class="n">variables</span><span class="o">.</span><span class="n">as_dict</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="available-events">
+<h2>Available events<a class="headerlink" href="#available-events" title="Link to this heading">¶</a></h2>
+<p>Below you can find a list of games and their supported events.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="events/blade.html">Blade Symphony</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events/bms.html">Black Mesa: Source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events/csgo.html">Counter-Strike: Global Offensive</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events/cstrike.html">Counter-Strike: Source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events/dod.html">Day of Defeat: Source</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events/hl2.html">Halflife 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events/hl2mp.html">Half-Life 2 DeathMatch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events/l4d2.html">Left 4 Dead 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events/portal.html">Portal</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events/portal2.html">Portal 2</a></li>
+<li class="toctree-l1"><a class="reference internal" href="events/tf.html">Team Fortress 2</a></li>
+</ul>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Events</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#printing-event-variables">Printing event variables</a></li>
+<li><a class="reference internal" href="#available-events">Available events</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="getting-started.html"
+                          title="previous chapter">Getting started</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="events/blade.html"
+                          title="next chapter">Blade Symphony</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/developing/events.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="events/blade.html" title="Blade Symphony"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="getting-started.html" title="Getting started"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Events</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

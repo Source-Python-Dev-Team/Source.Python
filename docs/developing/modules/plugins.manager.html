@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>plugins.manager module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins.manager module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-plugins.manager">
+<span id="plugins-manager-module"></span><h1>plugins.manager module<a class="headerlink" href="#module-plugins.manager" title="Link to this heading">¶</a></h1>
+<p>Provides plugin loading/unloading functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.manager.</span></span><span class="sig-name descname"><span class="pre">PluginManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_import</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/manager.html#PluginManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.manager.PluginManager" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/collections.html#collections.OrderedDict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrderedDict</span></code></a></p>
+<p>Stores plugins and their instances.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">base_import</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/manager.html#PluginManager.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.manager.PluginManager.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Called when the class instance is initialized.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.get_plugin_directory">
+<span class="sig-name descname"><span class="pre">get_plugin_directory</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/manager.html#PluginManager.get_plugin_directory"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.manager.PluginManager.get_plugin_directory" title="Link to this definition">¶</a></dt>
+<dd><p>Return the directory of the given plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>path.Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.get_plugin_file_path">
+<span class="sig-name descname"><span class="pre">get_plugin_file_path</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/manager.html#PluginManager.get_plugin_file_path"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.manager.PluginManager.get_plugin_file_path" title="Link to this definition">¶</a></dt>
+<dd><p>Return the path to the plugin’s main file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the plugin.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>path.Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.get_plugin_info">
+<span class="sig-name descname"><span class="pre">get_plugin_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/manager.html#PluginManager.get_plugin_info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.manager.PluginManager.get_plugin_info" title="Link to this definition">¶</a></dt>
+<dd><p>Return information about the given plugin.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The plugin to check. You can pass <code class="docutils literal notranslate"><span class="pre">__name__</span></code> from one of your
+plugin files to retrieve its own plugin instance.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="plugins.info.html#plugins.info.PluginInfo" title="plugins.info.PluginInfo">PluginInfo</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.get_plugin_instance">
+<span class="sig-name descname"><span class="pre">get_plugin_instance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/manager.html#PluginManager.get_plugin_instance"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.manager.PluginManager.get_plugin_instance" title="Link to this definition">¶</a></dt>
+<dd><p>Return a plugin’s instance, if it is loaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The plugin to check. You can pass <code class="docutils literal notranslate"><span class="pre">__name__</span></code> from one of your
+plugin files to retrieve its own plugin instance.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="plugins.instance.html#plugins.instance.Plugin" title="plugins.instance.Plugin">Plugin</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.get_plugin_name">
+<span class="sig-name descname"><span class="pre">get_plugin_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/manager.html#PluginManager.get_plugin_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.manager.PluginManager.get_plugin_name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the plugin’s name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The plugin’s real name (will be passed through) or the
+<code class="docutils literal notranslate"><span class="pre">__name__</span></code> variable of one of the plugin’s files.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.is_loaded">
+<span class="sig-name descname"><span class="pre">is_loaded</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/manager.html#PluginManager.is_loaded"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.manager.PluginManager.is_loaded" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether or not a plugin is loaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The plugin to check.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.is_valid_plugin_name">
+<span class="sig-name descname"><span class="pre">is_valid_plugin_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/manager.html#PluginManager.is_valid_plugin_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.manager.PluginManager.is_valid_plugin_name" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether or not the given plugin name is valid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name to check.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.load">
+<span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/manager.html#PluginManager.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.manager.PluginManager.load" title="Link to this definition">¶</a></dt>
+<dd><p>Load a plugin by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the plugin to load.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>InvalidPluginName</strong> – Raised if the given plugin name is invalid.</p></li>
+<li><p><strong>PluginAlreadyLoaded</strong> – Raised if the plugin was already loaded.</p></li>
+<li><p><strong>PluginFileNotFoundError</strong> – Raised if the plugin’s main file wasn’t found.</p></li>
+<li><p><strong>PluginHasBuiltInName</strong> – Raised if the plugin has the name of a built-in module.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#Exception" title="(in Python v3.13)"><strong>Exception</strong></a> – Any other exceptions raised by the plugin during the load process.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="plugins.instance.html#plugins.instance.Plugin" title="plugins.instance.Plugin">Plugin</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.plugin_exists">
+<span class="sig-name descname"><span class="pre">plugin_exists</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/manager.html#PluginManager.plugin_exists"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.manager.PluginManager.plugin_exists" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether of not a plugin exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The plugin to check.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.reload">
+<span class="sig-name descname"><span class="pre">reload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/manager.html#PluginManager.reload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.manager.PluginManager.reload" title="Link to this definition">¶</a></dt>
+<dd><p>Reload a plugin by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the plugin to reload.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>PluginNotLoaded</strong> – Raised if the plugin is not loaded.</p></li>
+<li><p><strong>InvalidPluginName</strong> – Raised if the given plugin name is invalid.</p></li>
+<li><p><strong>PluginFileNotFoundError</strong> – Raised if the plugin’s main file wasn’t found.</p></li>
+<li><p><strong>PluginHasBuiltInName</strong> – Raised if the plugin has the name of a built-in module.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#Exception" title="(in Python v3.13)"><strong>Exception</strong></a> – Any other exceptions raised by the plugin during the load process.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="plugins.instance.html#plugins.instance.Plugin" title="plugins.instance.Plugin">Plugin</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.unload">
+<span class="sig-name descname"><span class="pre">unload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/manager.html#PluginManager.unload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.manager.PluginManager.unload" title="Link to this definition">¶</a></dt>
+<dd><p>Unload a plugin by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the plugin to unload.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>PluginNotLoaded</strong> – Raised if the plugin is not loaded.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.RE_VALID_PLUGIN">
+<span class="sig-name descname"><span class="pre">RE_VALID_PLUGIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">re.compile('^([A-Za-z][A-Za-z0-9_]*[A-Za-z0-9])$')</span></em><a class="headerlink" href="#plugins.manager.PluginManager.RE_VALID_PLUGIN" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.base_import">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">base_import</span></span><a class="headerlink" href="#plugins.manager.PluginManager.base_import" title="Link to this definition">¶</a></dt>
+<dd><p>Return the base import path for the manager.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.loaded_plugins">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">loaded_plugins</span></span><a class="headerlink" href="#plugins.manager.PluginManager.loaded_plugins" title="Link to this definition">¶</a></dt>
+<dd><p>Return a tuple containing all loaded plugins.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The tuple contains <a class="reference internal" href="plugins.instance.html#plugins.instance.Plugin" title="plugins.instance.Plugin"><code class="xref py py-class docutils literal notranslate"><span class="pre">plugins.instance.Plugin</span></code></a> instances.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.plugins">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">plugins</span></span><a class="headerlink" href="#plugins.manager.PluginManager.plugins" title="Link to this definition">¶</a></dt>
+<dd><p>Return a generator to iterate over all existing plugins.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The generator yields the plugin names.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>generator</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.manager.PluginManager.plugins_directory">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">plugins_directory</span></span><a class="headerlink" href="#plugins.manager.PluginManager.plugins_directory" title="Link to this definition">¶</a></dt>
+<dd><p>Return the directory where the plugins are stored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>path.Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.manager.ServerPluginManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.manager.</span></span><span class="sig-name descname"><span class="pre">ServerPluginManager</span></span><a class="headerlink" href="#plugins.manager.ServerPluginManager" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.manager.ServerPluginManager.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#plugins.manager.ServerPluginManager.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.manager.ServerPluginManager.loaded_plugins">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">loaded_plugins</span></span><a class="headerlink" href="#plugins.manager.ServerPluginManager.loaded_plugins" title="Link to this definition">¶</a></dt>
+<dd><p>Return a generator to iterate over all loaded server plugins.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">plugins.manager module</a><ul>
+<li><a class="reference internal" href="#plugins.manager.PluginManager"><code class="docutils literal notranslate"><span class="pre">PluginManager</span></code></a><ul>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.__init__"><code class="docutils literal notranslate"><span class="pre">PluginManager.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.get_plugin_directory"><code class="docutils literal notranslate"><span class="pre">PluginManager.get_plugin_directory()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.get_plugin_file_path"><code class="docutils literal notranslate"><span class="pre">PluginManager.get_plugin_file_path()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.get_plugin_info"><code class="docutils literal notranslate"><span class="pre">PluginManager.get_plugin_info()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.get_plugin_instance"><code class="docutils literal notranslate"><span class="pre">PluginManager.get_plugin_instance()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.get_plugin_name"><code class="docutils literal notranslate"><span class="pre">PluginManager.get_plugin_name()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.is_loaded"><code class="docutils literal notranslate"><span class="pre">PluginManager.is_loaded()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.is_valid_plugin_name"><code class="docutils literal notranslate"><span class="pre">PluginManager.is_valid_plugin_name()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.load"><code class="docutils literal notranslate"><span class="pre">PluginManager.load()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.plugin_exists"><code class="docutils literal notranslate"><span class="pre">PluginManager.plugin_exists()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.reload"><code class="docutils literal notranslate"><span class="pre">PluginManager.reload()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.unload"><code class="docutils literal notranslate"><span class="pre">PluginManager.unload()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.RE_VALID_PLUGIN"><code class="docutils literal notranslate"><span class="pre">PluginManager.RE_VALID_PLUGIN</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.base_import"><code class="docutils literal notranslate"><span class="pre">PluginManager.base_import</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.loaded_plugins"><code class="docutils literal notranslate"><span class="pre">PluginManager.loaded_plugins</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.plugins"><code class="docutils literal notranslate"><span class="pre">PluginManager.plugins</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.PluginManager.plugins_directory"><code class="docutils literal notranslate"><span class="pre">PluginManager.plugins_directory</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#plugins.manager.ServerPluginManager"><code class="docutils literal notranslate"><span class="pre">ServerPluginManager</span></code></a><ul>
+<li><a class="reference internal" href="#plugins.manager.ServerPluginManager.__init__"><code class="docutils literal notranslate"><span class="pre">ServerPluginManager.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.manager.ServerPluginManager.loaded_plugins"><code class="docutils literal notranslate"><span class="pre">ServerPluginManager.loaded_plugins</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/plugins.manager.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins.manager module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>core.command &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../core.html" accesskey="U">core</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">core.command</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for core.command</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../core/command/__init__.py</span>
+
+<span class="sd">&quot;&quot;&quot;Registers the &quot;sp&quot; server command and all of its sub-commands.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span><span class="p">,</span> <span class="n">UTC</span>
+<span class="c1">#   Platform</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">platform</span>
+
+<span class="c1"># Site-Package Imports</span>
+<span class="c1">#   Configobj</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">configobj</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigObj</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Commands</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">commands.typed</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedServerCommand</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_checksum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">SOURCE_ENGINE_BRANCH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">core_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.update</span><span class="w"> </span><span class="kn">import</span> <span class="n">do_full_update</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_last_successful_build_number</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_unversioned</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">VERSION</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">GIT_COMMIT</span>
+<span class="c1">#   Engines</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">execute_server_command</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">queue_command_string</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">engine_server</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">SP_DATA_PATH</span>
+<span class="c1">#   Plugins</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">_plugin_strings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plugins.command</span><span class="w"> </span><span class="kn">import</span> <span class="n">SubCommandManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plugins.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">plugin_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plugins.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">server_plugin_manager</span>
+<span class="c1">#   Tick</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners.tick</span><span class="w"> </span><span class="kn">import</span> <span class="n">Delay</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;CoreCommandManager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;core_command&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Get the sp.core.command logger</span>
+<span class="n">core_command_logger</span> <span class="o">=</span> <span class="n">core_logger</span><span class="o">.</span><span class="n">command</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="CoreCommandManager">
+<a class="viewcode-back" href="../../developing/modules/core.command.html#core.command.CoreCommandManager">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CoreCommandManager</span><span class="p">(</span><span class="n">SubCommandManager</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used for executing &quot;sp&quot; sub-command functionality.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="CoreCommandManager.print_credits">
+<a class="viewcode-back" href="../../developing/modules/core.command.html#core.command.CoreCommandManager.print_credits">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_credits</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List all credits for Source.Python.&quot;&quot;&quot;</span>
+        <span class="c1"># Get header messages</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="n">_plugin_strings</span><span class="p">[</span>
+            <span class="s1">&#39;Credits&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">61</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+
+        <span class="c1"># Get the credits information</span>
+        <span class="n">groups</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span>
+            <span class="n">SP_DATA_PATH</span> <span class="o">/</span> <span class="s1">&#39;credits.ini&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;unicode_escape&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Loop through all groups in the credits</span>
+        <span class="k">for</span> <span class="n">group</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">:</span>
+
+            <span class="c1"># Add the current group&#39;s name</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">group</span> <span class="o">+</span> <span class="s1">&#39;:</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+            <span class="c1"># Loop through all names in the current group</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">groups</span><span class="p">[</span><span class="n">group</span><span class="p">]:</span>
+
+                <span class="c1"># Add the current name</span>
+                <span class="n">message</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\t\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="p">(</span>
+                    <span class="mi">20</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">name</span><span class="p">))</span> <span class="o">+</span> <span class="n">groups</span><span class="p">[</span><span class="n">group</span><span class="p">][</span><span class="n">name</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+            <span class="c1"># Add 1 blank line between groups</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+        <span class="c1"># Print the message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="n">message</span> <span class="o">+</span> <span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">61</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+</div>
+
+
+<span class="n">core_command</span> <span class="o">=</span> <span class="n">CoreCommandManager</span><span class="p">(</span>
+    <span class="n">plugin_manager</span><span class="p">,</span> <span class="s1">&#39;sp&#39;</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="n">core_command_logger</span><span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; sp</span>
+<span class="c1"># =============================================================================</span>
+<span class="nd">@core_command</span><span class="o">.</span><span class="n">server_sub_command</span><span class="p">([</span><span class="s1">&#39;delay&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_sp_delay</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">delay</span><span class="p">:</span><span class="nb">float</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Execute a command after a given delay.&quot;&quot;&quot;</span>
+    <span class="n">Delay</span><span class="p">(</span><span class="n">delay</span><span class="p">,</span> <span class="n">queue_command_string</span><span class="p">,</span> <span class="p">(</span><span class="n">command</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="p">))</span>
+
+
+<span class="nd">@core_command</span><span class="o">.</span><span class="n">server_sub_command</span><span class="p">([</span><span class="s1">&#39;credits&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_sp_credits</span><span class="p">(</span><span class="n">command_info</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List all credits for Source.Python.&quot;&quot;&quot;</span>
+    <span class="n">core_command</span><span class="o">.</span><span class="n">print_credits</span><span class="p">()</span>
+
+
+<span class="nd">@core_command</span><span class="o">.</span><span class="n">server_sub_command</span><span class="p">([</span><span class="s1">&#39;help&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_sp_help</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">command</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">server_sub_commands</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print all sp sub-commands or help for a specific command.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">command</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">execute_server_command</span><span class="p">(</span><span class="s1">&#39;sp&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">commands</span> <span class="o">=</span> <span class="p">(</span><span class="n">command</span><span class="p">,)</span> <span class="o">+</span> <span class="n">server_sub_commands</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="n">TypedServerCommand</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">get_node</span><span class="p">(</span><span class="n">commands</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="n">core_command_logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="s1">&#39;Command &quot;</span><span class="si">{}</span><span class="s1">&quot; does not exist.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">commands</span><span class="p">)))</span>
+        <span class="k">return</span>
+
+    <span class="n">core_command_logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">signature</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">node</span><span class="o">.</span><span class="n">description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">core_command_logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="s1">&#39;  &#39;</span> <span class="o">+</span> <span class="n">node</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+
+
+<span class="nd">@core_command</span><span class="o">.</span><span class="n">server_sub_command</span><span class="p">([</span><span class="s1">&#39;info&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">print_info</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Print information about OS, SP and installed plugins.&quot;&quot;&quot;</span>
+    <span class="n">result</span> <span class="o">=</span>  <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Date          : </span><span class="si">{</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="n">UTC</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">OS            : </span><span class="si">{</span><span class="n">platform</span><span class="o">.</span><span class="n">platform</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Game          : </span><span class="si">{</span><span class="n">SOURCE_ENGINE_BRANCH</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Dedicated     : </span><span class="si">{</span><span class="n">engine_server</span><span class="o">.</span><span class="n">is_dedicated_server</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">SP version    : </span><span class="si">{</span><span class="n">VERSION</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Github commit : </span><span class="si">{</span><span class="n">GIT_COMMIT</span><span class="si">}</span><span class="s1">&#39;</span>
+    <span class="n">result</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">Server plugins:&#39;</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">server_plugin_manager</span><span class="o">.</span><span class="n">loaded_plugins</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">   </span><span class="si">{</span><span class="n">index</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="n">result</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">SP plugins:&#39;</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">plugin_manager</span><span class="o">.</span><span class="n">loaded_plugins</span><span class="p">):</span>
+        <span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">   </span><span class="si">{</span><span class="n">index</span><span class="si">:</span><span class="s1">02d</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">plugin</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&#39;</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="n">plugin</span><span class="o">.</span><span class="n">info</span>
+        <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="s1">&#39;unversioned&#39;</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;, </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;, </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="c1"># Create a checksum for all the the essential information (from &#39;Date&#39; to</span>
+    <span class="c1"># the last SP plugin)</span>
+    <span class="n">checksum</span> <span class="o">=</span> <span class="n">create_checksum</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+    <span class="n">sep</span> <span class="o">=</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">56</span>
+    <span class="n">core_command_logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+        <span class="sa">f</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">IMPORTANT: Please copy the full output.</span><span class="se">\n</span><span class="si">{</span><span class="n">sep</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+        <span class="sa">f</span><span class="s1">&#39;Checksum      : </span><span class="si">{</span><span class="n">checksum</span><span class="si">}{</span><span class="n">result</span><span class="si">}</span><span class="se">\n</span><span class="si">{</span><span class="n">sep</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+<span class="nd">@core_command</span><span class="o">.</span><span class="n">server_sub_command</span><span class="p">([</span><span class="s1">&#39;update&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_sp</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Update Source.Python to the latest version. A restart of the server is</span>
+<span class="sd">    required.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">is_unversioned</span><span class="p">()</span> <span class="ow">and</span> <span class="n">VERSION</span> <span class="o">&gt;=</span> <span class="n">get_last_successful_build_number</span><span class="p">():</span>
+        <span class="n">core_command_logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="s1">&#39;No new version available.&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+        
+    <span class="n">do_full_update</span><span class="p">()</span>
+    
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; DESCRIPTION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">TypedServerCommand</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">set_node_description</span><span class="p">(</span>
+    <span class="s1">&#39;sp&#39;</span><span class="p">,</span> <span class="s1">&#39;Source.Python main command.&#39;</span><span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../core.html" >core</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">core.command</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

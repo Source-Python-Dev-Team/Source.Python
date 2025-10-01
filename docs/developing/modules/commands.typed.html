@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>commands.typed module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">commands.typed module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-commands.typed">
+<span id="commands-typed-module"></span><h1>commands.typed module<a class="headerlink" href="#module-commands.typed" title="Link to this heading">¶</a></h1>
+<dl class="py exception">
+<dt class="sig sig-object py" id="commands.typed.ArgumentError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.typed.</span></span><span class="sig-name descname"><span class="pre">ArgumentError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#ArgumentError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.ArgumentError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#commands.typed.ValidationError" title="commands.typed.ValidationError"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValidationError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="commands.typed.ArgumentNumberMismatch">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.typed.</span></span><span class="sig-name descname"><span class="pre">ArgumentNumberMismatch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#ArgumentNumberMismatch"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.ArgumentNumberMismatch" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#commands.typed.ArgumentError" title="commands.typed.ArgumentError"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArgumentError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="commands.typed.InvalidArgumentValue">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.typed.</span></span><span class="sig-name descname"><span class="pre">InvalidArgumentValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#InvalidArgumentValue"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.InvalidArgumentValue" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#commands.typed.ArgumentError" title="commands.typed.ArgumentError"><code class="xref py py-class docutils literal notranslate"><span class="pre">ArgumentError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="commands.typed.SubCommandError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.typed.</span></span><span class="sig-name descname"><span class="pre">SubCommandError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#SubCommandError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.SubCommandError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#commands.typed.ValidationError" title="commands.typed.ValidationError"><code class="xref py py-class docutils literal notranslate"><span class="pre">ValidationError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="commands.typed.SubCommandExpectedError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.typed.</span></span><span class="sig-name descname"><span class="pre">SubCommandExpectedError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#SubCommandExpectedError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.SubCommandExpectedError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#commands.typed.SubCommandError" title="commands.typed.SubCommandError"><code class="xref py py-class docutils literal notranslate"><span class="pre">SubCommandError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="commands.typed.SubCommandNotFound">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.typed.</span></span><span class="sig-name descname"><span class="pre">SubCommandNotFound</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#SubCommandNotFound"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.SubCommandNotFound" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#commands.typed.SubCommandError" title="commands.typed.SubCommandError"><code class="xref py py-class docutils literal notranslate"><span class="pre">SubCommandError</span></code></a></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="commands.typed.ValidationError">
+<em class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.typed.</span></span><span class="sig-name descname"><span class="pre">ValidationError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#ValidationError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.ValidationError" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#Exception" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.ValidationError.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#ValidationError.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.ValidationError.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commands.typed.CommandInfo">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.typed.</span></span><span class="sig-name descname"><span class="pre">CommandInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typed_command_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">team_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#CommandInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.CommandInfo" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Stores command information for typed commands.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.CommandInfo.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">typed_command_cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">team_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#CommandInfo.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.CommandInfo.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes the instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>command</strong> (<a class="reference internal" href="commands.html#commands.Command" title="commands.Command"><em>Command</em></a>) – The actual Command instance.</p></li>
+<li><p><strong>typed_command_cls</strong> (<em>_TypedCommand</em>) – Command this instance belongs to.</p></li>
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The index of the player that issued the command. None, if it’s a
+server command.</p></li>
+<li><p><strong>team_only</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Indicates whether the command was issued in team chat. None, if
+it’s a server or client command.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.CommandInfo.is_private_command">
+<span class="sig-name descname"><span class="pre">is_private_command</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#CommandInfo.is_private_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.CommandInfo.is_private_command" title="Link to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if it’s a private command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.CommandInfo.reply">
+<span class="sig-name descname"><span class="pre">reply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#CommandInfo.reply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.CommandInfo.reply" title="Link to this definition">¶</a></dt>
+<dd><p>Reply to the command issuer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>msg</strong> (<em>str/TranslationStrings</em>) – Message to send.</p></li>
+<li><p><strong>language</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Language to be used.</p></li>
+<li><p><strong>tokens</strong> – Translation tokens for message.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="commands.typed.CommandInfo.auto_command_return">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">auto_command_return</span></span><a class="headerlink" href="#commands.typed.CommandInfo.auto_command_return" title="Link to this definition">¶</a></dt>
+<dd><p>Determine the probably most desired <code class="docutils literal notranslate"><span class="pre">CommandReturn</span></code> value.</p>
+<p>For server commands it will always return <code class="docutils literal notranslate"><span class="pre">CommandReturn.CONTINUE</span></code>.
+Client commands will always use <code class="docutils literal notranslate"><span class="pre">CommandReturn.BLOCK</span></code>. For say
+commands it’s determined by checking the prefix. If the command starts
+with a slash (<code class="docutils literal notranslate"><span class="pre">/</span></code>) it’s handled as a private command. Thus,
+<code class="docutils literal notranslate"><span class="pre">CommandReturn.BLOCK</span></code> is returned. Otherwise
+<code class="docutils literal notranslate"><span class="pre">CommandReturn.CONTINUE</span></code> is used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="commands.html#commands.CommandReturn" title="commands.CommandReturn">CommandReturn</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commands.typed.CommandNode">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.typed.</span></span><span class="sig-name descname"><span class="pre">CommandNode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_callback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requires_registration</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#CommandNode"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.CommandNode" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#commands.typed.Node" title="commands.typed.Node"><code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.CommandNode.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_callback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">requires_registration</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#CommandNode.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.CommandNode.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the object.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#commands.typed.CommandParser.add_command" title="commands.typed.CommandParser.add_command"><code class="xref py py-meth docutils literal notranslate"><span class="pre">CommandParser.add_command()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="commands.typed.CommandNode.signature">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signature</span></span><a class="headerlink" href="#commands.typed.CommandNode.signature" title="Link to this definition">¶</a></dt>
+<dd><p>Return the full signature of a command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commands.typed.CommandParser">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.typed.</span></span><span class="sig-name descname"><span class="pre">CommandParser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#CommandParser"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.CommandParser" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#commands.typed.Store" title="commands.typed.Store"><code class="xref py py-class docutils literal notranslate"><span class="pre">Store</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.CommandParser.add_command">
+<span class="sig-name descname"><span class="pre">add_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">params</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fail_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#CommandParser.add_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.CommandParser.add_command" title="Link to this definition">¶</a></dt>
+<dd><p>Add a command to the parser.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>commands</strong> (<em>str/list/tuple</em>) – Command to register.</p></li>
+<li><p><strong>params</strong> (<em>iterable</em>) – Parameters of the command.</p></li>
+<li><p><strong>callback</strong> (<em>callable</em>) – The callback for the command.</p></li>
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Description of the command.</p></li>
+<li><p><strong>permission</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Required permission to use the command.</p></li>
+<li><p><strong>fail_callback</strong> (<em>callable</em>) – Callback that gets called if authorization failed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#commands.typed.CommandNode" title="commands.typed.CommandNode">CommandNode</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.CommandParser.clean_command">
+<span class="sig-name descname"><span class="pre">clean_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#CommandParser.clean_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.CommandParser.clean_command" title="Link to this definition">¶</a></dt>
+<dd><p>Clean a command and its passed arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>command</strong> (<a class="reference internal" href="#commands.typed.CommandNode" title="commands.typed.CommandNode"><em>CommandNode</em></a>)</p></li>
+<li><p><strong>args</strong> (<em>iterable</em>) – The arguments to clean.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference internal" href="#commands.typed.InvalidArgumentValue" title="commands.typed.InvalidArgumentValue"><strong>InvalidArgumentValue</strong></a> – Raised if the value is invalid for an argument.</p></li>
+<li><p><a class="reference internal" href="#commands.typed.ArgumentNumberMismatch" title="commands.typed.ArgumentNumberMismatch"><strong>ArgumentNumberMismatch</strong></a> – Raised if too many/less arguments have been passed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.CommandParser.get_command">
+<span class="sig-name descname"><span class="pre">get_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#CommandParser.get_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.CommandParser.get_command" title="Link to this definition">¶</a></dt>
+<dd><p>Return a command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>str/list/tuple</strong> – Command to search.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#commands.typed.CommandNode" title="commands.typed.CommandNode">CommandNode</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#commands.typed.CommandParser.get_node" title="commands.typed.CommandParser.get_node"><code class="xref py py-meth docutils literal notranslate"><span class="pre">get_node()</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.CommandParser.get_node">
+<span class="sig-name descname"><span class="pre">get_node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#CommandParser.get_node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.CommandParser.get_node" title="Link to this definition">¶</a></dt>
+<dd><p>Return a node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>str/list/tuple</strong> – Node to seach.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Raised if the node does not exist.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#commands.typed.Node" title="commands.typed.Node">Node</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">_validate_command()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.CommandParser.parse_command">
+<span class="sig-name descname"><span class="pre">parse_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#CommandParser.parse_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.CommandParser.parse_command" title="Link to this definition">¶</a></dt>
+<dd><p>Parse a <code class="xref py py-class docutils literal notranslate"><span class="pre">Command</span></code> object.</p>
+<p>Splits the command into the actual command and its arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>command</strong> (<a class="reference internal" href="commands.html#commands.Command" title="commands.Command"><em>Command</em></a>) – A command to parse.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference internal" href="#commands.typed.SubCommandNotFound" title="commands.typed.SubCommandNotFound"><strong>SubCommandNotFound</strong></a> – Raised if a sub command was not found.</p></li>
+<li><p><strong>SubCommandExpected</strong> – Raised if a sub command was expected, but more arguments have been
+passed.</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.CommandParser.remove_command">
+<span class="sig-name descname"><span class="pre">remove_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#CommandParser.remove_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.CommandParser.remove_command" title="Link to this definition">¶</a></dt>
+<dd><p>Remove a command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>str/list/tuple</strong> – Command to remove.</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">_remove_command()</span></code></p>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">_validate_commands()</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.CommandParser.set_node_description">
+<span class="sig-name descname"><span class="pre">set_node_description</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#CommandParser.set_node_description"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.CommandParser.set_node_description" title="Link to this definition">¶</a></dt>
+<dd><p>Set the description of a node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>str/list/tuple</strong> – Node to seach.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Raised if the node does not exist.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commands.typed.Node">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.typed.</span></span><span class="sig-name descname"><span class="pre">Node</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#Node"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.Node" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.Node.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#Node.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.Node.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="commands.typed.Node.signature">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signature</span></span><a class="headerlink" href="#commands.typed.Node.signature" title="Link to this definition">¶</a></dt>
+<dd><p>Return the signature of the node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commands.typed.Store">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.typed.</span></span><span class="sig-name descname"><span class="pre">Store</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#Store"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.Store" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#commands.typed.Node" title="commands.typed.Node"><code class="xref py py-class docutils literal notranslate"><span class="pre">Node</span></code></a>, <a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.Store.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#Store.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.Store.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="commands.typed.Store.help_text">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">help_text</span></span><a class="headerlink" href="#commands.typed.Store.help_text" title="Link to this definition">¶</a></dt>
+<dd><p>Return the help text of the node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="commands.typed.Store.signature">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signature</span></span><a class="headerlink" href="#commands.typed.Store.signature" title="Link to this definition">¶</a></dt>
+<dd><p>Return the signature of the node.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commands.typed.TypedClientCommand">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.typed.</span></span><span class="sig-name descname"><span class="pre">TypedClientCommand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#TypedClientCommand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.TypedClientCommand" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_TypedPlayerCommand</span></code></p>
+<p>Decorator class to create typed client commands.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.TypedClientCommand.get_auto_command_return">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_auto_command_return</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#TypedClientCommand.get_auto_command_return"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.TypedClientCommand.get_auto_command_return" title="Link to this definition">¶</a></dt>
+<dd><p>Return the most desired <code class="docutils literal notranslate"><span class="pre">CommandReturn</span></code> value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="commands.html#commands.CommandReturn" title="commands.CommandReturn">CommandReturn</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.TypedClientCommand.send_message">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#TypedClientCommand.send_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.TypedClientCommand.send_message" title="Link to this definition">¶</a></dt>
+<dd><p>Send a message.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commands.typed.TypedClientCommand.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;commands.client._ClientCommandManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#commands.typed.TypedClientCommand.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commands.typed.TypedClientCommand.parser">
+<span class="sig-name descname"><span class="pre">parser</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#commands.typed.TypedClientCommand.parser" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commands.typed.TypedSayCommand">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.typed.</span></span><span class="sig-name descname"><span class="pre">TypedSayCommand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#TypedSayCommand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.TypedSayCommand" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_TypedPlayerCommand</span></code></p>
+<p>Decorator class to create typed say commands.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.TypedSayCommand.get_auto_command_return">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_auto_command_return</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#TypedSayCommand.get_auto_command_return"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.TypedSayCommand.get_auto_command_return" title="Link to this definition">¶</a></dt>
+<dd><p>Return the most desired <code class="docutils literal notranslate"><span class="pre">CommandReturn</span></code> value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="commands.html#commands.CommandReturn" title="commands.CommandReturn">CommandReturn</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.TypedSayCommand.send_message">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#TypedSayCommand.send_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.TypedSayCommand.send_message" title="Link to this definition">¶</a></dt>
+<dd><p>Send a message.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commands.typed.TypedSayCommand.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;commands.say._SayCommandManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#commands.typed.TypedSayCommand.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commands.typed.TypedSayCommand.parser">
+<span class="sig-name descname"><span class="pre">parser</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{}</span></em><a class="headerlink" href="#commands.typed.TypedSayCommand.parser" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commands.typed.TypedServerCommand">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.typed.</span></span><span class="sig-name descname"><span class="pre">TypedServerCommand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#TypedServerCommand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.TypedServerCommand" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_TypedCommand</span></code></p>
+<p>Decorator class to create typed server commands.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.TypedServerCommand.get_auto_command_return">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">get_auto_command_return</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#TypedServerCommand.get_auto_command_return"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.TypedServerCommand.get_auto_command_return" title="Link to this definition">¶</a></dt>
+<dd><p>Return the most desired <code class="docutils literal notranslate"><span class="pre">CommandReturn</span></code> value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="commands.html#commands.CommandReturn" title="commands.CommandReturn">CommandReturn</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.typed.TypedServerCommand.send_message">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">send_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">command_info</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#TypedServerCommand.send_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.TypedServerCommand.send_message" title="Link to this definition">¶</a></dt>
+<dd><p>Send a message.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commands.typed.TypedServerCommand.manager">
+<span class="sig-name descname"><span class="pre">manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;commands.server._ServerCommandManager</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#commands.typed.TypedServerCommand.manager" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="commands.typed.TypedServerCommand.parser">
+<span class="sig-name descname"><span class="pre">parser</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'sp':</span> <span class="pre">{'auth':</span> <span class="pre">{'backend':</span> <span class="pre">{'list':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'set':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;},</span> <span class="pre">'permission':</span> <span class="pre">{'parent':</span> <span class="pre">{'add':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'add_parent':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'list':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'remove':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'remove_parent':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;},</span> <span class="pre">'player':</span> <span class="pre">{'add':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'add_parent':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'remove':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'remove_parent':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'test':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;}}},</span> <span class="pre">'credits':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'delay':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'docs':</span> <span class="pre">{'build':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'create':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'generate':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;},</span> <span class="pre">'dump':</span> <span class="pre">{'class_info':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'convars':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'datamaps':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'server_classes':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'string_tables':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'weapon_scripts':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;},</span> <span class="pre">'help':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'info':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'plugin':</span> <span class="pre">{'list':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'load':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'reload':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;,</span> <span class="pre">'unload':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;},</span> <span class="pre">'update':</span> <span class="pre">&lt;commands.typed.CommandNode</span> <span class="pre">object&gt;}}</span></em><a class="headerlink" href="#commands.typed.TypedServerCommand.parser" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commands.typed.filter_str">
+<span class="sig-prename descclassname"><span class="pre">commands.typed.</span></span><span class="sig-name descname"><span class="pre">filter_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/typed.html#filter_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.typed.filter_str" title="Link to this definition">¶</a></dt>
+<dd><div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="filters.players.html#filters.players.parse_filter" title="filters.players.parse_filter"><code class="xref py py-func docutils literal notranslate"><span class="pre">filters.players.parse_filter()</span></code></a></p>
+</div>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">commands.typed module</a><ul>
+<li><a class="reference internal" href="#commands.typed.ArgumentError"><code class="docutils literal notranslate"><span class="pre">ArgumentError</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.ArgumentNumberMismatch"><code class="docutils literal notranslate"><span class="pre">ArgumentNumberMismatch</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.InvalidArgumentValue"><code class="docutils literal notranslate"><span class="pre">InvalidArgumentValue</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.SubCommandError"><code class="docutils literal notranslate"><span class="pre">SubCommandError</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.SubCommandExpectedError"><code class="docutils literal notranslate"><span class="pre">SubCommandExpectedError</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.SubCommandNotFound"><code class="docutils literal notranslate"><span class="pre">SubCommandNotFound</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.ValidationError"><code class="docutils literal notranslate"><span class="pre">ValidationError</span></code></a><ul>
+<li><a class="reference internal" href="#commands.typed.ValidationError.__init__"><code class="docutils literal notranslate"><span class="pre">ValidationError.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#commands.typed.CommandInfo"><code class="docutils literal notranslate"><span class="pre">CommandInfo</span></code></a><ul>
+<li><a class="reference internal" href="#commands.typed.CommandInfo.__init__"><code class="docutils literal notranslate"><span class="pre">CommandInfo.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.CommandInfo.is_private_command"><code class="docutils literal notranslate"><span class="pre">CommandInfo.is_private_command()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.CommandInfo.reply"><code class="docutils literal notranslate"><span class="pre">CommandInfo.reply()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.CommandInfo.auto_command_return"><code class="docutils literal notranslate"><span class="pre">CommandInfo.auto_command_return</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#commands.typed.CommandNode"><code class="docutils literal notranslate"><span class="pre">CommandNode</span></code></a><ul>
+<li><a class="reference internal" href="#commands.typed.CommandNode.__init__"><code class="docutils literal notranslate"><span class="pre">CommandNode.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.CommandNode.signature"><code class="docutils literal notranslate"><span class="pre">CommandNode.signature</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#commands.typed.CommandParser"><code class="docutils literal notranslate"><span class="pre">CommandParser</span></code></a><ul>
+<li><a class="reference internal" href="#commands.typed.CommandParser.add_command"><code class="docutils literal notranslate"><span class="pre">CommandParser.add_command()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.CommandParser.clean_command"><code class="docutils literal notranslate"><span class="pre">CommandParser.clean_command()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.CommandParser.get_command"><code class="docutils literal notranslate"><span class="pre">CommandParser.get_command()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.CommandParser.get_node"><code class="docutils literal notranslate"><span class="pre">CommandParser.get_node()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.CommandParser.parse_command"><code class="docutils literal notranslate"><span class="pre">CommandParser.parse_command()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.CommandParser.remove_command"><code class="docutils literal notranslate"><span class="pre">CommandParser.remove_command()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.CommandParser.set_node_description"><code class="docutils literal notranslate"><span class="pre">CommandParser.set_node_description()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#commands.typed.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a><ul>
+<li><a class="reference internal" href="#commands.typed.Node.__init__"><code class="docutils literal notranslate"><span class="pre">Node.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.Node.signature"><code class="docutils literal notranslate"><span class="pre">Node.signature</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#commands.typed.Store"><code class="docutils literal notranslate"><span class="pre">Store</span></code></a><ul>
+<li><a class="reference internal" href="#commands.typed.Store.__init__"><code class="docutils literal notranslate"><span class="pre">Store.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.Store.help_text"><code class="docutils literal notranslate"><span class="pre">Store.help_text</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.Store.signature"><code class="docutils literal notranslate"><span class="pre">Store.signature</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#commands.typed.TypedClientCommand"><code class="docutils literal notranslate"><span class="pre">TypedClientCommand</span></code></a><ul>
+<li><a class="reference internal" href="#commands.typed.TypedClientCommand.get_auto_command_return"><code class="docutils literal notranslate"><span class="pre">TypedClientCommand.get_auto_command_return()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.TypedClientCommand.send_message"><code class="docutils literal notranslate"><span class="pre">TypedClientCommand.send_message()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.TypedClientCommand.manager"><code class="docutils literal notranslate"><span class="pre">TypedClientCommand.manager</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.TypedClientCommand.parser"><code class="docutils literal notranslate"><span class="pre">TypedClientCommand.parser</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#commands.typed.TypedSayCommand"><code class="docutils literal notranslate"><span class="pre">TypedSayCommand</span></code></a><ul>
+<li><a class="reference internal" href="#commands.typed.TypedSayCommand.get_auto_command_return"><code class="docutils literal notranslate"><span class="pre">TypedSayCommand.get_auto_command_return()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.TypedSayCommand.send_message"><code class="docutils literal notranslate"><span class="pre">TypedSayCommand.send_message()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.TypedSayCommand.manager"><code class="docutils literal notranslate"><span class="pre">TypedSayCommand.manager</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.TypedSayCommand.parser"><code class="docutils literal notranslate"><span class="pre">TypedSayCommand.parser</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#commands.typed.TypedServerCommand"><code class="docutils literal notranslate"><span class="pre">TypedServerCommand</span></code></a><ul>
+<li><a class="reference internal" href="#commands.typed.TypedServerCommand.get_auto_command_return"><code class="docutils literal notranslate"><span class="pre">TypedServerCommand.get_auto_command_return()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.TypedServerCommand.send_message"><code class="docutils literal notranslate"><span class="pre">TypedServerCommand.send_message()</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.TypedServerCommand.manager"><code class="docutils literal notranslate"><span class="pre">TypedServerCommand.manager</span></code></a></li>
+<li><a class="reference internal" href="#commands.typed.TypedServerCommand.parser"><code class="docutils literal notranslate"><span class="pre">TypedServerCommand.parser</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#commands.typed.filter_str"><code class="docutils literal notranslate"><span class="pre">filter_str()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/commands.typed.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">commands.typed module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

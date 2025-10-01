@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>messages.base module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">messages.base module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-messages.base">
+<span id="messages-base-module"></span><h1>messages.base module<a class="headerlink" href="#module-messages.base" title="Link to this heading">¶</a></h1>
+<p>Provides user messages.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.base.AttrDict">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.base.</span></span><span class="sig-name descname"><span class="pre">AttrDict</span></span><a class="reference internal" href="../../_modules/messages/base.html#AttrDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.AttrDict" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+<p>A dictionary that redirects __getattr__ and __setattr__.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.base.Fade">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.base.</span></span><span class="sig-name descname"><span class="pre">Fade</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hold_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Color(255,</span> <span class="pre">255,</span> <span class="pre">255,</span> <span class="pre">255)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_messages.FadeFlags.IN</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#Fade"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.Fade" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#messages.base.UserMessageCreator" title="messages.base.UserMessageCreator"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserMessageCreator</span></code></a></p>
+<p>Create a Fade.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.Fade.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hold_time</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Color(255,</span> <span class="pre">255,</span> <span class="pre">255,</span> <span class="pre">255)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_messages.FadeFlags.IN</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#Fade.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.Fade.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the Fade instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.Fade.bitbuf">
+<span class="sig-name descname"><span class="pre">bitbuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#Fade.bitbuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.Fade.bitbuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the Fade with bitbuf.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.Fade.protobuf">
+<span class="sig-name descname"><span class="pre">protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#Fade.protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.Fade.protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the Fade with protobuf.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.Fade.message_name">
+<span class="sig-name descname"><span class="pre">message_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Fade'</span></em><a class="headerlink" href="#messages.base.Fade.message_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.Fade.moved_frac_bits">
+<span class="sig-name descname"><span class="pre">moved_frac_bits</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">512</span></em><a class="headerlink" href="#messages.base.Fade.moved_frac_bits" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.Fade.translatable_fields">
+<span class="sig-name descname"><span class="pre">translatable_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#messages.base.Fade.translatable_fields" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.base.HintText">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.base.</span></span><span class="sig-name descname"><span class="pre">HintText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#HintText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.HintText" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#messages.base.UserMessageCreator" title="messages.base.UserMessageCreator"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserMessageCreator</span></code></a></p>
+<p>Create a HintText.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.HintText.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#HintText.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.HintText.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the HintText instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.HintText.bitbuf">
+<span class="sig-name descname"><span class="pre">bitbuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#HintText.bitbuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.HintText.bitbuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the HintText with bitbuf.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.HintText.protobuf">
+<span class="sig-name descname"><span class="pre">protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#HintText.protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.HintText.protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the HintText with protobuf.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.HintText.message_name">
+<span class="sig-name descname"><span class="pre">message_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'HintText'</span></em><a class="headerlink" href="#messages.base.HintText.message_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.HintText.translatable_fields">
+<span class="sig-name descname"><span class="pre">translatable_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['message']</span></em><a class="headerlink" href="#messages.base.HintText.translatable_fields" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.base.HudMsg">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.base.</span></span><span class="sig-name descname"><span class="pre">HudMsg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Color(255,</span> <span class="pre">255,</span> <span class="pre">255,</span> <span class="pre">255)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Color(255,</span> <span class="pre">255,</span> <span class="pre">255,</span> <span class="pre">255)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">effect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fade_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fade_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hold_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fx_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#HudMsg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.HudMsg" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#messages.base.UserMessageCreator" title="messages.base.UserMessageCreator"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserMessageCreator</span></code></a></p>
+<p>Create a HudMsg.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.HudMsg.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Color(255,</span> <span class="pre">255,</span> <span class="pre">255,</span> <span class="pre">255)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Color(255,</span> <span class="pre">255,</span> <span class="pre">255,</span> <span class="pre">255)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">effect</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fade_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fade_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hold_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fx_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#HudMsg.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.HudMsg.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the HudMsg instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.HudMsg.bitbuf">
+<span class="sig-name descname"><span class="pre">bitbuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#HudMsg.bitbuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.HudMsg.bitbuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the HudMsg with bitbuf.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.HudMsg.protobuf">
+<span class="sig-name descname"><span class="pre">protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#HudMsg.protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.HudMsg.protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the HudMsg with protobuf.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.HudMsg.message_name">
+<span class="sig-name descname"><span class="pre">message_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'HudMsg'</span></em><a class="headerlink" href="#messages.base.HudMsg.message_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.HudMsg.translatable_fields">
+<span class="sig-name descname"><span class="pre">translatable_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['message']</span></em><a class="headerlink" href="#messages.base.HudMsg.translatable_fields" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.base.KeyHintText">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.base.</span></span><span class="sig-name descname"><span class="pre">KeyHintText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">hints</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#KeyHintText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.KeyHintText" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#messages.base.UserMessageCreator" title="messages.base.UserMessageCreator"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserMessageCreator</span></code></a></p>
+<p>Create a KeyHintText.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.KeyHintText.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">hints</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#KeyHintText.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.KeyHintText.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the KeyHintText instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.KeyHintText.bitbuf">
+<span class="sig-name descname"><span class="pre">bitbuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#KeyHintText.bitbuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.KeyHintText.bitbuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the KeyHintText with bitbuf.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.KeyHintText.protobuf">
+<span class="sig-name descname"><span class="pre">protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#KeyHintText.protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.KeyHintText.protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the KeyHintText with protobuf.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.KeyHintText.message_name">
+<span class="sig-name descname"><span class="pre">message_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'KeyHintText'</span></em><a class="headerlink" href="#messages.base.KeyHintText.message_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.base.ResetHUD">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.base.</span></span><span class="sig-name descname"><span class="pre">ResetHUD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#ResetHUD"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.ResetHUD" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#messages.base.UserMessageCreator" title="messages.base.UserMessageCreator"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserMessageCreator</span></code></a></p>
+<p>Create a ResetHUD.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.ResetHUD.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#ResetHUD.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.ResetHUD.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the ResetHUD instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.ResetHUD.bitbuf">
+<span class="sig-name descname"><span class="pre">bitbuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#ResetHUD.bitbuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.ResetHUD.bitbuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the ResetHUD with bitbuf.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.ResetHUD.protobuf">
+<span class="sig-name descname"><span class="pre">protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#ResetHUD.protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.ResetHUD.protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the ResetHUD with protobuf.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.ResetHUD.message_name">
+<span class="sig-name descname"><span class="pre">message_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ResetHud'</span></em><a class="headerlink" href="#messages.base.ResetHUD.message_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.ResetHUD.translatable_fields">
+<span class="sig-name descname"><span class="pre">translatable_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#messages.base.ResetHUD.translatable_fields" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.base.SayText">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.base.</span></span><span class="sig-name descname"><span class="pre">SayText</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\x01'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#SayText"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.SayText" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#messages.base.UserMessageCreator" title="messages.base.UserMessageCreator"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserMessageCreator</span></code></a></p>
+<p>Create a SayText.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.SayText.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\x01'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#SayText.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.SayText.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the SayText instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.SayText.bitbuf">
+<span class="sig-name descname"><span class="pre">bitbuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#SayText.bitbuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.SayText.bitbuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the SayText with bitbuf.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.SayText.protobuf">
+<span class="sig-name descname"><span class="pre">protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#SayText.protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.SayText.protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the SayText with protobuf.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.SayText.message_name">
+<span class="sig-name descname"><span class="pre">message_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SayText'</span></em><a class="headerlink" href="#messages.base.SayText.message_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.SayText.reliable">
+<span class="sig-name descname"><span class="pre">reliable</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#messages.base.SayText.reliable" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.SayText.translatable_fields">
+<span class="sig-name descname"><span class="pre">translatable_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['message']</span></em><a class="headerlink" href="#messages.base.SayText.translatable_fields" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.base.SayText2">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.base.</span></span><span class="sig-name descname"><span class="pre">SayText2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param4</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\x01'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#SayText2"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.SayText2" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#messages.base.UserMessageCreator" title="messages.base.UserMessageCreator"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserMessageCreator</span></code></a></p>
+<p>Create a SayText2.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.SayText2.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">chat</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param4</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'\x01'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#SayText2.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.SayText2.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the SayText2 instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.SayText2.bitbuf">
+<span class="sig-name descname"><span class="pre">bitbuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#SayText2.bitbuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.SayText2.bitbuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the SayText2 with bitbuf.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.SayText2.protobuf">
+<span class="sig-name descname"><span class="pre">protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#SayText2.protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.SayText2.protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the SayText2 with protobuf.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.SayText2.message_name">
+<span class="sig-name descname"><span class="pre">message_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'SayText2'</span></em><a class="headerlink" href="#messages.base.SayText2.message_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.SayText2.reliable">
+<span class="sig-name descname"><span class="pre">reliable</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#messages.base.SayText2.reliable" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.SayText2.translatable_fields">
+<span class="sig-name descname"><span class="pre">translatable_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['message',</span> <span class="pre">'param1',</span> <span class="pre">'param2',</span> <span class="pre">'param3',</span> <span class="pre">'param4']</span></em><a class="headerlink" href="#messages.base.SayText2.translatable_fields" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.base.Shake">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.base.</span></span><span class="sig-name descname"><span class="pre">Shake</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amplitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shake_command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_messages.ShakeCommand.START</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#Shake"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.Shake" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#messages.base.UserMessageCreator" title="messages.base.UserMessageCreator"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserMessageCreator</span></code></a></p>
+<p>Create a Shake.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.Shake.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">amplitude</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">duration</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">shake_command</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_messages.ShakeCommand.START</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#Shake.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.Shake.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the Shake instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.Shake.bitbuf">
+<span class="sig-name descname"><span class="pre">bitbuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#Shake.bitbuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.Shake.bitbuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the Shake with bitbuf.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.Shake.protobuf">
+<span class="sig-name descname"><span class="pre">protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#Shake.protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.Shake.protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the Shake with protobuf.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.Shake.message_name">
+<span class="sig-name descname"><span class="pre">message_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Shake'</span></em><a class="headerlink" href="#messages.base.Shake.message_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.Shake.translatable_fields">
+<span class="sig-name descname"><span class="pre">translatable_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#messages.base.Shake.translatable_fields" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.base.ShowMenu">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.base.</span></span><span class="sig-name descname"><span class="pre">ShowMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">menu_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_slots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1023</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#ShowMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.ShowMenu" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#messages.base.UserMessageCreator" title="messages.base.UserMessageCreator"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserMessageCreator</span></code></a></p>
+<p>Create a radio menu.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.ShowMenu.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">menu_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_slots</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1023</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">4</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#ShowMenu.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.ShowMenu.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the radio menu.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.ShowMenu.bitbuf">
+<span class="sig-name descname"><span class="pre">bitbuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player_indexes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#ShowMenu.bitbuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.ShowMenu.bitbuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the ShowMenu with bitbuf.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.ShowMenu.protobuf">
+<span class="sig-name descname"><span class="pre">protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#ShowMenu.protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.ShowMenu.protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the ShowMenu with protobuf.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.ShowMenu.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">player_indexes</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#ShowMenu.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.ShowMenu.send" title="Link to this definition">¶</a></dt>
+<dd><p>Send the user message.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.ShowMenu.chunk_size">
+<span class="sig-name descname"><span class="pre">chunk_size</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">62</span></em><a class="headerlink" href="#messages.base.ShowMenu.chunk_size" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.ShowMenu.message_name">
+<span class="sig-name descname"><span class="pre">message_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ShowMenu'</span></em><a class="headerlink" href="#messages.base.ShowMenu.message_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.ShowMenu.translatable_fields">
+<span class="sig-name descname"><span class="pre">translatable_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#messages.base.ShowMenu.translatable_fields" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.base.TextMsg">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.base.</span></span><span class="sig-name descname"><span class="pre">TextMsg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_messages.HudDestination.CENTER</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param4</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#TextMsg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.TextMsg" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#messages.base.UserMessageCreator" title="messages.base.UserMessageCreator"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserMessageCreator</span></code></a></p>
+<p>Create a TextMsg.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.TextMsg.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">destination</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_messages.HudDestination.CENTER</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param1</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param2</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param3</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param4</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#TextMsg.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.TextMsg.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the TextMsg instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.TextMsg.bitbuf">
+<span class="sig-name descname"><span class="pre">bitbuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#TextMsg.bitbuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.TextMsg.bitbuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the TextMsg with bitbuf.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.TextMsg.protobuf">
+<span class="sig-name descname"><span class="pre">protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#TextMsg.protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.TextMsg.protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the TextMsg with protobuf.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.TextMsg.message_name">
+<span class="sig-name descname"><span class="pre">message_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'TextMsg'</span></em><a class="headerlink" href="#messages.base.TextMsg.message_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.TextMsg.reliable">
+<span class="sig-name descname"><span class="pre">reliable</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">True</span></em><a class="headerlink" href="#messages.base.TextMsg.reliable" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.TextMsg.translatable_fields">
+<span class="sig-name descname"><span class="pre">translatable_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">['message',</span> <span class="pre">'param1',</span> <span class="pre">'param2',</span> <span class="pre">'param3',</span> <span class="pre">'param4']</span></em><a class="headerlink" href="#messages.base.TextMsg.translatable_fields" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.base.UserMessageCreator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.base.</span></span><span class="sig-name descname"><span class="pre">UserMessageCreator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#UserMessageCreator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.UserMessageCreator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#messages.base.AttrDict" title="messages.base.AttrDict"><code class="xref py py-class docutils literal notranslate"><span class="pre">AttrDict</span></code></a></p>
+<p>Provide an easy interface to create user messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Attr bool reliable<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Whether to send message using reliable channel.</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.UserMessageCreator.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#UserMessageCreator.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.UserMessageCreator.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the usermessage creator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – All valid fields.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.UserMessageCreator.bitbuf">
+<span class="sig-name descname"><span class="pre">bitbuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">translated_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#UserMessageCreator.bitbuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.UserMessageCreator.bitbuf" title="Link to this definition">¶</a></dt>
+<dd><p>Bitbuf implementation of this user message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.UserMessageCreator.protobuf">
+<span class="sig-name descname"><span class="pre">protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">translated_kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#UserMessageCreator.protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.UserMessageCreator.protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Protobuf implementation of this user message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.UserMessageCreator.send">
+<span class="sig-name descname"><span class="pre">send</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">player_indexes</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#UserMessageCreator.send"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.UserMessageCreator.send" title="Link to this definition">¶</a></dt>
+<dd><p>Send the user message.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="messages.base.UserMessageCreator.message_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">message_name</span></span><a class="headerlink" href="#messages.base.UserMessageCreator.message_name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the user message name.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.UserMessageCreator.reliable">
+<span class="sig-name descname"><span class="pre">reliable</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#messages.base.UserMessageCreator.reliable" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="messages.base.UserMessageCreator.translatable_fields">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">translatable_fields</span></span><a class="headerlink" href="#messages.base.UserMessageCreator.translatable_fields" title="Link to this definition">¶</a></dt>
+<dd><p>Return a list of translatable fields.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.base.VGUIMenu">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.base.</span></span><span class="sig-name descname"><span class="pre">VGUIMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subkeys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#VGUIMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.VGUIMenu" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#messages.base.UserMessageCreator" title="messages.base.UserMessageCreator"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserMessageCreator</span></code></a></p>
+<p>Create a VGUIMenu.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.VGUIMenu.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">subkeys</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#VGUIMenu.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.VGUIMenu.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the VGUI menu.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the menu.</p></li>
+<li><p><strong>subkeys</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Additional menu data.</p></li>
+<li><p><strong>show</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True the menu will be shown, else it will be
+hidden.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.VGUIMenu.bitbuf">
+<span class="sig-name descname"><span class="pre">bitbuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#VGUIMenu.bitbuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.VGUIMenu.bitbuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the VGUIMenu with bitbuf.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.base.VGUIMenu.protobuf">
+<span class="sig-name descname"><span class="pre">protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/base.html#VGUIMenu.protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.base.VGUIMenu.protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Send the VGUIMenu with protobuf.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.VGUIMenu.message_name">
+<span class="sig-name descname"><span class="pre">message_name</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'VGUIMenu'</span></em><a class="headerlink" href="#messages.base.VGUIMenu.message_name" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="messages.base.VGUIMenu.translatable_fields">
+<span class="sig-name descname"><span class="pre">translatable_fields</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[]</span></em><a class="headerlink" href="#messages.base.VGUIMenu.translatable_fields" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">messages.base module</a><ul>
+<li><a class="reference internal" href="#messages.base.AttrDict"><code class="docutils literal notranslate"><span class="pre">AttrDict</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.Fade"><code class="docutils literal notranslate"><span class="pre">Fade</span></code></a><ul>
+<li><a class="reference internal" href="#messages.base.Fade.__init__"><code class="docutils literal notranslate"><span class="pre">Fade.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.Fade.bitbuf"><code class="docutils literal notranslate"><span class="pre">Fade.bitbuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.Fade.protobuf"><code class="docutils literal notranslate"><span class="pre">Fade.protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.Fade.message_name"><code class="docutils literal notranslate"><span class="pre">Fade.message_name</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.Fade.moved_frac_bits"><code class="docutils literal notranslate"><span class="pre">Fade.moved_frac_bits</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.Fade.translatable_fields"><code class="docutils literal notranslate"><span class="pre">Fade.translatable_fields</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#messages.base.HintText"><code class="docutils literal notranslate"><span class="pre">HintText</span></code></a><ul>
+<li><a class="reference internal" href="#messages.base.HintText.__init__"><code class="docutils literal notranslate"><span class="pre">HintText.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.HintText.bitbuf"><code class="docutils literal notranslate"><span class="pre">HintText.bitbuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.HintText.protobuf"><code class="docutils literal notranslate"><span class="pre">HintText.protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.HintText.message_name"><code class="docutils literal notranslate"><span class="pre">HintText.message_name</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.HintText.translatable_fields"><code class="docutils literal notranslate"><span class="pre">HintText.translatable_fields</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#messages.base.HudMsg"><code class="docutils literal notranslate"><span class="pre">HudMsg</span></code></a><ul>
+<li><a class="reference internal" href="#messages.base.HudMsg.__init__"><code class="docutils literal notranslate"><span class="pre">HudMsg.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.HudMsg.bitbuf"><code class="docutils literal notranslate"><span class="pre">HudMsg.bitbuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.HudMsg.protobuf"><code class="docutils literal notranslate"><span class="pre">HudMsg.protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.HudMsg.message_name"><code class="docutils literal notranslate"><span class="pre">HudMsg.message_name</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.HudMsg.translatable_fields"><code class="docutils literal notranslate"><span class="pre">HudMsg.translatable_fields</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#messages.base.KeyHintText"><code class="docutils literal notranslate"><span class="pre">KeyHintText</span></code></a><ul>
+<li><a class="reference internal" href="#messages.base.KeyHintText.__init__"><code class="docutils literal notranslate"><span class="pre">KeyHintText.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.KeyHintText.bitbuf"><code class="docutils literal notranslate"><span class="pre">KeyHintText.bitbuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.KeyHintText.protobuf"><code class="docutils literal notranslate"><span class="pre">KeyHintText.protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.KeyHintText.message_name"><code class="docutils literal notranslate"><span class="pre">KeyHintText.message_name</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#messages.base.ResetHUD"><code class="docutils literal notranslate"><span class="pre">ResetHUD</span></code></a><ul>
+<li><a class="reference internal" href="#messages.base.ResetHUD.__init__"><code class="docutils literal notranslate"><span class="pre">ResetHUD.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.ResetHUD.bitbuf"><code class="docutils literal notranslate"><span class="pre">ResetHUD.bitbuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.ResetHUD.protobuf"><code class="docutils literal notranslate"><span class="pre">ResetHUD.protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.ResetHUD.message_name"><code class="docutils literal notranslate"><span class="pre">ResetHUD.message_name</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.ResetHUD.translatable_fields"><code class="docutils literal notranslate"><span class="pre">ResetHUD.translatable_fields</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#messages.base.SayText"><code class="docutils literal notranslate"><span class="pre">SayText</span></code></a><ul>
+<li><a class="reference internal" href="#messages.base.SayText.__init__"><code class="docutils literal notranslate"><span class="pre">SayText.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.SayText.bitbuf"><code class="docutils literal notranslate"><span class="pre">SayText.bitbuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.SayText.protobuf"><code class="docutils literal notranslate"><span class="pre">SayText.protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.SayText.message_name"><code class="docutils literal notranslate"><span class="pre">SayText.message_name</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.SayText.reliable"><code class="docutils literal notranslate"><span class="pre">SayText.reliable</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.SayText.translatable_fields"><code class="docutils literal notranslate"><span class="pre">SayText.translatable_fields</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#messages.base.SayText2"><code class="docutils literal notranslate"><span class="pre">SayText2</span></code></a><ul>
+<li><a class="reference internal" href="#messages.base.SayText2.__init__"><code class="docutils literal notranslate"><span class="pre">SayText2.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.SayText2.bitbuf"><code class="docutils literal notranslate"><span class="pre">SayText2.bitbuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.SayText2.protobuf"><code class="docutils literal notranslate"><span class="pre">SayText2.protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.SayText2.message_name"><code class="docutils literal notranslate"><span class="pre">SayText2.message_name</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.SayText2.reliable"><code class="docutils literal notranslate"><span class="pre">SayText2.reliable</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.SayText2.translatable_fields"><code class="docutils literal notranslate"><span class="pre">SayText2.translatable_fields</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#messages.base.Shake"><code class="docutils literal notranslate"><span class="pre">Shake</span></code></a><ul>
+<li><a class="reference internal" href="#messages.base.Shake.__init__"><code class="docutils literal notranslate"><span class="pre">Shake.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.Shake.bitbuf"><code class="docutils literal notranslate"><span class="pre">Shake.bitbuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.Shake.protobuf"><code class="docutils literal notranslate"><span class="pre">Shake.protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.Shake.message_name"><code class="docutils literal notranslate"><span class="pre">Shake.message_name</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.Shake.translatable_fields"><code class="docutils literal notranslate"><span class="pre">Shake.translatable_fields</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#messages.base.ShowMenu"><code class="docutils literal notranslate"><span class="pre">ShowMenu</span></code></a><ul>
+<li><a class="reference internal" href="#messages.base.ShowMenu.__init__"><code class="docutils literal notranslate"><span class="pre">ShowMenu.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.ShowMenu.bitbuf"><code class="docutils literal notranslate"><span class="pre">ShowMenu.bitbuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.ShowMenu.protobuf"><code class="docutils literal notranslate"><span class="pre">ShowMenu.protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.ShowMenu.send"><code class="docutils literal notranslate"><span class="pre">ShowMenu.send()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.ShowMenu.chunk_size"><code class="docutils literal notranslate"><span class="pre">ShowMenu.chunk_size</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.ShowMenu.message_name"><code class="docutils literal notranslate"><span class="pre">ShowMenu.message_name</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.ShowMenu.translatable_fields"><code class="docutils literal notranslate"><span class="pre">ShowMenu.translatable_fields</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#messages.base.TextMsg"><code class="docutils literal notranslate"><span class="pre">TextMsg</span></code></a><ul>
+<li><a class="reference internal" href="#messages.base.TextMsg.__init__"><code class="docutils literal notranslate"><span class="pre">TextMsg.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.TextMsg.bitbuf"><code class="docutils literal notranslate"><span class="pre">TextMsg.bitbuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.TextMsg.protobuf"><code class="docutils literal notranslate"><span class="pre">TextMsg.protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.TextMsg.message_name"><code class="docutils literal notranslate"><span class="pre">TextMsg.message_name</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.TextMsg.reliable"><code class="docutils literal notranslate"><span class="pre">TextMsg.reliable</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.TextMsg.translatable_fields"><code class="docutils literal notranslate"><span class="pre">TextMsg.translatable_fields</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#messages.base.UserMessageCreator"><code class="docutils literal notranslate"><span class="pre">UserMessageCreator</span></code></a><ul>
+<li><a class="reference internal" href="#messages.base.UserMessageCreator.__init__"><code class="docutils literal notranslate"><span class="pre">UserMessageCreator.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.UserMessageCreator.bitbuf"><code class="docutils literal notranslate"><span class="pre">UserMessageCreator.bitbuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.UserMessageCreator.protobuf"><code class="docutils literal notranslate"><span class="pre">UserMessageCreator.protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.UserMessageCreator.send"><code class="docutils literal notranslate"><span class="pre">UserMessageCreator.send()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.UserMessageCreator.message_name"><code class="docutils literal notranslate"><span class="pre">UserMessageCreator.message_name</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.UserMessageCreator.reliable"><code class="docutils literal notranslate"><span class="pre">UserMessageCreator.reliable</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.UserMessageCreator.translatable_fields"><code class="docutils literal notranslate"><span class="pre">UserMessageCreator.translatable_fields</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#messages.base.VGUIMenu"><code class="docutils literal notranslate"><span class="pre">VGUIMenu</span></code></a><ul>
+<li><a class="reference internal" href="#messages.base.VGUIMenu.__init__"><code class="docutils literal notranslate"><span class="pre">VGUIMenu.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.VGUIMenu.bitbuf"><code class="docutils literal notranslate"><span class="pre">VGUIMenu.bitbuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.VGUIMenu.protobuf"><code class="docutils literal notranslate"><span class="pre">VGUIMenu.protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.VGUIMenu.message_name"><code class="docutils literal notranslate"><span class="pre">VGUIMenu.message_name</span></code></a></li>
+<li><a class="reference internal" href="#messages.base.VGUIMenu.translatable_fields"><code class="docutils literal notranslate"><span class="pre">VGUIMenu.translatable_fields</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/messages.base.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">messages.base module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

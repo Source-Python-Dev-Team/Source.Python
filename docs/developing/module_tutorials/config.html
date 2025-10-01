@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>config &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="entities" href="entities.html" />
+    <link rel="prev" title="commands" href="commands.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="entities.html" title="entities"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="commands.html" title="commands"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../module_tutorials.html" accesskey="U">Module tutorials</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">config</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="config">
+<h1>config<a class="headerlink" href="#config" title="Link to this heading">¶</a></h1>
+<p>This page contains tutorials about the <a class="reference internal" href="../modules/config.html#module-config" title="config"><code class="xref py py-mod docutils literal notranslate"><span class="pre">config</span></code></a> package.</p>
+<section id="creating-a-configuration-file-with-a-single-variable">
+<h2>Creating a configuration file with a single variable<a class="headerlink" href="#creating-a-configuration-file-with-a-single-variable" title="Link to this heading">¶</a></h2>
+<p>The entry point to the config module is the <a class="reference internal" href="../modules/config.manager.html#config.manager.ConfigManager" title="config.manager.ConfigManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">config.manager.ConfigManager</span></code></a>
+class. This class is effectively a representation of your configuration file
+in Python. It allows you to perform a number of operations to your config
+file. You can add console variables as well as commands to execute. The
+<a class="reference internal" href="../modules/config.manager.html#config.manager.ConfigManager" title="config.manager.ConfigManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">config.manager.ConfigManager</span></code></a> class will also place information about
+each console variable in a comment block above the actual variable. Here is an
+example script that creates a configuration file called <code class="docutils literal notranslate"><span class="pre">addon.cfg</span></code> in
+<code class="docutils literal notranslate"><span class="pre">../cfg/source-python/</span></code>. This configuration file contains a single variable
+called <code class="docutils literal notranslate"><span class="pre">addon_player_damage</span></code> which defaults to 64:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">config.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigManager</span>
+<span class="c1">#   Cvars</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cvars.flags</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConVarFlags</span>
+
+<span class="c1"># Create the configuration file.</span>
+<span class="n">addon_config</span> <span class="o">=</span> <span class="n">ConfigManager</span><span class="p">(</span><span class="s1">&#39;addon&#39;</span><span class="p">)</span>
+
+<span class="c1"># Modify the header of the entire configuration file.</span>
+<span class="n">addon_config</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="s1">&#39;Addon configuration file.&#39;</span>
+
+<span class="c1"># Create a console variable to add to the configuration file.</span>
+<span class="n">addon_player_damage</span> <span class="o">=</span> <span class="n">addon_config</span><span class="o">.</span><span class="n">cvar</span><span class="p">(</span>
+    <span class="s1">&#39;addon_player_damage&#39;</span><span class="p">,</span> <span class="s1">&#39;64&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;How much damage to cause to each player.&#39;</span><span class="p">,</span> <span class="n">ConVarFlags</span><span class="o">.</span><span class="n">CHEAT</span>
+<span class="p">)</span>
+
+<span class="c1"># Write the configuration file out to the folder.</span>
+<span class="n">addon_config</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+
+<span class="c1"># Execute the configuration file.</span>
+<span class="n">addon_config</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>And here is the resulting addon.cfg file:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// ######################################################################### //
+//                         Addon configuration file.                         //
+// ######################################################################### //
+
+// Default Value: 64
+// How much damage to cause to each player.
+   addon_player_damage &quot;64&quot;
+</pre></div>
+</div>
+</section>
+<section id="adding-additional-documentation-to-console-variables">
+<h2>Adding additional documentation to console variables<a class="headerlink" href="#adding-additional-documentation-to-console-variables" title="Link to this heading">¶</a></h2>
+<p>The config package allows you to write in additional information about a given
+console variable. These appear as a header comment section above the variable.
+The following example script adds a comment block above <code class="docutils literal notranslate"><span class="pre">addon_player_damage</span></code>
+called <code class="docutils literal notranslate"><span class="pre">Description</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">config.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigManager</span>
+<span class="c1">#   Cvars</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cvars.flags</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConVarFlags</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPLEMENTATION</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="c1"># Create the configuration file.</span>
+<span class="n">addon_config</span> <span class="o">=</span> <span class="n">ConfigManager</span><span class="p">(</span><span class="s1">&#39;addon&#39;</span><span class="p">)</span>
+
+<span class="c1"># Modify the header of the entire configuration file.</span>
+<span class="n">addon_config</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="s1">&#39;Addon configuration file.&#39;</span>
+
+<span class="c1"># Create a console variable. Note that this returns a</span>
+<span class="c1"># _CvarManager instance which I can then add additional</span>
+<span class="c1"># lines of text to. Note: This actually creates the</span>
+<span class="c1"># console variable.</span>
+<span class="n">addon_player_damage</span> <span class="o">=</span> <span class="n">addon_config</span><span class="o">.</span><span class="n">cvar</span><span class="p">(</span>
+    <span class="s1">&#39;addon_player_damage&#39;</span><span class="p">,</span> <span class="s1">&#39;64&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;How much damage to cause to each player.&#39;</span><span class="p">,</span> <span class="n">ConVarFlags</span><span class="o">.</span><span class="n">CHEAT</span>
+<span class="p">)</span>
+
+<span class="c1"># I want to add some extra documentation for this variable.</span>
+<span class="c1"># This creates a comment block called &#39;Description&#39; right above</span>
+<span class="c1"># the console command.</span>
+<span class="n">addon_player_damage</span><span class="o">.</span><span class="n">Description</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+    <span class="s1">&#39;Here is additional documentation on addon_player_damage.&#39;</span><span class="p">)</span>
+
+<span class="n">addon_player_damage</span><span class="o">.</span><span class="n">Description</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+    <span class="s1">&#39;Even more documentation.&#39;</span><span class="p">)</span>
+
+<span class="c1"># Write the configuration file out to the folder.</span>
+<span class="c1"># Any values modified by the server administrator will</span>
+<span class="c1"># remain unchanged.</span>
+<span class="n">addon_config</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+
+<span class="c1"># Execute the configuration file.</span>
+<span class="n">addon_config</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Which results in the following configuration file:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// ######################################################################### //
+//                         Addon configuration file.                         //
+// ######################################################################### //
+
+// Description
+//   * Here is additional documentation on addon_player_damage.
+//   * Even more documentation.
+// Default Value: 64
+// How much damage to cause to each player.
+   addon_player_damage &quot;64&quot;
+</pre></div>
+</div>
+<p>Couple of key takeaways from this example:</p>
+<ol class="arabic simple">
+<li><p>The <a class="reference internal" href="../modules/config.manager.html#config.manager.ConfigManager.cvar" title="config.manager.ConfigManager.cvar"><code class="xref py py-meth docutils literal notranslate"><span class="pre">config.manager.ConfigManager.cvar()</span></code></a> and <a class="reference internal" href="../modules/config.manager.html#config.manager.ConfigManager.command" title="config.manager.ConfigManager.command"><code class="xref py py-meth docutils literal notranslate"><span class="pre">config.manager.ConfigManager.command()</span></code></a> methods return objects which you can add string fields to. These fields get written as comment blocks above your console variable.</p></li>
+<li><p>A server operator can change the default values in the configuration file. These changes will remain even if you call <a class="reference internal" href="../modules/config.manager.html#config.manager.ConfigManager.write" title="config.manager.ConfigManager.write"><code class="xref py py-meth docutils literal notranslate"><span class="pre">config.manager.ConfigManager.write()</span></code></a>.</p></li>
+</ol>
+</section>
+<section id="adding-sections">
+<h2>Adding sections<a class="headerlink" href="#adding-sections" title="Link to this heading">¶</a></h2>
+<p>Adding sections to your configuration file is extremely simple. Just call the
+<a class="reference internal" href="../modules/config.manager.html#config.manager.ConfigManager.section" title="config.manager.ConfigManager.section"><code class="xref py py-meth docutils literal notranslate"><span class="pre">config.manager.ConfigManager.section()</span></code></a> method. You can also pass in a
+character to use in order to create the section boundaries:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">config.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigManager</span>
+<span class="c1">#   Cvars</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cvars.flags</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConVarFlags</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPLEMENTATION</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="c1"># Create the configuration file.</span>
+<span class="n">addon_config</span> <span class="o">=</span> <span class="n">ConfigManager</span><span class="p">(</span><span class="s1">&#39;addon&#39;</span><span class="p">)</span>
+
+<span class="c1"># Modify the header of the entire configuration file.</span>
+<span class="n">addon_config</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="s1">&#39;Addon configuration file.&#39;</span>
+
+<span class="c1"># Create a console variable. Note that this returns a</span>
+<span class="c1"># _CvarManager instance which I can then add additional</span>
+<span class="c1"># lines of text to. Note: This actually creates the</span>
+<span class="c1"># console variable.</span>
+<span class="n">addon_player_damage</span> <span class="o">=</span> <span class="n">addon_config</span><span class="o">.</span><span class="n">cvar</span><span class="p">(</span>
+    <span class="s1">&#39;addon_player_damage&#39;</span><span class="p">,</span> <span class="s1">&#39;64&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;How much damage to cause to each player.&#39;</span><span class="p">,</span> <span class="n">ConVarFlags</span><span class="o">.</span><span class="n">CHEAT</span>
+<span class="p">)</span>
+
+<span class="c1"># I want to add some extra documentation for this variable.</span>
+<span class="c1"># This creates a comment block called &#39;Description&#39; right above</span>
+<span class="c1"># the console command.</span>
+<span class="n">addon_player_damage</span><span class="o">.</span><span class="n">Description</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+    <span class="s1">&#39;Here is additional documentation on addon_player_damage.&#39;</span><span class="p">)</span>
+
+<span class="n">addon_player_damage</span><span class="o">.</span><span class="n">Description</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+    <span class="s1">&#39;Even more documentation.&#39;</span><span class="p">)</span>
+
+<span class="c1"># Add in a custom section now. Use the &#39;$&#39; sign to designate</span>
+<span class="c1"># boundaries.</span>
+<span class="n">custom_section</span> <span class="o">=</span> <span class="n">addon_config</span><span class="o">.</span><span class="n">section</span><span class="p">(</span><span class="s1">&#39;My custom section&#39;</span><span class="p">,</span> <span class="s1">&#39;$&#39;</span><span class="p">)</span>
+
+<span class="c1"># Add another variable.</span>
+<span class="n">addon_player_model</span> <span class="o">=</span> <span class="n">addon_config</span><span class="o">.</span><span class="n">cvar</span><span class="p">(</span>
+    <span class="s1">&#39;addon_player_model&#39;</span><span class="p">,</span> <span class="s1">&#39;models/player.mdl&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Model to set on the player.&#39;</span><span class="p">,</span> <span class="n">ConVarFlags</span><span class="o">.</span><span class="n">CHEAT</span>
+<span class="p">)</span>
+
+<span class="c1"># Write the configuration file out to the folder.</span>
+<span class="c1"># Any values modified by the server administrator will</span>
+<span class="c1"># remain unchanged.</span>
+<span class="n">addon_config</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+
+<span class="c1"># Execute the configuration file.</span>
+<span class="n">addon_config</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>This generates the following configuration file:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// ######################################################################### //
+//                         Addon configuration file.                         //
+// ######################################################################### //
+
+// Description
+//   * Here is additional documentation on addon_player_damage.
+//   * Even more documentation.
+// Default Value: 64
+// How much damage to cause to each player.
+   addon_player_damage &quot;64&quot;
+
+
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ //
+//                             My custom section                             //
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$ //
+
+// Default Value: models/player.mdl
+// Model to set on the player.
+   addon_player_model &quot;models/player.mdl&quot;
+</pre></div>
+</div>
+</section>
+<section id="using-context-management">
+<h2>Using context management<a class="headerlink" href="#using-context-management" title="Link to this heading">¶</a></h2>
+<p>All of the above examples show explicitly calling the <a class="reference internal" href="../modules/config.manager.html#config.manager.ConfigManager.write" title="config.manager.ConfigManager.write"><code class="xref py py-meth docutils literal notranslate"><span class="pre">config.manager.ConfigManager.write()</span></code></a>
+and <a class="reference internal" href="../modules/config.manager.html#config.manager.ConfigManager.execute" title="config.manager.ConfigManager.execute"><code class="xref py py-meth docutils literal notranslate"><span class="pre">config.manager.ConfigManager.execute()</span></code></a> methods. You can also
+automatically call these by using context management:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">config.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigManager</span>
+<span class="c1">#   Cvars</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cvars.flags</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConVarFlags</span>
+
+<span class="c1"># Create the configuration file.</span>
+<span class="c1"># Using &#39;with&#39; will utilize the __enter__ and __exit__ methods to</span>
+<span class="c1"># automatically write and execute the configuration file.</span>
+<span class="k">with</span> <span class="n">ConfigManager</span><span class="p">(</span><span class="s1">&#39;addon&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">addon_config</span><span class="p">:</span>
+
+    <span class="c1"># Modify the header of the entire configuration file.</span>
+    <span class="n">addon_config</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="s1">&#39;Addon configuration file.&#39;</span>
+
+    <span class="c1"># Create a console variable to add to the configuration file.</span>
+    <span class="n">addon_player_damage</span> <span class="o">=</span> <span class="n">addon_config</span><span class="o">.</span><span class="n">cvar</span><span class="p">(</span>
+        <span class="s1">&#39;addon_player_damage&#39;</span><span class="p">,</span> <span class="s1">&#39;64&#39;</span><span class="p">,</span>
+        <span class="s1">&#39;How much damage to cause to each player.&#39;</span><span class="p">,</span> <span class="n">ConVarFlags</span><span class="o">.</span><span class="n">CHEAT</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>For reference: <a class="reference external" href="https://docs.python.org/3.13/library/contextlib.html#module-contextlib" title="(in Python v3.13)"><code class="xref py py-mod docutils literal notranslate"><span class="pre">contextlib</span></code></a></p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">config</a><ul>
+<li><a class="reference internal" href="#creating-a-configuration-file-with-a-single-variable">Creating a configuration file with a single variable</a></li>
+<li><a class="reference internal" href="#adding-additional-documentation-to-console-variables">Adding additional documentation to console variables</a></li>
+<li><a class="reference internal" href="#adding-sections">Adding sections</a></li>
+<li><a class="reference internal" href="#using-context-management">Using context management</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="commands.html"
+                          title="previous chapter">commands</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="entities.html"
+                          title="next chapter">entities</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/module_tutorials/config.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="entities.html" title="entities"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="commands.html" title="commands"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../module_tutorials.html" >Module tutorials</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">config</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>memory.manager module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">memory.manager module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-memory.manager">
+<span id="memory-manager-module"></span><h1>memory.manager module<a class="headerlink" href="#module-memory.manager" title="Link to this heading">¶</a></h1>
+<p>Provides extended memory functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="memory.manager.CustomType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memory.manager.</span></span><span class="sig-name descname"><span class="pre">CustomType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_dealloc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#CustomType"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.CustomType" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="memory.helpers.html#memory.helpers.BasePointer" title="memory.helpers.BasePointer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePointer</span></code></a></p>
+<p>Subclass this class if you want to create a new type.</p>
+<p>Make sure that you have set the metaclass
+attribute to a valid TypeManager instance.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.CustomType.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_dealloc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#CustomType.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.CustomType.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the custom type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.CustomType.on_dealloc">
+<span class="sig-name descname"><span class="pre">on_dealloc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#CustomType.on_dealloc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.CustomType.on_dealloc" title="Link to this definition">¶</a></dt>
+<dd><p>Call the destructor.</p>
+<p>This method is automatically called, when the pointer gets
+deallocated. It then calls the destructor if it was specified.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memory.manager.TypeManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memory.manager.</span></span><span class="sig-name descname"><span class="pre">TypeManager</span></span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+<p>Class able to reconstruct almost every possible data type.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.create_pipe">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create_pipe</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls_dict</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.create_pipe"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.create_pipe" title="Link to this definition">¶</a></dt>
+<dd><p>Create a new pipe class that acts like a collection of functions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.convert">
+<span class="sig-name descname"><span class="pre">convert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.convert"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.convert" title="Link to this definition">¶</a></dt>
+<dd><p>Convert the pointer.</p>
+<p>Tries to convert a pointer in the following order:</p>
+<p>Attempts to convert the pointer…
+1. to a custom type
+2. to a exposed type
+3. to a function typedef
+4. by using a converter</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.create_converter">
+<span class="sig-name descname"><span class="pre">create_converter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.create_converter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.create_converter" title="Link to this definition">¶</a></dt>
+<dd><p>Create a new converter for the given name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.create_function_typedefs_from_file">
+<span class="sig-name descname"><span class="pre">create_function_typedefs_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.create_function_typedefs_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.create_function_typedefs_from_file" title="Link to this definition">¶</a></dt>
+<dd><p>Create function typedefs from a file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.create_global_pointers_from_file">
+<span class="sig-name descname"><span class="pre">create_global_pointers_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.create_global_pointers_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.create_global_pointers_from_file" title="Link to this definition">¶</a></dt>
+<dd><p>Create global pointers from a file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.create_pipe_from_dict">
+<span class="sig-name descname"><span class="pre">create_pipe_from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">raw_data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.create_pipe_from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.create_pipe_from_dict" title="Link to this definition">¶</a></dt>
+<dd><p>Create a pipe from a dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.create_pipe_from_file">
+<span class="sig-name descname"><span class="pre">create_pipe_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.create_pipe_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.create_pipe_from_file" title="Link to this definition">¶</a></dt>
+<dd><p>Create a pipe from a file or URL.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.create_type">
+<span class="sig-name descname"><span class="pre">create_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cls_dict</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bases=(&lt;class</span> <span class="pre">'memory.manager.CustomType'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.create_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.create_type" title="Link to this definition">¶</a></dt>
+<dd><p>Create and registers a new class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.create_type_from_dict">
+<span class="sig-name descname"><span class="pre">create_type_from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bases=(&lt;class</span> <span class="pre">'memory.manager.CustomType'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.create_type_from_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.create_type_from_dict" title="Link to this definition">¶</a></dt>
+<dd><p>Create and registers a new type from a dictionary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.create_type_from_file">
+<span class="sig-name descname"><span class="pre">create_type_from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">f</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bases=(&lt;class</span> <span class="pre">'memory.manager.CustomType'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.create_type_from_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.create_type_from_file" title="Link to this definition">¶</a></dt>
+<dd><p>Create and registers a new type from a file or URL.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.custom_calling_convention">
+<span class="sig-name descname"><span class="pre">custom_calling_convention</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.custom_calling_convention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.custom_calling_convention" title="Link to this definition">¶</a></dt>
+<dd><p>Register a custom calling convention class by its name.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@manager</span><span class="o">.</span><span class="n">custom_calling_convention</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyCustomCallingConvention</span><span class="p">(</span><span class="n">CallingConvention</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="c1"># Equals to...</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">MyCustomCallingConvention</span><span class="p">(</span><span class="n">CallingConvention</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">manager</span><span class="o">.</span><span class="n">register_convention</span><span class="p">(</span>
+    <span class="s1">&#39;MyCustomCallingConvention&#39;</span><span class="p">,</span>
+    <span class="n">MyCustomCallingConvention</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.dynamic_instance_array">
+<span class="sig-name descname"><span class="pre">dynamic_instance_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.dynamic_instance_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.dynamic_instance_array" title="Link to this definition">¶</a></dt>
+<dd><p>Create a wrapper for a dynamic instance array.</p>
+<dl class="simple">
+<dt>Examples:</dt><dd><p>Vector* pVecArray;
+bool* pBoolArray;</p>
+</dd>
+</dl>
+<p>Those arrrays are mostly created by the “new” statement.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.dynamic_pointer_array">
+<span class="sig-name descname"><span class="pre">dynamic_pointer_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.dynamic_pointer_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.dynamic_pointer_array" title="Link to this definition">¶</a></dt>
+<dd><p>Create a wrapper for a dynamic pointer array.</p>
+<dl class="simple">
+<dt>Examples:</dt><dd><p>Vector** pVecArray;
+bool** pBoolArray;</p>
+</dd>
+</dl>
+<p>Those arrays are mostly created by the “new” statement.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.function">
+<span class="sig-name descname"><span class="pre">function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_memory.DataType.VOID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convention</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_memory.Convention.THISCALL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.function" title="Link to this definition">¶</a></dt>
+<dd><p>Create a wrapper for a function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.function_typedef">
+<span class="sig-name descname"><span class="pre">function_typedef</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_memory.DataType.VOID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convention</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_memory.Convention.CDECL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.function_typedef"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.function_typedef" title="Link to this definition">¶</a></dt>
+<dd><p>Create a new function typedef.</p>
+<p>When a class has an attribute that contains a pointer of a function,
+the attribute will return a Function object that will be created
+by this method.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.get_class">
+<span class="sig-name descname"><span class="pre">get_class</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.get_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.get_class" title="Link to this definition">¶</a></dt>
+<dd><p>Return the custom type for the given name.</p>
+<p>Tries to return a custom type that matches the given name. If no
+custom type was found, it tries to return a class that was exposed on
+the C++ side. If that fails too, None will be returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.get_global_pointer">
+<span class="sig-name descname"><span class="pre">get_global_pointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.get_global_pointer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.get_global_pointer" title="Link to this definition">¶</a></dt>
+<dd><p>Return the global pointer for the given class.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.global_pointer">
+<span class="sig-name descname"><span class="pre">global_pointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">binary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srv_check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accessor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">accessor_offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.global_pointer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.global_pointer" title="Link to this definition">¶</a></dt>
+<dd><p>Search for a global pointer and wrap the it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.instance_attribute">
+<span class="sig-name descname"><span class="pre">instance_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.instance_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.instance_attribute" title="Link to this definition">¶</a></dt>
+<dd><p>Create a wrapper for an instance attribute.</p>
+<dl class="simple">
+<dt>Examples:</dt><dd><p>Vector vecVal;
+bool bVal;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.pipe_function">
+<span class="sig-name descname"><span class="pre">pipe_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">binary</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">identifier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_memory.DataType.VOID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convention</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_memory.Convention.CDECL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srv_check</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.pipe_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.pipe_function" title="Link to this definition">¶</a></dt>
+<dd><p>Create a simple pipe function.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.pointer_attribute">
+<span class="sig-name descname"><span class="pre">pointer_attribute</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.pointer_attribute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.pointer_attribute" title="Link to this definition">¶</a></dt>
+<dd><p>Create a wrapper for a pointer attribute.</p>
+<dl class="simple">
+<dt>Examples:</dt><dd><p>Vector* pVec;
+bool* pBool;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.register_convention">
+<span class="sig-name descname"><span class="pre">register_convention</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convention</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.register_convention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.register_convention" title="Link to this definition">¶</a></dt>
+<dd><p>Register a custom calling convention.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the custom calling convention.</p></li>
+<li><p><strong>convention</strong> (<a class="reference internal" href="memory.html#memory.CallingConvention" title="memory.CallingConvention"><em>CallingConvention</em></a>) – The custom calling convention.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.register_converter">
+<span class="sig-name descname"><span class="pre">register_converter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.register_converter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.register_converter" title="Link to this definition">¶</a></dt>
+<dd><p>Register a callable object as a converter.</p>
+<p>The callable object should only accept a pointer as an argument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.static_instance_array">
+<span class="sig-name descname"><span class="pre">static_instance_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.static_instance_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.static_instance_array" title="Link to this definition">¶</a></dt>
+<dd><p>Create a wrapper for a static instance array.</p>
+<dl class="simple">
+<dt>Examples:</dt><dd><p>Vector vecArray[10];
+bool boolArray[10];</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.static_pointer_array">
+<span class="sig-name descname"><span class="pre">static_pointer_array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.static_pointer_array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.static_pointer_array" title="Link to this definition">¶</a></dt>
+<dd><p>Create a wrapper for a static pointer array.</p>
+<dl class="simple">
+<dt>Examples:</dt><dd><p>Vector* pVecArray[10];
+bool* pBoolArray[10];</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.unregister_convention">
+<span class="sig-name descname"><span class="pre">unregister_convention</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.unregister_convention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.unregister_convention" title="Link to this definition">¶</a></dt>
+<dd><p>Unregister a custom calling convention.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.unregister_converter">
+<span class="sig-name descname"><span class="pre">unregister_converter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.unregister_converter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.unregister_converter" title="Link to this definition">¶</a></dt>
+<dd><p>Unregister a converter.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.manager.TypeManager.virtual_function">
+<span class="sig-name descname"><span class="pre">virtual_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_memory.DataType.VOID</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">convention</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_memory.Convention.THISCALL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">doc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/manager.html#TypeManager.virtual_function"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.manager.TypeManager.virtual_function" title="Link to this definition">¶</a></dt>
+<dd><p>Create a wrapper for a virtual function.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">memory.manager module</a><ul>
+<li><a class="reference internal" href="#memory.manager.CustomType"><code class="docutils literal notranslate"><span class="pre">CustomType</span></code></a><ul>
+<li><a class="reference internal" href="#memory.manager.CustomType.__init__"><code class="docutils literal notranslate"><span class="pre">CustomType.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.CustomType.on_dealloc"><code class="docutils literal notranslate"><span class="pre">CustomType.on_dealloc()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#memory.manager.TypeManager"><code class="docutils literal notranslate"><span class="pre">TypeManager</span></code></a><ul>
+<li><a class="reference internal" href="#memory.manager.TypeManager.create_pipe"><code class="docutils literal notranslate"><span class="pre">TypeManager.create_pipe()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.__init__"><code class="docutils literal notranslate"><span class="pre">TypeManager.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.convert"><code class="docutils literal notranslate"><span class="pre">TypeManager.convert()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.create_converter"><code class="docutils literal notranslate"><span class="pre">TypeManager.create_converter()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.create_function_typedefs_from_file"><code class="docutils literal notranslate"><span class="pre">TypeManager.create_function_typedefs_from_file()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.create_global_pointers_from_file"><code class="docutils literal notranslate"><span class="pre">TypeManager.create_global_pointers_from_file()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.create_pipe_from_dict"><code class="docutils literal notranslate"><span class="pre">TypeManager.create_pipe_from_dict()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.create_pipe_from_file"><code class="docutils literal notranslate"><span class="pre">TypeManager.create_pipe_from_file()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.create_type"><code class="docutils literal notranslate"><span class="pre">TypeManager.create_type()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.create_type_from_dict"><code class="docutils literal notranslate"><span class="pre">TypeManager.create_type_from_dict()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.create_type_from_file"><code class="docutils literal notranslate"><span class="pre">TypeManager.create_type_from_file()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.custom_calling_convention"><code class="docutils literal notranslate"><span class="pre">TypeManager.custom_calling_convention()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.dynamic_instance_array"><code class="docutils literal notranslate"><span class="pre">TypeManager.dynamic_instance_array()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.dynamic_pointer_array"><code class="docutils literal notranslate"><span class="pre">TypeManager.dynamic_pointer_array()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.function"><code class="docutils literal notranslate"><span class="pre">TypeManager.function()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.function_typedef"><code class="docutils literal notranslate"><span class="pre">TypeManager.function_typedef()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.get_class"><code class="docutils literal notranslate"><span class="pre">TypeManager.get_class()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.get_global_pointer"><code class="docutils literal notranslate"><span class="pre">TypeManager.get_global_pointer()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.global_pointer"><code class="docutils literal notranslate"><span class="pre">TypeManager.global_pointer()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.instance_attribute"><code class="docutils literal notranslate"><span class="pre">TypeManager.instance_attribute()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.pipe_function"><code class="docutils literal notranslate"><span class="pre">TypeManager.pipe_function()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.pointer_attribute"><code class="docutils literal notranslate"><span class="pre">TypeManager.pointer_attribute()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.register_convention"><code class="docutils literal notranslate"><span class="pre">TypeManager.register_convention()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.register_converter"><code class="docutils literal notranslate"><span class="pre">TypeManager.register_converter()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.static_instance_array"><code class="docutils literal notranslate"><span class="pre">TypeManager.static_instance_array()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.static_pointer_array"><code class="docutils literal notranslate"><span class="pre">TypeManager.static_pointer_array()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.unregister_convention"><code class="docutils literal notranslate"><span class="pre">TypeManager.unregister_convention()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.unregister_converter"><code class="docutils literal notranslate"><span class="pre">TypeManager.unregister_converter()</span></code></a></li>
+<li><a class="reference internal" href="#memory.manager.TypeManager.virtual_function"><code class="docutils literal notranslate"><span class="pre">TypeManager.virtual_function()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/memory.manager.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">memory.manager module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

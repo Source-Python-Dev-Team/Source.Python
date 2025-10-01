@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>settings.player &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">settings.player</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for settings.player</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../settings/player.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides access to user settings functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
+
+<span class="c1"># Source.Python</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoUnload</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">menus</span><span class="w"> </span><span class="kn">import</span> <span class="n">PagedMenu</span><span class="p">,</span> <span class="n">PagedOption</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">settings.menu</span><span class="w"> </span><span class="kn">import</span> <span class="n">_player_settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">settings.types</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">BoolSetting</span><span class="p">,</span> <span class="n">IntegerSetting</span><span class="p">,</span> <span class="n">SettingsType</span><span class="p">,</span> <span class="n">StringSetting</span>
+<span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;PlayerSettings&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_SettingsDictionary</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store user settings.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Verify the name value and stores base attributes.&quot;&quot;&quot;</span>
+        <span class="c1"># Is the given name a proper value for a convar?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>
+
+            <span class="c1"># Raise an error</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Given name &quot;</span><span class="si">{0}</span><span class="s1">&quot; is not valid&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># Set the base attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+
+        <span class="c1"># Create the instance&#39;s menu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span> <span class="o">=</span> <span class="n">PagedMenu</span><span class="p">(</span>
+            <span class="n">select_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_chosen_item</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="n">name</span> <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="c1"># Call the super class&#39; __init__ to initialize the OrderedDict</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate the given value and its type before setting the item.&quot;&quot;&quot;</span>
+        <span class="c1"># Is the given value a proper type?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">_SettingsDictionary</span><span class="p">,</span> <span class="n">SettingsType</span><span class="p">)):</span>
+
+            <span class="c1"># Raise an error</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Given value &quot;</span><span class="si">{0}</span><span class="s1">&quot; is not valid&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+        <span class="c1"># Is the item already in the dictionary?</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+
+            <span class="c1"># Raise an error</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Given item &quot;</span><span class="si">{0}</span><span class="s1">&quot; is already registered&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+
+        <span class="c1"># Set the item in the dictionary</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="c1"># Get the new object</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+
+        <span class="c1"># Set the item&#39;s prefix</span>
+        <span class="n">value</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span><span class="o">.</span><span class="n">prefix</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+=</span> <span class="s1">&#39;_&#39;</span>
+
+        <span class="c1"># Does the section&#39;s name need added to the prefix?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">PlayerSettings</span><span class="p">):</span>
+
+            <span class="c1"># Add the section&#39;s name to the prefix</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;_&#39;</span>
+
+        <span class="c1"># Add the option to the menu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PagedOption</span><span class="p">(</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">text</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">value</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_int_setting</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new integer setting to the dictionary.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">IntegerSetting</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_bool_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new boolean setting to the dictionary.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">BoolSetting</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_string_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new string setting to the dictionary.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">StringSetting</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a new section to the dictionary.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">_SettingsDictionary</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_chosen_item</span><span class="p">(</span><span class="n">menu</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">option</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when an item is chosen from the instance&#39;s menu.&quot;&quot;&quot;</span>
+        <span class="c1"># Is the chosen value another branch of settings?</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">option</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="n">_SettingsDictionary</span><span class="p">):</span>
+
+            <span class="c1"># Send the new menu</span>
+            <span class="n">option</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+            <span class="c1"># No need to go further</span>
+            <span class="k">return</span>
+
+        <span class="c1"># TODO: Placeholder for sending setting specific menus</span>
+        <span class="n">option</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="PlayerSettings">
+<a class="viewcode-back" href="../../developing/modules/settings.player.html#settings.player.PlayerSettings">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PlayerSettings</span><span class="p">(</span><span class="n">AutoUnload</span><span class="p">,</span> <span class="n">_SettingsDictionary</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to register user settings.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PlayerSettings.__init__">
+<a class="viewcode-back" href="../../developing/modules/settings.player.html#settings.player.PlayerSettings.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Verify the given values and store the instance.&quot;&quot;&quot;</span>
+        <span class="c1"># Is the given name already registered?</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">_player_settings</span><span class="p">:</span>
+
+            <span class="c1"># Raise an error</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Given name &quot;</span><span class="si">{0}</span><span class="s1">&quot; is already registered.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># Is the prefix a proper value?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">prefix</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>
+
+            <span class="c1"># Raise an error</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Given prefix &quot;</span><span class="si">{0}</span><span class="s1">&quot; is not valid&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prefix</span><span class="p">))</span>
+
+        <span class="c1"># Call the super class&#39; __init__ to verify</span>
+        <span class="c1"># the name and store base attributes</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+        <span class="c1"># Set the prefix for the settings</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+        <span class="c1"># Add the instance to the main dictionary</span>
+        <span class="n">_player_settings</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="c1"># Add the settings instance to the main settings menu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">option</span> <span class="o">=</span> <span class="n">PagedOption</span><span class="p">(</span><span class="n">name</span> <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">text</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+        <span class="n">_player_settings</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">option</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PlayerSettings.unregister_settings">
+<a class="viewcode-back" href="../../developing/modules/settings.player.html#settings.player.PlayerSettings.unregister_settings">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unregister_settings</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unregister the given settings from the dictionary.&quot;&quot;&quot;</span>
+        <span class="n">_player_settings</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">option</span><span class="p">)</span>
+        <span class="k">del</span> <span class="n">_player_settings</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unregister the setting on unload.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unregister_settings</span><span class="p">()</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">settings.player</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

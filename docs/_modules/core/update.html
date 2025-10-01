@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>core.update &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../core.html" accesskey="U">core</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">core.update</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for core.update</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../core/update.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides functions to update Source.Python and its data files.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">json</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">zipfile</span><span class="w"> </span><span class="kn">import</span> <span class="n">ZipFile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.request</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlopen</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">PLATFORM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">SOURCE_ENGINE_BRANCH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.logger</span><span class="w"> </span><span class="kn">import</span> <span class="n">core_logger</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">ADDONS_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">GAME_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">UPDATE_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">UPDATE_DATA_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">UPDATE_SP_DATA_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">DATA_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">SP_DATA_PATH</span>
+<span class="c1">#   KeyValues</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keyvalues</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyValues</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;ARTIFACTS_URL&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;BASE_DOWNLOAD_URL&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;CHECKSUM_URL&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DATA_URL&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;DATA_ZIP_FILE&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;download_file&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_build_artifacts&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_download_url&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_latest_data_checksum&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;is_new_data_available&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;update_in_progress&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;update_data&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Don&#39;t use __getattr__ here. &#39;update&#39; is a method of the _LogInstance class.</span>
+<span class="n">update_logger</span> <span class="o">=</span> <span class="n">core_logger</span><span class="p">[</span><span class="s1">&#39;update&#39;</span><span class="p">]</span>
+
+<span class="n">BINARY_EXT</span> <span class="o">=</span> <span class="s1">&#39;so&#39;</span> <span class="k">if</span> <span class="n">PLATFORM</span> <span class="o">==</span> <span class="s1">&#39;linux&#39;</span> <span class="k">else</span> <span class="s1">&#39;dll&#39;</span>
+
+<span class="n">SP_VDF1</span> <span class="o">=</span> <span class="s1">&#39;addons/source-python&#39;</span>
+<span class="n">SP_VDF2</span> <span class="o">=</span> <span class="s1">&#39;addons/source-python2&#39;</span>
+
+<span class="n">DATA_ZIP_FILE</span> <span class="o">=</span> <span class="n">DATA_PATH</span> <span class="o">/</span> <span class="s1">&#39;source-python-data.zip&#39;</span>
+<span class="n">UPDATE_ZIP_FILE</span> <span class="o">=</span> <span class="n">UPDATE_PATH</span> <span class="o">/</span> <span class="s1">&#39;source-python.zip&#39;</span>
+<span class="n">VDF_FILE</span> <span class="o">=</span> <span class="n">ADDONS_PATH</span> <span class="o">/</span> <span class="s1">&#39;source-python.vdf&#39;</span>
+<span class="n">LOADER_FILE</span> <span class="o">=</span> <span class="n">ADDONS_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;source-python.</span><span class="si">{</span><span class="n">BINARY_EXT</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="n">LOADER_UPDATE_FILE</span> <span class="o">=</span> <span class="n">UPDATE_PATH</span> <span class="o">/</span> <span class="s1">&#39;addons&#39;</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;source-python.</span><span class="si">{</span><span class="n">BINARY_EXT</span><span class="si">}</span><span class="s1">&#39;</span>
+<span class="n">VDF_UPDATE_FILE</span> <span class="o">=</span> <span class="n">UPDATE_PATH</span> <span class="o">/</span> <span class="s1">&#39;addons&#39;</span> <span class="o">/</span> <span class="s1">&#39;source-python.vdf&#39;</span>
+
+<span class="n">BASE_DATA_URL</span> <span class="o">=</span> <span class="s1">&#39;http://data.sourcepython.com&#39;</span>
+<span class="n">CHECKSUM_URL</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">BASE_DATA_URL</span><span class="si">}</span><span class="s1">/checksum.txt&#39;</span>
+<span class="n">DATA_URL</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">BASE_DATA_URL</span><span class="si">}</span><span class="s1">/source-python-data.zip&#39;</span>
+
+<span class="n">BASE_DOWNLOAD_URL</span> <span class="o">=</span> <span class="s1">&#39;http://downloads.sourcepython.com&#39;</span>
+<span class="n">ARTIFACTS_URL</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">BASE_DOWNLOAD_URL</span><span class="si">}</span><span class="s1">/artifacts.txt&#39;</span>
+
+<span class="n">DEFAULT_TIMEOUT</span> <span class="o">=</span> <span class="mi">3</span>
+
+<span class="c1">#: Indicates, whether an update is in progress (stage 1 has been applied).</span>
+<span class="n">update_in_progress</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FUNCTIONS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="download_file">
+<a class="viewcode-back" href="../../developing/modules/core.update.html#core.update.download_file">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">download_file</span><span class="p">(</span><span class="n">url_path</span><span class="p">,</span> <span class="n">file_path</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="mi">3</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download a file from an URL to a specific file.</span>
+
+<span class="sd">    :param str url_path:</span>
+<span class="sd">        The URL that should be opened.</span>
+<span class="sd">    :param str file_path:</span>
+<span class="sd">        The file where the content of the URL should be stored.</span>
+<span class="sd">    :param float timeout:</span>
+<span class="sd">        Number of seconds that need to pass until a timeout occurs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">update_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Downloading file (</span><span class="si">{</span><span class="n">url_path</span><span class="si">}</span><span class="s1">) to </span><span class="si">{</span><span class="n">file_path</span><span class="si">}</span><span class="s1"> ...&#39;</span><span class="p">)</span>
+    <span class="n">now</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">url_path</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span> <span class="k">as</span> <span class="n">url</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="n">file_path</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+    <span class="n">update_logger</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span>
+        <span class="s1">&#39;File has been downloaded. Time elapsed: </span><span class="si">{:0.2f}</span><span class="s1"> seconds&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span><span class="o">-</span><span class="n">now</span><span class="p">))</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FULL SP UPDATE</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">do_full_update</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">DEFAULT_TIMEOUT</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Starts a full update of Source.Python.</span>
+
+<span class="sd">    A restart of the server and possibly manual work is required. Please see</span>
+<span class="sd">    the Source.Python log for the instructions.</span>
+
+<span class="sd">    :param float timeout:</span>
+<span class="sd">        Number of seconds that need to pass until a timeout occurs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">global</span> <span class="n">update_in_progress</span>
+    <span class="k">if</span> <span class="n">update_in_progress</span><span class="p">:</span>
+        <span class="n">update_logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="s1">&#39;An update is already in progress. Please follow the instructions &#39;</span>
+            <span class="s1">&#39;in the log.&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Make sure there is a clean update directory</span>
+    <span class="n">_clean_update_dir</span><span class="p">()</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_download_latest_version</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+        <span class="n">_apply_update_stage1</span><span class="p">()</span>
+        <span class="n">update_in_progress</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="c1"># Make sure to leave a clean update directory, so the loader doesn&#39;t</span>
+        <span class="c1"># get confused.</span>
+        <span class="n">_clean_update_dir</span><span class="p">()</span>
+        <span class="k">raise</span>
+
+<div class="viewcode-block" id="get_build_artifacts">
+<a class="viewcode-back" href="../../developing/modules/core.update.html#core.update.get_build_artifacts">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_build_artifacts</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">DEFAULT_TIMEOUT</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the artifacts of the latest Source.Python build.</span>
+
+<span class="sd">    :param float timeout:</span>
+<span class="sd">        Number of seconds that need to pass until a timeout occurs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">update_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Getting artifacts...&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">ARTIFACTS_URL</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span> <span class="k">as</span> <span class="n">url</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">url</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_download_url">
+<a class="viewcode-back" href="../../developing/modules/core.update.html#core.update.get_download_url">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_download_url</span><span class="p">(</span><span class="n">game</span><span class="o">=</span><span class="n">SOURCE_ENGINE_BRANCH</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">DEFAULT_TIMEOUT</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the latest Source.Python download URL for a specific game.</span>
+
+<span class="sd">    :param str game:</span>
+<span class="sd">        The game game to look for (e.g. ``css``).</span>
+<span class="sd">    :param float timeout:</span>
+<span class="sd">        Number of seconds that need to pass until a timeout occurs.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    :raise ValueError:</span>
+<span class="sd">        Raised if the game wasn&#39;t found.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">relative_path</span> <span class="ow">in</span> <span class="n">get_build_artifacts</span><span class="p">(</span><span class="n">timeout</span><span class="p">):</span>
+        <span class="k">if</span> <span class="sa">f</span><span class="s1">&#39;-</span><span class="si">{</span><span class="n">game</span><span class="si">}</span><span class="s1">-&#39;</span> <span class="ow">in</span> <span class="n">relative_path</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">BASE_DOWNLOAD_URL</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">relative_path</span><span class="si">}</span><span class="s1">&#39;</span>
+
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unable to find a download URL for game &quot;</span><span class="si">{</span><span class="n">game</span><span class="si">}</span><span class="s1">&quot;.&#39;</span><span class="p">)</span></div>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_clean_update_dir</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clear or create the update directory.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">UPDATE_PATH</span><span class="o">.</span><span class="n">exists</span><span class="p">():</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">UPDATE_PATH</span><span class="o">.</span><span class="n">iterdir</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">rmtree</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">UPDATE_PATH</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_download_latest_version</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">DEFAULT_TIMEOUT</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download the latest Source.Python version.</span>
+
+<span class="sd">    :param float timeout:</span>
+<span class="sd">        Number of seconds that need to pass until a timeout occurs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+    <span class="n">download_file</span><span class="p">(</span><span class="n">get_download_url</span><span class="p">(),</span> <span class="n">UPDATE_ZIP_FILE</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_apply_update_stage1</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply stage 1 of the version update.&quot;&quot;&quot;</span>
+    <span class="n">update_logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="s1">&#39;Applying Source.Python update stage 1...&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Extract all files to the update directory</span>
+    <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="n">UPDATE_ZIP_FILE</span><span class="p">)</span> <span class="k">as</span> <span class="nb">zip</span><span class="p">:</span>
+        <span class="nb">zip</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">UPDATE_PATH</span><span class="p">)</span>
+
+    <span class="n">UPDATE_ZIP_FILE</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+    <span class="n">VDF_UPDATE_FILE</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">PLATFORM</span> <span class="o">==</span> <span class="s1">&#39;windows&#39;</span><span class="p">:</span>
+        <span class="n">_apply_update_stage1_windows</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">_apply_update_stage1_linux</span><span class="p">()</span>
+
+    <span class="c1"># Apply latest data update</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">DATA_ZIP_FILE</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="k">return</span>
+
+    <span class="n">update_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Applying latest data update...&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">UPDATE_SP_DATA_PATH</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+        <span class="n">update_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Removing </span><span class="si">{</span><span class="n">UPDATE_SP_DATA_PATH</span><span class="si">}</span><span class="s1"> ...&#39;</span><span class="p">)</span>
+        <span class="n">UPDATE_SP_DATA_PATH</span><span class="o">.</span><span class="n">rmtree</span><span class="p">()</span>
+
+    <span class="n">_unpack_data</span><span class="p">(</span><span class="n">UPDATE_DATA_PATH</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_apply_update_stage1_windows</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply the Windows specific part of stage 1.</span>
+
+<span class="sd">    On Windows files that are currently in use (``source-python.dll``) can&#39;t be</span>
+<span class="sd">    replaced. Thus, this function checks if ``source-python.vdf`` exists. If it</span>
+<span class="sd">    does, the new ``source-python.dll`` is copied to the addons directory with</span>
+<span class="sd">    a new name (``source-python2.dll``). After that the VDF entry is modified</span>
+<span class="sd">    to point to the new loader.</span>
+<span class="sd">    If ``source-python.vdf`` does not exist, manual action is required.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">VDF_FILE</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="n">update_logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;Stage 1 has been applied. Please shutdown your server and move &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;(do not copy) </span><span class="si">{</span><span class="n">LOADER_UPDATE_FILE</span><span class="si">}</span><span class="s1"> to </span><span class="si">{</span><span class="n">LOADER_FILE</span><span class="si">}</span><span class="s1">. After that &#39;</span>
+            <span class="sa">f</span><span class="s1">&#39;start your server to apply stage 2.&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">update_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Determining current VDF entry...&#39;</span><span class="p">)</span>
+        <span class="n">kv</span> <span class="o">=</span> <span class="n">KeyValues</span><span class="o">.</span><span class="n">from_file</span><span class="p">(</span><span class="n">VDF_FILE</span><span class="p">)</span>
+
+        <span class="c1"># Get the current and new entry for the VDF file</span>
+        <span class="n">current_entry</span> <span class="o">=</span> <span class="n">kv</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="s1">&#39;file&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">current_entry</span> <span class="o">==</span> <span class="n">SP_VDF2</span><span class="p">:</span>
+            <span class="n">new_entry</span> <span class="o">=</span> <span class="n">SP_VDF1</span>
+        <span class="k">elif</span> <span class="n">current_entry</span> <span class="o">==</span> <span class="n">SP_VDF1</span><span class="p">:</span>
+            <span class="n">new_entry</span> <span class="o">=</span> <span class="n">SP_VDF2</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Unexpected entry in VDF: </span><span class="si">{</span><span class="n">current_entry</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">update_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Current VDF entry: </span><span class="si">{</span><span class="n">current_entry</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">update_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;New VDF entry: </span><span class="si">{</span><span class="n">new_entry</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">update_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Moving new loader binary to game directory...&#39;</span><span class="p">)</span>
+        <span class="n">LOADER_UPDATE_FILE</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">GAME_PATH</span> <span class="o">/</span> <span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">new_entry</span><span class="si">}</span><span class="s1">.</span><span class="si">{</span><span class="n">BINARY_EXT</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="n">kv</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;file&#39;</span><span class="p">,</span> <span class="n">new_entry</span><span class="p">)</span>
+        <span class="n">kv</span><span class="o">.</span><span class="n">save_to_file</span><span class="p">(</span><span class="n">VDF_FILE</span><span class="p">)</span>
+
+        <span class="n">update_logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="s1">&#39;Stage 1 has been applied. Restart your server to apply stage 2.&#39;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_apply_update_stage1_linux</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Apply the Linux specific part of stage 1.&quot;&quot;&quot;</span>
+    <span class="n">update_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Moving new loader binary to game directory...&#39;</span><span class="p">)</span>
+    <span class="n">LOADER_UPDATE_FILE</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">LOADER_FILE</span><span class="p">)</span>
+
+    <span class="n">update_logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+        <span class="s1">&#39;Stage 1 has been applied. Restart your server to apply stage 2.&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; SP DATA UPDATE</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="update_data">
+<a class="viewcode-back" href="../../developing/modules/core.update.html#core.update.update_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">update_data</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">DEFAULT_TIMEOUT</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download and unpack the latest data from the build server.</span>
+
+<span class="sd">    Old data gets deleted before unpacking.</span>
+
+<span class="sd">    :param float timeout:</span>
+<span class="sd">        Number of seconds that need to pass until a timeout occurs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_download_latest_data</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">SP_DATA_PATH</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+        <span class="n">update_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Removing </span><span class="si">{}</span><span class="s1"> ...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">SP_DATA_PATH</span><span class="p">))</span>
+        <span class="n">SP_DATA_PATH</span><span class="o">.</span><span class="n">rmtree</span><span class="p">()</span>
+
+    <span class="n">_unpack_data</span><span class="p">(</span><span class="n">DATA_PATH</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="is_new_data_available">
+<a class="viewcode-back" href="../../developing/modules/core.update.html#core.update.is_new_data_available">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_new_data_available</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">DEFAULT_TIMEOUT</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return ``True`` if new data is available.</span>
+
+<span class="sd">    :param float timeout:</span>
+<span class="sd">        Number of seconds that need to pass until a timeout occurs.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">DATA_ZIP_FILE</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">return</span> <span class="n">DATA_ZIP_FILE</span><span class="o">.</span><span class="n">read_hexhash</span><span class="p">(</span><span class="s1">&#39;md5&#39;</span><span class="p">)</span> <span class="o">!=</span> <span class="n">get_latest_data_checksum</span><span class="p">(</span><span class="n">timeout</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_latest_data_checksum">
+<a class="viewcode-back" href="../../developing/modules/core.update.html#core.update.get_latest_data_checksum">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_latest_data_checksum</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">DEFAULT_TIMEOUT</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the MD5 checksum of the latest data from the build server.</span>
+
+<span class="sd">    :param float timeout:</span>
+<span class="sd">        Number of seconds that need to pass until a timeout occurs.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">with</span> <span class="n">urlopen</span><span class="p">(</span><span class="n">CHECKSUM_URL</span><span class="p">,</span> <span class="n">timeout</span><span class="o">=</span><span class="n">timeout</span><span class="p">)</span> <span class="k">as</span> <span class="n">url</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">url</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_download_latest_data</span><span class="p">(</span><span class="n">timeout</span><span class="o">=</span><span class="n">DEFAULT_TIMEOUT</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Download the latest data from the build server.</span>
+
+<span class="sd">    :param float timeout:</span>
+<span class="sd">        Number of seconds that need to pass until a timeout occurs.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">download_file</span><span class="p">(</span><span class="n">DATA_URL</span><span class="p">,</span> <span class="n">DATA_ZIP_FILE</span><span class="p">,</span> <span class="n">timeout</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_unpack_data</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unpack ``source-python-data.zip`` into the given path.</span>
+
+<span class="sd">    :param Path path:</span>
+<span class="sd">        The path the data file should be unpacked into.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">update_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Extracting data in </span><span class="si">{</span><span class="n">path</span><span class="si">}</span><span class="s1"> ...&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">ZipFile</span><span class="p">(</span><span class="n">DATA_ZIP_FILE</span><span class="p">)</span> <span class="k">as</span> <span class="nb">zip</span><span class="p">:</span>
+        <span class="nb">zip</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../core.html" >core</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">core.update</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

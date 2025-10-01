@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>loggers &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=2780edc4" />
+    
+    <script src="../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">loggers</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for loggers</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../loggers.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides logging functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Datetime</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">date</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">datetime</span><span class="w"> </span><span class="kn">import</span> <span class="n">datetime</span>
+<span class="c1">#   Logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">CRITICAL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">DEBUG</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">ERROR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">INFO</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">WARNING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">Formatter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">addLevelName</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging</span><span class="w"> </span><span class="kn">import</span> <span class="n">getLogger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">logging.handlers</span><span class="w"> </span><span class="kn">import</span> <span class="n">TimedRotatingFileHandler</span>
+
+<span class="c1"># Site-Packages Imports</span>
+<span class="c1">#   Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">path</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoUnload</span>
+<span class="c1">#   Cvars</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cvars</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConVar</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOG_PATH</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;LogManager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;_LogInstance&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Store the areas constants</span>
+<span class="n">CONSOLE</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span>
+<span class="n">MAIN_LOG</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span>
+<span class="n">SP_LOG</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span>
+<span class="n">SCRIPT_LOG</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span>
+
+<span class="c1"># Store the new level names</span>
+<span class="n">MESSAGE</span> <span class="o">=</span> <span class="mi">60</span>
+<span class="n">EXCEPTION</span> <span class="o">=</span> <span class="n">ERROR</span>
+
+<span class="c1"># Add the new level names</span>
+<span class="n">addLevelName</span><span class="p">(</span><span class="n">MESSAGE</span><span class="p">,</span> <span class="s1">&#39;MESSAGE&#39;</span><span class="p">)</span>
+<span class="n">addLevelName</span><span class="p">(</span><span class="n">EXCEPTION</span><span class="p">,</span> <span class="s1">&#39;EXCEPTION&#39;</span><span class="p">)</span>
+
+<span class="c1"># Store a formatter for use with the main log</span>
+<span class="n">_main_log_formatter</span> <span class="o">=</span> <span class="n">Formatter</span><span class="p">(</span><span class="s1">&#39;- </span><span class="si">%(name)s</span><span class="se">\t</span><span class="s1">-</span><span class="se">\t</span><span class="si">%(levelname)s</span><span class="se">\n\t</span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># SP&#39;s logs prefix</span>
+<span class="n">SP_LOG_PREFIX</span> <span class="o">=</span> <span class="s1">&#39;[Source.Python] &#39;</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_LogInstance</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base logging class used to create child logging instances.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store the parent and gets a child of the parent.</span>
+
+<span class="sd">        :param _LogInstance parent:</span>
+<span class="sd">            A parent logger or None.</span>
+<span class="sd">        :param str name:</span>
+<span class="sd">            A name for the logger or None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize the dictionary</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Store the parent instance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="o">=</span> <span class="n">parent</span>
+
+        <span class="c1"># Was a parent class passed?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Store a child logging instance</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">getChild</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># Store the given prefix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">=</span> <span class="n">prefix</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__missing__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add new items as logging instances.</span>
+
+<span class="sd">        :rtype: _LogInstance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the new logging instance</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span> <span class="o">=</span> <span class="n">_LogInstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span><span class="p">)</span>
+
+        <span class="c1"># Return the logging instance</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the logger with the specified name.</span>
+
+<span class="sd">        :rtype: _LogInstance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all children of the instance and</span>
+<span class="sd">        remove the logger from logging manager.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="c1"># Remove all children</span>
+        <span class="n">instance</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="c1"># Remove the logger from logging manager</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">loggerDict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">instance</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Delete each item individually to close all loggers.&quot;&quot;&quot;</span>
+        <span class="c1"># Loop through each child</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+            <span class="c1"># Remove the child</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="n">item</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">log_critical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Use to call a critical message.</span>
+
+<span class="sd">        :param str msg:</span>
+<span class="sd">            Message to log.</span>
+<span class="sd">        :param args:</span>
+<span class="sd">            Additional arguments that are used for formatting purpose.</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            Additional keywords that are used for formatting purpose.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="n">CRITICAL</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">log_debug</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Use to call a debug message.</span>
+
+<span class="sd">        :param str msg:</span>
+<span class="sd">            Message to log.</span>
+<span class="sd">        :param args:</span>
+<span class="sd">            Additional arguments that are used for formatting purpose.</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            Additional keywords that are used for formatting purpose.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="n">DEBUG</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">log_exception</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Use to call an exception message.</span>
+
+<span class="sd">        :param str msg:</span>
+<span class="sd">            Message to log.</span>
+<span class="sd">        :param args:</span>
+<span class="sd">            Additional arguments that are used for formatting purpose.</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            Additional keywords that are used for formatting purpose.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="n">EXCEPTION</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">log_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Use to call a basic info message.</span>
+
+<span class="sd">        :param str msg:</span>
+<span class="sd">            Message to log.</span>
+<span class="sd">        :param args:</span>
+<span class="sd">            Additional arguments that are used for formatting purpose.</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            Additional keywords that are used for formatting purpose.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="n">INFO</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">log_warning</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Use to call a warning message.</span>
+
+<span class="sd">        :param str msg:</span>
+<span class="sd">            Message to log.</span>
+<span class="sd">        :param args:</span>
+<span class="sd">            Additional arguments that are used for formatting purpose.</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            Additional keywords that are used for formatting purpose.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="n">WARNING</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">log_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Use to call a message that should always print.</span>
+
+<span class="sd">        :param str msg:</span>
+<span class="sd">            Message to log.</span>
+<span class="sd">        :param args:</span>
+<span class="sd">            Additional arguments that are used for formatting purpose.</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            Additional keywords that are used for formatting purpose.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="n">MESSAGE</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Use to call a message with the given logging level.</span>
+
+<span class="sd">        :param int level:</span>
+<span class="sd">            Level of the message to log.</span>
+<span class="sd">        :param str msg:</span>
+<span class="sd">            Message to log.</span>
+<span class="sd">        :param args:</span>
+<span class="sd">            Additional arguments that are used for formatting purpose.</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            Additional keywords that are used for formatting purpose.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the value of the given level</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_level_value</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+
+        <span class="c1"># Call the main logging method</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_log</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_log</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Main logging method.&quot;&quot;&quot;</span>
+        <span class="c1"># Does the message need logged?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">level</span> <span class="o">&gt;</span> <span class="n">level</span><span class="p">:</span>
+
+            <span class="c1"># If not, simply return</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Get the areas to be used</span>
+        <span class="n">areas</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">areas</span>
+
+        <span class="c1"># Get wether we should prepend prefix</span>
+        <span class="n">prepend_prefix</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;prepend_prefix&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Print to main log file?</span>
+        <span class="k">if</span> <span class="n">MAIN_LOG</span> <span class="o">&amp;</span> <span class="n">areas</span><span class="p">:</span>
+
+            <span class="c1"># Import engine_server</span>
+            <span class="c1"># This is done here to fix an ImportError</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">engines.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">engine_server</span>
+
+            <span class="c1"># Create the record</span>
+            <span class="n">record</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">makeRecord</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span>
+                <span class="s1">&#39;(unknown file)&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="c1"># Get the message to send</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="n">_main_log_formatter</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+
+            <span class="c1"># Prepend prefix</span>
+            <span class="k">if</span> <span class="n">prepend_prefix</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">message</span>
+
+            <span class="c1"># Print to the main log</span>
+            <span class="n">engine_server</span><span class="o">.</span><span class="n">log_print</span><span class="p">(</span><span class="n">message</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Print to the console?</span>
+        <span class="k">if</span> <span class="n">CONSOLE</span> <span class="o">&amp;</span> <span class="n">areas</span><span class="p">:</span>
+
+            <span class="c1"># If not, print to the console</span>
+            <span class="c1"># If &lt;engine&gt;.log_print is called with logging being on,</span>
+            <span class="c1">#   the console is already echoed with the message.</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">echo_console</span>
+
+            <span class="c1"># Prepend prefix</span>
+            <span class="k">if</span> <span class="n">prepend_prefix</span><span class="p">:</span>
+                <span class="n">msg</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">msg</span>
+
+            <span class="n">echo_console</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="c1"># Print to the script&#39;s log file?</span>
+        <span class="k">if</span> <span class="n">SCRIPT_LOG</span> <span class="o">&amp;</span> <span class="n">areas</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span> <span class="o">!=</span> <span class="n">_sp_logger</span><span class="p">:</span>
+
+            <span class="c1"># Print message to the log file</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Print to the main SP log file?</span>
+        <span class="k">if</span> <span class="n">SP_LOG</span> <span class="o">&amp;</span> <span class="n">areas</span><span class="p">:</span>
+
+            <span class="c1"># Get the given extra dictionary</span>
+            <span class="n">extra</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;extra&#39;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">())</span>
+
+            <span class="c1"># Set the logger name</span>
+            <span class="n">extra</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="s1">&#39;logger_name&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+            <span class="c1"># Print to the SP log file</span>
+            <span class="n">_sp_logger</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_level_value</span><span class="p">(</span><span class="n">level</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a level value used by the logging package.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">50</span> <span class="o">-</span> <span class="p">(</span><span class="mi">10</span> <span class="o">*</span> <span class="n">level</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">root</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the root logger.</span>
+
+<span class="sd">        :rtype: _LogInstance</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Store the current instance</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="c1"># Use a while statement to get the parent until root is found</span>
+        <span class="k">while</span> <span class="n">instance</span><span class="o">.</span><span class="n">parent</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Set the current instance to the parent</span>
+            <span class="n">instance</span> <span class="o">=</span> <span class="n">instance</span><span class="o">.</span><span class="n">parent</span>
+
+        <span class="c1"># Return the root instance</span>
+        <span class="k">return</span> <span class="n">instance</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">areas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the root&#39;s areas value.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">areas</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the root&#39;s level value.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">level</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">formatter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the root&#39;s formatter.</span>
+
+<span class="sd">        :rtype: Formatter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">_formatter</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">logger</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the instance&#39;s logger.</span>
+
+<span class="sd">        :rtype: logging.Logger</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span>
+
+
+<div class="viewcode-block" id="LogManager">
+<a class="viewcode-back" href="../developing/modules/loggers.html#loggers.LogManager">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LogManager</span><span class="p">(</span><span class="n">AutoUnload</span><span class="p">,</span> <span class="n">_LogInstance</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Main log class used as a root to create children instances.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="LogManager.__init__">
+<a class="viewcode-back" href="../developing/modules/loggers.html#loggers.LogManager.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">level</span><span class="p">,</span> <span class="n">areas</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">log_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span>
+            <span class="n">prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store the base values and creates the logger.</span>
+
+<span class="sd">        :param str name:</span>
+<span class="sd">            Name of the base logger.</span>
+<span class="sd">        :param ConVar level:</span>
+<span class="sd">            A console variable that defines required level to log a message.</span>
+<span class="sd">        :param ConVar areas:</span>
+<span class="sd">            A console variable that defines the areas where messages are</span>
+<span class="sd">            getting logged.</span>
+<span class="sd">        :param str filepath:</span>
+<span class="sd">            A file where messages are getting logged.</span>
+<span class="sd">        :param str log_format:</span>
+<span class="sd">            A custom log format that defines the appearance of the messages.</span>
+<span class="sd">        :param str date_format:</span>
+<span class="sd">            A custom date format that defines how the date is printed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize the dictionary</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="n">prefix</span><span class="p">)</span>
+
+        <span class="c1"># Store the base formatter</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_formatter</span> <span class="o">=</span> <span class="n">Formatter</span><span class="p">(</span><span class="n">log_format</span><span class="p">,</span> <span class="n">date_format</span><span class="p">)</span>
+
+        <span class="c1"># Store the base attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_level</span> <span class="o">=</span> <span class="n">level</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_areas</span> <span class="o">=</span> <span class="n">areas</span>
+
+        <span class="c1"># Create the logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_logger</span> <span class="o">=</span> <span class="n">getLogger</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># Was a filepath given?</span>
+        <span class="k">if</span> <span class="n">filepath</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Does the given path end with the extension?</span>
+            <span class="k">if</span> <span class="n">filepath</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.log&#39;</span><span class="p">):</span>
+
+                <span class="c1"># Remove the extension</span>
+                <span class="n">filepath</span> <span class="o">=</span> <span class="n">filepath</span><span class="p">[:</span><span class="o">~</span><span class="mi">3</span><span class="p">]</span>
+
+            <span class="c1"># Get the path to the log file</span>
+            <span class="n">log_path</span> <span class="o">=</span> <span class="n">LOG_PATH</span> <span class="o">/</span> <span class="n">filepath</span> <span class="o">+</span> <span class="s1">&#39;.log&#39;</span>
+
+            <span class="c1"># Does the parent directory exist?</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">log_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+
+                <span class="c1"># Create the parent directory</span>
+                <span class="n">log_path</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">makedirs</span><span class="p">()</span>
+
+            <span class="c1"># Create the handler an add it to the logger</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handler</span> <span class="o">=</span> <span class="n">DailyRotatingFileHandler</span><span class="p">(</span><span class="n">log_path</span><span class="p">,</span> <span class="n">when</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">,</span>
+                <span class="n">backupCount</span><span class="o">=</span><span class="mi">30</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_handler</span><span class="o">.</span><span class="n">setFormatter</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">formatter</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">addHandler</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_handler</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the needed level value.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">50</span> <span class="o">-</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_level</span><span class="o">.</span><span class="n">get_int</span><span class="p">()</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">areas</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the areas to print messages to.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_areas</span><span class="o">.</span><span class="n">get_int</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the logger from logging manager and close it.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">loggerDict</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">handlers</span><span class="p">[:]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+            <span class="n">handler</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">DailyRotatingFileHandler</span><span class="p">(</span><span class="n">TimedRotatingFileHandler</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Source.Python&#39;s logging file handler.&quot;&quot;&quot;</span>
+
+    <span class="n">file_name_format</span> <span class="o">=</span> <span class="s1">&#39;source-python.%Y-%m-</span><span class="si">%d</span><span class="s1">.log&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">rotation_filename</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">default_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the name of today&#39;s log file.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file_name_format</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">getFilesToDelete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the files to delete.&quot;&quot;&quot;</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">Path</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">baseFilename</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">files</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">delta</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span> <span class="o">-</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span>
+                    <span class="n">f</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">file_name_format</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">delta</span><span class="o">.</span><span class="n">days</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">backupCount</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="n">files</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">continue</span>
+        <span class="k">return</span> <span class="n">files</span>
+
+
+<span class="c1"># Set the core ConVars</span>
+<span class="n">_level</span> <span class="o">=</span> <span class="n">ConVar</span><span class="p">(</span>
+    <span class="s1">&#39;sp_logging_level&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="s1">&#39;The Source.Python base logging level&#39;</span><span class="p">)</span>
+<span class="n">_areas</span> <span class="o">=</span> <span class="n">ConVar</span><span class="p">(</span>
+    <span class="s1">&#39;sp_logging_areas&#39;</span><span class="p">,</span> <span class="s1">&#39;1&#39;</span><span class="p">,</span> <span class="s1">&#39;The Source.Python base logging areas&#39;</span><span class="p">)</span>
+
+<span class="c1"># Get the Source.Python main LogManager instance</span>
+<span class="n">_sp_logger</span> <span class="o">=</span> <span class="n">LogManager</span><span class="p">(</span>
+    <span class="s1">&#39;sp&#39;</span><span class="p">,</span> <span class="n">_level</span><span class="p">,</span> <span class="n">_areas</span><span class="p">,</span>
+    <span class="s1">&#39;source-python.</span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)),</span>
+    <span class="s1">&#39;</span><span class="si">%(asctime)s</span><span class="s1"> - </span><span class="si">%(logger_name)s</span><span class="se">\t</span><span class="s1">-</span><span class="se">\t</span><span class="si">%(levelname)s</span><span class="se">\t</span><span class="si">%(message)s</span><span class="s1">&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1"> %H:%M:%S&#39;</span><span class="p">,</span>
+    <span class="n">prefix</span><span class="o">=</span><span class="n">SP_LOG_PREFIX</span><span class="p">)</span>
+
+<span class="c1"># Set the parent logger level to allow all message types</span>
+<span class="n">_sp_logger</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">level</span> <span class="o">=</span> <span class="n">DEBUG</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">loggers</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

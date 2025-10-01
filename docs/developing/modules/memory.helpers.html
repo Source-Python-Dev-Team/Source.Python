@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>memory.helpers module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">memory.helpers module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-memory.helpers">
+<span id="memory-helpers-module"></span><h1>memory.helpers module<a class="headerlink" href="#module-memory.helpers" title="Link to this heading">¶</a></h1>
+<p>Provides helper classes/functions for memory functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="memory.helpers.Array">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memory.helpers.</span></span><span class="sig-name descname"><span class="pre">Array</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_ptr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#Array"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.Array" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#memory.helpers.BasePointer" title="memory.helpers.BasePointer"><code class="xref py py-class docutils literal notranslate"><span class="pre">BasePointer</span></code></a></p>
+<p>Wrap an array.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.helpers.Array.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_ptr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ptr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#Array.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.Array.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the array wrapper.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>manager</strong> (<a class="reference internal" href="memory.manager.html#memory.manager.TypeManager" title="memory.manager.TypeManager"><em>TypeManager</em></a>) – The manager that should be used to
+retrieve classes.</p></li>
+<li><p><strong>is_ptr</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Set to True if the array contains pointers.</p></li>
+<li><p><strong>type_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of the array type. E.g. ‘Vector’ or
+‘bool’.</p></li>
+<li><p><strong>ptr</strong> (<a class="reference internal" href="memory.html#memory.Pointer" title="memory.Pointer"><em>Pointer</em></a>) – The base address of the array (the very first
+array entry).</p></li>
+<li><p><strong>length</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a><em>|</em><em>None</em>) – Length of the array. Setting this value allows
+you to iterate over the array.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.helpers.Array.get_offset">
+<span class="sig-name descname"><span class="pre">get_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#Array.get_offset"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.Array.get_offset" title="Link to this definition">¶</a></dt>
+<dd><p>Return the offset of the given index.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memory.helpers.BasePointer">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memory.helpers.</span></span><span class="sig-name descname"><span class="pre">BasePointer</span></span><a class="reference internal" href="../../_modules/memory/helpers.html#BasePointer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.BasePointer" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="memory.html#memory.Pointer" title="_memory.Pointer"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pointer</span></code></a></p>
+<p>Pointer extension class.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memory.helpers.Key">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memory.helpers.</span></span><span class="sig-name descname"><span class="pre">Key</span></span><a class="reference internal" href="../../_modules/memory/helpers.html#Key"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.Key" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Holds some constants and provides converters for parse_data().</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.helpers.Key.as_args_tuple">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">as_args_tuple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#Key.as_args_tuple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.Key.as_args_tuple" title="Link to this definition">¶</a></dt>
+<dd><p>Convert a string into a tuple containing &lt;DataType&gt; elements.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.helpers.Key.as_attribute_type">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">as_attribute_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#Key.as_attribute_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.Key.as_attribute_type" title="Link to this definition">¶</a></dt>
+<dd><p>Convert a string into a &lt;Type&gt; value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.helpers.Key.as_bool">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">as_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#Key.as_bool"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.Key.as_bool" title="Link to this definition">¶</a></dt>
+<dd><p>Convert a string to a boolean.</p>
+<p>Raises a ValueError if the string doesn’t represent such a value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.helpers.Key.as_convention">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">as_convention</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#Key.as_convention"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.Key.as_convention" title="Link to this definition">¶</a></dt>
+<dd><p>Convert a string into a &lt;Convention&gt; object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.helpers.Key.as_identifier">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">as_identifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#Key.as_identifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.Key.as_identifier" title="Link to this definition">¶</a></dt>
+<dd><p>Convert a string into a byte string.</p>
+<p>If no spaces in the string, the string itself will be returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.helpers.Key.as_int">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">as_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#Key.as_int"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.Key.as_int" title="Link to this definition">¶</a></dt>
+<dd><p>Convert the value to an integer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.helpers.Key.as_return_type">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">as_return_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#Key.as_return_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.Key.as_return_type" title="Link to this definition">¶</a></dt>
+<dd><p>Convert a string into a &lt;Return&gt; object.</p>
+<p>If the conversion fails, the string itself will be returned.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.helpers.Key.as_str">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">as_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#Key.as_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.Key.as_str" title="Link to this definition">¶</a></dt>
+<dd><p>Convert the value to a string.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Key.ACCESSOR">
+<span class="sig-name descname"><span class="pre">ACCESSOR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'accessor'</span></em><a class="headerlink" href="#memory.helpers.Key.ACCESSOR" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Key.ACCESSOR_OFFSET">
+<span class="sig-name descname"><span class="pre">ACCESSOR_OFFSET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'accessor_offset'</span></em><a class="headerlink" href="#memory.helpers.Key.ACCESSOR_OFFSET" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Key.ARGS">
+<span class="sig-name descname"><span class="pre">ARGS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'arguments'</span></em><a class="headerlink" href="#memory.helpers.Key.ARGS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Key.BINARY">
+<span class="sig-name descname"><span class="pre">BINARY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'binary'</span></em><a class="headerlink" href="#memory.helpers.Key.BINARY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Key.CONVENTION">
+<span class="sig-name descname"><span class="pre">CONVENTION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'convention'</span></em><a class="headerlink" href="#memory.helpers.Key.CONVENTION" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Key.DOC">
+<span class="sig-name descname"><span class="pre">DOC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'doc'</span></em><a class="headerlink" href="#memory.helpers.Key.DOC" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Key.IDENTIFIER">
+<span class="sig-name descname"><span class="pre">IDENTIFIER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'identifier'</span></em><a class="headerlink" href="#memory.helpers.Key.IDENTIFIER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Key.LENGTH">
+<span class="sig-name descname"><span class="pre">LENGTH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'length'</span></em><a class="headerlink" href="#memory.helpers.Key.LENGTH" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Key.LEVEL">
+<span class="sig-name descname"><span class="pre">LEVEL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'level'</span></em><a class="headerlink" href="#memory.helpers.Key.LEVEL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Key.OFFSET">
+<span class="sig-name descname"><span class="pre">OFFSET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'offset'</span></em><a class="headerlink" href="#memory.helpers.Key.OFFSET" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Key.RETURN_TYPE">
+<span class="sig-name descname"><span class="pre">RETURN_TYPE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'return_type'</span></em><a class="headerlink" href="#memory.helpers.Key.RETURN_TYPE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Key.SIZE">
+<span class="sig-name descname"><span class="pre">SIZE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'size'</span></em><a class="headerlink" href="#memory.helpers.Key.SIZE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Key.SRV_CHECK">
+<span class="sig-name descname"><span class="pre">SRV_CHECK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'srv_check'</span></em><a class="headerlink" href="#memory.helpers.Key.SRV_CHECK" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Key.TYPE_NAME">
+<span class="sig-name descname"><span class="pre">TYPE_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'type'</span></em><a class="headerlink" href="#memory.helpers.Key.TYPE_NAME" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memory.helpers.MemberFunction">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memory.helpers.</span></span><span class="sig-name descname"><span class="pre">MemberFunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">this</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#MemberFunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.MemberFunction" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="memory.html#memory.Function" title="_memory.Function"><code class="xref py py-class docutils literal notranslate"><span class="pre">Function</span></code></a></p>
+<p>Use this class to create a wrapper for member functions.</p>
+<p>It passes the this pointer automatically to the wrapped function.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.helpers.MemberFunction.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">this</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#MemberFunction.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.MemberFunction.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.helpers.MemberFunction.call_trampoline">
+<span class="sig-name descname"><span class="pre">call_trampoline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#MemberFunction.call_trampoline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.MemberFunction.call_trampoline" title="Link to this definition">¶</a></dt>
+<dd><p>Call the trampoline dynamically.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.helpers.MemberFunction.skip_hooks">
+<span class="sig-name descname"><span class="pre">skip_hooks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#MemberFunction.skip_hooks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.MemberFunction.skip_hooks" title="Link to this definition">¶</a></dt>
+<dd><p>Call the function, but skip hooks if there are any.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memory.helpers.Type">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memory.helpers.</span></span><span class="sig-name descname"><span class="pre">Type</span></span><a class="reference internal" href="../../_modules/memory/helpers.html#Type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.Type" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Stores attribute/array types.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="memory.helpers.Type.is_native">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_native</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">type_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#Type.is_native"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.Type.is_native" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if the given type name is a native type.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Type.BOOL">
+<span class="sig-name descname"><span class="pre">BOOL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'bool'</span></em><a class="headerlink" href="#memory.helpers.Type.BOOL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Type.CHAR">
+<span class="sig-name descname"><span class="pre">CHAR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'char'</span></em><a class="headerlink" href="#memory.helpers.Type.CHAR" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Type.DOUBLE">
+<span class="sig-name descname"><span class="pre">DOUBLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'double'</span></em><a class="headerlink" href="#memory.helpers.Type.DOUBLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Type.FLOAT">
+<span class="sig-name descname"><span class="pre">FLOAT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'float'</span></em><a class="headerlink" href="#memory.helpers.Type.FLOAT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Type.INT">
+<span class="sig-name descname"><span class="pre">INT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'int'</span></em><a class="headerlink" href="#memory.helpers.Type.INT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Type.LONG">
+<span class="sig-name descname"><span class="pre">LONG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'long'</span></em><a class="headerlink" href="#memory.helpers.Type.LONG" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Type.LONG_LONG">
+<span class="sig-name descname"><span class="pre">LONG_LONG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'long_long'</span></em><a class="headerlink" href="#memory.helpers.Type.LONG_LONG" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Type.POINTER">
+<span class="sig-name descname"><span class="pre">POINTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'pointer'</span></em><a class="headerlink" href="#memory.helpers.Type.POINTER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Type.SHORT">
+<span class="sig-name descname"><span class="pre">SHORT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'short'</span></em><a class="headerlink" href="#memory.helpers.Type.SHORT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Type.STRING_ARRAY">
+<span class="sig-name descname"><span class="pre">STRING_ARRAY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'string_array'</span></em><a class="headerlink" href="#memory.helpers.Type.STRING_ARRAY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Type.STRING_POINTER">
+<span class="sig-name descname"><span class="pre">STRING_POINTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'string_pointer'</span></em><a class="headerlink" href="#memory.helpers.Type.STRING_POINTER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Type.UCHAR">
+<span class="sig-name descname"><span class="pre">UCHAR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'uchar'</span></em><a class="headerlink" href="#memory.helpers.Type.UCHAR" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Type.UINT">
+<span class="sig-name descname"><span class="pre">UINT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'uint'</span></em><a class="headerlink" href="#memory.helpers.Type.UINT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Type.ULONG">
+<span class="sig-name descname"><span class="pre">ULONG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ulong'</span></em><a class="headerlink" href="#memory.helpers.Type.ULONG" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Type.ULONG_LONG">
+<span class="sig-name descname"><span class="pre">ULONG_LONG</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ulong_long'</span></em><a class="headerlink" href="#memory.helpers.Type.ULONG_LONG" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.helpers.Type.USHORT">
+<span class="sig-name descname"><span class="pre">USHORT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'ushort'</span></em><a class="headerlink" href="#memory.helpers.Type.USHORT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="memory.helpers.parse_data">
+<span class="sig-prename descclassname"><span class="pre">memory.helpers.</span></span><span class="sig-name descname"><span class="pre">parse_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">raw_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keys</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/helpers.html#parse_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.helpers.parse_data" title="Link to this definition">¶</a></dt>
+<dd><p>Parse the data dictionary.</p>
+<p>Parses by converting the values of the given keys into
+the proper type or assigning them default values. Raises a KeyError if a
+key does not exist and if no default value is available.</p>
+<p>Returns a generator: (&lt;name&gt;, [&lt;value of key0&gt;, &lt;value of key1&gt;, …])</p>
+<p>&lt;keys&gt; must have the following structure:
+((&lt;key name&gt;, &lt;converter&gt;, &lt;default value&gt;), …)</p>
+<p>The convert function must accept 2 arguments:</p>
+<ol class="arabic simple">
+<li><p>An instance of the TypeManager class</p></li>
+<li><p>The value to convert</p></li>
+</ol>
+<p>Information about data that comes from a file:</p>
+<p>You can specialize every key by adding ‘’_windows’’ (for Windows) or
+‘’_linux’’ (for Linux) to the end a key.</p>
+<p>For example:
+If you are using a signature on Windows, but a symbol on Linux, you have
+three possibilities to do that:</p>
+<p>1.
+identifier_windows = &lt;signature for Windows&gt;
+identifier         = &lt;symbol for Linux&gt;</p>
+<p>2.
+identifier         = &lt;signature for Windows&gt;
+identifier_linux   = &lt;symbol for Linux&gt;</p>
+<p>3.
+identifier_windows = &lt;signature for Windows&gt;
+identifier_linux   = &lt;symbol for Linux&gt;</p>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">memory.helpers module</a><ul>
+<li><a class="reference internal" href="#memory.helpers.Array"><code class="docutils literal notranslate"><span class="pre">Array</span></code></a><ul>
+<li><a class="reference internal" href="#memory.helpers.Array.__init__"><code class="docutils literal notranslate"><span class="pre">Array.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Array.get_offset"><code class="docutils literal notranslate"><span class="pre">Array.get_offset()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#memory.helpers.BasePointer"><code class="docutils literal notranslate"><span class="pre">BasePointer</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key"><code class="docutils literal notranslate"><span class="pre">Key</span></code></a><ul>
+<li><a class="reference internal" href="#memory.helpers.Key.as_args_tuple"><code class="docutils literal notranslate"><span class="pre">Key.as_args_tuple()</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.as_attribute_type"><code class="docutils literal notranslate"><span class="pre">Key.as_attribute_type()</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.as_bool"><code class="docutils literal notranslate"><span class="pre">Key.as_bool()</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.as_convention"><code class="docutils literal notranslate"><span class="pre">Key.as_convention()</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.as_identifier"><code class="docutils literal notranslate"><span class="pre">Key.as_identifier()</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.as_int"><code class="docutils literal notranslate"><span class="pre">Key.as_int()</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.as_return_type"><code class="docutils literal notranslate"><span class="pre">Key.as_return_type()</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.as_str"><code class="docutils literal notranslate"><span class="pre">Key.as_str()</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.ACCESSOR"><code class="docutils literal notranslate"><span class="pre">Key.ACCESSOR</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.ACCESSOR_OFFSET"><code class="docutils literal notranslate"><span class="pre">Key.ACCESSOR_OFFSET</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.ARGS"><code class="docutils literal notranslate"><span class="pre">Key.ARGS</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.BINARY"><code class="docutils literal notranslate"><span class="pre">Key.BINARY</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.CONVENTION"><code class="docutils literal notranslate"><span class="pre">Key.CONVENTION</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.DOC"><code class="docutils literal notranslate"><span class="pre">Key.DOC</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.IDENTIFIER"><code class="docutils literal notranslate"><span class="pre">Key.IDENTIFIER</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.LENGTH"><code class="docutils literal notranslate"><span class="pre">Key.LENGTH</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.LEVEL"><code class="docutils literal notranslate"><span class="pre">Key.LEVEL</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.OFFSET"><code class="docutils literal notranslate"><span class="pre">Key.OFFSET</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.RETURN_TYPE"><code class="docutils literal notranslate"><span class="pre">Key.RETURN_TYPE</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.SIZE"><code class="docutils literal notranslate"><span class="pre">Key.SIZE</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.SRV_CHECK"><code class="docutils literal notranslate"><span class="pre">Key.SRV_CHECK</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Key.TYPE_NAME"><code class="docutils literal notranslate"><span class="pre">Key.TYPE_NAME</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#memory.helpers.MemberFunction"><code class="docutils literal notranslate"><span class="pre">MemberFunction</span></code></a><ul>
+<li><a class="reference internal" href="#memory.helpers.MemberFunction.__init__"><code class="docutils literal notranslate"><span class="pre">MemberFunction.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.MemberFunction.call_trampoline"><code class="docutils literal notranslate"><span class="pre">MemberFunction.call_trampoline()</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.MemberFunction.skip_hooks"><code class="docutils literal notranslate"><span class="pre">MemberFunction.skip_hooks()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#memory.helpers.Type"><code class="docutils literal notranslate"><span class="pre">Type</span></code></a><ul>
+<li><a class="reference internal" href="#memory.helpers.Type.is_native"><code class="docutils literal notranslate"><span class="pre">Type.is_native()</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Type.BOOL"><code class="docutils literal notranslate"><span class="pre">Type.BOOL</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Type.CHAR"><code class="docutils literal notranslate"><span class="pre">Type.CHAR</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Type.DOUBLE"><code class="docutils literal notranslate"><span class="pre">Type.DOUBLE</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Type.FLOAT"><code class="docutils literal notranslate"><span class="pre">Type.FLOAT</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Type.INT"><code class="docutils literal notranslate"><span class="pre">Type.INT</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Type.LONG"><code class="docutils literal notranslate"><span class="pre">Type.LONG</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Type.LONG_LONG"><code class="docutils literal notranslate"><span class="pre">Type.LONG_LONG</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Type.POINTER"><code class="docutils literal notranslate"><span class="pre">Type.POINTER</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Type.SHORT"><code class="docutils literal notranslate"><span class="pre">Type.SHORT</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Type.STRING_ARRAY"><code class="docutils literal notranslate"><span class="pre">Type.STRING_ARRAY</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Type.STRING_POINTER"><code class="docutils literal notranslate"><span class="pre">Type.STRING_POINTER</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Type.UCHAR"><code class="docutils literal notranslate"><span class="pre">Type.UCHAR</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Type.UINT"><code class="docutils literal notranslate"><span class="pre">Type.UINT</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Type.ULONG"><code class="docutils literal notranslate"><span class="pre">Type.ULONG</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Type.ULONG_LONG"><code class="docutils literal notranslate"><span class="pre">Type.ULONG_LONG</span></code></a></li>
+<li><a class="reference internal" href="#memory.helpers.Type.USHORT"><code class="docutils literal notranslate"><span class="pre">Type.USHORT</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#memory.helpers.parse_data"><code class="docutils literal notranslate"><span class="pre">parse_data()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/memory.helpers.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">memory.helpers module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

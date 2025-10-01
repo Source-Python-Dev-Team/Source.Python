@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>config.manager &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">config.manager</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for config.manager</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../config/manager.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides a way to create and execute configuration files.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Collections</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="c1">#   TextWrap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">textwrap</span><span class="w"> </span><span class="kn">import</span> <span class="n">TextWrapper</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Config</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">config.cvar</span><span class="w"> </span><span class="kn">import</span> <span class="n">_CvarManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">config.section</span><span class="w"> </span><span class="kn">import</span> <span class="n">_SectionManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">config.command</span><span class="w"> </span><span class="kn">import</span> <span class="n">_CommandManager</span>
+<span class="c1">#   Cvars</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cvars</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConVar</span>
+<span class="c1">#   Engines</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">queue_command_string</span>
+<span class="c1">#   Hooks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hooks.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">except_hooks</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">CFG_PATH</span>
+<span class="c1">#   Translations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">translations.strings</span><span class="w"> </span><span class="kn">import</span> <span class="n">LangStrings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">translations.strings</span><span class="w"> </span><span class="kn">import</span> <span class="n">TranslationStrings</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;ConfigManager&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Get the config language strings</span>
+<span class="n">_config_strings</span> <span class="o">=</span> <span class="n">LangStrings</span><span class="p">(</span><span class="s1">&#39;_core/config_strings&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="ConfigManager">
+<a class="viewcode-back" href="../../developing/modules/config.manager.html#config.manager.ConfigManager">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConfigManager</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Config Management class used to create a config file.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ConfigManager.__init__">
+<a class="viewcode-back" href="../../developing/modules/config.manager.html#config.manager.ConfigManager.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">cvar_prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">indention</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
+            <span class="n">max_line_length</span><span class="o">=</span><span class="mi">79</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialized the configuration manager.</span>
+
+<span class="sd">        :param str filepath:</span>
+<span class="sd">            Location where the configuration should be stored. The extension</span>
+<span class="sd">            ``.cfg`` can be skipped. It will be added automatically.</span>
+<span class="sd">        :param str cvar_prefix:</span>
+<span class="sd">            A prefix that should be added to every console variable.</span>
+<span class="sd">        :param int indention:</span>
+<span class="sd">            Number of spaces used to indent values within the configuration</span>
+<span class="sd">            file.</span>
+<span class="sd">        :param int max_line_length:</span>
+<span class="sd">            Maximum line length within the configuration file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Does the filepath contain the extension?</span>
+        <span class="k">if</span> <span class="n">filepath</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.cfg&#39;</span><span class="p">):</span>
+
+            <span class="c1"># Remove the extension from the filepath</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="n">filepath</span><span class="p">[:</span><span class="o">~</span><span class="mi">3</span><span class="p">]</span>
+
+        <span class="c1"># Store the primary attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filepath</span> <span class="o">=</span> <span class="n">filepath</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cvar_prefix</span> <span class="o">=</span> <span class="n">cvar_prefix</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_indention</span> <span class="o">=</span> <span class="n">indention</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_max_line_length</span> <span class="o">=</span> <span class="n">max_line_length</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_encoding</span> <span class="o">=</span> <span class="n">encoding</span>
+
+        <span class="c1"># Store the header and separator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">separator</span> <span class="o">=</span> <span class="s1">&#39;#&#39;</span>
+
+        <span class="c1"># Store the section types</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cvars</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="c1"># Store the section list</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Used when using &quot;with&quot; context management to create the file.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the file path for the config file.</span>
+
+<span class="sd">        The path does not include the ``.cfg`` file extension.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filepath</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cvar_prefix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the convar prefix for the config file.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cvar_prefix</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">indention</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the indention value for the config file.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_indention</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">max_line_length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the max line length for the config file.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_max_line_length</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fullpath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the full path to the configuration file.</span>
+
+<span class="sd">        The path include the ``.cfg`` file extension.</span>
+
+<span class="sd">        :rtype: path.Path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">CFG_PATH</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span> <span class="o">+</span> <span class="s1">&#39;.cfg&#39;</span>
+
+<div class="viewcode-block" id="ConfigManager.cvar">
+<a class="viewcode-back" href="../../developing/modules/config.manager.html#config.manager.ConfigManager.cvar">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cvar</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">flags</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">min_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add/return a cvar instance to add to the config file.</span>
+
+<span class="sd">        :param str name:</span>
+<span class="sd">            Name of the console variable.</span>
+<span class="sd">        :param object default:</span>
+<span class="sd">            A default value for the console variable. It will be converted to</span>
+<span class="sd">            a string.</span>
+<span class="sd">        :param str/TranslationStrings description:</span>
+<span class="sd">            A description of the console variable.</span>
+<span class="sd">        :param ConVarFlags flags:</span>
+<span class="sd">            Flags that should be used for the console variable.</span>
+<span class="sd">        :param float min_value:</span>
+<span class="sd">            Minimum value.</span>
+<span class="sd">        :param float max_value:</span>
+<span class="sd">            Maximum value.</span>
+<span class="sd">        :rtype: _CvarManager</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Add the stored prefix to the given name...</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cvar_prefix</span> <span class="o">+</span> <span class="n">name</span>
+
+        <span class="c1"># Get the _CvarManager instance for the given arguments</span>
+        <span class="n">section</span> <span class="o">=</span> <span class="n">_CvarManager</span><span class="p">(</span>
+            <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="n">flags</span><span class="p">,</span> <span class="n">min_value</span><span class="p">,</span> <span class="n">max_value</span><span class="p">)</span>
+
+        <span class="c1"># Add the cvar to the list of cvars</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cvars</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># Add the _CvarManager instance to the list of sections</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">section</span><span class="p">)</span>
+
+        <span class="c1"># Return the _CvarManager instance</span>
+        <span class="k">return</span> <span class="n">section</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.section">
+<a class="viewcode-back" href="../../developing/modules/config.manager.html#config.manager.ConfigManager.section">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">separator</span><span class="o">=</span><span class="s1">&#39;#&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add/return a section instance to add to the config file.</span>
+
+<span class="sd">        :param str/TranslationStrings name:</span>
+<span class="sd">            Name of the section to add.</span>
+<span class="sd">        :param str separator:</span>
+<span class="sd">            A single separator character to use to separate the section.</span>
+<span class="sd">        :rtype: _SectionManager</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the _SectionManager instance for the given arguments</span>
+        <span class="n">section</span> <span class="o">=</span> <span class="n">_SectionManager</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">separator</span><span class="p">)</span>
+
+        <span class="c1"># Add the _SectionManager instance to the list of sections</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">section</span><span class="p">)</span>
+
+        <span class="c1"># Return the _SectionManager instance</span>
+        <span class="k">return</span> <span class="n">section</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.command">
+<a class="viewcode-back" href="../../developing/modules/config.manager.html#config.manager.ConfigManager.command">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add/return a command instance to add to the config file.</span>
+
+<span class="sd">        :param str name:</span>
+<span class="sd">            Name of the command to add.</span>
+<span class="sd">        :param str/TranslationString description:</span>
+<span class="sd">            Description of the command.</span>
+<span class="sd">        :rtype: _CommandManager</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the _CommandManager instance for the given arguments</span>
+        <span class="n">section</span> <span class="o">=</span> <span class="n">_CommandManager</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">description</span><span class="p">)</span>
+
+        <span class="c1"># Add the command to the list of commands</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># Add the _CommandManager instance to the list of sections</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">section</span><span class="p">)</span>
+
+        <span class="c1"># Return the _CommandManager instance</span>
+        <span class="k">return</span> <span class="n">section</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.text">
+<a class="viewcode-back" href="../../developing/modules/config.manager.html#config.manager.ConfigManager.text">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add text to the config file.</span>
+
+<span class="sd">        :param str/TranslationStrings text:</span>
+<span class="sd">            The text to add.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Is the given text a TranslationStrings instance?</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">TranslationStrings</span><span class="p">):</span>
+
+            <span class="c1"># Get the proper language string</span>
+            <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">get_string</span><span class="p">()</span>
+
+        <span class="c1"># Add the text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">text</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exctype</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">trace_back</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Used when exiting &quot;with&quot; context management to create file.&quot;&quot;&quot;</span>
+        <span class="c1"># Was an exception raised?</span>
+        <span class="k">if</span> <span class="n">trace_back</span><span class="p">:</span>
+
+            <span class="c1"># Print the exception</span>
+            <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span><span class="p">(</span><span class="n">exctype</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">trace_back</span><span class="p">)</span>
+
+            <span class="c1"># Return</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># Write the file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">write</span><span class="p">()</span>
+
+        <span class="c1"># Execute the file</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+        <span class="c1"># Return</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="ConfigManager.write">
+<a class="viewcode-back" href="../../developing/modules/config.manager.html#config.manager.ConfigManager.write">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the config file.&quot;&quot;&quot;</span>
+        <span class="c1"># Get any old values from the existing file</span>
+        <span class="n">_old_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parse_old_file</span><span class="p">()</span>
+
+        <span class="c1"># Is the indention too small?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">indention</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+
+            <span class="c1"># Set the indention to the lowest amount</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_indention</span> <span class="o">=</span> <span class="mi">3</span>
+
+        <span class="c1"># Do all directories to the file exist?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">fullpath</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+
+            <span class="c1"># Create the directories</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fullpath</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">makedirs</span><span class="p">()</span>
+
+        <span class="c1"># Open/close the file to write to it</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">fullpath</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_file</span><span class="p">:</span>
+
+            <span class="c1"># Get the number of spaces to indent after //</span>
+            <span class="n">spaces</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indention</span> <span class="o">-</span> <span class="mi">2</span><span class="p">)</span>
+
+            <span class="c1"># Is there a header for the file?</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_write_header</span><span class="p">(</span><span class="n">open_file</span><span class="p">,</span> <span class="n">spaces</span><span class="p">)</span>
+
+            <span class="c1"># Loop through all sections in the file</span>
+            <span class="k">for</span> <span class="n">section</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sections</span><span class="p">:</span>
+
+                <span class="c1"># Is the current section a cvar?</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">_CvarManager</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_write_cvar_section</span><span class="p">(</span>
+                        <span class="n">open_file</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">_old_config</span><span class="p">,</span> <span class="n">spaces</span><span class="p">)</span>
+
+                <span class="c1"># Is the current section a Section?</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">_SectionManager</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_write_section</span><span class="p">(</span><span class="n">open_file</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">spaces</span><span class="p">)</span>
+
+                <span class="c1"># Is the current section a Command?</span>
+                <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">section</span><span class="p">,</span> <span class="n">_CommandManager</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_write_command_section</span><span class="p">(</span>
+                        <span class="n">open_file</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">_old_config</span><span class="p">)</span>
+
+                <span class="c1"># Is the current section a blank line?</span>
+                <span class="k">elif</span> <span class="ow">not</span> <span class="n">section</span><span class="p">:</span>
+
+                    <span class="c1"># Create a blank line</span>
+                    <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Is the current section just text?</span>
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="c1"># Loop through the current line to get valid</span>
+                    <span class="c1"># lines with length less than the max line length</span>
+                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_lines</span><span class="p">(</span><span class="n">section</span><span class="p">):</span>
+
+                        <span class="c1"># Write the current line</span>
+                        <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Are there any more values not used from the old config file?</span>
+            <span class="k">if</span> <span class="n">_old_config</span><span class="p">:</span>
+
+                <span class="c1"># Add a blank line</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Loop through the items in the old config</span>
+                <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">_old_config</span><span class="p">):</span>
+
+                    <span class="c1"># Loop through each line for the current item</span>
+                    <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">_old_config</span><span class="p">[</span><span class="n">name</span><span class="p">]:</span>
+
+                        <span class="c1"># Write the line to the config file</span>
+                        <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;// </span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">line</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="ConfigManager.execute">
+<a class="viewcode-back" href="../../developing/modules/config.manager.html#config.manager.ConfigManager.execute">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the config file.&quot;&quot;&quot;</span>
+        <span class="c1"># Does the file exist?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">fullpath</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">FileNotFoundError</span><span class="p">(</span>
+                <span class="s1">&#39;Cannot execute file &quot;</span><span class="si">{0}</span><span class="s1">&quot;, file not found&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">fullpath</span><span class="p">))</span>
+
+        <span class="c1"># Open/close the file</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">fullpath</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_file</span><span class="p">:</span>
+
+            <span class="c1"># Loop through all lines in the file</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">open_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">():</span>
+
+                <span class="c1"># Strip the line</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+
+                <span class="c1"># Is the line a command or cvar?</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;//&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Get the command&#39;s or cvar&#39;s name</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="c1"># Is the command/cvar valid</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cvars</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Does the command/cvar have any value/arguments?</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">):</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Is this a command?</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span><span class="p">:</span>
+
+                    <span class="c1"># Execute the line</span>
+                    <span class="n">queue_command_string</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+                <span class="c1"># Is this a cvar</span>
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="c1"># Get the cvar&#39;s value</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+                    <span class="c1"># Do quotes need removed?</span>
+                    <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">line</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+
+                        <span class="c1"># Remove the quotes</span>
+                        <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+
+                    <span class="c1"># Set the cvar&#39;s value</span>
+                    <span class="n">ConVar</span><span class="p">(</span><span class="n">name</span><span class="p">)</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_parse_old_file</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the old config file to get any values already set.&quot;&quot;&quot;</span>
+        <span class="c1"># Get a defaultdict instance to store a list of lines</span>
+        <span class="n">_old_config</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+        <span class="c1"># Does the file exist?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">fullpath</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+
+            <span class="c1"># If not, simply return the empty dictionary</span>
+            <span class="k">return</span> <span class="n">_old_config</span>
+
+        <span class="c1"># Open/close the file</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">fullpath</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_file</span><span class="p">:</span>
+
+            <span class="c1"># Get all lines from the file</span>
+            <span class="n">_all_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">open_file</span><span class="o">.</span><span class="n">readlines</span><span class="p">()]</span>
+
+        <span class="c1"># Loop through each line in the old config</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">_all_lines</span><span class="p">:</span>
+
+            <span class="c1"># Is the line a command or cvar?</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;//&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">line</span><span class="p">:</span>
+
+                <span class="c1"># If not, continue to the next line</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Get the command&#39;s or cvar&#39;s name</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+            <span class="c1"># Is the command/cvar valid, but have to value/arguments?</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_commands</span> <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cvars</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">):</span>
+
+                <span class="c1"># If not, continue to the next line</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Make sure the line has the proper number of quotes</span>
+            <span class="n">line</span> <span class="o">+=</span> <span class="s1">&#39;&quot;&#39;</span> <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+
+            <span class="c1"># Add the line to the old config</span>
+            <span class="n">_old_config</span><span class="p">[</span><span class="n">name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+        <span class="c1"># Return the dictionary</span>
+        <span class="k">return</span> <span class="n">_old_config</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_write_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">open_file</span><span class="p">,</span> <span class="n">spaces</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the config&#39;s header.&quot;&quot;&quot;</span>
+        <span class="c1"># Get the length of the header&#39;s separator</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">separator</span><span class="p">)</span>
+
+        <span class="c1"># Get the number of times to repeat the separator</span>
+        <span class="n">times</span><span class="p">,</span> <span class="n">remainder</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_line_length</span> <span class="o">-</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">indention</span><span class="p">),</span> <span class="n">length</span><span class="p">)</span>
+
+        <span class="c1"># Get the string separator value</span>
+        <span class="n">separator</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s1">&#39;//&#39;</span> <span class="o">+</span> <span class="n">spaces</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">separator</span> <span class="o">*</span> <span class="n">times</span> <span class="o">+</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">separator</span><span class="p">[:</span><span class="n">remainder</span><span class="p">]</span> <span class="o">+</span> <span class="n">spaces</span> <span class="o">+</span> <span class="s1">&#39;//</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Write the separator</span>
+        <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span>
+
+        <span class="c1"># Is the header a TranslationStrings instance?</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="p">,</span> <span class="n">TranslationStrings</span><span class="p">):</span>
+
+            <span class="c1"># Get the proper text for the header</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">header</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">get_string</span><span class="p">()</span>
+
+        <span class="c1"># Loop through each line in the header</span>
+        <span class="k">for</span> <span class="n">lines</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">header</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
+
+            <span class="c1"># Loop through the current line to get valid</span>
+            <span class="c1"># lines with length less than the max line length</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+
+                <span class="c1"># Strip the // and new line characters from the line</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;/ &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Write the current line</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;//</span><span class="si">{0}</span><span class="s1">//</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">line</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_line_length</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)))</span>
+
+        <span class="c1"># Write the separator to end the header</span>
+        <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_write_cvar_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">open_file</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">_old_config</span><span class="p">,</span> <span class="n">spaces</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the Cvar section to the config file.&quot;&quot;&quot;</span>
+        <span class="c1"># Has any text been added to the file?</span>
+        <span class="k">if</span> <span class="n">open_file</span><span class="o">.</span><span class="n">tell</span><span class="p">():</span>
+
+            <span class="c1"># If so, add a blank line prior to section</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Loop through all lines in the section</span>
+        <span class="k">for</span> <span class="n">lines</span><span class="p">,</span> <span class="n">indent</span> <span class="ow">in</span> <span class="n">section</span><span class="p">:</span>
+
+            <span class="c1"># Loop through the current line to get valid</span>
+            <span class="c1"># lines with length less than the max line length</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">indent</span><span class="p">):</span>
+
+                <span class="c1"># Write the current line</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Does the default value need written?</span>
+        <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">show_default</span><span class="p">:</span>
+
+            <span class="c1"># Write the cvar&#39;s default value</span>
+            <span class="n">default</span> <span class="o">=</span> <span class="s1">&#39; &quot;</span><span class="si">{0}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="n">section</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="k">else</span> <span class="s1">&#39; </span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s1">&#39;//&#39;</span> <span class="o">+</span> <span class="n">spaces</span> <span class="o">+</span>
+                <span class="n">_config_strings</span><span class="p">[</span><span class="s1">&#39;Default&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">()</span> <span class="o">+</span>
+                <span class="n">default</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">default</span><span class="p">))</span>
+
+        <span class="c1"># Loop through the description to get valid</span>
+        <span class="c1"># lines with length less than the max line length</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_lines</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">description</span><span class="p">):</span>
+
+            <span class="c1"># Write the current line</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Does the cvar exist in the old config file?</span>
+        <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">_old_config</span><span class="p">:</span>
+
+            <span class="c1"># Write the old config file&#39;s value</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">indention</span> <span class="o">+</span>
+                <span class="n">_old_config</span><span class="p">[</span><span class="n">section</span><span class="o">.</span><span class="n">name</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Remove the cvar from the old config file dictionary</span>
+            <span class="k">del</span> <span class="n">_old_config</span><span class="p">[</span><span class="n">section</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+
+        <span class="c1"># Does the cvar not exist in the old config file</span>
+        <span class="c1"># and the value is a float or integer?</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="nb">int</span><span class="p">)):</span>
+
+            <span class="c1"># Write the cvar line using the default value</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">indention</span> <span class="o">+</span> <span class="n">section</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span>
+                <span class="s1">&#39; </span><span class="si">{0}</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">default</span><span class="p">))</span>
+
+        <span class="c1"># Does the cvar not exist in the old config file</span>
+        <span class="c1"># And the value is not a float or integer?</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># Write the cvar line using the default</span>
+            <span class="c1"># value with quotes around the value</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">indention</span> <span class="o">+</span> <span class="n">section</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span>
+                <span class="s1">&#39; &quot;</span><span class="si">{0}</span><span class="s1">&quot;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">default</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_write_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">open_file</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">spaces</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the section to the config file.&quot;&quot;&quot;</span>
+        <span class="c1"># Has any text been added to the file?</span>
+        <span class="k">if</span> <span class="n">open_file</span><span class="o">.</span><span class="n">tell</span><span class="p">():</span>
+
+            <span class="c1"># If so, add a blank line prior to section</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Get the length of the section&#39;s separator</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">separator</span><span class="p">)</span>
+
+        <span class="c1"># Get the number of times to repeat the separator</span>
+        <span class="n">times</span><span class="p">,</span> <span class="n">remainder</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_line_length</span> <span class="o">-</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">indention</span><span class="p">),</span> <span class="n">length</span><span class="p">)</span>
+
+        <span class="c1"># Get the string separator value</span>
+        <span class="n">separator</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s1">&#39;//&#39;</span> <span class="o">+</span> <span class="n">spaces</span> <span class="o">+</span> <span class="n">section</span><span class="o">.</span><span class="n">separator</span> <span class="o">*</span> <span class="n">times</span> <span class="o">+</span>
+            <span class="n">section</span><span class="o">.</span><span class="n">separator</span><span class="p">[:</span><span class="n">remainder</span><span class="p">]</span> <span class="o">+</span> <span class="n">spaces</span> <span class="o">+</span> <span class="s1">&#39;//</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Write the separator</span>
+        <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span>
+
+        <span class="c1"># Loop through each line in the section</span>
+        <span class="k">for</span> <span class="n">lines</span> <span class="ow">in</span> <span class="n">section</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
+
+            <span class="c1"># Loop through the current line to get valid</span>
+            <span class="c1"># lines with length less than the max line length</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_lines</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+
+                <span class="c1"># Strip the // from the line and remove newline</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;/ &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Write the current line</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;//</span><span class="si">{0}</span><span class="s1">//</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">line</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">max_line_length</span> <span class="o">-</span> <span class="mi">4</span><span class="p">)))</span>
+
+        <span class="c1"># Write the separator to end the section</span>
+        <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">separator</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_write_command_section</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">open_file</span><span class="p">,</span> <span class="n">section</span><span class="p">,</span> <span class="n">_old_config</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the Command section to the config file.&quot;&quot;&quot;</span>
+        <span class="c1"># Has any text been added to the file?</span>
+        <span class="k">if</span> <span class="n">open_file</span><span class="o">.</span><span class="n">tell</span><span class="p">():</span>
+
+            <span class="c1"># If so, add a blank line prior to section</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Does the command have a description?</span>
+        <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">description</span><span class="p">:</span>
+
+            <span class="c1"># Loop through description to get valid lines</span>
+            <span class="c1"># with length less than the max line length</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_lines</span><span class="p">(</span><span class="n">section</span><span class="o">.</span><span class="n">description</span><span class="p">):</span>
+
+                <span class="c1"># Write the current line</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Does the command exist in the old config file?</span>
+        <span class="k">if</span> <span class="n">section</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">_old_config</span><span class="p">:</span>
+
+            <span class="c1"># Loop through each line in the</span>
+            <span class="c1"># old config for the command</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">_old_config</span><span class="p">[</span><span class="n">section</span><span class="o">.</span><span class="n">name</span><span class="p">]:</span>
+
+                <span class="c1"># Write the line to the file</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Remove the command from the old config</span>
+            <span class="k">del</span> <span class="n">_old_config</span><span class="p">[</span><span class="n">section</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_lines</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lines</span><span class="p">,</span> <span class="n">indention</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Yield a list of lines less than the file&#39;s max line length.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">TextWrapper</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">max_line_length</span><span class="p">,</span> <span class="s1">&#39;//&#39;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">indention</span> <span class="o">-</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="s1">&#39;//&#39;</span> <span class="o">+</span> <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">indention</span> <span class="k">if</span> <span class="n">indention</span> <span class="o">&lt;</span> <span class="mi">3</span>
+                <span class="k">else</span> <span class="n">indention</span> <span class="o">-</span> <span class="mi">2</span><span class="p">))</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">config.manager</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

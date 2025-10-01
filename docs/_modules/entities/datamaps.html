@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>entities.datamaps &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.datamaps</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for entities.datamaps</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../entities/datamaps.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides DataMap functionality for entities.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntFlag</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">Function</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FORWARD IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataMap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FieldType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FTYPEDESC_GLOBAL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FTYPEDESC_SAVE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FTYPEDESC_KEY</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FTYPEDESC_INPUT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FTYPEDESC_OUTPUT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FTYPEDESC_FUNCTIONTABLE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FTYPEDESC_PTR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FTYPEDESC_OVERRIDE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FTYPEDESC_INSENDTABLE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FTYPEDESC_PRIVATE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FTYPEDESC_NOERRORCHECK</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FTYPEDESC_MODELINDEX</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FTYPEDESC_INDEX</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FTYPEDESC_VIEW_OTHER_PLAYER</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FTYPEDESC_VIEW_OWN_TEAM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FTYPEDESC_VIEW_NEVER</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">InputData</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">InputFunction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Interval</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypeDescription</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Variant</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Set all to an empty list</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;DataMap&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;EntityProperty&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;FieldType&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;InputData&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;InputFunction&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Interval&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TypeDescription&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TypeDescriptionFlags&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Variant&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">_supported_input_types</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">FieldType</span><span class="o">.</span><span class="n">BOOLEAN</span><span class="p">:</span> <span class="s1">&#39;bool&#39;</span><span class="p">,</span>
+    <span class="n">FieldType</span><span class="o">.</span><span class="n">COLOR32</span><span class="p">:</span> <span class="s1">&#39;color&#39;</span><span class="p">,</span>
+    <span class="n">FieldType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">:</span> <span class="s1">&#39;float&#39;</span><span class="p">,</span>
+    <span class="n">FieldType</span><span class="o">.</span><span class="n">INTEGER</span><span class="p">:</span> <span class="s1">&#39;int&#39;</span><span class="p">,</span>
+    <span class="n">FieldType</span><span class="o">.</span><span class="n">STRING</span><span class="p">:</span> <span class="s1">&#39;string&#39;</span><span class="p">,</span>
+    <span class="n">FieldType</span><span class="o">.</span><span class="n">VECTOR</span><span class="p">:</span> <span class="s1">&#39;vector&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ENUMERATORS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="TypeDescriptionFlags">
+<a class="viewcode-back" href="../../developing/modules/entities.datamaps.html#entities.datamaps.TypeDescriptionFlags">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TypeDescriptionFlags</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;TypeDescription flags wrapper enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">GLOBAL</span> <span class="o">=</span> <span class="n">FTYPEDESC_GLOBAL</span>
+    <span class="n">SAVE</span> <span class="o">=</span> <span class="n">FTYPEDESC_SAVE</span>
+    <span class="n">KEY</span> <span class="o">=</span> <span class="n">FTYPEDESC_KEY</span>
+    <span class="n">INPUT</span> <span class="o">=</span> <span class="n">FTYPEDESC_INPUT</span>
+    <span class="n">OUTPUT</span> <span class="o">=</span> <span class="n">FTYPEDESC_OUTPUT</span>
+    <span class="n">FUNCTIONTABLE</span> <span class="o">=</span> <span class="n">FTYPEDESC_FUNCTIONTABLE</span>
+    <span class="n">PTR</span> <span class="o">=</span> <span class="n">FTYPEDESC_PTR</span>
+    <span class="n">OVERRIDE</span> <span class="o">=</span> <span class="n">FTYPEDESC_OVERRIDE</span>
+    <span class="n">INSENDTABLE</span> <span class="o">=</span> <span class="n">FTYPEDESC_INSENDTABLE</span>
+    <span class="n">PRIVATE</span> <span class="o">=</span> <span class="n">FTYPEDESC_PRIVATE</span>
+    <span class="n">NOERRORCHECK</span> <span class="o">=</span> <span class="n">FTYPEDESC_NOERRORCHECK</span>
+    <span class="n">MODELINDEX</span> <span class="o">=</span> <span class="n">FTYPEDESC_MODELINDEX</span>
+    <span class="n">INDEX</span> <span class="o">=</span> <span class="n">FTYPEDESC_INDEX</span>
+    <span class="n">VIEW_OTHER_PLAYER</span> <span class="o">=</span> <span class="n">FTYPEDESC_VIEW_OTHER_PLAYER</span>
+    <span class="n">VIEW_OWN_TEAM</span> <span class="o">=</span> <span class="n">FTYPEDESC_VIEW_OWN_TEAM</span>
+    <span class="n">VIEW_NEVER</span> <span class="o">=</span> <span class="n">FTYPEDESC_VIEW_NEVER</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="EntityProperty">
+<a class="viewcode-back" href="../../developing/modules/entities.datamaps.html#entities.datamaps.EntityProperty">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EntityProperty</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store property information for verification.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="EntityProperty.__init__">
+<a class="viewcode-back" href="../../developing/modules/entities.datamaps.html#entities.datamaps.EntityProperty.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">prop_type</span><span class="p">,</span> <span class="n">networked</span><span class="p">,</span> <span class="n">offset</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store the base attributes on instantiation.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span> <span class="o">=</span> <span class="n">instance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prop_type</span> <span class="o">=</span> <span class="n">prop_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_networked</span> <span class="o">=</span> <span class="n">networked</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span> <span class="o">=</span> <span class="n">offset</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the instance_property instance for the class.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instance</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prop_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the type of the property.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prop_type</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">networked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the property is networked.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_networked</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">offset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the offset of the property.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_offset</span></div>
+
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.datamaps</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

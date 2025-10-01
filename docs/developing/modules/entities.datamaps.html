@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>entities.datamaps module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.datamaps module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-entities.datamaps">
+<span id="entities-datamaps-module"></span><h1>entities.datamaps module<a class="headerlink" href="#module-entities.datamaps" title="Link to this heading">¶</a></h1>
+<p>Provides DataMap functionality for entities.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.datamaps.DataMap">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.datamaps.</span></span><span class="sig-name descname"><span class="pre">DataMap</span></span><a class="headerlink" href="#entities.datamaps.DataMap" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.DataMap.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#entities.datamaps.DataMap.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.DataMap.find">
+<span class="sig-name descname"><span class="pre">find</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(DataMap)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TypeDescription</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.DataMap.find" title="Link to this definition">¶</a></dt>
+<dd><p>Find a type description based on its field name or external name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#entities.datamaps.TypeDescription" title="entities.datamaps.TypeDescription">TypeDescription</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.DataMap.find_offset">
+<span class="sig-name descname"><span class="pre">find_offset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(DataMap)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.DataMap.find_offset" title="Link to this definition">¶</a></dt>
+<dd><p>Return the offset of a type description by searching for its name. Return -1 if the property wasn’t found.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.DataMap.base">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">base</span></span><a class="headerlink" href="#entities.datamaps.DataMap.base" title="Link to this definition">¶</a></dt>
+<dd><p>Return the next data map in the class hierarchy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#entities.datamaps.DataMap" title="entities.datamaps.DataMap">DataMap</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.DataMap.chains_validated">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">chains_validated</span></span><a class="headerlink" href="#entities.datamaps.DataMap.chains_validated" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities._datamaps.DataMap)arg1) -&gt; bool</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.DataMap.class_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">class_name</span></span><a class="headerlink" href="#entities.datamaps.DataMap.class_name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the name of the class described by this data map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.DataMap.length">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length</span></span><a class="headerlink" href="#entities.datamaps.DataMap.length" title="Link to this definition">¶</a></dt>
+<dd><p>Return the number of type descriptions hold by this data map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.DataMap.optimized_datamap">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">optimized_datamap</span></span><a class="headerlink" href="#entities.datamaps.DataMap.optimized_datamap" title="Link to this definition">¶</a></dt>
+<dd><p>Not implemented on this engine.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.DataMap.packed_offsets_computed">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">packed_offsets_computed</span></span><a class="headerlink" href="#entities.datamaps.DataMap.packed_offsets_computed" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities._datamaps.DataMap)arg1) -&gt; bool</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.DataMap.packed_size">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">packed_size</span></span><a class="headerlink" href="#entities.datamaps.DataMap.packed_size" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities._datamaps.DataMap)arg1) -&gt; int</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.datamaps.EntityProperty">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.datamaps.</span></span><span class="sig-name descname"><span class="pre">EntityProperty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">networked</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/datamaps.html#EntityProperty"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.datamaps.EntityProperty" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class used to store property information for verification.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.EntityProperty.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prop_type</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">networked</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/datamaps.html#EntityProperty.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.datamaps.EntityProperty.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Store the base attributes on instantiation.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.EntityProperty.instance">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">instance</span></span><a class="headerlink" href="#entities.datamaps.EntityProperty.instance" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance_property instance for the class.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.EntityProperty.networked">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">networked</span></span><a class="headerlink" href="#entities.datamaps.EntityProperty.networked" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether the property is networked.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.EntityProperty.offset">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">offset</span></span><a class="headerlink" href="#entities.datamaps.EntityProperty.offset" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the offset of the property.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.EntityProperty.prop_type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prop_type</span></span><a class="headerlink" href="#entities.datamaps.EntityProperty.prop_type" title="Link to this definition">¶</a></dt>
+<dd><p>Return the type of the property.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.datamaps.</span></span><span class="sig-name descname"><span class="pre">FieldType</span></span><a class="headerlink" href="#entities.datamaps.FieldType" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.BOOLEAN">
+<span class="sig-name descname"><span class="pre">BOOLEAN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.BOOLEAN</span></em><a class="headerlink" href="#entities.datamaps.FieldType.BOOLEAN" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.CHARACTER">
+<span class="sig-name descname"><span class="pre">CHARACTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.CHARACTER</span></em><a class="headerlink" href="#entities.datamaps.FieldType.CHARACTER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.CLASSPTR">
+<span class="sig-name descname"><span class="pre">CLASSPTR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.CLASSPTR</span></em><a class="headerlink" href="#entities.datamaps.FieldType.CLASSPTR" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.COLOR32">
+<span class="sig-name descname"><span class="pre">COLOR32</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.COLOR32</span></em><a class="headerlink" href="#entities.datamaps.FieldType.COLOR32" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.CUSTOM">
+<span class="sig-name descname"><span class="pre">CUSTOM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.CUSTOM</span></em><a class="headerlink" href="#entities.datamaps.FieldType.CUSTOM" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.EDICT">
+<span class="sig-name descname"><span class="pre">EDICT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.EDICT</span></em><a class="headerlink" href="#entities.datamaps.FieldType.EDICT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.EHANDLE">
+<span class="sig-name descname"><span class="pre">EHANDLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.EHANDLE</span></em><a class="headerlink" href="#entities.datamaps.FieldType.EHANDLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.EMBEDDED">
+<span class="sig-name descname"><span class="pre">EMBEDDED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.EMBEDDED</span></em><a class="headerlink" href="#entities.datamaps.FieldType.EMBEDDED" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.FLOAT">
+<span class="sig-name descname"><span class="pre">FLOAT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.FLOAT</span></em><a class="headerlink" href="#entities.datamaps.FieldType.FLOAT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.FUNCTION">
+<span class="sig-name descname"><span class="pre">FUNCTION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.FUNCTION</span></em><a class="headerlink" href="#entities.datamaps.FieldType.FUNCTION" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.INPUT">
+<span class="sig-name descname"><span class="pre">INPUT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.INPUT</span></em><a class="headerlink" href="#entities.datamaps.FieldType.INPUT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.INTEGER">
+<span class="sig-name descname"><span class="pre">INTEGER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.INTEGER</span></em><a class="headerlink" href="#entities.datamaps.FieldType.INTEGER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.INTEGER64">
+<span class="sig-name descname"><span class="pre">INTEGER64</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#entities.datamaps.FieldType.INTEGER64" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.INTERVAL">
+<span class="sig-name descname"><span class="pre">INTERVAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.INTERVAL</span></em><a class="headerlink" href="#entities.datamaps.FieldType.INTERVAL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.MATERIALINDEX">
+<span class="sig-name descname"><span class="pre">MATERIALINDEX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.MATERIALINDEX</span></em><a class="headerlink" href="#entities.datamaps.FieldType.MATERIALINDEX" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.MATRIX3X4_WORLDSPACE">
+<span class="sig-name descname"><span class="pre">MATRIX3X4_WORLDSPACE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.MATRIX3X4_WORLDSPACE</span></em><a class="headerlink" href="#entities.datamaps.FieldType.MATRIX3X4_WORLDSPACE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.MODELINDEX">
+<span class="sig-name descname"><span class="pre">MODELINDEX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.MODELINDEX</span></em><a class="headerlink" href="#entities.datamaps.FieldType.MODELINDEX" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.MODELNAME">
+<span class="sig-name descname"><span class="pre">MODELNAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.MODELNAME</span></em><a class="headerlink" href="#entities.datamaps.FieldType.MODELNAME" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.POSITION_VECTOR">
+<span class="sig-name descname"><span class="pre">POSITION_VECTOR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.POSITION_VECTOR</span></em><a class="headerlink" href="#entities.datamaps.FieldType.POSITION_VECTOR" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.QUATERNION">
+<span class="sig-name descname"><span class="pre">QUATERNION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.QUATERNION</span></em><a class="headerlink" href="#entities.datamaps.FieldType.QUATERNION" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.SHORT">
+<span class="sig-name descname"><span class="pre">SHORT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.SHORT</span></em><a class="headerlink" href="#entities.datamaps.FieldType.SHORT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.SOUNDNAME">
+<span class="sig-name descname"><span class="pre">SOUNDNAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.SOUNDNAME</span></em><a class="headerlink" href="#entities.datamaps.FieldType.SOUNDNAME" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.STRING">
+<span class="sig-name descname"><span class="pre">STRING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.STRING</span></em><a class="headerlink" href="#entities.datamaps.FieldType.STRING" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.TICK">
+<span class="sig-name descname"><span class="pre">TICK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.TICK</span></em><a class="headerlink" href="#entities.datamaps.FieldType.TICK" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.TIME">
+<span class="sig-name descname"><span class="pre">TIME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.TIME</span></em><a class="headerlink" href="#entities.datamaps.FieldType.TIME" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.TYPECOUNT">
+<span class="sig-name descname"><span class="pre">TYPECOUNT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.TYPECOUNT</span></em><a class="headerlink" href="#entities.datamaps.FieldType.TYPECOUNT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.VECTOR">
+<span class="sig-name descname"><span class="pre">VECTOR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.VECTOR</span></em><a class="headerlink" href="#entities.datamaps.FieldType.VECTOR" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.VECTOR2D">
+<span class="sig-name descname"><span class="pre">VECTOR2D</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.VECTOR2D</span></em><a class="headerlink" href="#entities.datamaps.FieldType.VECTOR2D" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.VECTOR4D">
+<span class="sig-name descname"><span class="pre">VECTOR4D</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#entities.datamaps.FieldType.VECTOR4D" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.VMATRIX">
+<span class="sig-name descname"><span class="pre">VMATRIX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.VMATRIX</span></em><a class="headerlink" href="#entities.datamaps.FieldType.VMATRIX" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.VMATRIX_WORLDSPACE">
+<span class="sig-name descname"><span class="pre">VMATRIX_WORLDSPACE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.VMATRIX_WORLDSPACE</span></em><a class="headerlink" href="#entities.datamaps.FieldType.VMATRIX_WORLDSPACE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.VOID">
+<span class="sig-name descname"><span class="pre">VOID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._datamaps.FieldType.VOID</span></em><a class="headerlink" href="#entities.datamaps.FieldType.VOID" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'BOOLEAN':</span> <span class="pre">_entities._datamaps.FieldType.BOOLEAN,</span> <span class="pre">'CHARACTER':</span> <span class="pre">_entities._datamaps.FieldType.CHARACTER,</span> <span class="pre">'CLASSPTR':</span> <span class="pre">_entities._datamaps.FieldType.CLASSPTR,</span> <span class="pre">'COLOR32':</span> <span class="pre">_entities._datamaps.FieldType.COLOR32,</span> <span class="pre">'CUSTOM':</span> <span class="pre">_entities._datamaps.FieldType.CUSTOM,</span> <span class="pre">'EDICT':</span> <span class="pre">_entities._datamaps.FieldType.EDICT,</span> <span class="pre">'EHANDLE':</span> <span class="pre">_entities._datamaps.FieldType.EHANDLE,</span> <span class="pre">'EMBEDDED':</span> <span class="pre">_entities._datamaps.FieldType.EMBEDDED,</span> <span class="pre">'FLOAT':</span> <span class="pre">_entities._datamaps.FieldType.FLOAT,</span> <span class="pre">'FUNCTION':</span> <span class="pre">_entities._datamaps.FieldType.FUNCTION,</span> <span class="pre">'INPUT':</span> <span class="pre">_entities._datamaps.FieldType.INPUT,</span> <span class="pre">'INTEGER':</span> <span class="pre">_entities._datamaps.FieldType.INTEGER,</span> <span class="pre">'INTERVAL':</span> <span class="pre">_entities._datamaps.FieldType.INTERVAL,</span> <span class="pre">'MATERIALINDEX':</span> <span class="pre">_entities._datamaps.FieldType.MATERIALINDEX,</span> <span class="pre">'MATRIX3X4_WORLDSPACE':</span> <span class="pre">_entities._datamaps.FieldType.MATRIX3X4_WORLDSPACE,</span> <span class="pre">'MODELINDEX':</span> <span class="pre">_entities._datamaps.FieldType.MODELINDEX,</span> <span class="pre">'MODELNAME':</span> <span class="pre">_entities._datamaps.FieldType.MODELNAME,</span> <span class="pre">'POSITION_VECTOR':</span> <span class="pre">_entities._datamaps.FieldType.POSITION_VECTOR,</span> <span class="pre">'QUATERNION':</span> <span class="pre">_entities._datamaps.FieldType.QUATERNION,</span> <span class="pre">'SHORT':</span> <span class="pre">_entities._datamaps.FieldType.SHORT,</span> <span class="pre">'SOUNDNAME':</span> <span class="pre">_entities._datamaps.FieldType.SOUNDNAME,</span> <span class="pre">'STRING':</span> <span class="pre">_entities._datamaps.FieldType.STRING,</span> <span class="pre">'TICK':</span> <span class="pre">_entities._datamaps.FieldType.TICK,</span> <span class="pre">'TIME':</span> <span class="pre">_entities._datamaps.FieldType.TIME,</span> <span class="pre">'TYPECOUNT':</span> <span class="pre">_entities._datamaps.FieldType.TYPECOUNT,</span> <span class="pre">'VECTOR':</span> <span class="pre">_entities._datamaps.FieldType.VECTOR,</span> <span class="pre">'VECTOR2D':</span> <span class="pre">_entities._datamaps.FieldType.VECTOR2D,</span> <span class="pre">'VMATRIX':</span> <span class="pre">_entities._datamaps.FieldType.VMATRIX,</span> <span class="pre">'VMATRIX_WORLDSPACE':</span> <span class="pre">_entities._datamaps.FieldType.VMATRIX_WORLDSPACE,</span> <span class="pre">'VOID':</span> <span class="pre">_entities._datamaps.FieldType.VOID}</span></em><a class="headerlink" href="#entities.datamaps.FieldType.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.FieldType.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">_entities._datamaps.FieldType.VOID,</span> <span class="pre">1:</span> <span class="pre">_entities._datamaps.FieldType.FLOAT,</span> <span class="pre">2:</span> <span class="pre">_entities._datamaps.FieldType.STRING,</span> <span class="pre">3:</span> <span class="pre">_entities._datamaps.FieldType.VECTOR,</span> <span class="pre">4:</span> <span class="pre">_entities._datamaps.FieldType.QUATERNION,</span> <span class="pre">5:</span> <span class="pre">_entities._datamaps.FieldType.INTEGER,</span> <span class="pre">6:</span> <span class="pre">_entities._datamaps.FieldType.BOOLEAN,</span> <span class="pre">7:</span> <span class="pre">_entities._datamaps.FieldType.SHORT,</span> <span class="pre">8:</span> <span class="pre">_entities._datamaps.FieldType.CHARACTER,</span> <span class="pre">9:</span> <span class="pre">_entities._datamaps.FieldType.COLOR32,</span> <span class="pre">10:</span> <span class="pre">_entities._datamaps.FieldType.EMBEDDED,</span> <span class="pre">11:</span> <span class="pre">_entities._datamaps.FieldType.CUSTOM,</span> <span class="pre">12:</span> <span class="pre">_entities._datamaps.FieldType.CLASSPTR,</span> <span class="pre">13:</span> <span class="pre">_entities._datamaps.FieldType.EHANDLE,</span> <span class="pre">14:</span> <span class="pre">_entities._datamaps.FieldType.EDICT,</span> <span class="pre">15:</span> <span class="pre">_entities._datamaps.FieldType.POSITION_VECTOR,</span> <span class="pre">16:</span> <span class="pre">_entities._datamaps.FieldType.TIME,</span> <span class="pre">17:</span> <span class="pre">_entities._datamaps.FieldType.TICK,</span> <span class="pre">18:</span> <span class="pre">_entities._datamaps.FieldType.MODELNAME,</span> <span class="pre">19:</span> <span class="pre">_entities._datamaps.FieldType.SOUNDNAME,</span> <span class="pre">20:</span> <span class="pre">_entities._datamaps.FieldType.INPUT,</span> <span class="pre">21:</span> <span class="pre">_entities._datamaps.FieldType.FUNCTION,</span> <span class="pre">22:</span> <span class="pre">_entities._datamaps.FieldType.VMATRIX,</span> <span class="pre">23:</span> <span class="pre">_entities._datamaps.FieldType.VMATRIX_WORLDSPACE,</span> <span class="pre">24:</span> <span class="pre">_entities._datamaps.FieldType.MATRIX3X4_WORLDSPACE,</span> <span class="pre">25:</span> <span class="pre">_entities._datamaps.FieldType.INTERVAL,</span> <span class="pre">26:</span> <span class="pre">_entities._datamaps.FieldType.MODELINDEX,</span> <span class="pre">27:</span> <span class="pre">_entities._datamaps.FieldType.MATERIALINDEX,</span> <span class="pre">28:</span> <span class="pre">_entities._datamaps.FieldType.VECTOR2D,</span> <span class="pre">29:</span> <span class="pre">_entities._datamaps.FieldType.TYPECOUNT}</span></em><a class="headerlink" href="#entities.datamaps.FieldType.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.datamaps.InputData">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.datamaps.</span></span><span class="sig-name descname"><span class="pre">InputData</span></span><a class="headerlink" href="#entities.datamaps.InputData" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.InputData.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.datamaps.InputData.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>__init__( (object)arg1) -&gt; object</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.InputData.activator">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">activator</span></span><a class="headerlink" href="#entities.datamaps.InputData.activator" title="Link to this definition">¶</a></dt>
+<dd><p>Return the activator.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="entities.entity.html#entities.entity.BaseEntity" title="entities.entity.BaseEntity">BaseEntity</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.InputData.caller">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">caller</span></span><a class="headerlink" href="#entities.datamaps.InputData.caller" title="Link to this definition">¶</a></dt>
+<dd><p>Return the caller.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="entities.entity.html#entities.entity.BaseEntity" title="entities.entity.BaseEntity">BaseEntity</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.InputData.output_index">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">output_index</span></span><a class="headerlink" href="#entities.datamaps.InputData.output_index" title="Link to this definition">¶</a></dt>
+<dd><p>Return the output index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.InputData.value">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">value</span></span><a class="headerlink" href="#entities.datamaps.InputData.value" title="Link to this definition">¶</a></dt>
+<dd><p>Return the value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#entities.datamaps.Variant" title="entities.datamaps.Variant">Variant</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.datamaps.InputFunction">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.datamaps.</span></span><span class="sig-name descname"><span class="pre">InputFunction</span></span><a class="headerlink" href="#entities.datamaps.InputFunction" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="memory.html#memory.Function" title="_memory.Function"><code class="xref py py-class docutils literal notranslate"><span class="pre">Function</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.InputFunction.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(TypeDescription)desc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_memory.Function)function</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)entity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.InputFunction.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Instantiate the function instance and store the base attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>desc</strong> (<a class="reference internal" href="#entities.datamaps.TypeDescription" title="entities.datamaps.TypeDescription"><em>TypeDescription</em></a>) – The descriptor of the input bound to this instance.</p></li>
+<li><p><strong>function</strong> (<a class="reference internal" href="memory.html#memory.Function" title="memory.Function"><em>Function</em></a>) – The function of the input.</p></li>
+<li><p><strong>entity</strong> (<a class="reference internal" href="entities.entity.html#entities.entity.BaseEntity" title="entities.entity.BaseEntity"><em>BaseEntity</em></a>) – The entity this input is bound to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If the given descriptor is not an input.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.datamaps.Interval">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.datamaps.</span></span><span class="sig-name descname"><span class="pre">Interval</span></span><a class="headerlink" href="#entities.datamaps.Interval" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.Interval.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.datamaps.Interval.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.Interval.range">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">range</span></span><a class="headerlink" href="#entities.datamaps.Interval.range" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities._datamaps.Interval)arg1) -&gt; float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.Interval.start">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start</span></span><a class="headerlink" href="#entities.datamaps.Interval.start" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities._datamaps.Interval)arg1) -&gt; float</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.datamaps.</span></span><span class="sig-name descname"><span class="pre">TypeDescription</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#entities.datamaps.TypeDescription.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.embedded_datamap">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">embedded_datamap</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.embedded_datamap" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities._datamaps.TypeDescription)arg1) -&gt; _entities._datamaps.DataMap</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.external_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">external_name</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.external_name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the external name of the field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.flags">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flags</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.flags" title="Link to this definition">¶</a></dt>
+<dd><p>Return the flags of the field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.flat_group">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flat_group</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.flat_group" title="Link to this definition">¶</a></dt>
+<dd><p>Not implemented on this engine.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.flat_offset">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flat_offset</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.flat_offset" title="Link to this definition">¶</a></dt>
+<dd><p>Not implemented on this engine.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.function">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">function</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.function" title="Link to this definition">¶</a></dt>
+<dd><p>Return the input function as a pointer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="memory.html#memory.Pointer" title="memory.Pointer">Pointer</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.input_function">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">input_function</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.input_function" title="Link to this definition">¶</a></dt>
+<dd><p>Return a callable function if the field is an input function.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the name of the field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.offset">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">offset</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.offset" title="Link to this definition">¶</a></dt>
+<dd><p>Return the offset of the field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.override_count">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">override_count</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.override_count" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities._datamaps.TypeDescription)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.override_field">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">override_field</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.override_field" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities._datamaps.TypeDescription)arg1) -&gt; _entities._datamaps.TypeDescription</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.packed_offset">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">packed_offset</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.packed_offset" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities._datamaps.TypeDescription)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.save_restore">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">save_restore</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.save_restore" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities._datamaps.TypeDescription)arg1) -&gt; object</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.size">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.size" title="Link to this definition">¶</a></dt>
+<dd><p>Return the size of the field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.size_in_bytes">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size_in_bytes</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.size_in_bytes" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities._datamaps.TypeDescription)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.tolerance">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tolerance</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.tolerance" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities._datamaps.TypeDescription)arg1) -&gt; float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescription.type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#entities.datamaps.TypeDescription.type" title="Link to this definition">¶</a></dt>
+<dd><p>Return the type of the field.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#entities.datamaps.FieldType" title="entities.datamaps.FieldType">FieldType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.datamaps.</span></span><span class="sig-name descname"><span class="pre">TypeDescriptionFlags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/datamaps.html#TypeDescriptionFlags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/enum.html#enum.IntFlag" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntFlag</span></code></a></p>
+<p>TypeDescription flags wrapper enumerator.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags.FUNCTIONTABLE">
+<span class="sig-name descname"><span class="pre">FUNCTIONTABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">32</span></em><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags.FUNCTIONTABLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags.GLOBAL">
+<span class="sig-name descname"><span class="pre">GLOBAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags.GLOBAL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags.INDEX">
+<span class="sig-name descname"><span class="pre">INDEX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4096</span></em><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags.INDEX" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags.INPUT">
+<span class="sig-name descname"><span class="pre">INPUT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags.INPUT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags.INSENDTABLE">
+<span class="sig-name descname"><span class="pre">INSENDTABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">256</span></em><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags.INSENDTABLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags.KEY">
+<span class="sig-name descname"><span class="pre">KEY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags.KEY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags.MODELINDEX">
+<span class="sig-name descname"><span class="pre">MODELINDEX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2048</span></em><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags.MODELINDEX" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags.NOERRORCHECK">
+<span class="sig-name descname"><span class="pre">NOERRORCHECK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1024</span></em><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags.NOERRORCHECK" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags.OUTPUT">
+<span class="sig-name descname"><span class="pre">OUTPUT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">16</span></em><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags.OUTPUT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags.OVERRIDE">
+<span class="sig-name descname"><span class="pre">OVERRIDE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">128</span></em><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags.OVERRIDE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags.PRIVATE">
+<span class="sig-name descname"><span class="pre">PRIVATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">512</span></em><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags.PRIVATE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags.PTR">
+<span class="sig-name descname"><span class="pre">PTR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">64</span></em><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags.PTR" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags.SAVE">
+<span class="sig-name descname"><span class="pre">SAVE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags.SAVE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags.VIEW_NEVER">
+<span class="sig-name descname"><span class="pre">VIEW_NEVER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">32768</span></em><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags.VIEW_NEVER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags.VIEW_OTHER_PLAYER">
+<span class="sig-name descname"><span class="pre">VIEW_OTHER_PLAYER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8192</span></em><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags.VIEW_OTHER_PLAYER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.datamaps.TypeDescriptionFlags.VIEW_OWN_TEAM">
+<span class="sig-name descname"><span class="pre">VIEW_OWN_TEAM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">16384</span></em><a class="headerlink" href="#entities.datamaps.TypeDescriptionFlags.VIEW_OWN_TEAM" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.datamaps.Variant">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.datamaps.</span></span><span class="sig-name descname"><span class="pre">Variant</span></span><a class="headerlink" href="#entities.datamaps.Variant" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.Variant.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.datamaps.Variant.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.Variant.get_bool">
+<span class="sig-name descname"><span class="pre">get_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Variant)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.Variant.get_bool" title="Link to this definition">¶</a></dt>
+<dd><p>Return the value as a boolean.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.Variant.get_color">
+<span class="sig-name descname"><span class="pre">get_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Variant)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_colors.Color</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.Variant.get_color" title="Link to this definition">¶</a></dt>
+<dd><p>Return the value as a color.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="colors.html#colors.Color" title="colors.Color">Color</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.Variant.get_entity">
+<span class="sig-name descname"><span class="pre">get_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Variant)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.Variant.get_entity" title="Link to this definition">¶</a></dt>
+<dd><p>Return the value as a handle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>BaseHandle</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.Variant.get_float">
+<span class="sig-name descname"><span class="pre">get_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Variant)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.Variant.get_float" title="Link to this definition">¶</a></dt>
+<dd><p>Return the value as a floating value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.Variant.get_int">
+<span class="sig-name descname"><span class="pre">get_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Variant)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.Variant.get_int" title="Link to this definition">¶</a></dt>
+<dd><p>Return the value as an integer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.Variant.get_string">
+<span class="sig-name descname"><span class="pre">get_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Variant)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.Variant.get_string" title="Link to this definition">¶</a></dt>
+<dd><p>Return the value as a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.Variant.get_vector">
+<span class="sig-name descname"><span class="pre">get_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Variant)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_mathlib.Vector</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.Variant.get_vector" title="Link to this definition">¶</a></dt>
+<dd><p>Return the value as a vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.Variant.set_bool">
+<span class="sig-name descname"><span class="pre">set_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Variant)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(bool)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.Variant.set_bool" title="Link to this definition">¶</a></dt>
+<dd><p>Set the value as a boolean.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.Variant.set_color">
+<span class="sig-name descname"><span class="pre">set_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Variant)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_colors.Color)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.Variant.set_color" title="Link to this definition">¶</a></dt>
+<dd><p>Set the value as a color.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.Variant.set_entity">
+<span class="sig-name descname"><span class="pre">set_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Variant)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.Variant.set_entity" title="Link to this definition">¶</a></dt>
+<dd><p>Set the value as an entity.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.Variant.set_float">
+<span class="sig-name descname"><span class="pre">set_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Variant)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.Variant.set_float" title="Link to this definition">¶</a></dt>
+<dd><p>Set the value as a floating value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.Variant.set_int">
+<span class="sig-name descname"><span class="pre">set_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Variant)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.Variant.set_int" title="Link to this definition">¶</a></dt>
+<dd><p>Set the value as an integer.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.Variant.set_string">
+<span class="sig-name descname"><span class="pre">set_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Variant)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.Variant.set_string" title="Link to this definition">¶</a></dt>
+<dd><p>Set the value as a string.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.datamaps.Variant.set_vector">
+<span class="sig-name descname"><span class="pre">set_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Variant)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_mathlib.Vector)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.datamaps.Variant.set_vector" title="Link to this definition">¶</a></dt>
+<dd><p>Set the value as a Vector.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.datamaps.Variant.type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#entities.datamaps.Variant.type" title="Link to this definition">¶</a></dt>
+<dd><p>Return the type of the value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#entities.datamaps.FieldType" title="entities.datamaps.FieldType">FieldType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">entities.datamaps module</a><ul>
+<li><a class="reference internal" href="#entities.datamaps.DataMap"><code class="docutils literal notranslate"><span class="pre">DataMap</span></code></a><ul>
+<li><a class="reference internal" href="#entities.datamaps.DataMap.__init__"><code class="docutils literal notranslate"><span class="pre">DataMap.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.DataMap.find"><code class="docutils literal notranslate"><span class="pre">DataMap.find()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.DataMap.find_offset"><code class="docutils literal notranslate"><span class="pre">DataMap.find_offset()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.DataMap.base"><code class="docutils literal notranslate"><span class="pre">DataMap.base</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.DataMap.chains_validated"><code class="docutils literal notranslate"><span class="pre">DataMap.chains_validated</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.DataMap.class_name"><code class="docutils literal notranslate"><span class="pre">DataMap.class_name</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.DataMap.length"><code class="docutils literal notranslate"><span class="pre">DataMap.length</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.DataMap.optimized_datamap"><code class="docutils literal notranslate"><span class="pre">DataMap.optimized_datamap</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.DataMap.packed_offsets_computed"><code class="docutils literal notranslate"><span class="pre">DataMap.packed_offsets_computed</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.DataMap.packed_size"><code class="docutils literal notranslate"><span class="pre">DataMap.packed_size</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.datamaps.EntityProperty"><code class="docutils literal notranslate"><span class="pre">EntityProperty</span></code></a><ul>
+<li><a class="reference internal" href="#entities.datamaps.EntityProperty.__init__"><code class="docutils literal notranslate"><span class="pre">EntityProperty.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.EntityProperty.instance"><code class="docutils literal notranslate"><span class="pre">EntityProperty.instance</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.EntityProperty.networked"><code class="docutils literal notranslate"><span class="pre">EntityProperty.networked</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.EntityProperty.offset"><code class="docutils literal notranslate"><span class="pre">EntityProperty.offset</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.EntityProperty.prop_type"><code class="docutils literal notranslate"><span class="pre">EntityProperty.prop_type</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType"><code class="docutils literal notranslate"><span class="pre">FieldType</span></code></a><ul>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.BOOLEAN"><code class="docutils literal notranslate"><span class="pre">FieldType.BOOLEAN</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.CHARACTER"><code class="docutils literal notranslate"><span class="pre">FieldType.CHARACTER</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.CLASSPTR"><code class="docutils literal notranslate"><span class="pre">FieldType.CLASSPTR</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.COLOR32"><code class="docutils literal notranslate"><span class="pre">FieldType.COLOR32</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.CUSTOM"><code class="docutils literal notranslate"><span class="pre">FieldType.CUSTOM</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.EDICT"><code class="docutils literal notranslate"><span class="pre">FieldType.EDICT</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.EHANDLE"><code class="docutils literal notranslate"><span class="pre">FieldType.EHANDLE</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.EMBEDDED"><code class="docutils literal notranslate"><span class="pre">FieldType.EMBEDDED</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.FLOAT"><code class="docutils literal notranslate"><span class="pre">FieldType.FLOAT</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.FUNCTION"><code class="docutils literal notranslate"><span class="pre">FieldType.FUNCTION</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.INPUT"><code class="docutils literal notranslate"><span class="pre">FieldType.INPUT</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.INTEGER"><code class="docutils literal notranslate"><span class="pre">FieldType.INTEGER</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.INTEGER64"><code class="docutils literal notranslate"><span class="pre">FieldType.INTEGER64</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.INTERVAL"><code class="docutils literal notranslate"><span class="pre">FieldType.INTERVAL</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.MATERIALINDEX"><code class="docutils literal notranslate"><span class="pre">FieldType.MATERIALINDEX</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.MATRIX3X4_WORLDSPACE"><code class="docutils literal notranslate"><span class="pre">FieldType.MATRIX3X4_WORLDSPACE</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.MODELINDEX"><code class="docutils literal notranslate"><span class="pre">FieldType.MODELINDEX</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.MODELNAME"><code class="docutils literal notranslate"><span class="pre">FieldType.MODELNAME</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.POSITION_VECTOR"><code class="docutils literal notranslate"><span class="pre">FieldType.POSITION_VECTOR</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.QUATERNION"><code class="docutils literal notranslate"><span class="pre">FieldType.QUATERNION</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.SHORT"><code class="docutils literal notranslate"><span class="pre">FieldType.SHORT</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.SOUNDNAME"><code class="docutils literal notranslate"><span class="pre">FieldType.SOUNDNAME</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.STRING"><code class="docutils literal notranslate"><span class="pre">FieldType.STRING</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.TICK"><code class="docutils literal notranslate"><span class="pre">FieldType.TICK</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.TIME"><code class="docutils literal notranslate"><span class="pre">FieldType.TIME</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.TYPECOUNT"><code class="docutils literal notranslate"><span class="pre">FieldType.TYPECOUNT</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.VECTOR"><code class="docutils literal notranslate"><span class="pre">FieldType.VECTOR</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.VECTOR2D"><code class="docutils literal notranslate"><span class="pre">FieldType.VECTOR2D</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.VECTOR4D"><code class="docutils literal notranslate"><span class="pre">FieldType.VECTOR4D</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.VMATRIX"><code class="docutils literal notranslate"><span class="pre">FieldType.VMATRIX</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.VMATRIX_WORLDSPACE"><code class="docutils literal notranslate"><span class="pre">FieldType.VMATRIX_WORLDSPACE</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.VOID"><code class="docutils literal notranslate"><span class="pre">FieldType.VOID</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.names"><code class="docutils literal notranslate"><span class="pre">FieldType.names</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.FieldType.values"><code class="docutils literal notranslate"><span class="pre">FieldType.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.datamaps.InputData"><code class="docutils literal notranslate"><span class="pre">InputData</span></code></a><ul>
+<li><a class="reference internal" href="#entities.datamaps.InputData.__init__"><code class="docutils literal notranslate"><span class="pre">InputData.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.InputData.activator"><code class="docutils literal notranslate"><span class="pre">InputData.activator</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.InputData.caller"><code class="docutils literal notranslate"><span class="pre">InputData.caller</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.InputData.output_index"><code class="docutils literal notranslate"><span class="pre">InputData.output_index</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.InputData.value"><code class="docutils literal notranslate"><span class="pre">InputData.value</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.datamaps.InputFunction"><code class="docutils literal notranslate"><span class="pre">InputFunction</span></code></a><ul>
+<li><a class="reference internal" href="#entities.datamaps.InputFunction.__init__"><code class="docutils literal notranslate"><span class="pre">InputFunction.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.datamaps.Interval"><code class="docutils literal notranslate"><span class="pre">Interval</span></code></a><ul>
+<li><a class="reference internal" href="#entities.datamaps.Interval.__init__"><code class="docutils literal notranslate"><span class="pre">Interval.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Interval.range"><code class="docutils literal notranslate"><span class="pre">Interval.range</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Interval.start"><code class="docutils literal notranslate"><span class="pre">Interval.start</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription"><code class="docutils literal notranslate"><span class="pre">TypeDescription</span></code></a><ul>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.__init__"><code class="docutils literal notranslate"><span class="pre">TypeDescription.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.embedded_datamap"><code class="docutils literal notranslate"><span class="pre">TypeDescription.embedded_datamap</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.external_name"><code class="docutils literal notranslate"><span class="pre">TypeDescription.external_name</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.flags"><code class="docutils literal notranslate"><span class="pre">TypeDescription.flags</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.flat_group"><code class="docutils literal notranslate"><span class="pre">TypeDescription.flat_group</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.flat_offset"><code class="docutils literal notranslate"><span class="pre">TypeDescription.flat_offset</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.function"><code class="docutils literal notranslate"><span class="pre">TypeDescription.function</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.input_function"><code class="docutils literal notranslate"><span class="pre">TypeDescription.input_function</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.name"><code class="docutils literal notranslate"><span class="pre">TypeDescription.name</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.offset"><code class="docutils literal notranslate"><span class="pre">TypeDescription.offset</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.override_count"><code class="docutils literal notranslate"><span class="pre">TypeDescription.override_count</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.override_field"><code class="docutils literal notranslate"><span class="pre">TypeDescription.override_field</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.packed_offset"><code class="docutils literal notranslate"><span class="pre">TypeDescription.packed_offset</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.save_restore"><code class="docutils literal notranslate"><span class="pre">TypeDescription.save_restore</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.size"><code class="docutils literal notranslate"><span class="pre">TypeDescription.size</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.size_in_bytes"><code class="docutils literal notranslate"><span class="pre">TypeDescription.size_in_bytes</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.tolerance"><code class="docutils literal notranslate"><span class="pre">TypeDescription.tolerance</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescription.type"><code class="docutils literal notranslate"><span class="pre">TypeDescription.type</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags</span></code></a><ul>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags.FUNCTIONTABLE"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags.FUNCTIONTABLE</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags.GLOBAL"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags.GLOBAL</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags.INDEX"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags.INDEX</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags.INPUT"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags.INPUT</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags.INSENDTABLE"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags.INSENDTABLE</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags.KEY"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags.KEY</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags.MODELINDEX"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags.MODELINDEX</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags.NOERRORCHECK"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags.NOERRORCHECK</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags.OUTPUT"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags.OUTPUT</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags.OVERRIDE"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags.OVERRIDE</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags.PRIVATE"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags.PRIVATE</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags.PTR"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags.PTR</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags.SAVE"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags.SAVE</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags.VIEW_NEVER"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags.VIEW_NEVER</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags.VIEW_OTHER_PLAYER"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags.VIEW_OTHER_PLAYER</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.TypeDescriptionFlags.VIEW_OWN_TEAM"><code class="docutils literal notranslate"><span class="pre">TypeDescriptionFlags.VIEW_OWN_TEAM</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.datamaps.Variant"><code class="docutils literal notranslate"><span class="pre">Variant</span></code></a><ul>
+<li><a class="reference internal" href="#entities.datamaps.Variant.__init__"><code class="docutils literal notranslate"><span class="pre">Variant.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Variant.get_bool"><code class="docutils literal notranslate"><span class="pre">Variant.get_bool()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Variant.get_color"><code class="docutils literal notranslate"><span class="pre">Variant.get_color()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Variant.get_entity"><code class="docutils literal notranslate"><span class="pre">Variant.get_entity()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Variant.get_float"><code class="docutils literal notranslate"><span class="pre">Variant.get_float()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Variant.get_int"><code class="docutils literal notranslate"><span class="pre">Variant.get_int()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Variant.get_string"><code class="docutils literal notranslate"><span class="pre">Variant.get_string()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Variant.get_vector"><code class="docutils literal notranslate"><span class="pre">Variant.get_vector()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Variant.set_bool"><code class="docutils literal notranslate"><span class="pre">Variant.set_bool()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Variant.set_color"><code class="docutils literal notranslate"><span class="pre">Variant.set_color()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Variant.set_entity"><code class="docutils literal notranslate"><span class="pre">Variant.set_entity()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Variant.set_float"><code class="docutils literal notranslate"><span class="pre">Variant.set_float()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Variant.set_int"><code class="docutils literal notranslate"><span class="pre">Variant.set_int()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Variant.set_string"><code class="docutils literal notranslate"><span class="pre">Variant.set_string()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Variant.set_vector"><code class="docutils literal notranslate"><span class="pre">Variant.set_vector()</span></code></a></li>
+<li><a class="reference internal" href="#entities.datamaps.Variant.type"><code class="docutils literal notranslate"><span class="pre">Variant.type</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/entities.datamaps.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.datamaps module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

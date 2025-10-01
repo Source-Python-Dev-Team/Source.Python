@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>plugins.command &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins.command</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for plugins.command</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../plugins/command.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides a way to utilize sub-commands for a server command.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Commands</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">commands.typed</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">TypedClientCommand</span><span class="p">,</span> <span class="n">TypedSayCommand</span><span class="p">,</span> <span class="n">TypedServerCommand</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoUnload</span>
+<span class="c1">#   Cvars</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cvars.public</span><span class="w"> </span><span class="kn">import</span> <span class="n">PublicConVar</span>
+<span class="c1">#   Hooks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hooks.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">except_hooks</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">GAME_PATH</span>
+<span class="c1">#   Plugins</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">plugins_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">_plugin_strings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plugins.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">PluginFileNotFoundError</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plugins.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">InvalidPluginName</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plugins.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">PluginAlreadyLoaded</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plugins.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">PluginHasBuiltInName</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plugins.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">PluginNotLoaded</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;SubCommandManager&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Get the sp.plugins.command logger</span>
+<span class="n">plugins_command_logger</span> <span class="o">=</span> <span class="n">plugins_logger</span><span class="o">.</span><span class="n">command</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="SubCommandManager">
+<a class="viewcode-back" href="../../developing/modules/plugins.command.html#plugins.command.SubCommandManager">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SubCommandManager</span><span class="p">(</span><span class="n">AutoUnload</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used for executing sub-commands for the given console command.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SubCommandManager.__init__">
+<a class="viewcode-back" href="../../developing/modules/plugins.command.html#plugins.command.SubCommandManager.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">manager</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">logger</span><span class="o">=</span><span class="n">plugins_command_logger</span><span class="p">,</span> <span class="n">translations</span><span class="o">=</span><span class="n">_plugin_strings</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the sub-command manager.</span>
+
+<span class="sd">        :param PluginManager manager:</span>
+<span class="sd">            A plugin manager.</span>
+<span class="sd">        :param str command:</span>
+<span class="sd">            Command to register.</span>
+<span class="sd">        :param str prefix:</span>
+<span class="sd">            Prefix used for printing messages to the console.</span>
+<span class="sd">        :param Logger logger:</span>
+<span class="sd">            A logger that is used for printing messages to the console.</span>
+<span class="sd">        :param LangStrings translations:</span>
+<span class="sd">            Translations used for printing messages to the console. The</span>
+<span class="sd">            translations have to define the following messages:</span>
+
+<span class="sd">            * Loading</span>
+<span class="sd">            * Invalid Name</span>
+<span class="sd">            * Already Loaded</span>
+<span class="sd">            * No Module</span>
+<span class="sd">            * Built-in</span>
+<span class="sd">            * Unable to Load</span>
+<span class="sd">            * Successful Load</span>
+<span class="sd">            * Unloading</span>
+<span class="sd">            * Not Loaded</span>
+<span class="sd">            * Successful Unload</span>
+<span class="sd">            * Plugins</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Re-call OrderedDict&#39;s __init__ to properly setup the object</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manager</span> <span class="o">=</span> <span class="n">manager</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_command</span> <span class="o">=</span> <span class="n">command</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span> <span class="o">=</span> <span class="n">prefix</span> <span class="k">if</span> <span class="n">prefix</span> <span class="k">else</span> <span class="s1">&#39;[</span><span class="si">{0}</span><span class="s1">] &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">command</span><span class="o">.</span><span class="n">upper</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">logger</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">translations</span> <span class="o">=</span> <span class="n">translations</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unload all sub-commands.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">_unload_instance</span><span class="p">()</span>
+
+        <span class="c1"># Probably not necessary, but just in case...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+<div class="viewcode-block" id="SubCommandManager.server_sub_command">
+<a class="viewcode-back" href="../../developing/modules/plugins.command.html#plugins.command.SubCommandManager.server_sub_command">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">server_sub_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a server sub-command.</span>
+
+<span class="sd">        .. seealso:: :class:`commands.typed.TypedServerCommand`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">commands</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">commands</span> <span class="o">=</span> <span class="p">[</span><span class="n">commands</span><span class="p">]</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">TypedServerCommand</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_command</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">commands</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">command</span></div>
+
+
+<div class="viewcode-block" id="SubCommandManager.client_sub_command">
+<a class="viewcode-back" href="../../developing/modules/plugins.command.html#plugins.command.SubCommandManager.client_sub_command">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">client_sub_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a client sub-command.</span>
+
+<span class="sd">        .. seealso:: :class:`commands.typed.TypedClientCommand`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">commands</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">commands</span> <span class="o">=</span> <span class="p">[</span><span class="n">commands</span><span class="p">]</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">TypedClientCommand</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_command</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">commands</span><span class="p">),</span>
+            <span class="n">permission</span><span class="o">=</span><span class="n">permission</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">command</span></div>
+
+
+<div class="viewcode-block" id="SubCommandManager.say_sub_command">
+<a class="viewcode-back" href="../../developing/modules/plugins.command.html#plugins.command.SubCommandManager.say_sub_command">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">say_sub_command</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">commands</span><span class="p">,</span> <span class="n">permission</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a say sub-command.</span>
+
+<span class="sd">        .. seealso:: :class:`commands.typed.TypedSayCommand`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">commands</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">commands</span> <span class="o">=</span> <span class="p">[</span><span class="n">commands</span><span class="p">]</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="n">TypedSayCommand</span><span class="p">(</span>
+            <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_command</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">commands</span><span class="p">),</span>
+            <span class="n">permission</span><span class="o">=</span><span class="n">permission</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">command</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">command</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the server command registered to the class.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_command</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">prefix</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the prefix to use in log messages.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_prefix</span>
+
+<div class="viewcode-block" id="SubCommandManager.load_plugin">
+<a class="viewcode-back" href="../../developing/modules/plugins.command.html#plugins.command.SubCommandManager.load_plugin">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load a plugin by name.</span>
+
+<span class="sd">        :param str plugin_name:</span>
+<span class="sd">            Name of the plugin to load.</span>
+<span class="sd">        :return:</span>
+<span class="sd">            Return the loaded plugin. Return ``None`` on failure.</span>
+<span class="sd">        :rtype: Plugin</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">plugin</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">translations</span><span class="p">[</span>
+            <span class="s1">&#39;Loading&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">plugin</span><span class="o">=</span><span class="n">plugin_name</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">plugin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">InvalidPluginName</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">translations</span><span class="p">[</span>
+                <span class="s1">&#39;Invalid Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">plugin</span><span class="o">=</span><span class="n">plugin_name</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">PluginAlreadyLoaded</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">translations</span><span class="p">[</span>
+                <span class="s1">&#39;Already Loaded&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">plugin</span><span class="o">=</span><span class="n">plugin_name</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">PluginFileNotFoundError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">translations</span><span class="p">[</span>
+                <span class="s1">&#39;No Module&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span>
+                    <span class="n">plugin</span><span class="o">=</span><span class="n">plugin_name</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">GAME_PATH</span><span class="o">.</span><span class="n">relpathto</span><span class="p">(</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">get_plugin_file_path</span><span class="p">(</span>
+                            <span class="n">plugin_name</span><span class="p">))</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)))</span>
+        <span class="k">except</span> <span class="n">PluginHasBuiltInName</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">translations</span><span class="p">[</span>
+                <span class="s1">&#39;Built-in&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">plugin</span><span class="o">=</span><span class="n">plugin_name</span><span class="p">))</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">translations</span><span class="p">[</span>
+                <span class="s1">&#39;Unable to Load&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">plugin</span><span class="o">=</span><span class="n">plugin_name</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">translations</span><span class="p">[</span>
+                <span class="s1">&#39;Successful Load&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">plugin</span><span class="o">=</span><span class="n">plugin_name</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">plugin</span></div>
+
+
+<div class="viewcode-block" id="SubCommandManager.unload_plugin">
+<a class="viewcode-back" href="../../developing/modules/plugins.command.html#plugins.command.SubCommandManager.unload_plugin">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unload_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unload a plugin by name.</span>
+
+<span class="sd">        :param str plugin_name:</span>
+<span class="sd">            Name of the plugin to unload.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">translations</span><span class="p">[</span>
+            <span class="s1">&#39;Unloading&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">plugin</span><span class="o">=</span><span class="n">plugin_name</span><span class="p">))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">unload</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">InvalidPluginName</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">translations</span><span class="p">[</span>
+                <span class="s1">&#39;Invalid Name&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">plugin</span><span class="o">=</span><span class="n">plugin_name</span><span class="p">))</span>
+        <span class="k">except</span> <span class="n">PluginNotLoaded</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">translations</span><span class="p">[</span>
+                <span class="s1">&#39;Not Loaded&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">plugin</span><span class="o">=</span><span class="n">plugin_name</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">translations</span><span class="p">[</span>
+                <span class="s1">&#39;Successful Unload&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">plugin</span><span class="o">=</span><span class="n">plugin_name</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="SubCommandManager.reload_plugin">
+<a class="viewcode-back" href="../../developing/modules/plugins.command.html#plugins.command.SubCommandManager.reload_plugin">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reload_plugin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reload a plugin by name.</span>
+
+<span class="sd">        :param str plugin_name:</span>
+<span class="sd">            Name of the plugin to reload.</span>
+<span class="sd">        :return:</span>
+<span class="sd">            Return the loaded plugin. Return ``None`` on failure.</span>
+<span class="sd">        :rtype: Plugin</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unload_plugin</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">load_plugin</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SubCommandManager.print_plugins">
+<a class="viewcode-back" href="../../developing/modules/plugins.command.html#plugins.command.SubCommandManager.print_plugins">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;List all currently loaded plugins.&quot;&quot;&quot;</span>
+        <span class="c1"># Get header messages</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">translations</span><span class="p">[</span>
+            <span class="s1">&#39;Plugins&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">()</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="p">)</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">61</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span>
+
+        <span class="c1"># Loop through all loaded plugins</span>
+        <span class="k">for</span> <span class="n">plugin_name</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="p">):</span>
+            <span class="n">info</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="p">[</span><span class="n">plugin_name</span><span class="p">]</span><span class="o">.</span><span class="n">info</span>
+
+            <span class="n">message</span> <span class="o">+=</span> <span class="n">plugin_name</span> <span class="o">+</span> <span class="sa">f</span><span class="s1">&#39; (</span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">verbose_name</span><span class="si">}</span><span class="s1">):</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+            <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">author</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;   author:          </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">author</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+            <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;   description:     </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">description</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+            <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">version</span> <span class="o">!=</span> <span class="s1">&#39;unversioned&#39;</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;   version:         </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">version</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+            <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">url</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;   url:             </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">url</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+            <span class="k">if</span> <span class="n">info</span><span class="o">.</span><span class="n">permissions</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">+=</span> <span class="s1">&#39;   permissions:</span><span class="se">\n</span><span class="s1">&#39;</span>
+                <span class="k">for</span> <span class="n">permission</span><span class="p">,</span> <span class="n">description</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">permissions</span><span class="p">:</span>
+                    <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;      </span><span class="si">{</span><span class="n">permission</span><span class="si">}</span><span class="s1">:&#39;</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span> <span class="o">+</span> <span class="n">description</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">public_convar</span><span class="p">,</span> <span class="n">PublicConVar</span><span class="p">):</span>
+                <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;   public convar:   </span><span class="si">{</span><span class="n">info</span><span class="o">.</span><span class="n">public_convar</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="n">info</span><span class="o">.</span><span class="n">display_in_listing</span><span class="p">:</span>
+                <span class="n">message</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;   </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s1">:&#39;</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">attr</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+            <span class="c1"># Add 1 blank line between each plugin</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span>
+
+        <span class="c1"># Add the ending separator</span>
+        <span class="n">message</span> <span class="o">+=</span> <span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="mi">61</span>
+
+        <span class="c1"># Print the message</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SubCommandManager.log_message">
+<a class="viewcode-back" href="../../developing/modules/plugins.command.html#plugins.command.SubCommandManager.log_message">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">log_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Log a message. The prefix will be added automatically.</span>
+
+<span class="sd">        :param str message:</span>
+<span class="sd">            Message to log.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">message</span><span class="p">,</span> <span class="n">prepend_prefix</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins.command</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

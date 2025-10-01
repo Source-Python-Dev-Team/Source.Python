@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>settings.types &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">settings.types</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for settings.types</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../settings/types.py</span>
+
+<span class="sd">&quot;&quot;&quot;Contains user setting types.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
+
+<span class="c1"># Source.Python</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cvars</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConVar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">engine_server</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">menus</span><span class="w"> </span><span class="kn">import</span> <span class="n">PagedMenu</span><span class="p">,</span> <span class="n">SimpleMenu</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">menus</span><span class="w"> </span><span class="kn">import</span> <span class="n">PagedOption</span><span class="p">,</span> <span class="n">SimpleOption</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SayText</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">uniqueid_from_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">_settings_strings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">settings.storage</span><span class="w"> </span><span class="kn">import</span> <span class="n">_player_settings_storage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">translations.strings</span><span class="w"> </span><span class="kn">import</span> <span class="n">TranslationStrings</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">_message</span> <span class="o">=</span> <span class="n">SayText</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">_settings_strings</span><span class="p">[</span><span class="s1">&#39;Chosen&#39;</span><span class="p">])</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="SettingsType">
+<a class="viewcode-back" href="../../developing/modules/settings.types.html#settings.types.SettingsType">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SettingsType</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store settings with possible values.&quot;&quot;&quot;</span>
+
+    <span class="n">prefix</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Verify the name and default value before getting the new object.&quot;&quot;&quot;</span>
+        <span class="c1"># Was a valid value passed as the name?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">isalpha</span><span class="p">():</span>
+
+            <span class="c1"># Raise an error</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Given name &quot;</span><span class="si">{0}</span><span class="s1">&quot; is not valid&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># Is the given default value of the correct type?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">default</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_type</span><span class="p">):</span>
+
+            <span class="c1"># Raise an error</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Given value must be of &quot;</span><span class="si">{0}</span><span class="s1">&quot; type, not &quot;</span><span class="si">{1}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">cls</span><span class="o">.</span><span class="n">_type</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="nb">type</span><span class="p">(</span><span class="n">default</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+        <span class="c1"># Get the new object instance</span>
+        <span class="bp">self</span> <span class="o">=</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+
+        <span class="c1"># Return the instance</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+<div class="viewcode-block" id="SettingsType.__init__">
+<a class="viewcode-back" href="../../developing/modules/settings.types.html#settings.types.SettingsType.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store the base attributes and create the menu.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default</span> <span class="o">=</span> <span class="n">default</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_create_menu</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span> <span class="o">=</span> <span class="n">PagedMenu</span><span class="p">(</span>
+            <span class="n">select_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_chosen_value</span><span class="p">,</span>
+            <span class="n">build_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_menu_build</span><span class="p">,</span>
+            <span class="n">title</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="n">_settings_strings</span><span class="p">[</span><span class="s1">&#39;Description&#39;</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the convar name of the setting.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefix</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">,</span> <span class="s1">&#39;_&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;The type of object to cast values to for the class.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No _type defined for class.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_valid_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether or not the given value is valid.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No _is_valid_setting defined for class.&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SettingsType.get_setting">
+<a class="viewcode-back" href="../../developing/modules/settings.types.html#settings.types.SettingsType.get_setting">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the setting value for the given player index.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">Player</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">is_fake_client</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_default_value</span><span class="p">()</span>
+
+        <span class="c1"># Get the client&#39;s convar value</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="n">engine_server</span><span class="o">.</span><span class="n">get_client_convar_value</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">convar</span><span class="p">)</span>
+
+        <span class="c1"># Try to typecast the value, suppressing ValueErrors</span>
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="c1"># Typecast the given value</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_typecast_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+            <span class="c1"># Is the given value a proper one for the convar?</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid_setting</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+
+                <span class="c1"># If so, return the value</span>
+                <span class="k">return</span> <span class="n">value</span>
+
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># Get the client&#39;s uniqueid</span>
+        <span class="n">uniqueid</span> <span class="o">=</span> <span class="n">uniqueid_from_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="c1"># Is the uniqueid in the setting&#39;s storage dictionary?</span>
+        <span class="k">if</span> <span class="n">uniqueid</span> <span class="ow">in</span> <span class="n">_player_settings_storage</span><span class="p">:</span>
+
+            <span class="c1"># Is the convar in the clients&#39;s dictionary?</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">convar</span> <span class="ow">in</span> <span class="n">_player_settings_storage</span><span class="p">[</span><span class="n">uniqueid</span><span class="p">]:</span>
+
+                <span class="c1"># Get the client&#39;s value for the convar</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">_player_settings_storage</span><span class="p">[</span><span class="n">uniqueid</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">convar</span><span class="p">]</span>
+
+                <span class="c1"># Try to typecast the value, suppressing ValueErrors</span>
+                <span class="k">try</span><span class="p">:</span>
+
+                    <span class="c1"># Typecast the given value</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_typecast_value</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+                    <span class="c1"># Is the given value a proper one for the convar?</span>
+                    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_valid_setting</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+
+                        <span class="c1"># Return the value</span>
+                        <span class="k">return</span> <span class="n">value</span>
+
+                <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+        <span class="c1"># Return the default value</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_default_value</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_default_value</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">,</span> <span class="n">ConVar</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_typecast_default_convar</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">default</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_typecast_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cast the value to the proper type.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_typecast_default_convar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the type-casted value of the default ConVar.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">default</span><span class="p">,</span>
+            <span class="s1">&#39;get_</span><span class="si">{value_type}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">value_type</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_menu_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the default value in the menu description.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">tokens</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;value&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_setting</span><span class="p">(</span><span class="n">index</span><span class="p">)}</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_chosen_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">option</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store the player&#39;s chosen value for the setting.&quot;&quot;&quot;</span>
+        <span class="c1"># Set the player&#39;s setting</span>
+        <span class="n">uniqueid</span> <span class="o">=</span> <span class="n">uniqueid_from_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">_player_settings_storage</span><span class="p">[</span><span class="n">uniqueid</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">convar</span><span class="p">]</span> <span class="o">=</span> <span class="n">option</span><span class="o">.</span><span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_send_chosen_message</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">option</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_send_chosen_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send message about choice made for setting change.&quot;&quot;&quot;</span>
+        <span class="n">_message</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">convar</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">convar</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="IntegerSetting">
+<a class="viewcode-back" href="../../developing/modules/settings.types.html#settings.types.IntegerSetting">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">IntegerSetting</span><span class="p">(</span><span class="n">SettingsType</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store integer value settings.&quot;&quot;&quot;</span>
+
+    <span class="n">_type</span> <span class="o">=</span> <span class="nb">int</span>
+
+<div class="viewcode-block" id="IntegerSetting.__init__">
+<a class="viewcode-back" href="../../developing/modules/settings.types.html#settings.types.IntegerSetting.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">min_value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="kc">None</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store the base attributes on instantiation.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">min_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">max_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">min_value</span> <span class="o">&gt;=</span> <span class="n">max_value</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;min_value (</span><span class="si">{min_value}</span><span class="s1">) must be less than max_value &#39;</span>
+                    <span class="s1">&#39;(</span><span class="si">{max_value}</span><span class="s1">).&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">min_value</span><span class="o">=</span><span class="n">min_value</span><span class="p">,</span>
+                        <span class="n">max_value</span><span class="o">=</span><span class="n">max_value</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">(</span><span class="n">min_value</span><span class="p">)</span> <span class="k">if</span> <span class="n">min_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">(</span><span class="n">max_value</span><span class="p">)</span> <span class="k">if</span> <span class="n">max_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_values</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span> <span class="o">=</span> <span class="n">SimpleMenu</span><span class="p">(</span>
+            <span class="n">select_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_chosen_value</span><span class="p">,</span>
+            <span class="n">build_callback</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_menu_build</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_menu_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the menu.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">)</span>
+
+        <span class="c1"># Get the player&#39;s information</span>
+        <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">uniqueid</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">uniqueid</span>
+        <span class="n">current_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_setting</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="n">description</span> <span class="o">=</span> <span class="n">_settings_strings</span><span class="p">[</span><span class="s1">&#39;Description&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span>
+            <span class="n">language</span><span class="o">=</span><span class="n">player</span><span class="o">.</span><span class="n">language</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">current_value</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">description</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">description</span><span class="p">))</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="o">&gt;</span> <span class="mi">100</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">100</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_option</span><span class="p">(</span><span class="n">choice_index</span><span class="o">=</span><span class="n">counter</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="o">-</span><span class="mi">10</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_add_option</span><span class="p">(</span><span class="n">choice_index</span><span class="o">=</span><span class="n">counter</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+                <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_option</span><span class="p">(</span><span class="n">choice_index</span><span class="o">=</span><span class="n">counter</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">uniqueid</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_values</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">current_values</span><span class="p">[</span><span class="n">uniqueid</span><span class="p">]</span> <span class="o">=</span> <span class="n">current_value</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">SimpleOption</span><span class="p">(</span>
+                <span class="n">choice_index</span><span class="o">=</span><span class="n">counter</span><span class="p">,</span>
+                <span class="n">text</span><span class="o">=</span><span class="s1">&#39;Save (</span><span class="si">{current_value}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">current_value</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">current_values</span><span class="p">[</span><span class="n">uniqueid</span><span class="p">],</span>
+                <span class="p">),</span>
+                <span class="n">value</span><span class="o">=</span><span class="s1">&#39;Save&#39;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">choice_index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the value to the menu.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="n">SimpleOption</span><span class="p">(</span>
+                <span class="n">choice_index</span><span class="o">=</span><span class="n">choice_index</span><span class="p">,</span>
+                <span class="n">text</span><span class="o">=</span><span class="s1">&#39;</span><span class="si">{:+d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">),</span>
+                <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_chosen_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">menu</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">option</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store the player&#39;s chosen value for the setting.&quot;&quot;&quot;</span>
+        <span class="n">uniqueid</span> <span class="o">=</span> <span class="n">uniqueid_from_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">option</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;Save&#39;</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_values</span><span class="p">[</span><span class="n">uniqueid</span><span class="p">]</span>
+
+            <span class="c1"># Set the player&#39;s setting</span>
+            <span class="n">_player_settings_storage</span><span class="p">[</span><span class="n">uniqueid</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">convar</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_send_chosen_message</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_values</span><span class="p">[</span><span class="n">uniqueid</span><span class="p">]</span>
+            <span class="k">return</span>
+
+        <span class="n">new_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_values</span><span class="p">[</span><span class="n">uniqueid</span><span class="p">]</span> <span class="o">+</span> <span class="n">option</span><span class="o">.</span><span class="n">value</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_value</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">new_value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">new_value</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">new_value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_values</span><span class="p">[</span><span class="n">uniqueid</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_valid_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the given value is a valid value for the setting.&quot;&quot;&quot;</span>
+        <span class="c1"># Is the given value less than the setting&#39;s min value?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">min</span><span class="p">:</span>
+
+            <span class="c1"># If too low, return False</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># Is the given value more than the setting&#39;s max value?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">value</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">max</span><span class="p">:</span>
+
+            <span class="c1"># If too high, return False</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="c1"># Return True if the value is within the proper range</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+
+<div class="viewcode-block" id="BoolSetting">
+<a class="viewcode-back" href="../../developing/modules/settings.types.html#settings.types.BoolSetting">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BoolSetting</span><span class="p">(</span><span class="n">SettingsType</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store boolean value settings.&quot;&quot;&quot;</span>
+
+    <span class="n">_type</span> <span class="o">=</span> <span class="nb">bool</span>
+
+<div class="viewcode-block" id="BoolSetting.__init__">
+<a class="viewcode-back" href="../../developing/modules/settings.types.html#settings.types.BoolSetting.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="p">[</span><span class="kc">True</span><span class="p">,</span> <span class="kc">False</span><span class="p">]:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="n">PagedOption</span><span class="p">(</span>
+                    <span class="n">text</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+                    <span class="n">value</span><span class="o">=</span><span class="n">item</span><span class="p">,</span>
+                <span class="p">)</span>
+            <span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_typecast_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cast the given value to a boolean.&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_valid_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the given value is a valid boolean value.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_type</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="StringSetting">
+<a class="viewcode-back" href="../../developing/modules/settings.types.html#settings.types.StringSetting">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StringSetting</span><span class="p">(</span><span class="n">SettingsType</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store string value settings with available options.&quot;&quot;&quot;</span>
+
+    <span class="n">_type</span> <span class="o">=</span> <span class="nb">str</span>
+
+<div class="viewcode-block" id="StringSetting.__init__">
+<a class="viewcode-back" href="../../developing/modules/settings.types.html#settings.types.StringSetting.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store the base attributes on instatiation.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">default</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">OrderedDict</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="StringSetting.add_option">
+<a class="viewcode-back" href="../../developing/modules/settings.types.html#settings.types.StringSetting.add_option">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">text</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an option to the setting&#39;s dictionary.&quot;&quot;&quot;</span>
+        <span class="c1"># Is the given option already registered?</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
+
+            <span class="c1"># Raise an error</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Given name &quot;</span><span class="si">{0}</span><span class="s1">&quot; is already an option&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># Store the option</span>
+        <span class="n">option</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">PagedOption</span><span class="p">(</span>
+            <span class="n">text</span><span class="o">=</span><span class="n">name</span> <span class="k">if</span> <span class="n">text</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">text</span><span class="p">,</span>
+            <span class="n">value</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Add the option to the menu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">option</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="StringSetting.remove_option">
+<a class="viewcode-back" href="../../developing/modules/settings.types.html#settings.types.StringSetting.remove_option">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_option</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove an option from the settings.&quot;&quot;&quot;</span>
+        <span class="c1"># Is the option registered?</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
+
+            <span class="c1"># Raise an error</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Given name &quot;</span><span class="si">{0}</span><span class="s1">&quot; is not an option&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># Delete the option</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">menu</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="n">name</span><span class="p">])</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_valid_setting</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the given value is a valid value for the setting.&quot;&quot;&quot;</span>
+        <span class="c1"># Is the given value in the setting&#39;s options?</span>
+        <span class="k">if</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
+
+            <span class="c1"># If so, return True</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># If the given value is not in the options, return False</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_send_chosen_message</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send message about choice made for setting change.&quot;&quot;&quot;</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="n">value</span><span class="p">]</span><span class="o">.</span><span class="n">text</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">TranslationStrings</span><span class="p">):</span>
+            <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">language</span><span class="p">)</span>
+        <span class="n">_message</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">convar</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">convar</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="n">value</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">settings.types</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

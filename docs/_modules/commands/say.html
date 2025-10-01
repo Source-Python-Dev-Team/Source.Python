@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>commands.say &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">commands.say</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for commands.say</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../commands/say.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides say command and say filter functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FORWARD IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Commands</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_commands._say</span><span class="w"> </span><span class="kn">import</span> <span class="n">SayCommandDispatcher</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_commands._say</span><span class="w"> </span><span class="kn">import</span> <span class="n">SayCommandGenerator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_commands._say</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_say_command</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_commands._say</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_say_filter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_commands._say</span><span class="w"> </span><span class="kn">import</span> <span class="n">unregister_say_filter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">commands.command</span><span class="w"> </span><span class="kn">import</span> <span class="n">_BaseCommand</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">commands.filter</span><span class="w"> </span><span class="kn">import</span> <span class="n">_BaseFilter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">commands.player</span><span class="w"> </span><span class="kn">import</span> <span class="n">_PlayerCommandManager</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;SayCommand&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SayCommandDispatcher&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SayCommandGenerator&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SayFilter&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;_SayCommandManager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;get_say_command&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;register_say_filter&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;say_command_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;unregister_say_filter&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_SayCommandManager</span><span class="p">(</span><span class="n">_PlayerCommandManager</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Manager class used to register say commands and say filters.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Store the base functions</span>
+    <span class="n">_get_command</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">get_say_command</span><span class="p">)</span>
+    <span class="n">register_filter</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">register_say_filter</span><span class="p">)</span>
+    <span class="n">unregister_filter</span> <span class="o">=</span> <span class="nb">staticmethod</span><span class="p">(</span><span class="n">unregister_say_filter</span><span class="p">)</span>
+
+<span class="c1"># The singleton object of the :class:`_SayCommandManager` class</span>
+<span class="n">say_command_manager</span> <span class="o">=</span> <span class="n">_SayCommandManager</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="SayCommand">
+<a class="viewcode-back" href="../../developing/modules/commands.say.html#commands.say.SayCommand">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SayCommand</span><span class="p">(</span><span class="n">_BaseCommand</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator class used to register a say command.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Store the class used to (un)register say commands</span>
+    <span class="n">_manager_class</span> <span class="o">=</span> <span class="n">say_command_manager</span></div>
+
+
+
+<div class="viewcode-block" id="SayFilter">
+<a class="viewcode-back" href="../../developing/modules/commands.say.html#commands.say.SayFilter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SayFilter</span><span class="p">(</span><span class="n">_BaseFilter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to register a say filter.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Store the class used to (un)register say filters</span>
+    <span class="n">_manager_class</span> <span class="o">=</span> <span class="n">say_command_manager</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">commands.say</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

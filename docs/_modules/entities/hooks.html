@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>entities.hooks &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.hooks</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for entities.hooks</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../entities/hooks.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides memory hooking functionality for entities.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoUnload</span>
+<span class="c1">#   Entities</span>
+<span class="c1">#   Memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">HookType</span>
+<span class="c1">#   Filters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">EntityIter</span>
+<span class="c1">#   Listeners</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnNetworkedEntityCreated</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entity</span>
+<span class="c1">#   Players</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;EntityCondition&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;EntityPostHook&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;EntityPreHook&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="EntityCondition">
+<a class="viewcode-back" href="../../developing/modules/entities.hooks.html#entities.hooks.EntityCondition">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EntityCondition</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Store some default entity conditions.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="EntityCondition.is_player">
+<a class="viewcode-back" href="../../developing/modules/entities.hooks.html#entities.hooks.EntityCondition.is_player">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_player</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ``True`` if the entity is a player.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">entity</span><span class="o">.</span><span class="n">is_player</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="EntityCondition.is_not_player">
+<a class="viewcode-back" href="../../developing/modules/entities.hooks.html#entities.hooks.EntityCondition.is_not_player">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_not_player</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ``True`` if the entity is not a player.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="n">entity</span><span class="o">.</span><span class="n">is_player</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="EntityCondition.is_human_player">
+<a class="viewcode-back" href="../../developing/modules/entities.hooks.html#entities.hooks.EntityCondition.is_human_player">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_human_player</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ``True`` if the entity is a human player.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">entity</span><span class="o">.</span><span class="n">is_player</span><span class="p">()</span> <span class="ow">and</span> <span class="n">Player</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">steamid</span> <span class="o">!=</span> <span class="s1">&#39;BOT&#39;</span></div>
+
+
+<div class="viewcode-block" id="EntityCondition.is_bot_player">
+<a class="viewcode-back" href="../../developing/modules/entities.hooks.html#entities.hooks.EntityCondition.is_bot_player">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_bot_player</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return ``True`` if the entity is a bot.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">entity</span><span class="o">.</span><span class="n">is_player</span><span class="p">()</span> <span class="ow">and</span> <span class="n">Player</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">steamid</span> <span class="o">==</span> <span class="s1">&#39;BOT&#39;</span></div>
+
+
+<div class="viewcode-block" id="EntityCondition.equals_entity_classname">
+<a class="viewcode-back" href="../../developing/modules/entities.hooks.html#entities.hooks.EntityCondition.equals_entity_classname">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">equals_entity_classname</span><span class="p">(</span><span class="o">*</span><span class="n">classnames</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a function that requires an :class:`entities.entity.Entity``</span>
+<span class="sd">        instace. The returned function returns ``True`` if the entity&#39;s</span>
+<span class="sd">        classname equals one of the passed classnames.</span>
+
+<span class="sd">        :rtype: lambda</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="k">lambda</span> <span class="n">entity</span><span class="p">:</span> <span class="n">entity</span><span class="o">.</span><span class="n">classname</span> <span class="ow">in</span> <span class="n">classnames</span></div>
+
+
+<div class="viewcode-block" id="EntityCondition.equals_datamap_classname">
+<a class="viewcode-back" href="../../developing/modules/entities.hooks.html#entities.hooks.EntityCondition.equals_datamap_classname">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">equals_datamap_classname</span><span class="p">(</span><span class="o">*</span><span class="n">classnames</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a function that requires an :class:`entities.entity.Entity``</span>
+<span class="sd">        instance. The returned function returns ``True`` if the entity&#39;s</span>
+<span class="sd">        datamap classname equals one of the passed classnames.</span>
+
+<span class="sd">        :rtype: lambda</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="k">lambda</span> <span class="n">entity</span><span class="p">:</span> <span class="n">entity</span><span class="o">.</span><span class="n">datamap</span><span class="o">.</span><span class="n">class_name</span> <span class="ow">in</span> <span class="n">classnames</span></div>
+</div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_EntityHook</span><span class="p">(</span><span class="n">AutoUnload</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create entity pre and post hooks that auto unload.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">test_function</span><span class="p">,</span> <span class="n">function</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the hook object.</span>
+
+<span class="sd">        :param callable test_function:</span>
+<span class="sd">            A callable object that accepts an :class:`entities.entity.Entity`</span>
+<span class="sd">            instance as a parameter. The function should return ``True`` if</span>
+<span class="sd">            the entity matches the required one.</span>
+<span class="sd">        :param str/callable function:</span>
+<span class="sd">            This is the function to hook. It can be either a string that</span>
+<span class="sd">            defines the name of a function of the entity or a callable object</span>
+<span class="sd">            that returns a :class:`memory.Function` instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">test_function</span> <span class="o">=</span> <span class="n">test_function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">function</span> <span class="o">=</span> <span class="n">function</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hooked_function</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store the callback and try initializing the hook.</span>
+
+<span class="sd">        :param callable callback:</span>
+<span class="sd">            The callback to store.</span>
+<span class="sd">        :return:</span>
+<span class="sd">            The passed callback.</span>
+<span class="sd">        :rtype: callable</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Validate the given callback...</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Given callback is not callable.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">callback</span>
+
+        <span class="c1"># Try initializing the hook...</span>
+        <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">EntityIter</span><span class="p">():</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+                <span class="c1"># Yay! The entity was the one we were looking for</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span>
+
+        <span class="c1"># Initialization failed. There is currently no entity with the given</span>
+        <span class="c1"># class name. So, we need to wait until such an entity has been</span>
+        <span class="c1"># created.</span>
+        <span class="n">_waiting_entity_hooks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Return the callback</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hook_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the hook type of the decorator.</span>
+
+<span class="sd">        :rtype: HookType</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No hook_type defined for class.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the hook.</span>
+
+<span class="sd">        Return ``True`` if the initialization was successful.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">test_function</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">if</span> <span class="nb">callable</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hooked_function</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hooked_function</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">hooked_function</span><span class="o">.</span><span class="n">add_hook</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hook_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unload the hook.&quot;&quot;&quot;</span>
+        <span class="c1"># Was a function hooked?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hooked_function</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Was no callback registered?</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span>
+
+            <span class="c1"># Unregister the hook...</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hooked_function</span><span class="o">.</span><span class="n">remove_hook</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">hook_type</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">)</span>
+
+        <span class="c1"># Otherwise, make sure the hook is still pending before removing it...</span>
+        <span class="k">elif</span> <span class="bp">self</span> <span class="ow">in</span> <span class="n">_waiting_entity_hooks</span><span class="p">:</span>
+            <span class="n">_waiting_entity_hooks</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="EntityPreHook">
+<a class="viewcode-back" href="../../developing/modules/entities.hooks.html#entities.hooks.EntityPreHook">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EntityPreHook</span><span class="p">(</span><span class="n">_EntityHook</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator class used to create entity pre hooks that auto unload.&quot;&quot;&quot;</span>
+
+    <span class="n">hook_type</span> <span class="o">=</span> <span class="n">HookType</span><span class="o">.</span><span class="n">PRE</span></div>
+
+
+
+<div class="viewcode-block" id="EntityPostHook">
+<a class="viewcode-back" href="../../developing/modules/entities.hooks.html#entities.hooks.EntityPostHook">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EntityPostHook</span><span class="p">(</span><span class="n">_EntityHook</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator class used to create entity post hooks that auto unload.&quot;&quot;&quot;</span>
+
+    <span class="n">hook_type</span> <span class="o">=</span> <span class="n">HookType</span><span class="o">.</span><span class="n">POST</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_WaitingEntityHooks</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A dictionary to store hooks waiting for intialization.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize all hooks waiting for the given entity.</span>
+
+<span class="sd">        :param int index:</span>
+<span class="sd">            Index of the entity that should be used to initialize the hooks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># There is nothing to do if no hook is waiting</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">entity</span> <span class="o">=</span> <span class="n">Entity</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">hook</span> <span class="ow">in</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># Try initializing the hook</span>
+            <span class="k">if</span> <span class="n">hook</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+                <span class="c1"># If it succeeded, remove the hook from the waiting list</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">hook</span><span class="p">)</span>
+
+<span class="n">_waiting_entity_hooks</span> <span class="o">=</span> <span class="n">_WaitingEntityHooks</span><span class="p">()</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; LISTENERS</span>
+<span class="c1"># =============================================================================</span>
+<span class="nd">@OnNetworkedEntityCreated</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_networked_entity_created</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Called when a new networked entity has been created.&quot;&quot;&quot;</span>
+    <span class="n">_waiting_entity_hooks</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.hooks</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>entities.dictionary &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.dictionary</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for entities.dictionary</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../entities/dictionary.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides helper class to store entity instances.&quot;&quot;&quot;</span>
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoUnload</span>
+<span class="c1">#   Filters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">EntityIter</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">index_from_inthandle</span>
+<span class="c1">#   Listeners</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_networked_entity_created_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_networked_entity_deleted_listener_manager</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># ============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;EntityDictionary&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SyncedEntityDictionary&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># ============================================================================</span>
+<div class="viewcode-block" id="EntityDictionary">
+<a class="viewcode-back" href="../../developing/modules/entities.dictionary.html#entities.dictionary.EntityDictionary">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EntityDictionary</span><span class="p">(</span><span class="n">AutoUnload</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class used to store entity instances.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="EntityDictionary.__init__">
+<a class="viewcode-back" href="../../developing/modules/entities.dictionary.html#entities.dictionary.EntityDictionary.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">factory</span><span class="o">=</span><span class="n">Entity</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the dictionary.</span>
+
+<span class="sd">        :param callable factory:</span>
+<span class="sd">            Factory class or function used to create missing instances. Set to</span>
+<span class="sd">            `None` to disable this feature.</span>
+
+<span class="sd">            Factory signature: index, *args, **kwargs</span>
+<span class="sd">        :param tuple args:</span>
+<span class="sd">            Arguments passed to the factory class or function.</span>
+<span class="sd">        :param dict kwargs:</span>
+<span class="sd">            Keyword arguments passed to the factory class or function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Store the given entity class...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_factory</span> <span class="o">=</span> <span class="n">factory</span>
+
+        <span class="c1"># Store given arguments/keywords</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span> <span class="o">=</span> <span class="n">kwargs</span>
+
+        <span class="c1"># Register our networked entity deletion listener...</span>
+        <span class="n">on_networked_entity_deleted_listener_manager</span><span class="o">.</span><span class="n">register_listener</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_on_networked_entity_deleted</span><span class="p">)</span>
+
+        <span class="c1"># Initialize the dictionary...</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__missing__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when an instance is requested but missing.</span>
+
+<span class="sd">        :param int index:</span>
+<span class="sd">            The index of the entity instance requested.</span>
+
+<span class="sd">        :raises KeyError:</span>
+<span class="sd">            If the auto-construction of missing instances is disabled or the</span>
+<span class="sd">            factory class or function fails to return an instance.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the factory</span>
+        <span class="n">factory</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_factory</span>
+
+        <span class="c1"># Let&#39;s mimic dict&#39;s behaviour if the factory is set to None</span>
+        <span class="k">if</span> <span class="n">factory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="c1"># For uniformity reasons, ensure we only raise a KeyError</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">instance</span> <span class="o">=</span> <span class="n">factory</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">_args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">_kwargs</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="o">.</span><span class="n">with_traceback</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">__traceback__</span><span class="p">)</span> <span class="kn">from</span><span class="w"> </span><span class="kc">None</span>
+
+        <span class="c1"># Only cache entities that are not marked for deletion.</span>
+        <span class="c1"># This is required, because if someone request an entity instance</span>
+        <span class="c1"># after we invalidated our cache but before the engine processed</span>
+        <span class="c1"># the deletion we would now have an invalid instance in the cache.</span>
+        <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">instance</span><span class="p">,</span> <span class="n">Entity</span><span class="p">)</span> <span class="ow">or</span>
+                <span class="ow">not</span> <span class="n">instance</span><span class="o">.</span><span class="n">is_marked_for_deletion</span><span class="p">()):</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">instance</span>
+
+        <span class="k">return</span> <span class="n">instance</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__delitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Removes the given index from the dictionary.</span>
+
+<span class="sd">        :param int index:</span>
+<span class="sd">            The index of the entity instance being removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Remove the given index from the dictionary...</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+<div class="viewcode-block" id="EntityDictionary.from_inthandle">
+<a class="viewcode-back" href="../../developing/modules/entities.dictionary.html#entities.dictionary.EntityDictionary.from_inthandle">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_inthandle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inthandle</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns an entity instance from an inthandle.</span>
+<span class="sd">        </span>
+<span class="sd">        :param int inthandle:</span>
+<span class="sd">            The inthandle.</span>
+<span class="sd">        :rtype: Entity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">index_from_inthandle</span><span class="p">(</span><span class="n">inthandle</span><span class="p">)]</span></div>
+
+
+<div class="viewcode-block" id="EntityDictionary.on_automatically_removed">
+<a class="viewcode-back" href="../../developing/modules/entities.dictionary.html#entities.dictionary.EntityDictionary.on_automatically_removed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_automatically_removed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when an index is automatically removed.</span>
+
+<span class="sd">        :param int index:</span>
+<span class="sd">            The index of the entity instance being removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_on_networked_entity_deleted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal networked entity deletion callback.</span>
+
+<span class="sd">        :param Entity entity:</span>
+<span class="sd">            The networked entity being removed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the index of the entity</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">index</span>
+
+        <span class="c1"># No need to go further if there is no object associated to this index</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Call the deletion callback for the index...</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_automatically_removed</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c1"># Remove the index from the dictionary...</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__delitem__</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unregister our networked entity deletion listener.&quot;&quot;&quot;</span>
+        <span class="n">on_networked_entity_deleted_listener_manager</span><span class="o">.</span><span class="n">unregister_listener</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_on_networked_entity_deleted</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="SyncedEntityDictionary">
+<a class="viewcode-back" href="../../developing/modules/entities.dictionary.html#entities.dictionary.SyncedEntityDictionary">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SyncedEntityDictionary</span><span class="p">(</span><span class="n">EntityDictionary</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Helper class used to keep entity instances synced with the game.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SyncedEntityDictionary.__init__">
+<a class="viewcode-back" href="../../developing/modules/entities.dictionary.html#entities.dictionary.SyncedEntityDictionary.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">factory</span><span class="o">=</span><span class="n">Entity</span><span class="p">,</span> <span class="n">iterator</span><span class="o">=</span><span class="n">EntityIter</span><span class="p">(),</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the dictionary.</span>
+
+<span class="sd">        :param callable factory:</span>
+<span class="sd">            Factory class or function.</span>
+
+<span class="sd">            Factory signature: index, *args, **kwargs</span>
+<span class="sd">        :param iterable iterator:</span>
+<span class="sd">            Iterator used to generates instances on initialization and resync.</span>
+<span class="sd">        :param tuple args:</span>
+<span class="sd">            Arguments passed to the factory class or function.</span>
+<span class="sd">        :param dict kwargs:</span>
+<span class="sd">            Keyword arguments passed to the factory class or function.</span>
+
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            If the factory is set to None.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">factory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Factory cannot be None for synced dictionaries.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Initialize the dictionary</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">factory</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Store the given iterator and resync the dictionary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_iterator</span> <span class="o">=</span> <span class="n">iterator</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">resync</span><span class="p">()</span>
+
+        <span class="c1"># Register our networked entity creation listener</span>
+        <span class="n">on_networked_entity_created_listener_manager</span><span class="o">.</span><span class="n">register_listener</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_on_networked_entity_created</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__missing__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Raises a KeyError, because creation of missing instances is not</span>
+<span class="sd">            allowed for synced dictionaries.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SyncedEntityDictionary.resync">
+<a class="viewcode-back" href="../../developing/modules/entities.dictionary.html#entities.dictionary.SyncedEntityDictionary.resync">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resync</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resync the dictionary with the game.&quot;&quot;&quot;</span>
+        <span class="c1"># Clear the dictionary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="c1"># Loop through all entities and add them to the dictionary</span>
+        <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterator</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_on_networked_entity_created</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SyncedEntityDictionary.on_automatically_created">
+<a class="viewcode-back" href="../../developing/modules/entities.dictionary.html#entities.dictionary.SyncedEntityDictionary.on_automatically_created">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_automatically_created</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when an index is automatically added.</span>
+
+<span class="sd">        :param int index:</span>
+<span class="sd">            The index of the entity instance being added.</span>
+<span class="sd">        &quot;&quot;&quot;</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_on_networked_entity_created</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal networked entity creation callback.</span>
+
+<span class="sd">        :param Entity entity:</span>
+<span class="sd">            The networked entity being created.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Validate the entity</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iterator</span><span class="o">.</span><span class="n">_is_valid</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Get the index of the entity</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">index</span>
+
+        <span class="c1"># Add the index to the dictionary</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__missing__</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="c1"># Call the creation callback for the index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_automatically_created</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unregister our networked entity creation listener.&quot;&quot;&quot;</span>
+        <span class="n">on_networked_entity_created_listener_manager</span><span class="o">.</span><span class="n">unregister_listener</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_on_networked_entity_created</span><span class="p">)</span>
+
+        <span class="c1"># Unload the dictionary</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_unload_instance</span><span class="p">()</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.dictionary</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

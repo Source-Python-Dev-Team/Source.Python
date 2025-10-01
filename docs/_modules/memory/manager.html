@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>memory.manager &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../memory.html" accesskey="U">memory</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">memory.manager</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for memory.manager</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../memory/manager.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides extended memory functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">GameConfigObj</span>
+<span class="c1">#   Memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">Convention</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">EXPOSED_CLASSES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_SIZES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">alloc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_binary</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_object_pointer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_object</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">memory_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Array</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">BasePointer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Key</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemberFunction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">NO_DEFAULT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">parse_data</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;CustomType&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TypeManager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;manager&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">manager_logger</span> <span class="o">=</span> <span class="n">memory_logger</span><span class="o">.</span><span class="n">manager</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CustomType</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="CustomType">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.CustomType">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CustomType</span><span class="p">(</span><span class="n">BasePointer</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Subclass this class if you want to create a new type.</span>
+
+<span class="sd">    Make sure that you have set the metaclass</span>
+<span class="sd">    attribute to a valid TypeManager instance.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># This should always hold a TypeManager instance. It&#39;s set automatically</span>
+    <span class="c1"># by the metaclass.</span>
+    <span class="n">_manager</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># This is required if TypeManager.function() is used. It should contain</span>
+    <span class="c1"># the path to the binary that defines this type</span>
+    <span class="n">_binary</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Optional -- this gets passed to BinaryFile.find_binary()</span>
+    <span class="n">_srv_check</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Optional -- specifies the size of the type</span>
+    <span class="n">_size</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Optional -- will be called when an instance of the type is created</span>
+    <span class="n">_constructor</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="c1"># Optional -- will be called when an instance of the type is deleted</span>
+    <span class="n">_destructor</span> <span class="o">=</span> <span class="kc">None</span>
+
+<div class="viewcode-block" id="CustomType.__init__">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.CustomType.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">auto_dealloc</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the custom type.&quot;&quot;&quot;</span>
+        <span class="c1"># _manager must be an instance of TypeManager. Otherwise the type</span>
+        <span class="c1"># wasn&#39;t registered by a TypeManager.</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_manager</span><span class="p">,</span> <span class="n">TypeManager</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Attribute _manager must be an instance of &quot;TypeManager&quot;.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Make sure the _manager attribute wasn&#39;t set manually</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_manager</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s1">&#39;Custom type was not registered at a type manager.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># This set will contain internally allocated pointers.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_allocated_pointers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+
+        <span class="c1"># This dict will hold pointers, so they don&#39;t deallocate if</span>
+        <span class="c1"># auto_dealloc was set. {&lt;offset&gt;: &lt;pointer&gt;}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_pointer_values</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Do we want to wrap a pointer?</span>
+        <span class="k">if</span> <span class="n">wrap</span><span class="p">:</span>
+            <span class="c1"># Check if only the this pointer was passed</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;If &lt;wrap&gt; is true only one argument is accepted.&#39;</span><span class="p">)</span>
+
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Obviously, we want to create a new instance</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Was a size specified?</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;In order to create an instance _size is required.&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Allocate some space</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">alloc</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_size</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">auto_dealloc</span> <span class="o">=</span> <span class="n">auto_dealloc</span>
+
+            <span class="c1"># Optionally, call a constructor</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constructor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_constructor</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+            <span class="c1"># No constructor, but arguments? Hmm, the user is doing something</span>
+            <span class="c1"># wrong</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;No constructor was specified, but arguments were passed.&#39;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_ptr</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the pointer of the object.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_obj</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ptr</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap the given pointer.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">wrap</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<div class="viewcode-block" id="CustomType.on_dealloc">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.CustomType.on_dealloc">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_dealloc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call the destructor.</span>
+
+<span class="sd">        This method is automatically called, when the pointer gets</span>
+<span class="sd">        deallocated. It then calls the destructor if it was specified.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Call the destructor if it was specified</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_destructor</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_destructor</span><span class="p">()</span></div>
+</div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; TypeManager</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="TypeManager">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TypeManager</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class able to reconstruct almost every possible data type.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TypeManager.__init__">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the instance.&quot;&quot;&quot;</span>
+        <span class="c1"># Initialize the dictionary</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># This dictionary will hold global pointer instances</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">global_pointers</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Stores converters</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">converters</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Stores function typedefs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">function_typedefs</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Storage for custom calling conventions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_conventions</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">cls_dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and registers a new class.&quot;&quot;&quot;</span>
+        <span class="c1"># Set the manager attribute. This is required, so CustomType.__init__</span>
+        <span class="c1"># can verify that we have registered the class</span>
+        <span class="n">cls_dict</span><span class="p">[</span><span class="s1">&#39;_manager&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span>
+
+        <span class="c1"># Create the class object</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">cls_dict</span><span class="p">)</span>
+
+        <span class="c1"># Check if it&#39;s a subclass of CustomType</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">CustomType</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Custom type &quot;</span><span class="si">{0}</span><span class="s1">&quot; has to &#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">)</span> <span class="o">+</span>
+                <span class="s1">&#39;be a subclass of &quot;CustomType&quot;.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">cls</span>
+        <span class="k">return</span> <span class="bp">cls</span>
+
+<div class="viewcode-block" id="TypeManager.custom_calling_convention">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.custom_calling_convention">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">custom_calling_convention</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a custom calling convention class by its name.</span>
+
+<span class="sd">        Example:</span>
+
+<span class="sd">        .. code:: python</span>
+
+<span class="sd">            @manager.custom_calling_convention</span>
+<span class="sd">            class MyCustomCallingConvention(CallingConvention):</span>
+<span class="sd">                pass</span>
+
+<span class="sd">            # Equals to...</span>
+<span class="sd">            class MyCustomCallingConvention(CallingConvention):</span>
+<span class="sd">                pass</span>
+
+<span class="sd">            manager.register_convention(</span>
+<span class="sd">                &#39;MyCustomCallingConvention&#39;,</span>
+<span class="sd">                MyCustomCallingConvention)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">register_convention</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="bp">cls</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">cls</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.register_convention">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.register_convention">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_convention</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">convention</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a custom calling convention.</span>
+
+<span class="sd">        :param str name:</span>
+<span class="sd">            Name of the custom calling convention.</span>
+<span class="sd">        :param CallingConvention convention:</span>
+<span class="sd">            The custom calling convention.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_conventions</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">convention</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.unregister_convention">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.unregister_convention">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unregister_convention</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unregister a custom calling convention.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">custom_conventions</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.register_converter">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.register_converter">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_converter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a callable object as a converter.</span>
+
+<span class="sd">        The callable object should only accept a pointer as an argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Make sure we can call the object</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Object is not callable.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">converters</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.unregister_converter">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.unregister_converter">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unregister_converter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unregister a converter.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">converters</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.convert">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.convert">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">convert</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">ptr</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert the pointer.</span>
+
+<span class="sd">        Tries to convert a pointer in the following order:</span>
+
+<span class="sd">        Attempts to convert the pointer...</span>
+<span class="sd">        1. to a custom type</span>
+<span class="sd">        2. to a exposed type</span>
+<span class="sd">        3. to a function typedef</span>
+<span class="sd">        4. by using a converter</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_class</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Use the class to convert the pointer</span>
+            <span class="k">return</span> <span class="n">make_object</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ptr</span><span class="p">)</span>
+
+        <span class="c1"># No class was found. Maybe we have luck with a function typedef</span>
+        <span class="n">converter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">function_typedefs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Is there no function typedef?</span>
+        <span class="k">if</span> <span class="n">converter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">converter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">converters</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+            <span class="c1"># Is there no converter?</span>
+            <span class="k">if</span> <span class="n">converter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span>
+                    <span class="s1">&#39;No class, function typedef or &#39;</span> <span class="o">+</span>
+                    <span class="s1">&#39;converter found for &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># Yay, we found a converter or function typedef!</span>
+        <span class="k">return</span> <span class="n">converter</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.create_converter">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.create_converter">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_converter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new converter for the given name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="k">lambda</span> <span class="n">ptr</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">ptr</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.get_class">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.get_class">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the custom type for the given name.</span>
+
+<span class="sd">        Tries to return a custom type that matches the given name. If no</span>
+<span class="sd">        custom type was found, it tries to return a class that was exposed on</span>
+<span class="sd">        the C++ side. If that fails too, None will be returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n">EXPOSED_CLASSES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.create_type">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.create_type">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">cls_dict</span><span class="p">,</span> <span class="n">bases</span><span class="o">=</span><span class="p">(</span><span class="n">CustomType</span><span class="p">,)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and registers a new class.&quot;&quot;&quot;</span>
+        <span class="c1"># This is just a wrapper for __call__</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">cls_dict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.create_pipe">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.create_pipe">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_pipe</span><span class="p">(</span><span class="n">cls_dict</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new pipe class that acts like a collection of functions.&quot;&quot;&quot;</span>
+        <span class="c1"># Just create a container for all the functions</span>
+        <span class="k">return</span> <span class="nb">type</span><span class="p">(</span><span class="s1">&#39;Pipe&#39;</span><span class="p">,</span> <span class="p">(</span><span class="nb">object</span><span class="p">,),</span> <span class="n">cls_dict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.create_pipe_from_file">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.create_pipe_from_file">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_pipe_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a pipe from a file or URL.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_pipe_from_dict</span><span class="p">(</span><span class="n">GameConfigObj</span><span class="p">(</span><span class="n">f</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.create_pipe_from_dict">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.create_pipe_from_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_pipe_from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a pipe from a dictionary.&quot;&quot;&quot;</span>
+        <span class="c1"># Prepare functions</span>
+        <span class="n">funcs</span> <span class="o">=</span> <span class="n">parse_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">raw_data</span><span class="p">,</span>
+            <span class="p">(</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">BINARY</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_str</span><span class="p">,</span> <span class="n">NO_DEFAULT</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">IDENTIFIER</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_identifier</span><span class="p">,</span> <span class="n">NO_DEFAULT</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">ARGS</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_args_tuple</span><span class="p">,</span> <span class="p">()),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">RETURN_TYPE</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_return_type</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">VOID</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">CONVENTION</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_convention</span><span class="p">,</span> <span class="n">Convention</span><span class="o">.</span><span class="n">CDECL</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">SRV_CHECK</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_bool</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">DOC</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_str</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Create the functions</span>
+        <span class="n">cls_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">funcs</span><span class="p">:</span>
+            <span class="n">cls_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pipe_function</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_pipe</span><span class="p">(</span><span class="n">cls_dict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.pipe_function">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.pipe_function">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pipe_function</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">binary</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">return_type</span><span class="o">=</span><span class="n">DataType</span><span class="o">.</span><span class="n">VOID</span><span class="p">,</span>
+            <span class="n">convention</span><span class="o">=</span><span class="n">Convention</span><span class="o">.</span><span class="n">CDECL</span><span class="p">,</span> <span class="n">srv_check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a simple pipe function.&quot;&quot;&quot;</span>
+        <span class="c1"># Create a converter, if it&#39;s not a native type</span>
+        <span class="k">if</span> <span class="n">return_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DataType</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+            <span class="n">return_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_converter</span><span class="p">(</span><span class="n">return_type</span><span class="p">)</span>
+
+        <span class="c1"># Find the binary</span>
+        <span class="n">binary</span> <span class="o">=</span> <span class="n">find_binary</span><span class="p">(</span><span class="n">binary</span><span class="p">,</span> <span class="n">srv_check</span><span class="p">)</span>
+
+        <span class="c1"># Find the address and make it to a function</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="n">binary</span><span class="p">[</span><span class="n">identifier</span><span class="p">]</span><span class="o">.</span><span class="n">make_function</span><span class="p">(</span><span class="n">convention</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">return_type</span><span class="p">)</span>
+
+        <span class="c1"># Add documentation</span>
+        <span class="n">func</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">doc</span>
+        <span class="k">return</span> <span class="n">func</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.create_type_from_file">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.create_type_from_file">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_type_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">bases</span><span class="o">=</span><span class="p">(</span><span class="n">CustomType</span><span class="p">,)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and registers a new type from a file or URL.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_type_from_dict</span><span class="p">(</span>
+            <span class="n">type_name</span><span class="p">,</span> <span class="n">GameConfigObj</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="n">bases</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.create_type_from_dict">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.create_type_from_dict">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_type_from_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">raw_data</span><span class="p">,</span> <span class="n">bases</span><span class="o">=</span><span class="p">(</span><span class="n">CustomType</span><span class="p">,)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create and registers a new type from a dictionary.&quot;&quot;&quot;</span>
+        <span class="c1"># Prepare general type information</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">parse_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="c1"># Discard all subkeys and add the new dict to a another dict to</span>
+            <span class="c1"># make it work with parse_data(). Okay, this can be improved...</span>
+            <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="nb">dict</span><span class="p">((</span><span class="n">k</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span>
+                <span class="n">v</span><span class="p">,</span> <span class="nb">dict</span><span class="p">))},</span>
+            <span class="p">(</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">BINARY</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_str</span><span class="p">,</span> <span class="n">CustomType</span><span class="o">.</span><span class="n">_binary</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">SRV_CHECK</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_bool</span><span class="p">,</span> <span class="n">CustomType</span><span class="o">.</span><span class="n">_srv_check</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">SIZE</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_int</span><span class="p">,</span> <span class="n">CustomType</span><span class="o">.</span><span class="n">_size</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">))[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="n">cls_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">((</span><span class="s1">&#39;_binary&#39;</span><span class="p">,</span> <span class="s1">&#39;_srv_check&#39;</span><span class="p">,</span> <span class="s1">&#39;_size&#39;</span><span class="p">),</span> <span class="n">data</span><span class="p">))</span>
+
+        <span class="c1"># Prepare pointer and instance attributes</span>
+        <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">instance_attribute</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointer_attribute</span><span class="p">):</span>
+            <span class="n">attributes</span> <span class="o">=</span> <span class="n">parse_data</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">raw_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">method</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="p">{}),</span>
+                <span class="p">(</span>
+                    <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">TYPE_NAME</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_attribute_type</span><span class="p">,</span> <span class="n">NO_DEFAULT</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">OFFSET</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_int</span><span class="p">,</span> <span class="n">NO_DEFAULT</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">DOC</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_str</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Create the attributes</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">attributes</span><span class="p">:</span>
+                <span class="n">cls_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Prepare arrays</span>
+        <span class="k">for</span> <span class="n">method</span> <span class="ow">in</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">static_instance_array</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dynamic_instance_array</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">static_pointer_array</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">dynamic_pointer_array</span><span class="p">):</span>
+            <span class="n">arrays</span> <span class="o">=</span> <span class="n">parse_data</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span>
+                <span class="n">raw_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">method</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="p">{}),</span>
+                <span class="p">(</span>
+                    <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">TYPE_NAME</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_attribute_type</span><span class="p">,</span> <span class="n">NO_DEFAULT</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">OFFSET</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_int</span><span class="p">,</span> <span class="n">NO_DEFAULT</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">LENGTH</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_int</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                    <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">DOC</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_str</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Create the arrays</span>
+            <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">arrays</span><span class="p">:</span>
+                <span class="n">cls_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">method</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Prepare virtual functions</span>
+        <span class="n">vfuncs</span> <span class="o">=</span> <span class="n">parse_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">raw_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;virtual_function&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">OFFSET</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_int</span><span class="p">,</span> <span class="n">NO_DEFAULT</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">ARGS</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_args_tuple</span><span class="p">,</span> <span class="p">()),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">RETURN_TYPE</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_return_type</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">VOID</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">CONVENTION</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_convention</span><span class="p">,</span> <span class="n">Convention</span><span class="o">.</span><span class="n">THISCALL</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">DOC</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_str</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Create the virtual functions</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">vfuncs</span><span class="p">:</span>
+            <span class="n">cls_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">virtual_function</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Prepare functions</span>
+        <span class="n">funcs</span> <span class="o">=</span> <span class="n">parse_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">raw_data</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;function&#39;</span><span class="p">,</span> <span class="p">{}),</span>
+            <span class="p">(</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">IDENTIFIER</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_identifier</span><span class="p">,</span> <span class="n">NO_DEFAULT</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">ARGS</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_args_tuple</span><span class="p">,</span> <span class="p">()),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">RETURN_TYPE</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_return_type</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">VOID</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">CONVENTION</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_convention</span><span class="p">,</span> <span class="n">Convention</span><span class="o">.</span><span class="n">THISCALL</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">DOC</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_str</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Create the functions</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">funcs</span><span class="p">:</span>
+            <span class="n">cls_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">function</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Now create and register the type</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">type_name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">cls_dict</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.instance_attribute">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.instance_attribute">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">instance_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a wrapper for an instance attribute.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            Vector vecVal;</span>
+<span class="sd">            bool bVal;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">native_type</span> <span class="o">=</span> <span class="n">Type</span><span class="o">.</span><span class="n">is_native</span><span class="p">(</span><span class="n">type_name</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">fget</span><span class="p">(</span><span class="n">ptr</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Return the instance attribute value.&quot;&quot;&quot;</span>
+            <span class="c1"># Handle custom type</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">native_type</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">type_name</span><span class="p">,</span> <span class="n">ptr</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+
+            <span class="c1"># Handle native type</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="s1">&#39;get_&#39;</span> <span class="o">+</span> <span class="n">type_name</span><span class="p">)(</span><span class="n">offset</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">fset</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Set the instance attribute value.&quot;&quot;&quot;</span>
+            <span class="c1"># Handle custom type</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">native_type</span><span class="p">:</span>
+                <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_class</span><span class="p">(</span><span class="n">type_name</span><span class="p">)</span>
+                <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;Unknown class &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">type_name</span><span class="p">))</span>
+
+                <span class="n">get_object_pointer</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>
+                    <span class="n">ptr</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span>
+                    <span class="bp">cls</span><span class="o">.</span><span class="n">_size</span>
+                <span class="p">)</span>
+
+            <span class="c1"># Handle native type</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="s1">&#39;set_&#39;</span> <span class="o">+</span> <span class="n">type_name</span><span class="p">)(</span><span class="n">value</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.pointer_attribute">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.pointer_attribute">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pointer_attribute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a wrapper for a pointer attribute.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            Vector* pVec;</span>
+<span class="sd">            bool* pBool;</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">native_type</span> <span class="o">=</span> <span class="n">Type</span><span class="o">.</span><span class="n">is_native</span><span class="p">(</span><span class="n">type_name</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">fget</span><span class="p">(</span><span class="n">ptr</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Get the pointer attribute value.&quot;&quot;&quot;</span>
+            <span class="c1"># Get the base address of the pointer. We are now on</span>
+            <span class="c1"># &quot;instance level&quot;</span>
+            <span class="n">ptr</span> <span class="o">=</span> <span class="n">ptr</span><span class="o">.</span><span class="n">get_pointer</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+
+            <span class="c1"># Handle custom type</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">native_type</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">convert</span><span class="p">(</span><span class="n">type_name</span><span class="p">,</span> <span class="n">ptr</span><span class="p">)</span>
+
+            <span class="c1"># Handle native type</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="s1">&#39;get_&#39;</span> <span class="o">+</span> <span class="n">type_name</span><span class="p">)()</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">fset</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Set the pointer attribute value.&quot;&quot;&quot;</span>
+            <span class="c1"># Handle custom type</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">native_type</span><span class="p">:</span>
+                <span class="c1"># Set the pointer</span>
+                <span class="n">ptr</span><span class="o">.</span><span class="n">set_pointer</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+
+                <span class="c1"># Make sure the value will not deallocate as long as it is</span>
+                <span class="c1"># part of this object</span>
+                <span class="n">ptr</span><span class="o">.</span><span class="n">_pointer_values</span><span class="p">[</span><span class="n">offset</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+            <span class="c1"># Handle native type</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># Go down to &quot;instance level&quot;</span>
+                <span class="n">instance_ptr</span> <span class="o">=</span> <span class="n">ptr</span><span class="o">.</span><span class="n">get_pointer</span><span class="p">(</span><span class="n">offset</span><span class="p">)</span>
+
+                <span class="c1"># Is there no space allocated?</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">instance_ptr</span><span class="p">:</span>
+                    <span class="c1"># Allocate space for the value</span>
+                    <span class="n">instance_ptr</span> <span class="o">=</span> <span class="n">alloc</span><span class="p">(</span><span class="n">TYPE_SIZES</span><span class="p">[</span><span class="n">type_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()])</span>
+
+                    <span class="c1"># Add the pointer to the set, so there will be a reference</span>
+                    <span class="c1"># until the instance gets deleted</span>
+                    <span class="n">ptr</span><span class="o">.</span><span class="n">_allocated_pointers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">instance_ptr</span><span class="p">)</span>
+
+                    <span class="c1"># Set the pointer</span>
+                    <span class="n">ptr</span><span class="o">.</span><span class="n">set_pointer</span><span class="p">(</span><span class="n">instance_ptr</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+
+                <span class="c1"># Set the value</span>
+                <span class="nb">getattr</span><span class="p">(</span><span class="n">instance_ptr</span><span class="p">,</span> <span class="s1">&#39;set_&#39;</span> <span class="o">+</span> <span class="n">type_name</span><span class="p">)(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.static_instance_array">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.static_instance_array">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">static_instance_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a wrapper for a static instance array.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            Vector vecArray[10];</span>
+<span class="sd">            bool boolArray[10];</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">fget</span><span class="p">(</span><span class="n">ptr</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Get the static instance array.&quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">Array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">ptr</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">fset</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Set all values in the static instance array.&quot;&quot;&quot;</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">fget</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                <span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+        <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.dynamic_instance_array">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.dynamic_instance_array">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dynamic_instance_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a wrapper for a dynamic instance array.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            Vector* pVecArray;</span>
+<span class="sd">            bool* pBoolArray;</span>
+
+<span class="sd">        Those arrrays are mostly created by the &quot;new&quot; statement.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">fget</span><span class="p">(</span><span class="n">ptr</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Get the dynamic instance array.&quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">Array</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">ptr</span><span class="o">.</span><span class="n">get_pointer</span><span class="p">(</span><span class="n">offset</span><span class="p">),</span> <span class="n">length</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">fset</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Set all values for the dynamic instance array.&quot;&quot;&quot;</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">fget</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                <span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+        <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.static_pointer_array">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.static_pointer_array">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">static_pointer_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a wrapper for a static pointer array.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            Vector* pVecArray[10];</span>
+<span class="sd">            bool* pBoolArray[10];</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">fget</span><span class="p">(</span><span class="n">ptr</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Get the static pointer array.&quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">Array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">ptr</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">length</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">fset</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Set all values for the static pointer array.&quot;&quot;&quot;</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">fget</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                <span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+        <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.dynamic_pointer_array">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.dynamic_pointer_array">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dynamic_pointer_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a wrapper for a dynamic pointer array.</span>
+
+<span class="sd">        Examples:</span>
+<span class="sd">            Vector** pVecArray;</span>
+<span class="sd">            bool** pBoolArray;</span>
+
+<span class="sd">        Those arrays are mostly created by the &quot;new&quot; statement.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">fget</span><span class="p">(</span><span class="n">ptr</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Get the dynamic pointer array.&quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="n">Array</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">ptr</span><span class="o">.</span><span class="n">get_pointer</span><span class="p">(</span><span class="n">offset</span><span class="p">),</span> <span class="n">length</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">fset</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Set all values for the dynamic pointer array.&quot;&quot;&quot;</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">fget</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">val</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+                <span class="n">array</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">val</span>
+
+        <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="p">,</span> <span class="n">fset</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.virtual_function">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.virtual_function">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">virtual_function</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">return_type</span><span class="o">=</span><span class="n">DataType</span><span class="o">.</span><span class="n">VOID</span><span class="p">,</span>
+            <span class="n">convention</span><span class="o">=</span><span class="n">Convention</span><span class="o">.</span><span class="n">THISCALL</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a wrapper for a virtual function.&quot;&quot;&quot;</span>
+        <span class="c1"># Automatically add the this pointer argument</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">DataType</span><span class="o">.</span><span class="n">POINTER</span><span class="p">,)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="c1"># Create a converter, if it&#39;s not a native type</span>
+        <span class="k">if</span> <span class="n">return_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DataType</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+            <span class="n">return_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_converter</span><span class="p">(</span><span class="n">return_type</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">fget</span><span class="p">(</span><span class="n">ptr</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Return the virtual function.&quot;&quot;&quot;</span>
+            <span class="c1"># Create the virtual function</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="n">ptr</span><span class="o">.</span><span class="n">make_virtual_function</span><span class="p">(</span>
+                <span class="n">index</span><span class="p">,</span>
+                <span class="n">convention</span><span class="p">,</span>
+                <span class="n">args</span><span class="p">,</span>
+                <span class="n">return_type</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Wrap it using MemberFunction, so we don&#39;t have to pass the this</span>
+            <span class="c1"># pointer anymore</span>
+            <span class="k">return</span> <span class="n">MemberFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_type</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">ptr</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="nb">property</span><span class="p">(</span><span class="n">fget</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">doc</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.function">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.function">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">function</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">return_type</span><span class="o">=</span><span class="n">DataType</span><span class="o">.</span><span class="n">VOID</span><span class="p">,</span>
+            <span class="n">convention</span><span class="o">=</span><span class="n">Convention</span><span class="o">.</span><span class="n">THISCALL</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a wrapper for a function.&quot;&quot;&quot;</span>
+        <span class="c1"># Automatically add the this pointer argument</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">DataType</span><span class="o">.</span><span class="n">POINTER</span><span class="p">,)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="c1"># Create a converter, if it&#39;s not a native type</span>
+        <span class="k">if</span> <span class="n">return_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DataType</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+            <span class="n">return_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_converter</span><span class="p">(</span><span class="n">return_type</span><span class="p">)</span>
+
+        <span class="k">class</span><span class="w"> </span><span class="nc">fget</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+            <span class="k">def</span><span class="w"> </span><span class="fm">__get__</span><span class="p">(</span><span class="n">fget_self</span><span class="p">,</span> <span class="n">obj</span><span class="p">,</span> <span class="bp">cls</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">fget_self</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">cls</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="vm">__class__</span>
+
+                <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_binary</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;_binary was not specified.&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Create a binary object</span>
+                <span class="n">binary</span> <span class="o">=</span> <span class="n">find_binary</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">_binary</span><span class="p">,</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_srv_check</span><span class="p">)</span>
+
+                <span class="c1"># Create the function object</span>
+                <span class="n">func</span> <span class="o">=</span> <span class="n">binary</span><span class="p">[</span><span class="n">identifier</span><span class="p">]</span><span class="o">.</span><span class="n">make_function</span><span class="p">(</span>
+                    <span class="n">convention</span><span class="p">,</span>
+                    <span class="n">args</span><span class="p">,</span>
+                    <span class="n">return_type</span>
+                <span class="p">)</span>
+
+                <span class="c1"># Called with a this pointer?</span>
+                <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># Wrap the function using MemberFunction, so we don&#39;t have</span>
+                    <span class="c1"># to pass the this pointer anymore</span>
+                    <span class="n">func</span> <span class="o">=</span> <span class="n">MemberFunction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">return_type</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">obj</span><span class="p">)</span>
+
+                <span class="n">func</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">doc</span>
+                <span class="k">return</span> <span class="n">func</span>
+
+        <span class="k">return</span> <span class="n">fget</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.function_typedef">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.function_typedef">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">function_typedef</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">return_type</span><span class="o">=</span><span class="n">DataType</span><span class="o">.</span><span class="n">VOID</span><span class="p">,</span>
+            <span class="n">convention</span><span class="o">=</span><span class="n">Convention</span><span class="o">.</span><span class="n">CDECL</span><span class="p">,</span> <span class="n">doc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new function typedef.</span>
+
+<span class="sd">        When a class has an attribute that contains a pointer of a function,</span>
+<span class="sd">        the attribute will return a Function object that will be created</span>
+<span class="sd">        by this method.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create a converter, if it&#39;s not a native type</span>
+        <span class="k">if</span> <span class="n">return_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">DataType</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+            <span class="n">return_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">create_converter</span><span class="p">(</span><span class="n">return_type</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">make_function</span><span class="p">(</span><span class="n">ptr</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Return the function typedef.&quot;&quot;&quot;</span>
+            <span class="n">func</span> <span class="o">=</span> <span class="n">ptr</span><span class="o">.</span><span class="n">make_function</span><span class="p">(</span><span class="n">convention</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">return_type</span><span class="p">)</span>
+            <span class="n">func</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">doc</span>
+            <span class="k">return</span> <span class="n">func</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">function_typedefs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_function</span>
+        <span class="k">return</span> <span class="n">make_function</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.create_function_typedefs_from_file">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.create_function_typedefs_from_file">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_function_typedefs_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create function typedefs from a file.&quot;&quot;&quot;</span>
+        <span class="c1"># Read the data</span>
+        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">GameConfigObj</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+
+        <span class="c1"># Prepare typedefs</span>
+        <span class="n">typedefs</span> <span class="o">=</span> <span class="n">parse_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">raw_data</span><span class="p">,</span>
+            <span class="p">(</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">ARGS</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_args_tuple</span><span class="p">,</span> <span class="p">()),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">RETURN_TYPE</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_return_type</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">VOID</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">CONVENTION</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_convention</span><span class="p">,</span> <span class="n">Convention</span><span class="o">.</span><span class="n">CDECL</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">DOC</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_str</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Create the typedefs</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">typedefs</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">function_typedef</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.global_pointer">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.global_pointer">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">global_pointer</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">binary</span><span class="p">,</span> <span class="n">identifier</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">srv_check</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">accessor</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">accessor_offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Search for a global pointer and wrap the it.&quot;&quot;&quot;</span>
+        <span class="n">manager_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+            <span class="s1">&#39;Retrieving global pointer for </span><span class="si">{}</span><span class="s1">...&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">))</span>
+
+        <span class="c1"># Get the binary</span>
+        <span class="n">binary</span> <span class="o">=</span> <span class="n">find_binary</span><span class="p">(</span><span class="n">binary</span><span class="p">,</span> <span class="n">srv_check</span><span class="p">)</span>
+
+        <span class="c1"># Get the global pointer</span>
+        <span class="k">if</span> <span class="n">accessor</span><span class="p">:</span>
+            <span class="n">ptr</span> <span class="o">=</span> <span class="n">binary</span><span class="p">[</span><span class="n">identifier</span><span class="p">]</span>
+            <span class="n">ptr</span> <span class="o">=</span> <span class="p">(</span><span class="n">ptr</span> <span class="o">+</span> <span class="n">offset</span> <span class="o">+</span> <span class="n">ptr</span><span class="o">.</span><span class="n">get_pointer</span><span class="p">(</span><span class="n">accessor_offset</span><span class="p">))</span><span class="o">.</span><span class="n">make_function</span><span class="p">(</span>
+                <span class="n">Convention</span><span class="o">.</span><span class="n">CDECL</span><span class="p">,</span>
+                <span class="p">(),</span>
+                <span class="n">DataType</span><span class="o">.</span><span class="n">POINTER</span>
+            <span class="p">)()</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">level</span><span class="p">):</span>
+                <span class="n">ptr</span> <span class="o">=</span> <span class="n">ptr</span><span class="o">.</span><span class="n">get_pointer</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">ptr</span> <span class="o">=</span> <span class="n">binary</span><span class="o">.</span><span class="n">find_pointer</span><span class="p">(</span><span class="n">identifier</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+
+        <span class="c1"># Raise an error if the pointer is invalid</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ptr</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unable to find the global pointer.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Wrap the pointer using the given class and save the instance</span>
+        <span class="n">ptr</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_pointers</span><span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="vm">__name__</span><span class="p">]</span> <span class="o">=</span> <span class="n">make_object</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ptr</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ptr</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.create_global_pointers_from_file">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.create_global_pointers_from_file">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create_global_pointers_from_file</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create global pointers from a file.&quot;&quot;&quot;</span>
+        <span class="c1"># Parse pointer data</span>
+        <span class="n">pointers</span> <span class="o">=</span> <span class="n">parse_data</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span>
+            <span class="n">GameConfigObj</span><span class="p">(</span><span class="n">f</span><span class="p">),</span>
+            <span class="p">(</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">BINARY</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_str</span><span class="p">,</span> <span class="n">NO_DEFAULT</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">IDENTIFIER</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_identifier</span><span class="p">,</span> <span class="n">NO_DEFAULT</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">OFFSET</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_int</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">LEVEL</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_int</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">SRV_CHECK</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_bool</span><span class="p">,</span> <span class="kc">True</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">ACCESSOR</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_bool</span><span class="p">,</span> <span class="kc">False</span><span class="p">),</span>
+                <span class="p">(</span><span class="n">Key</span><span class="o">.</span><span class="n">ACCESSOR_OFFSET</span><span class="p">,</span> <span class="n">Key</span><span class="o">.</span><span class="n">as_int</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Create the global pointer objects</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">pointers</span><span class="p">:</span>
+            <span class="bp">cls</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_class</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;Unknown class &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">global_pointer</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">data</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TypeManager.get_global_pointer">
+<a class="viewcode-back" href="../../developing/modules/memory.manager.html#memory.manager.TypeManager.get_global_pointer">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_global_pointer</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the global pointer for the given class.&quot;&quot;&quot;</span>
+        <span class="c1"># Allow passing class objects</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="vm">__name__</span>
+
+        <span class="c1"># Raise an error if no global pointer was found.</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_pointers</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;No global pointer found for &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_pointers</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+</div>
+
+
+<span class="c1"># Create a shared manager instance</span>
+<span class="n">manager</span> <span class="o">=</span> <span class="n">TypeManager</span><span class="p">()</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../memory.html" >memory</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">memory.manager</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

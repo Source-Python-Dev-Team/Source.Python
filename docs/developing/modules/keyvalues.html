@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>keyvalues module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">keyvalues module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-keyvalues">
+<span id="keyvalues-module"></span><h1>keyvalues module<a class="headerlink" href="#module-keyvalues" title="Link to this heading">¶</a></h1>
+<p>Provides access to interact with KeyValues objects.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="keyvalues.KeyValueType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keyvalues.</span></span><span class="sig-name descname"><span class="pre">KeyValueType</span></span><a class="headerlink" href="#keyvalues.KeyValueType" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keyvalues.KeyValueType.COLOR">
+<span class="sig-name descname"><span class="pre">COLOR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_keyvalues.KeyValueType.COLOR</span></em><a class="headerlink" href="#keyvalues.KeyValueType.COLOR" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keyvalues.KeyValueType.FLOAT">
+<span class="sig-name descname"><span class="pre">FLOAT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_keyvalues.KeyValueType.FLOAT</span></em><a class="headerlink" href="#keyvalues.KeyValueType.FLOAT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keyvalues.KeyValueType.INT">
+<span class="sig-name descname"><span class="pre">INT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_keyvalues.KeyValueType.INT</span></em><a class="headerlink" href="#keyvalues.KeyValueType.INT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keyvalues.KeyValueType.NONE">
+<span class="sig-name descname"><span class="pre">NONE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_keyvalues.KeyValueType.NONE</span></em><a class="headerlink" href="#keyvalues.KeyValueType.NONE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keyvalues.KeyValueType.NUM_TYPES">
+<span class="sig-name descname"><span class="pre">NUM_TYPES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_keyvalues.KeyValueType.NUM_TYPES</span></em><a class="headerlink" href="#keyvalues.KeyValueType.NUM_TYPES" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keyvalues.KeyValueType.PTR">
+<span class="sig-name descname"><span class="pre">PTR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_keyvalues.KeyValueType.PTR</span></em><a class="headerlink" href="#keyvalues.KeyValueType.PTR" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keyvalues.KeyValueType.STRING">
+<span class="sig-name descname"><span class="pre">STRING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_keyvalues.KeyValueType.STRING</span></em><a class="headerlink" href="#keyvalues.KeyValueType.STRING" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keyvalues.KeyValueType.UNINT64">
+<span class="sig-name descname"><span class="pre">UNINT64</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_keyvalues.KeyValueType.UNINT64</span></em><a class="headerlink" href="#keyvalues.KeyValueType.UNINT64" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keyvalues.KeyValueType.WSTRING">
+<span class="sig-name descname"><span class="pre">WSTRING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_keyvalues.KeyValueType.WSTRING</span></em><a class="headerlink" href="#keyvalues.KeyValueType.WSTRING" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keyvalues.KeyValueType.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'COLOR':</span> <span class="pre">_keyvalues.KeyValueType.COLOR,</span> <span class="pre">'FLOAT':</span> <span class="pre">_keyvalues.KeyValueType.FLOAT,</span> <span class="pre">'INT':</span> <span class="pre">_keyvalues.KeyValueType.INT,</span> <span class="pre">'NONE':</span> <span class="pre">_keyvalues.KeyValueType.NONE,</span> <span class="pre">'NUM_TYPES':</span> <span class="pre">_keyvalues.KeyValueType.NUM_TYPES,</span> <span class="pre">'PTR':</span> <span class="pre">_keyvalues.KeyValueType.PTR,</span> <span class="pre">'STRING':</span> <span class="pre">_keyvalues.KeyValueType.STRING,</span> <span class="pre">'UNINT64':</span> <span class="pre">_keyvalues.KeyValueType.UNINT64,</span> <span class="pre">'WSTRING':</span> <span class="pre">_keyvalues.KeyValueType.WSTRING}</span></em><a class="headerlink" href="#keyvalues.KeyValueType.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="keyvalues.KeyValueType.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">_keyvalues.KeyValueType.NONE,</span> <span class="pre">1:</span> <span class="pre">_keyvalues.KeyValueType.STRING,</span> <span class="pre">2:</span> <span class="pre">_keyvalues.KeyValueType.INT,</span> <span class="pre">3:</span> <span class="pre">_keyvalues.KeyValueType.FLOAT,</span> <span class="pre">4:</span> <span class="pre">_keyvalues.KeyValueType.PTR,</span> <span class="pre">5:</span> <span class="pre">_keyvalues.KeyValueType.WSTRING,</span> <span class="pre">6:</span> <span class="pre">_keyvalues.KeyValueType.COLOR,</span> <span class="pre">7:</span> <span class="pre">_keyvalues.KeyValueType.UNINT64,</span> <span class="pre">8:</span> <span class="pre">_keyvalues.KeyValueType.NUM_TYPES}</span></em><a class="headerlink" href="#keyvalues.KeyValueType.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keyvalues.KeyValues">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keyvalues.</span></span><span class="sig-name descname"><span class="pre">KeyValues</span></span><a class="headerlink" href="#keyvalues.KeyValues" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.from_buffer">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_buffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(str)buffer</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">KeyValues</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.from_buffer" title="Link to this definition">¶</a></dt>
+<dd><p>Load KeyValues data from a buffer and return a new KeyValues instance on success.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.from_dict">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(str)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(dict)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#keyvalues.KeyValues" title="keyvalues.KeyValues"><span class="pre">KeyValues</span></a></span></span><a class="headerlink" href="#keyvalues.KeyValues.from_dict" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.from_file">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(str)file_name</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)encoding='utf-8'</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)errors='strict'</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(bool)uses_escape_sequences=False</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">KeyValues</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.from_file" title="Link to this definition">¶</a></dt>
+<dd><p>Load KeyValues data from a file and return a new KeyValues instance on success.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><span class="pre">object</span></a></span></span><a class="headerlink" href="#keyvalues.KeyValues.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>__init__( (object)arg1, (str)arg2, (str)arg3, (str)arg4) -&gt; object</p>
+<p>__init__( (object)arg1, (str)arg2, (str)arg3, (_engines._sound.Channel)arg4) -&gt; object</p>
+<p>__init__( (object)arg1, (str)arg2, (str)arg3, (str)arg4, (str)arg5, (str)arg6) -&gt; object</p>
+<p>__init__( (object)arg1, (str)arg2, (str)arg3, (_engines._sound.Channel)arg4, (str)arg5, (_engines._sound.Channel)arg6) -&gt; object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.add_sub_key">
+<span class="sig-name descname"><span class="pre">add_sub_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(KeyValues)sub_key</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.add_sub_key" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a sub key. Make sure the subkey isn’t a child of some other KeyValues.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.as_dict">
+<span class="sig-name descname"><span class="pre">as_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.as_dict" title="Link to this definition">¶</a></dt>
+<dd><p>Return the KeyValues object as a dict.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.create_new_key">
+<span class="sig-name descname"><span class="pre">create_new_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">KeyValues</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.create_new_key" title="Link to this definition">¶</a></dt>
+<dd><p>Creates a new child key with an autogenerated name. The name is guaranteed to be                    an integer, of value 1 higher than the highest other integer key name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.find_key">
+<span class="sig-name descname"><span class="pre">find_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(bool)create_key=False</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">KeyValues</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.find_key" title="Link to this definition">¶</a></dt>
+<dd><p>Finds a KeyValue. Creates it if create_key is set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.find_key_by_symbol">
+<span class="sig-name descname"><span class="pre">find_key_by_symbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)key</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">KeyValues</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.find_key_by_symbol" title="Link to this definition">¶</a></dt>
+<dd><p>Finds a subkey by an integer identifier.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.from_buffer_in_place">
+<span class="sig-name descname"><span class="pre">from_buffer_in_place</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)buffer</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.from_buffer_in_place" title="Link to this definition">¶</a></dt>
+<dd><p>Load KeyValues data from a buffer into an existing KeyValues instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.from_file_in_place">
+<span class="sig-name descname"><span class="pre">from_file_in_place</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)file_name</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)encoding='utf-8'</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)errors='strict'</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.from_file_in_place" title="Link to this definition">¶</a></dt>
+<dd><p>Load KeyValues data from a file into an existing KeyValues instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.get_bool">
+<span class="sig-name descname"><span class="pre">get_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(bool)default_value=False</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.get_bool" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the boolean value for the given key name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.get_color">
+<span class="sig-name descname"><span class="pre">get_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(_colors.Color)default_value=None</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_colors.Color</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.get_color" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the color value of the given key name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.get_data_type">
+<span class="sig-name descname"><span class="pre">get_data_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">KeyValueType</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.get_data_type" title="Link to this definition">¶</a></dt>
+<dd><p>Return the data type of this KeyValue object or the given key.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.get_float">
+<span class="sig-name descname"><span class="pre">get_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(float)default_value=0.0</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.get_float" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the floating point value for the given key name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.get_int">
+<span class="sig-name descname"><span class="pre">get_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)default_value=0</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.get_int" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the integer value for the given key name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.get_string">
+<span class="sig-name descname"><span class="pre">get_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)default_value=''</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.get_string" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the string value for the given key name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.get_uint64">
+<span class="sig-name descname"><span class="pre">get_uint64</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(int)default_value=0</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.get_uint64" title="Link to this definition">¶</a></dt>
+<dd><p>Gets the 64-bit integer value for the given key name.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.is_empty">
+<span class="sig-name descname"><span class="pre">is_empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name=None</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.is_empty" title="Link to this definition">¶</a></dt>
+<dd><p>Returns true if this key or the given key is empty.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.make_copy">
+<span class="sig-name descname"><span class="pre">make_copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">KeyValues</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.make_copy" title="Link to this definition">¶</a></dt>
+<dd><p>Create a copy of the instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.recursive_copy">
+<span class="sig-name descname"><span class="pre">recursive_copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.recursive_copy" title="Link to this definition">¶</a></dt>
+<dd><p>Recursively copy the given KeyValues into this KeyValues instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.remove_sub_key">
+<span class="sig-name descname"><span class="pre">remove_sub_key</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(KeyValues)sub_key</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.remove_sub_key" title="Link to this definition">¶</a></dt>
+<dd><p>Removes a subkey from the list. DOES NOT DELETE IT!</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.save_to_file">
+<span class="sig-name descname"><span class="pre">save_to_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)file_name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.save_to_file" title="Link to this definition">¶</a></dt>
+<dd><p>Saves the data in this KeyValues instance to the given file path.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.set_bool">
+<span class="sig-name descname"><span class="pre">set_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(bool)value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.set_bool" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the given key’s boolean value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.set_color">
+<span class="sig-name descname"><span class="pre">set_color</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_colors.Color)value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.set_color" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the given key’s color value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.set_float">
+<span class="sig-name descname"><span class="pre">set_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.set_float" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the given key’s floating point value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.set_int">
+<span class="sig-name descname"><span class="pre">set_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.set_int" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the given key’s integer value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.set_string">
+<span class="sig-name descname"><span class="pre">set_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.set_string" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the given key’s string value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.set_uint64">
+<span class="sig-name descname"><span class="pre">set_uint64</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)key_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(int)value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.set_uint64" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the given key’s 64-bit integer value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.uses_escape_sequences">
+<span class="sig-name descname"><span class="pre">uses_escape_sequences</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(bool)uses_escape_sequences</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#keyvalues.KeyValues.uses_escape_sequences" title="Link to this definition">¶</a></dt>
+<dd><p>Sets whether or not this keyvalues object uses escape sequences.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.first_sub_key">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">first_sub_key</span></span><a class="headerlink" href="#keyvalues.KeyValues.first_sub_key" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the first subkey in the list. Will iterate over the keys AND the values.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.first_true_sub_key">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">first_true_sub_key</span></span><a class="headerlink" href="#keyvalues.KeyValues.first_true_sub_key" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the first subkey (both key and value).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.first_value">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">first_value</span></span><a class="headerlink" href="#keyvalues.KeyValues.first_value" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the first value in the tree.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#keyvalues.KeyValues.name" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the name of the keyvalues object.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.name_symbol">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name_symbol</span></span><a class="headerlink" href="#keyvalues.KeyValues.name_symbol" title="Link to this definition">¶</a></dt>
+<dd><p>Gets the name as a unique integer.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.next_key">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">next_key</span></span><a class="headerlink" href="#keyvalues.KeyValues.next_key" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the next subkey. Will iterate the keys AND the values.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.next_true_sub_key">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">next_true_sub_key</span></span><a class="headerlink" href="#keyvalues.KeyValues.next_true_sub_key" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the next subkey (both key and value).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="keyvalues.KeyValues.next_value">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">next_value</span></span><a class="headerlink" href="#keyvalues.KeyValues.next_value" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the next value in the tree.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="keyvalues.KeyValuesIter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">keyvalues.</span></span><span class="sig-name descname"><span class="pre">KeyValuesIter</span></span><a class="headerlink" href="#keyvalues.KeyValuesIter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="keyvalues.KeyValuesIter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(KeyValues)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#keyvalues.KeyValuesIter.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">keyvalues module</a><ul>
+<li><a class="reference internal" href="#keyvalues.KeyValueType"><code class="docutils literal notranslate"><span class="pre">KeyValueType</span></code></a><ul>
+<li><a class="reference internal" href="#keyvalues.KeyValueType.COLOR"><code class="docutils literal notranslate"><span class="pre">KeyValueType.COLOR</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValueType.FLOAT"><code class="docutils literal notranslate"><span class="pre">KeyValueType.FLOAT</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValueType.INT"><code class="docutils literal notranslate"><span class="pre">KeyValueType.INT</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValueType.NONE"><code class="docutils literal notranslate"><span class="pre">KeyValueType.NONE</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValueType.NUM_TYPES"><code class="docutils literal notranslate"><span class="pre">KeyValueType.NUM_TYPES</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValueType.PTR"><code class="docutils literal notranslate"><span class="pre">KeyValueType.PTR</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValueType.STRING"><code class="docutils literal notranslate"><span class="pre">KeyValueType.STRING</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValueType.UNINT64"><code class="docutils literal notranslate"><span class="pre">KeyValueType.UNINT64</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValueType.WSTRING"><code class="docutils literal notranslate"><span class="pre">KeyValueType.WSTRING</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValueType.names"><code class="docutils literal notranslate"><span class="pre">KeyValueType.names</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValueType.values"><code class="docutils literal notranslate"><span class="pre">KeyValueType.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#keyvalues.KeyValues"><code class="docutils literal notranslate"><span class="pre">KeyValues</span></code></a><ul>
+<li><a class="reference internal" href="#keyvalues.KeyValues.from_buffer"><code class="docutils literal notranslate"><span class="pre">KeyValues.from_buffer()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.from_dict"><code class="docutils literal notranslate"><span class="pre">KeyValues.from_dict()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.from_file"><code class="docutils literal notranslate"><span class="pre">KeyValues.from_file()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.__init__"><code class="docutils literal notranslate"><span class="pre">KeyValues.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.add_sub_key"><code class="docutils literal notranslate"><span class="pre">KeyValues.add_sub_key()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.as_dict"><code class="docutils literal notranslate"><span class="pre">KeyValues.as_dict()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.create_new_key"><code class="docutils literal notranslate"><span class="pre">KeyValues.create_new_key()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.find_key"><code class="docutils literal notranslate"><span class="pre">KeyValues.find_key()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.find_key_by_symbol"><code class="docutils literal notranslate"><span class="pre">KeyValues.find_key_by_symbol()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.from_buffer_in_place"><code class="docutils literal notranslate"><span class="pre">KeyValues.from_buffer_in_place()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.from_file_in_place"><code class="docutils literal notranslate"><span class="pre">KeyValues.from_file_in_place()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.get_bool"><code class="docutils literal notranslate"><span class="pre">KeyValues.get_bool()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.get_color"><code class="docutils literal notranslate"><span class="pre">KeyValues.get_color()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.get_data_type"><code class="docutils literal notranslate"><span class="pre">KeyValues.get_data_type()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.get_float"><code class="docutils literal notranslate"><span class="pre">KeyValues.get_float()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.get_int"><code class="docutils literal notranslate"><span class="pre">KeyValues.get_int()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.get_string"><code class="docutils literal notranslate"><span class="pre">KeyValues.get_string()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.get_uint64"><code class="docutils literal notranslate"><span class="pre">KeyValues.get_uint64()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.is_empty"><code class="docutils literal notranslate"><span class="pre">KeyValues.is_empty()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.make_copy"><code class="docutils literal notranslate"><span class="pre">KeyValues.make_copy()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.recursive_copy"><code class="docutils literal notranslate"><span class="pre">KeyValues.recursive_copy()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.remove_sub_key"><code class="docutils literal notranslate"><span class="pre">KeyValues.remove_sub_key()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.save_to_file"><code class="docutils literal notranslate"><span class="pre">KeyValues.save_to_file()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.set_bool"><code class="docutils literal notranslate"><span class="pre">KeyValues.set_bool()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.set_color"><code class="docutils literal notranslate"><span class="pre">KeyValues.set_color()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.set_float"><code class="docutils literal notranslate"><span class="pre">KeyValues.set_float()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.set_int"><code class="docutils literal notranslate"><span class="pre">KeyValues.set_int()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.set_string"><code class="docutils literal notranslate"><span class="pre">KeyValues.set_string()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.set_uint64"><code class="docutils literal notranslate"><span class="pre">KeyValues.set_uint64()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.uses_escape_sequences"><code class="docutils literal notranslate"><span class="pre">KeyValues.uses_escape_sequences()</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.first_sub_key"><code class="docutils literal notranslate"><span class="pre">KeyValues.first_sub_key</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.first_true_sub_key"><code class="docutils literal notranslate"><span class="pre">KeyValues.first_true_sub_key</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.first_value"><code class="docutils literal notranslate"><span class="pre">KeyValues.first_value</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.name"><code class="docutils literal notranslate"><span class="pre">KeyValues.name</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.name_symbol"><code class="docutils literal notranslate"><span class="pre">KeyValues.name_symbol</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.next_key"><code class="docutils literal notranslate"><span class="pre">KeyValues.next_key</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.next_true_sub_key"><code class="docutils literal notranslate"><span class="pre">KeyValues.next_true_sub_key</span></code></a></li>
+<li><a class="reference internal" href="#keyvalues.KeyValues.next_value"><code class="docutils literal notranslate"><span class="pre">KeyValues.next_value</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#keyvalues.KeyValuesIter"><code class="docutils literal notranslate"><span class="pre">KeyValuesIter</span></code></a><ul>
+<li><a class="reference internal" href="#keyvalues.KeyValuesIter.__init__"><code class="docutils literal notranslate"><span class="pre">KeyValuesIter.__init__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/keyvalues.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">keyvalues module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

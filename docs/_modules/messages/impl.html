@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>messages.impl &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">messages.impl</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for messages.impl</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../messages/impl.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides user message implementations.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_message_index</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;UserMessageData&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;UserMessageImpl&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;SayText2Impl&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;ShowMenuImpl&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;VGUIMenuImpl&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;implemented_usermessages&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;get_user_message_impl&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="UserMessageData">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.UserMessageData">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">UserMessageData</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A dict that keeps track whether it has been modified.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="UserMessageData.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.UserMessageData.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_changed</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_changed</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">attr</span> <span class="o">==</span> <span class="s1">&#39;_changed&#39;</span><span class="p">:</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="UserMessageData.has_been_changed">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.UserMessageData.has_been_changed">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_been_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the data has been changed.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_changed</span></div>
+
+
+    <span class="fm">__getattr__</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__getitem__</span></div>
+
+
+
+<div class="viewcode-block" id="UserMessageImpl">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.UserMessageImpl">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">UserMessageImpl</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for user message implementations.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="UserMessageImpl.read_protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.UserMessageImpl.read_protobuf">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_protobuf</span><span class="p">(</span><span class="n">buffer</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read data from the given buffer.</span>
+
+<span class="sd">        :param ProtobufMessage buffer:</span>
+<span class="sd">            The buffer to read.</span>
+<span class="sd">        :rtype: UserMessageData</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="UserMessageImpl.write_protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.UserMessageImpl.write_protobuf">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_protobuf</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write data to the given buffer.</span>
+
+<span class="sd">        :param ProtobufMessage buffer:</span>
+<span class="sd">            The buffer to write to.</span>
+<span class="sd">        :param UserMessageData data:</span>
+<span class="sd">            User message data that should be written to the buffer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="UserMessageImpl.read_bitbuffer">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.UserMessageImpl.read_bitbuffer">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_bitbuffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Read data from the given buffer.</span>
+
+<span class="sd">        :param BitBufferRead buffer:</span>
+<span class="sd">            The buffer to read.</span>
+<span class="sd">        :rtype: UserMessageData</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="UserMessageImpl.write_bitbuffer">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.UserMessageImpl.write_bitbuffer">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_bitbuffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write data to the given buffer.</span>
+
+<span class="sd">        :param BitBufferWrite buffer:</span>
+<span class="sd">            The buffer to write to.</span>
+<span class="sd">        :param UserMessageData data:</span>
+<span class="sd">            User message data that should be written to the buffer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div>
+
+
+<div class="viewcode-block" id="UserMessageImpl.read">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.UserMessageImpl.read">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">buffer</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A wrapper for :meth:`read_protobuf` and :meth:`read_bitbuffer`.</span>
+
+<span class="sd">        :param buffer:</span>
+<span class="sd">            The buffer to read.</span>
+<span class="sd">        :rtype: UserMessageData</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">UserMessage</span><span class="o">.</span><span class="n">is_protobuf</span><span class="p">():</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">read_protobuf</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">read_bitbuffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UserMessageImpl.write">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.UserMessageImpl.write">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A wrapper for :meth:`write_protobuf` and :meth:`write_bitbuffer`.</span>
+
+<span class="sd">        :param buffer:</span>
+<span class="sd">            The buffer to write.</span>
+<span class="sd">        :rtype: UserMessageData</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">UserMessage</span><span class="o">.</span><span class="n">is_protobuf</span><span class="p">():</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">write_protobuf</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">write_bitbuffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SayText2Impl">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.SayText2Impl">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SayText2Impl</span><span class="p">(</span><span class="n">UserMessageImpl</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;SayText2 implementation.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SayText2Impl.read_protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.SayText2Impl.read_protobuf">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_protobuf</span><span class="p">(</span><span class="n">buffer</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">UserMessageData</span><span class="p">(</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">get_int32</span><span class="p">(</span><span class="s1">&#39;ent_idx&#39;</span><span class="p">),</span>
+            <span class="n">chat</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">get_bool</span><span class="p">(</span><span class="s1">&#39;chat&#39;</span><span class="p">),</span>
+            <span class="n">message</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="s1">&#39;msg_name&#39;</span><span class="p">),</span>
+            <span class="c1"># See issues #27, #186 and #452.</span>
+            <span class="n">param1</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">get_repeated_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">),</span>
+            <span class="n">param2</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">get_repeated_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;ignore&#39;</span><span class="p">),</span>
+            <span class="n">param3</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">get_repeated_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+            <span class="n">param4</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">get_repeated_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="SayText2Impl.write_protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.SayText2Impl.write_protobuf">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_protobuf</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;msg_name&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_bool</span><span class="p">(</span><span class="s1">&#39;chat&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">chat</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;ent_idx&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">add_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">param1</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">add_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">param2</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">add_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">param3</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">add_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">param4</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SayText2Impl.read_bitbuffer">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.SayText2Impl.read_bitbuffer">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_bitbuffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">UserMessageData</span><span class="p">(</span>
+            <span class="n">index</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(),</span>
+            <span class="n">chat</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(),</span>
+            <span class="n">message</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">read_string</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">),</span>
+            <span class="c1"># See issues #27, #186 and #452.</span>
+            <span class="n">param1</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">read_string</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">),</span>
+            <span class="n">param2</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">read_string</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">),</span>
+            <span class="n">param3</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">read_string</span><span class="p">(),</span>
+            <span class="n">param4</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">read_string</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="SayText2Impl.write_bitbuffer">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.SayText2Impl.write_bitbuffer">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_bitbuffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">chat</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">param1</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">param2</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">param3</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">param4</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ShowMenuImpl">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.ShowMenuImpl">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ShowMenuImpl</span><span class="p">(</span><span class="n">UserMessageImpl</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;ShowMenu implementation.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ShowMenuImpl.read_protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.ShowMenuImpl.read_protobuf">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_protobuf</span><span class="p">(</span><span class="n">buffer</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">UserMessageData</span><span class="p">(</span>
+            <span class="n">valid_slots</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">get_int32</span><span class="p">(</span><span class="s1">&#39;bits_valid_slots&#39;</span><span class="p">),</span>
+            <span class="n">display_time</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">get_int32</span><span class="p">(</span><span class="s1">&#39;display_time&#39;</span><span class="p">),</span>
+            <span class="n">menu_string</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="s1">&#39;menu_string&#39;</span><span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ShowMenuImpl.write_protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.ShowMenuImpl.write_protobuf">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_protobuf</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;bits_valid_slots&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">valid_slots</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;display_time&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">display_time</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;menu_string&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">menu_string</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ShowMenuImpl.read_bitbuffer">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.ShowMenuImpl.read_bitbuffer">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_bitbuffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">UserMessageData</span><span class="p">(</span>
+            <span class="n">valid_slots</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">read_word</span><span class="p">(),</span>
+            <span class="n">display_time</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">read_char</span><span class="p">(),</span>
+            <span class="n">chunked</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">read_byte</span><span class="p">(),</span>
+            <span class="n">menu_string</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ShowMenuImpl.write_bitbuffer">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.ShowMenuImpl.write_bitbuffer">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_bitbuffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_word</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">valid_slots</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_char</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">display_time</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">chunked</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">menu_string</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="VGUIMenuImpl">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.VGUIMenuImpl">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">VGUIMenuImpl</span><span class="p">(</span><span class="n">UserMessageImpl</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;VGUIMenu implementation.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="VGUIMenuImpl.read_protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.VGUIMenuImpl.read_protobuf">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_protobuf</span><span class="p">(</span><span class="n">buffer</span><span class="p">):</span>
+        <span class="n">subkeys</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">buffer</span><span class="o">.</span><span class="n">get_field_count</span><span class="p">(</span><span class="s1">&#39;subkeys&#39;</span><span class="p">)):</span>
+            <span class="n">message</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">get_repeated_message</span><span class="p">(</span><span class="s1">&#39;subkeys&#39;</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+            <span class="n">subkeys</span><span class="p">[</span><span class="n">message</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">)]</span> <span class="o">=</span> <span class="n">message</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="s1">&#39;str&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">UserMessageData</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">),</span>
+            <span class="n">show</span><span class="o">=</span><span class="n">buffer</span><span class="o">.</span><span class="n">get_bool</span><span class="p">(</span><span class="s1">&#39;show&#39;</span><span class="p">),</span>
+            <span class="n">subkeys</span><span class="o">=</span><span class="n">subkeys</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VGUIMenuImpl.write_protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.VGUIMenuImpl.write_protobuf">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_protobuf</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_bool</span><span class="p">(</span><span class="s1">&#39;show&#39;</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">show</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">subkeys</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">temp_buffer</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;subkeys&#39;</span><span class="p">)</span>
+            <span class="n">temp_buffer</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="n">temp_buffer</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VGUIMenuImpl.read_bitbuffer">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.VGUIMenuImpl.read_bitbuffer">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">read_bitbuffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">):</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+        <span class="n">show</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">read_byte</span><span class="p">()</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">read_byte</span><span class="p">()</span>
+
+        <span class="n">subkeys</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">length</span><span class="p">):</span>
+            <span class="n">subkeys</span><span class="p">[</span><span class="n">buffer</span><span class="o">.</span><span class="n">read_string</span><span class="p">()]</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">read_string</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">UserMessageData</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span>
+            <span class="n">show</span><span class="o">=</span><span class="n">show</span><span class="p">,</span>
+            <span class="n">subkeys</span><span class="o">=</span><span class="n">subkeys</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VGUIMenuImpl.write_bitbuffer">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.VGUIMenuImpl.write_bitbuffer">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write_bitbuffer</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">show</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">subkeys</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">subkeys</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FUNCTIONS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1">#: A dictionary that contains all implemented user messages.</span>
+<span class="n">implemented_usermessages</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">get_message_index</span><span class="p">(</span><span class="s1">&#39;SayText2&#39;</span><span class="p">):</span> <span class="n">SayText2Impl</span><span class="p">,</span>
+    <span class="n">get_message_index</span><span class="p">(</span><span class="s1">&#39;ShowMenu&#39;</span><span class="p">):</span> <span class="n">ShowMenuImpl</span><span class="p">,</span>
+    <span class="n">get_message_index</span><span class="p">(</span><span class="s1">&#39;VGUIMenu&#39;</span><span class="p">):</span> <span class="n">VGUIMenuImpl</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="get_user_message_impl">
+<a class="viewcode-back" href="../../developing/modules/messages.impl.html#messages.impl.get_user_message_impl">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_user_message_impl</span><span class="p">(</span><span class="n">msg_index</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the user message implementation for the given message index.</span>
+
+<span class="sd">    :param int msg_index:</span>
+<span class="sd">        The index of the user message.</span>
+<span class="sd">    :raise NotImplementedError:</span>
+<span class="sd">        Raised if the given user message is not implemented.</span>
+<span class="sd">    :rtype: UserMessageImpl</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">implemented_usermessages</span><span class="p">[</span><span class="n">msg_index</span><span class="p">]</span>
+    <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s1">&#39;User message with index </span><span class="si">{</span><span class="n">msg_index</span><span class="si">}</span><span class="s1"> is not implemented.&#39;</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">messages.impl</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

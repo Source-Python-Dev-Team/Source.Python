@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>core.dumps &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../core.html" accesskey="U">core</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">core.dumps</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for core.dumps</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../core/dumps.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides dump logging functionalities.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Inspect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">ismethod</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Cvars</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cvars</span><span class="w"> </span><span class="kn">import</span> <span class="n">cvar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cvars.flags</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConVarFlags</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">ServerClassGenerator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">FieldType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEntity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.props</span><span class="w"> </span><span class="kn">import</span> <span class="n">SendPropFlags</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.props</span><span class="w"> </span><span class="kn">import</span> <span class="n">SendPropType</span>
+<span class="c1">#   Memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">CLASS_INFO</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pointer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemberFunction</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOG_PATH</span>
+<span class="c1">#   Stringtables</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">stringtables</span><span class="w"> </span><span class="kn">import</span> <span class="n">string_tables</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;dump_class_info&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;dump_convars&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;dump_datamaps&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;dump_server_classes&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;dump_string_tables&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;dump_weapon_scripts&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">_convar_types</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="kc">True</span><span class="p">:</span> <span class="s1">&#39;CMD&#39;</span><span class="p">,</span>
+    <span class="kc">False</span><span class="p">:</span> <span class="s1">&#39;VAR&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASS INFO</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="dump_class_info">
+<a class="viewcode-back" href="../../developing/modules/core.dumps.html#core.dumps.dump_class_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dump_class_info</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dump the CLASS_INFO dictionary to the given file name.&quot;&quot;&quot;</span>
+    <span class="c1"># Open/close the file</span>
+    <span class="k">with</span> <span class="n">LOG_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_file</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">classname</span><span class="p">,</span> <span class="n">class_info</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">CLASS_INFO</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">classname</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">function_name</span><span class="p">,</span> <span class="n">overloads</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">class_info</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t</span><span class="si">{0}</span><span class="s1">:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">function_name</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">info</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">overloads</span><span class="p">):</span>
+                    <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t\t</span><span class="s1">Overload </span><span class="si">{0}</span><span class="s1">:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">index</span><span class="p">))</span>
+                    <span class="n">_dump_function_info_attribute</span><span class="p">(</span>
+                        <span class="n">open_file</span><span class="p">,</span> <span class="s1">&#39;is_virtual&#39;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">is_virtual</span><span class="p">)</span>
+                    <span class="n">_dump_function_info_attribute</span><span class="p">(</span>
+                        <span class="n">open_file</span><span class="p">,</span> <span class="s1">&#39;this_pointer_offset&#39;</span><span class="p">,</span>
+                        <span class="n">info</span><span class="o">.</span><span class="n">this_pointer_offset</span><span class="p">)</span>
+                    <span class="n">_dump_function_info_attribute</span><span class="p">(</span>
+                        <span class="n">open_file</span><span class="p">,</span> <span class="s1">&#39;vtable_index&#39;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">vtable_index</span><span class="p">)</span>
+                    <span class="n">_dump_function_info_attribute</span><span class="p">(</span>
+                        <span class="n">open_file</span><span class="p">,</span> <span class="s1">&#39;vtable_offset&#39;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">vtable_offset</span><span class="p">)</span>
+                    <span class="n">_dump_function_info_attribute</span><span class="p">(</span>
+                        <span class="n">open_file</span><span class="p">,</span> <span class="s1">&#39;return_type&#39;</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">return_type</span><span class="p">)</span>
+                    <span class="n">_dump_function_info_attribute</span><span class="p">(</span>
+                        <span class="n">open_file</span><span class="p">,</span> <span class="s1">&#39;argument_types&#39;</span><span class="p">,</span>
+                        <span class="nb">tuple</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">info</span><span class="o">.</span><span class="n">argument_types</span><span class="p">)))</span>
+                    <span class="n">_dump_function_info_attribute</span><span class="p">(</span>
+                        <span class="n">open_file</span><span class="p">,</span> <span class="s1">&#39;calling_convention&#39;</span><span class="p">,</span>
+                        <span class="n">info</span><span class="o">.</span><span class="n">calling_convention</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_dump_function_info_attribute</span><span class="p">(</span><span class="n">open_file</span><span class="p">,</span> <span class="n">attr_name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dump an attribute of a FunctionInfo object.&quot;&quot;&quot;</span>
+    <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\t\t\t</span><span class="si">{0}</span><span class="s1">: </span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr_name</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span> <span class="n">value</span><span class="p">))</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CONVARS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="dump_convars">
+<a class="viewcode-back" href="../../developing/modules/core.dumps.html#core.dumps.dump_convars">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dump_convars</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dump all convars to the given file name.&quot;&quot;&quot;</span>
+    <span class="c1"># Create a dictionary to store the convars</span>
+    <span class="n">convars</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+    <span class="c1"># Get the first convar</span>
+    <span class="n">convar</span> <span class="o">=</span> <span class="n">cvar</span><span class="o">.</span><span class="n">commands</span>
+
+    <span class="c1"># Loop through all convars</span>
+    <span class="k">while</span> <span class="n">convar</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+        <span class="c1"># Store the convar in the dictionary</span>
+        <span class="n">convars</span><span class="p">[</span><span class="n">convar</span><span class="o">.</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">convar</span>
+
+        <span class="c1"># Move to the next convar</span>
+        <span class="n">convar</span> <span class="o">=</span> <span class="n">convar</span><span class="o">.</span><span class="n">next</span>
+
+    <span class="c1"># Get the number of commands</span>
+    <span class="n">command_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">([</span>
+        <span class="n">convar_name</span> <span class="k">for</span> <span class="n">convar_name</span> <span class="ow">in</span> <span class="n">convars</span>
+        <span class="k">if</span> <span class="n">convars</span><span class="p">[</span><span class="n">convar_name</span><span class="p">]</span><span class="o">.</span><span class="n">is_command</span><span class="p">()])</span>
+
+    <span class="c1"># Open/close the file</span>
+    <span class="k">with</span> <span class="n">LOG_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_file</span><span class="p">:</span>
+
+        <span class="c1"># Write the header</span>
+        <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="s1">&#39;Commands: </span><span class="si">{0}</span><span class="s1"> - Variables: </span><span class="si">{1}</span><span class="s1"> - Total: </span><span class="si">{2}</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">command_count</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">convars</span><span class="p">)</span> <span class="o">-</span> <span class="n">command_count</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">convars</span><span class="p">)))</span>
+
+        <span class="c1"># Loop through all convars in alphabetic order</span>
+        <span class="k">for</span> <span class="n">convar_name</span><span class="p">,</span> <span class="n">convar</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">convars</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+
+            <span class="c1"># Get the type (CMD/VAR) of convar</span>
+            <span class="n">convar_type</span> <span class="o">=</span> <span class="n">_convar_types</span><span class="p">[</span><span class="n">convars</span><span class="p">[</span><span class="n">convar_name</span><span class="p">]</span><span class="o">.</span><span class="n">is_command</span><span class="p">()]</span>
+
+            <span class="c1"># Get the convar&#39;s flags</span>
+            <span class="n">convar_flags</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">flag</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">flag</span> <span class="ow">in</span> <span class="n">ConVarFlags</span> <span class="k">if</span> <span class="n">flag</span> <span class="o">&amp;</span> <span class="n">convar</span><span class="o">.</span><span class="n">flags</span><span class="p">]</span>
+
+            <span class="c1"># Get the convar&#39;s help text</span>
+            <span class="n">convar_text</span> <span class="o">=</span> <span class="n">convar</span><span class="o">.</span><span class="n">help_text</span>
+
+            <span class="c1"># Write the convar with its values to file</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> - </span><span class="si">{1}{2}</span><span class="se">\n</span><span class="si">{3}</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">convar_name</span><span class="p">,</span> <span class="n">convar_type</span><span class="p">,</span>
+                <span class="s1">&#39; - (&#39;</span> <span class="o">+</span> <span class="s1">&#39;,&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">convar_flags</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;)&#39;</span> <span class="k">if</span> <span class="n">convar_flags</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">,</span>
+                <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">convar_text</span> <span class="k">if</span> <span class="n">convar_text</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span><span class="p">))</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; DATA MAPS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="dump_datamaps">
+<a class="viewcode-back" href="../../developing/modules/core.dumps.html#core.dumps.dump_datamaps">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dump_datamaps</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dump all entity data maps to the given file name.&quot;&quot;&quot;</span>
+    <span class="c1"># Create a dict to get rid of all duplicates</span>
+    <span class="n">datamaps</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">_get_datamaps</span><span class="p">())</span>
+    <span class="k">with</span> <span class="n">LOG_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_file</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">datamap</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">datamaps</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="n">_dump_datamap</span><span class="p">(</span><span class="n">open_file</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">datamap</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_datamaps</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a generator to loop through all entity DataMap objects.</span>
+
+<span class="sd">    The yielded values are two-tuples, which contain the data class name of</span>
+<span class="sd">    the data map and the actual DataMap object.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">entities.factories</span><span class="w"> </span><span class="kn">import</span> <span class="n">factory_dictionary</span>
+    <span class="k">for</span> <span class="n">classname</span> <span class="ow">in</span> <span class="n">factory_dictionary</span><span class="p">:</span>
+        <span class="n">datamap</span> <span class="o">=</span> <span class="n">_get_datamap</span><span class="p">(</span><span class="n">classname</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">datamap</span><span class="p">:</span>
+            <span class="k">yield</span> <span class="n">datamap</span><span class="o">.</span><span class="n">class_name</span><span class="p">,</span> <span class="n">datamap</span>
+            <span class="n">datamap</span> <span class="o">=</span> <span class="n">datamap</span><span class="o">.</span><span class="n">base</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_datamap</span><span class="p">(</span><span class="n">classname</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the DataMap object for the given entity classname.&quot;&quot;&quot;</span>
+    <span class="c1"># Check existing entities at first</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">BaseEntity</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="n">classname</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">entity</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">entity</span><span class="o">.</span><span class="n">datamap</span>
+
+    <span class="c1"># We haven&#39;t found an entity. Let&#39;s create it temporarily</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">BaseEntity</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">classname</span><span class="p">)</span>
+    <span class="n">datamap</span> <span class="o">=</span> <span class="n">entity</span><span class="o">.</span><span class="n">datamap</span>
+    <span class="n">entity</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">datamap</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_dump_datamap</span><span class="p">(</span><span class="n">open_file</span><span class="p">,</span> <span class="n">class_name</span><span class="p">,</span> <span class="n">datamap</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dump a DataMap object to the given file object.&quot;&quot;&quot;</span>
+    <span class="n">base</span> <span class="o">=</span> <span class="n">datamap</span><span class="o">.</span><span class="n">base</span>
+    <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> -&gt; </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">class_name</span><span class="p">,</span> <span class="n">base</span> <span class="ow">and</span> <span class="n">base</span><span class="o">.</span><span class="n">class_name</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">datamap</span><span class="p">:</span>
+        <span class="n">_dump_type_description</span><span class="p">(</span><span class="n">open_file</span><span class="p">,</span> <span class="n">desc</span><span class="p">)</span>
+
+    <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_dump_type_description</span><span class="p">(</span><span class="n">open_file</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dump a TypeDescription object to the given file object.&quot;&quot;&quot;</span>
+    <span class="n">offset</span> <span class="o">+=</span> <span class="n">desc</span><span class="o">.</span><span class="n">offset</span>
+    <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1"> (offset </span><span class="si">{3}</span><span class="s1">)&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">&#39;</span><span class="o">*</span><span class="n">indent</span><span class="p">,</span> <span class="n">desc</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">desc</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">offset</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">desc</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">FieldType</span><span class="o">.</span><span class="n">EMBEDDED</span><span class="p">:</span>
+        <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+            <span class="s1">&#39; [</span><span class="si">{0}</span><span class="s1"> properties]:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">desc</span><span class="o">.</span><span class="n">embedded_datamap</span><span class="p">)))</span>
+
+        <span class="c1"># Dump the embedded data map</span>
+        <span class="k">for</span> <span class="n">desc</span> <span class="ow">in</span> <span class="n">desc</span><span class="o">.</span><span class="n">embedded_datamap</span><span class="p">:</span>
+            <span class="n">_dump_type_description</span><span class="p">(</span><span class="n">open_file</span><span class="p">,</span> <span class="n">desc</span><span class="p">,</span> <span class="n">indent</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; SERVER CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="dump_server_classes">
+<a class="viewcode-back" href="../../developing/modules/core.dumps.html#core.dumps.dump_server_classes">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dump_server_classes</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dump all server class send properties to the given file name.&quot;&quot;&quot;</span>
+    <span class="c1"># Open/close the file</span>
+    <span class="k">with</span> <span class="n">LOG_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_file</span><span class="p">:</span>
+
+        <span class="c1"># Loop through all server classes</span>
+        <span class="k">for</span> <span class="n">server_class</span> <span class="ow">in</span> <span class="n">ServerClassGenerator</span><span class="p">():</span>
+
+            <span class="n">table</span> <span class="o">=</span> <span class="n">server_class</span><span class="o">.</span><span class="n">table</span>
+
+            <span class="c1"># Print the server class&#39; name to file</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> -&gt; </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">server_class</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">_find_base_server_class_name</span><span class="p">(</span><span class="n">table</span><span class="p">)))</span>
+
+            <span class="c1"># Get all items in the server class&#39; table</span>
+            <span class="n">_dump_server_class_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">open_file</span><span class="p">)</span>
+
+            <span class="c1"># Move to the next server class</span>
+            <span class="n">server_class</span> <span class="o">=</span> <span class="n">server_class</span><span class="o">.</span><span class="n">next</span>
+
+            <span class="c1"># Was this not the last server class?</span>
+            <span class="k">if</span> <span class="n">server_class</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="c1"># Write a separator line before the next server class output</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_find_base_server_class_name</span><span class="p">(</span><span class="n">table</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the name of table&#39;s base server class.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">table</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;baseclass&#39;</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">base_name</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">data_table</span><span class="o">.</span><span class="n">name</span>
+        <span class="k">for</span> <span class="n">server_class</span> <span class="ow">in</span> <span class="n">ServerClassGenerator</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">server_class</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">base_name</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">server_class</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">return</span> <span class="kc">None</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_dump_server_class_table</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">open_file</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dump all items in the given table to the given file.&quot;&quot;&quot;</span>
+    <span class="c1"># Loop through the send props in the table</span>
+    <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">table</span><span class="p">:</span>
+
+        <span class="c1"># Skip all baseclasses</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s1">&#39;baseclass&#39;</span> <span class="ow">or</span>
+            <span class="n">prop</span><span class="o">.</span><span class="n">is_exclude_prop</span><span class="p">()</span> <span class="ow">or</span>
+            <span class="n">prop</span><span class="o">.</span><span class="n">flags</span> <span class="o">&amp;</span> <span class="n">SendPropFlags</span><span class="o">.</span><span class="n">COLLAPSIBLE</span>
+        <span class="p">):</span>
+            <span class="k">continue</span>
+
+        <span class="c1"># Get the current offset in case this</span>
+        <span class="c1"># property is inside an internal table</span>
+        <span class="n">new_offset</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="n">offset</span>
+
+        <span class="c1"># Is the current prop a table?</span>
+        <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">DATATABLE</span><span class="p">:</span>
+
+            <span class="c1"># Get the new table&#39;s instance</span>
+            <span class="n">new_table</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">data_table</span>
+
+            <span class="c1"># Was there an offset passed?</span>
+            <span class="k">if</span> <span class="n">offset</span><span class="p">:</span>
+
+                <span class="c1"># Write the property and its values to file</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1"> (offset </span><span class="si">{3}</span><span class="s1"> - </span><span class="si">{4}</span><span class="s1">) [</span><span class="si">{5}</span><span class="s1"> properties]:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="s1">&#39;    &#39;</span> <span class="o">*</span> <span class="n">level</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">prop</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="n">new_offset</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_table</span><span class="p">)))</span>
+
+            <span class="c1"># Was no offset passed?</span>
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="c1"># Write the property and its values to file</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+                    <span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1"> (offset </span><span class="si">{3}</span><span class="s1">) [</span><span class="si">{4}</span><span class="s1"> properties]:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="s1">&#39;    &#39;</span> <span class="o">*</span> <span class="n">level</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                        <span class="n">prop</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">new_table</span><span class="p">)))</span>
+
+            <span class="c1"># Dump all items in the table</span>
+            <span class="n">_dump_server_class_table</span><span class="p">(</span>
+                <span class="n">new_table</span><span class="p">,</span> <span class="n">open_file</span><span class="p">,</span> <span class="n">level</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">new_offset</span><span class="p">)</span>
+
+        <span class="c1"># Was there an offset passed?</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">real_prop_type</span> <span class="o">=</span> <span class="n">_get_real_prop_type</span><span class="p">(</span><span class="n">prop</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">offset</span><span class="p">:</span>
+
+                <span class="c1"># Write the property and its values to file</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1"> (offset </span><span class="si">{3}</span><span class="s1"> - </span><span class="si">{4}</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="s1">&#39;    &#39;</span> <span class="o">*</span> <span class="n">level</span><span class="p">,</span> <span class="n">real_prop_type</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                    <span class="n">prop</span><span class="o">.</span><span class="n">offset</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">offset</span> <span class="o">+</span> <span class="n">offset</span><span class="p">))</span>
+
+            <span class="c1"># Was no offset passed?</span>
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="c1"># Write the property and its values to file</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}{1}</span><span class="s1"> </span><span class="si">{2}</span><span class="s1"> (offset </span><span class="si">{3}</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="s1">&#39;    &#39;</span> <span class="o">*</span> <span class="n">level</span><span class="p">,</span> <span class="n">real_prop_type</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">offset</span><span class="p">))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_real_prop_type</span><span class="p">(</span><span class="n">prop</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the real property type name of the given prop.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">INT</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+    <span class="n">bit_count</span> <span class="o">=</span> <span class="n">prop</span><span class="o">.</span><span class="n">bits</span>
+    <span class="k">if</span> <span class="n">bit_count</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">bit_count</span> <span class="o">&gt;=</span> <span class="mi">17</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;INT&#39;</span>
+
+    <span class="k">if</span> <span class="n">bit_count</span> <span class="o">&gt;=</span> <span class="mi">9</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">SHORT&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">is_signed</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;U&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">bit_count</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">CHAR&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">is_signed</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;U&#39;</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="s1">&#39;BOOL&#39;</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; STRING TABLES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="dump_string_tables">
+<a class="viewcode-back" href="../../developing/modules/core.dumps.html#core.dumps.dump_string_tables">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dump_string_tables</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dump all string tables to the given file name.&quot;&quot;&quot;</span>
+    <span class="c1"># Open/close the file</span>
+    <span class="k">with</span> <span class="n">LOG_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_file</span><span class="p">:</span>
+
+        <span class="c1"># Loop through the string tables</span>
+        <span class="k">for</span> <span class="n">current_index</span><span class="p">,</span> <span class="n">string_table</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">string_tables</span><span class="p">):</span>
+
+            <span class="c1"># Is the current index not zero?</span>
+            <span class="k">if</span> <span class="n">current_index</span><span class="p">:</span>
+
+                <span class="c1"># If so, Write a separator line before the next string table</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Get a filtered list of the table&#39;s strings skipping all blank</span>
+            <span class="c1">#   ones...</span>
+            <span class="n">items</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">filter</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">string_table</span><span class="p">))</span>
+
+            <span class="c1"># Write the string table&#39;s name and length to file</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> (Length: </span><span class="si">{1}</span><span class="s1">)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">string_table</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)))</span>
+
+            <span class="c1"># Loop through all items in the string table</span>
+            <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">items</span><span class="p">:</span>
+
+                <span class="c1"># Write the item to file</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;    </span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; WEAPON SCRIPTS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="dump_weapon_scripts">
+<a class="viewcode-back" href="../../developing/modules/core.dumps.html#core.dumps.dump_weapon_scripts">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">dump_weapon_scripts</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dump all WeaponInfo instances to the given file name.&quot;&quot;&quot;</span>
+    <span class="c1"># Import weapon_scripts</span>
+    <span class="c1"># This was moved here due to issues with the bms branch</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">weapons.scripts</span><span class="w"> </span><span class="kn">import</span> <span class="n">weapon_scripts</span>
+
+    <span class="c1"># Open/close the file</span>
+    <span class="k">with</span> <span class="n">LOG_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s1">&#39;.txt&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_file</span><span class="p">:</span>
+
+        <span class="c1"># Loop through all WeaponInfo instances...</span>
+        <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">weapon_scripts</span><span class="p">:</span>
+
+            <span class="c1"># Is the current script not parsed yet?</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">info</span><span class="o">.</span><span class="n">is_script_parsed</span><span class="p">:</span>
+
+                <span class="c1"># If so, skip the current weapon...</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Write the current weapon class name...</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">))</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">class_name</span><span class="p">))</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;=&#39;</span> <span class="o">*</span> <span class="mi">80</span><span class="p">))</span>
+
+            <span class="c1"># Loop through all WeaponInfo&#39;s attributes...</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+
+                <span class="c1"># Is the current attribute private or inherited from</span>
+                <span class="c1">#   Pointer?</span>
+                <span class="k">if</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">Pointer</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+
+                    <span class="c1"># If so, skip it...</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Get the current attribute value...</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">info</span><span class="p">,</span> <span class="n">attr</span><span class="p">)</span>
+
+                <span class="c1"># Is the current attribute a method or inehrited from Pointer?</span>
+                <span class="k">if</span> <span class="n">ismethod</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span>
+                        <span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">MemberFunction</span><span class="p">,</span> <span class="n">Pointer</span><span class="p">)):</span>
+
+                    <span class="c1"># If so, skip it...</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Write the current attribute...</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> = </span><span class="si">{1}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">))</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../core.html" >core</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">core.dumps</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

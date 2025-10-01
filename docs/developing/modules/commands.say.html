@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>commands.say package &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">commands.say package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-commands.say">
+<span id="commands-say-package"></span><h1>commands.say package<a class="headerlink" href="#module-commands.say" title="Link to this heading">¶</a></h1>
+<p>Provides say command and say filter functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="commands.say.SayCommand">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.say.</span></span><span class="sig-name descname"><span class="pre">SayCommand</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/say.html#SayCommand"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.say.SayCommand" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseCommand</span></code></p>
+<p>Decorator class used to register a say command.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commands.say.SayCommandDispatcher">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.say.</span></span><span class="sig-name descname"><span class="pre">SayCommandDispatcher</span></span><a class="headerlink" href="#commands.say.SayCommandDispatcher" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.say.SayCommandDispatcher.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#commands.say.SayCommandDispatcher.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.say.SayCommandDispatcher.add_callback">
+<span class="sig-name descname"><span class="pre">add_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SayCommandDispatcher)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#commands.say.SayCommandDispatcher.add_callback" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a callback to the say command’s list.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.say.SayCommandDispatcher.remove_callback">
+<span class="sig-name descname"><span class="pre">remove_callback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SayCommandDispatcher)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#commands.say.SayCommandDispatcher.remove_callback" title="Link to this definition">¶</a></dt>
+<dd><p>Removes a callback from the say command’s list.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commands.say.SayCommandGenerator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.say.</span></span><span class="sig-name descname"><span class="pre">SayCommandGenerator</span></span><a class="headerlink" href="#commands.say.SayCommandGenerator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="commands.say.SayCommandGenerator.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#commands.say.SayCommandGenerator.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="commands.say.SayFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">commands.say.</span></span><span class="sig-name descname"><span class="pre">SayFilter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/commands/say.html#SayFilter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#commands.say.SayFilter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseFilter</span></code></p>
+<p>Class used to register a say filter.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commands.say.get_say_command">
+<span class="sig-prename descclassname"><span class="pre">commands.say.</span></span><span class="sig-name descname"><span class="pre">get_say_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(str)name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SayCommandDispatcher</span> <span class="pre">:</span></span></span><a class="headerlink" href="#commands.say.get_say_command" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the SayCommandDispatcher instance for the given command</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commands.say.register_say_filter">
+<span class="sig-prename descclassname"><span class="pre">commands.say.</span></span><span class="sig-name descname"><span class="pre">register_say_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#commands.say.register_say_filter" title="Link to this definition">¶</a></dt>
+<dd><p>Registers a callable to be called when clients use the say commands (say, say_team).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="commands.say.unregister_say_filter">
+<span class="sig-prename descclassname"><span class="pre">commands.say.</span></span><span class="sig-name descname"><span class="pre">unregister_say_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)callable</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#commands.say.unregister_say_filter" title="Link to this definition">¶</a></dt>
+<dd><p>Unregisters a say filter.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="commands.say.say_command_manager">
+<span class="sig-prename descclassname"><span class="pre">commands.say.</span></span><span class="sig-name descname"><span class="pre">say_command_manager</span></span><a class="headerlink" href="#commands.say.say_command_manager" title="Link to this definition">¶</a></dt>
+<dd><p>The singleton object of the <code class="xref py py-class docutils literal notranslate"><span class="pre">_SayCommandManager</span></code> class.</p>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">commands.say package</a><ul>
+<li><a class="reference internal" href="#commands.say.SayCommand"><code class="docutils literal notranslate"><span class="pre">SayCommand</span></code></a></li>
+<li><a class="reference internal" href="#commands.say.SayCommandDispatcher"><code class="docutils literal notranslate"><span class="pre">SayCommandDispatcher</span></code></a><ul>
+<li><a class="reference internal" href="#commands.say.SayCommandDispatcher.__init__"><code class="docutils literal notranslate"><span class="pre">SayCommandDispatcher.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#commands.say.SayCommandDispatcher.add_callback"><code class="docutils literal notranslate"><span class="pre">SayCommandDispatcher.add_callback()</span></code></a></li>
+<li><a class="reference internal" href="#commands.say.SayCommandDispatcher.remove_callback"><code class="docutils literal notranslate"><span class="pre">SayCommandDispatcher.remove_callback()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#commands.say.SayCommandGenerator"><code class="docutils literal notranslate"><span class="pre">SayCommandGenerator</span></code></a><ul>
+<li><a class="reference internal" href="#commands.say.SayCommandGenerator.__init__"><code class="docutils literal notranslate"><span class="pre">SayCommandGenerator.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#commands.say.SayFilter"><code class="docutils literal notranslate"><span class="pre">SayFilter</span></code></a></li>
+<li><a class="reference internal" href="#commands.say.get_say_command"><code class="docutils literal notranslate"><span class="pre">get_say_command()</span></code></a></li>
+<li><a class="reference internal" href="#commands.say.register_say_filter"><code class="docutils literal notranslate"><span class="pre">register_say_filter()</span></code></a></li>
+<li><a class="reference internal" href="#commands.say.unregister_say_filter"><code class="docutils literal notranslate"><span class="pre">unregister_say_filter()</span></code></a></li>
+<li><a class="reference internal" href="#commands.say.say_command_manager"><code class="docutils literal notranslate"><span class="pre">say_command_manager</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/commands.say.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">commands.say package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

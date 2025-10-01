@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>mathlib module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mathlib module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-mathlib">
+<span id="mathlib-module"></span><h1>mathlib module<a class="headerlink" href="#module-mathlib" title="Link to this heading">¶</a></h1>
+<p>Provides access to mathematical objects.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mathlib.Matrix3x4">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mathlib.</span></span><span class="sig-name descname"><span class="pre">Matrix3x4</span></span><a class="headerlink" href="#mathlib.Matrix3x4" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Matrix3x4.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#mathlib.Matrix3x4.__init__" title="Link to this definition">¶</a></dt>
+<dd><dl>
+<dt>__init__( (object)arg1, (float)arg2, (float)arg3, (float)arg4, (float)arg5, (float)arg6, (float)arg7, (float)arg8, (float)arg9, (float)arg10, (float)arg11, (float)arg12, (float)arg13) -&gt; None :</dt><dd><p>Create a new 3x4 matrix.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The matrix is not initialized with <code class="docutils literal notranslate"><span class="pre">0.0</span></code>.</p>
+</div>
+</dd>
+<dt>__init__( (object)arg1, (Matrix3x4)arg2) -&gt; None :</dt><dd><p>Copy an existing matrix.</p>
+</dd>
+</dl>
+<p>__init__( (object)arg1, (Vector)arg2, (Vector)arg3, (Vector)arg4, (Vector)arg5) -&gt; None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Matrix3x4.invalidate">
+<span class="sig-name descname"><span class="pre">invalidate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Matrix3x4)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Matrix3x4.invalidate" title="Link to this definition">¶</a></dt>
+<dd><p>Invalidate the the matrix (set all values to <code class="docutils literal notranslate"><span class="pre">nan</span></code>).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Matrix3x4.angles">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">angles</span></span><a class="headerlink" href="#mathlib.Matrix3x4.angles" title="Link to this definition">¶</a></dt>
+<dd><p>Extract the angles from the matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#mathlib.QAngle" title="mathlib.QAngle">QAngle</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Matrix3x4.position">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">position</span></span><a class="headerlink" href="#mathlib.Matrix3x4.position" title="Link to this definition">¶</a></dt>
+<dd><p>Extract the position from the matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#mathlib.Vector" title="mathlib.Vector">Vector</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mathlib.Plane">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mathlib.</span></span><span class="sig-name descname"><span class="pre">Plane</span></span><a class="headerlink" href="#mathlib.Plane" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Plane.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#mathlib.Plane.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Plane.dist">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dist</span></span><a class="headerlink" href="#mathlib.Plane.dist" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.Plane)arg1) -&gt; float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Plane.normal">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">normal</span></span><a class="headerlink" href="#mathlib.Plane.normal" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.Plane)arg1) -&gt; _mathlib.Vector</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Plane.signbits">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signbits</span></span><a class="headerlink" href="#mathlib.Plane.signbits" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.Plane)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Plane.type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#mathlib.Plane.type" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.Plane)arg1) -&gt; int</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mathlib.QAngle">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mathlib.</span></span><span class="sig-name descname"><span class="pre">QAngle</span></span><a class="headerlink" href="#mathlib.QAngle" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.QAngle.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(float)x=0</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(float)y=0</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(float)z=0</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#mathlib.QAngle.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.QAngle.get_angle_vectors">
+<span class="sig-name descname"><span class="pre">get_angle_vectors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(QAngle)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(Vector)forward=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(Vector)right=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(Vector)up=None</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.QAngle.get_angle_vectors" title="Link to this definition">¶</a></dt>
+<dd><p>Euler QAngle -&gt; Basis Vectors.  Each vector is optional</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.QAngle.invalidate">
+<span class="sig-name descname"><span class="pre">invalidate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(QAngle)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.QAngle.invalidate" title="Link to this definition">¶</a></dt>
+<dd><p>Invalidates the angle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.QAngle.is_valid">
+<span class="sig-name descname"><span class="pre">is_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(QAngle)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.QAngle.is_valid" title="Link to this definition">¶</a></dt>
+<dd><p>Returns True if the angle is valid.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.QAngle.random">
+<span class="sig-name descname"><span class="pre">random</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(QAngle)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)min_val</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)max_val</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.QAngle.random" title="Link to this definition">¶</a></dt>
+<dd><p>Generates some random values between &lt;min_val&gt; and &lt;max_val&gt;.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.QAngle.length">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length</span></span><a class="headerlink" href="#mathlib.QAngle.length" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the length of the angle.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.QAngle.length_sqr">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length_sqr</span></span><a class="headerlink" href="#mathlib.QAngle.length_sqr" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the square of the angle’s length.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.QAngle.x">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#mathlib.QAngle.x" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.QAngle)arg1) -&gt; float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.QAngle.y">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#mathlib.QAngle.y" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.QAngle)arg1) -&gt; float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.QAngle.z">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#mathlib.QAngle.z" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.QAngle)arg1) -&gt; float</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mathlib.Quaternion">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mathlib.</span></span><span class="sig-name descname"><span class="pre">Quaternion</span></span><a class="headerlink" href="#mathlib.Quaternion" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Quaternion.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(float)x=0</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(float)y=0</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(float)z=0</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(float)w=0</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#mathlib.Quaternion.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>__init__( (object)arg1, (RadianEuler)arg2) -&gt; None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Quaternion.invalidate">
+<span class="sig-name descname"><span class="pre">invalidate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Quaternion)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Quaternion.invalidate" title="Link to this definition">¶</a></dt>
+<dd><p>Invalidates all values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Quaternion.is_valid">
+<span class="sig-name descname"><span class="pre">is_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Quaternion)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Quaternion.is_valid" title="Link to this definition">¶</a></dt>
+<dd><p>Returns True if all values are valid.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Quaternion.w">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">w</span></span><a class="headerlink" href="#mathlib.Quaternion.w" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.Quaternion)arg1) -&gt; float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Quaternion.x">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#mathlib.Quaternion.x" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.Quaternion)arg1) -&gt; float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Quaternion.y">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#mathlib.Quaternion.y" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.Quaternion)arg1) -&gt; float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Quaternion.z">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#mathlib.Quaternion.z" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.Quaternion)arg1) -&gt; float</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mathlib.RadianEuler">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mathlib.</span></span><span class="sig-name descname"><span class="pre">RadianEuler</span></span><a class="headerlink" href="#mathlib.RadianEuler" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.RadianEuler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(float)x=0</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(float)y=0</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(float)z=0</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#mathlib.RadianEuler.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>__init__( (object)arg1, (Quaternion)arg2) -&gt; None</p>
+<p>__init__( (object)arg1, (QAngle)arg2) -&gt; None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.RadianEuler.invalidate">
+<span class="sig-name descname"><span class="pre">invalidate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(RadianEuler)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.RadianEuler.invalidate" title="Link to this definition">¶</a></dt>
+<dd><p>Invalidates all values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.RadianEuler.is_valid">
+<span class="sig-name descname"><span class="pre">is_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(RadianEuler)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.RadianEuler.is_valid" title="Link to this definition">¶</a></dt>
+<dd><p>Returns True if all values are valid.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.RadianEuler.to_qangle">
+<span class="sig-name descname"><span class="pre">to_qangle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(RadianEuler)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">QAngle</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.RadianEuler.to_qangle" title="Link to this definition">¶</a></dt>
+<dd><p>Converts the instance to a QAngle instance.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.RadianEuler.x">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#mathlib.RadianEuler.x" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.RadianEuler)arg1) -&gt; float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.RadianEuler.y">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#mathlib.RadianEuler.y" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.RadianEuler)arg1) -&gt; float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.RadianEuler.z">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#mathlib.RadianEuler.z" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.RadianEuler)arg1) -&gt; float</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="mathlib.Vector">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">mathlib.</span></span><span class="sig-name descname"><span class="pre">Vector</span></span><a class="headerlink" href="#mathlib.Vector" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(float)x=0</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(float)y=0</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(float)z=0</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#mathlib.Vector.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.as_vector_2D">
+<span class="sig-name descname"><span class="pre">as_vector_2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><span class="pre">object</span></a></span></span><a class="headerlink" href="#mathlib.Vector.as_vector_2D" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Vector</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.copy" title="Link to this definition">¶</a></dt>
+<dd><p>Return a copy of the vector.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.cross">
+<span class="sig-name descname"><span class="pre">cross</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Vector)other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Vector</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.cross" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the cross product between two vectors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.dot">
+<span class="sig-name descname"><span class="pre">dot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Vector)other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.dot" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the dot product.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.get_distance">
+<span class="sig-name descname"><span class="pre">get_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Vector)other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.get_distance" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the distance to the other vector.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.get_distance_sqr">
+<span class="sig-name descname"><span class="pre">get_distance_sqr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Vector)other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.get_distance_sqr" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the distance to the other vector as a square product.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.get_vector_angles">
+<span class="sig-name descname"><span class="pre">get_vector_angles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(QAngle)angles</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.get_vector_angles" title="Link to this definition">¶</a></dt>
+<dd><p>Forward direction vector -&gt; Euler angles.</p>
+<dl class="simple">
+<dt>get_vector_angles( (Vector)arg1, (Vector)pseudoup, (QAngle)angles) -&gt; None :</dt><dd><p>Forward direction vector with a reference up vector -&gt; Euler angles.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.get_vector_vectors">
+<span class="sig-name descname"><span class="pre">get_vector_vectors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Vector)right</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Vector)up</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#mathlib.Vector.get_vector_vectors" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.init">
+<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)z</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#mathlib.Vector.init" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.invalidate">
+<span class="sig-name descname"><span class="pre">invalidate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.invalidate" title="Link to this definition">¶</a></dt>
+<dd><p>Invalidates the vector.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.is_length_greater_than">
+<span class="sig-name descname"><span class="pre">is_length_greater_than</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#mathlib.Vector.is_length_greater_than" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.is_length_less_than">
+<span class="sig-name descname"><span class="pre">is_length_less_than</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#mathlib.Vector.is_length_less_than" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.is_valid">
+<span class="sig-name descname"><span class="pre">is_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.is_valid" title="Link to this definition">¶</a></dt>
+<dd><p>Returns True if the vector is valid.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.is_within_box">
+<span class="sig-name descname"><span class="pre">is_within_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Vector)corner1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Vector)corner2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.is_within_box" title="Link to this definition">¶</a></dt>
+<dd><p>Returns True if the vector is within the given box coordinates.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.is_zero">
+<span class="sig-name descname"><span class="pre">is_zero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(float)tolerance=0.009999999776482582</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.is_zero" title="Link to this definition">¶</a></dt>
+<dd><p>Returns True if x, y and z are zero or within the tolerance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.max">
+<span class="sig-name descname"><span class="pre">max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Vector)other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Vector</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.max" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a new vector containing the biggest values of both vectors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.min">
+<span class="sig-name descname"><span class="pre">min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Vector)other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Vector</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.min" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a new vector containing the lowest values of both vectors.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.mul_add">
+<span class="sig-name descname"><span class="pre">mul_add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Vector)a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Vector)b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)scalar</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.mul_add" title="Link to this definition">¶</a></dt>
+<dd><p>Multiply and add. this = a + b * scalar.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.negate">
+<span class="sig-name descname"><span class="pre">negate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.negate" title="Link to this definition">¶</a></dt>
+<dd><p>Negates the vector.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.normalize">
+<span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.normalize" title="Link to this definition">¶</a></dt>
+<dd><p>Normalize the vector inplace and return its length before normalization.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.normalized">
+<span class="sig-name descname"><span class="pre">normalized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Vector</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.normalized" title="Link to this definition">¶</a></dt>
+<dd><p>Return a normalized copy of the vector.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.random">
+<span class="sig-name descname"><span class="pre">random</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)max</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.random" title="Link to this definition">¶</a></dt>
+<dd><p>Fills the vector with random values within the given range.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mathlib.Vector.zero">
+<span class="sig-name descname"><span class="pre">zero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Vector)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#mathlib.Vector.zero" title="Link to this definition">¶</a></dt>
+<dd><p>Zeros out the vector.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Vector.length">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length</span></span><a class="headerlink" href="#mathlib.Vector.length" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the vector’s 3D length.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Vector.length_2D">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length_2D</span></span><a class="headerlink" href="#mathlib.Vector.length_2D" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the vector’s 2D length.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Vector.length_2D_sqr">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length_2D_sqr</span></span><a class="headerlink" href="#mathlib.Vector.length_2D_sqr" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the vector’s 2D length as a square product.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Vector.length_sqr">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">length_sqr</span></span><a class="headerlink" href="#mathlib.Vector.length_sqr" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the vector’s 3D length as a square product.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Vector.x">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">x</span></span><a class="headerlink" href="#mathlib.Vector.x" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.Vector)arg1) -&gt; float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Vector.y">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">y</span></span><a class="headerlink" href="#mathlib.Vector.y" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.Vector)arg1) -&gt; float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="mathlib.Vector.z">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">z</span></span><a class="headerlink" href="#mathlib.Vector.z" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_mathlib.Vector)arg1) -&gt; float</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mathlib.NULL_MATRIX">
+<span class="sig-prename descclassname"><span class="pre">mathlib.</span></span><span class="sig-name descname"><span class="pre">NULL_MATRIX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">[(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0),</span> <span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0),</span> <span class="pre">(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)]</span></em><a class="headerlink" href="#mathlib.NULL_MATRIX" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mathlib.NULL_QANGLE">
+<span class="sig-prename descclassname"><span class="pre">mathlib.</span></span><span class="sig-name descname"><span class="pre">NULL_QANGLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">QAngle(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></em><a class="headerlink" href="#mathlib.NULL_QANGLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mathlib.NULL_QUATERNION">
+<span class="sig-prename descclassname"><span class="pre">mathlib.</span></span><span class="sig-name descname"><span class="pre">NULL_QUATERNION</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Quaternion(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></em><a class="headerlink" href="#mathlib.NULL_QUATERNION" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mathlib.NULL_RADIANEULER">
+<span class="sig-prename descclassname"><span class="pre">mathlib.</span></span><span class="sig-name descname"><span class="pre">NULL_RADIANEULER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">RadianEuler(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></em><a class="headerlink" href="#mathlib.NULL_RADIANEULER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="mathlib.NULL_VECTOR">
+<span class="sig-prename descclassname"><span class="pre">mathlib.</span></span><span class="sig-name descname"><span class="pre">NULL_VECTOR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Vector(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></em><a class="headerlink" href="#mathlib.NULL_VECTOR" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">mathlib module</a><ul>
+<li><a class="reference internal" href="#mathlib.Matrix3x4"><code class="docutils literal notranslate"><span class="pre">Matrix3x4</span></code></a><ul>
+<li><a class="reference internal" href="#mathlib.Matrix3x4.__init__"><code class="docutils literal notranslate"><span class="pre">Matrix3x4.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Matrix3x4.invalidate"><code class="docutils literal notranslate"><span class="pre">Matrix3x4.invalidate()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Matrix3x4.angles"><code class="docutils literal notranslate"><span class="pre">Matrix3x4.angles</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Matrix3x4.position"><code class="docutils literal notranslate"><span class="pre">Matrix3x4.position</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mathlib.Plane"><code class="docutils literal notranslate"><span class="pre">Plane</span></code></a><ul>
+<li><a class="reference internal" href="#mathlib.Plane.__init__"><code class="docutils literal notranslate"><span class="pre">Plane.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Plane.dist"><code class="docutils literal notranslate"><span class="pre">Plane.dist</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Plane.normal"><code class="docutils literal notranslate"><span class="pre">Plane.normal</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Plane.signbits"><code class="docutils literal notranslate"><span class="pre">Plane.signbits</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Plane.type"><code class="docutils literal notranslate"><span class="pre">Plane.type</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mathlib.QAngle"><code class="docutils literal notranslate"><span class="pre">QAngle</span></code></a><ul>
+<li><a class="reference internal" href="#mathlib.QAngle.__init__"><code class="docutils literal notranslate"><span class="pre">QAngle.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.QAngle.get_angle_vectors"><code class="docutils literal notranslate"><span class="pre">QAngle.get_angle_vectors()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.QAngle.invalidate"><code class="docutils literal notranslate"><span class="pre">QAngle.invalidate()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.QAngle.is_valid"><code class="docutils literal notranslate"><span class="pre">QAngle.is_valid()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.QAngle.random"><code class="docutils literal notranslate"><span class="pre">QAngle.random()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.QAngle.length"><code class="docutils literal notranslate"><span class="pre">QAngle.length</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.QAngle.length_sqr"><code class="docutils literal notranslate"><span class="pre">QAngle.length_sqr</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.QAngle.x"><code class="docutils literal notranslate"><span class="pre">QAngle.x</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.QAngle.y"><code class="docutils literal notranslate"><span class="pre">QAngle.y</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.QAngle.z"><code class="docutils literal notranslate"><span class="pre">QAngle.z</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mathlib.Quaternion"><code class="docutils literal notranslate"><span class="pre">Quaternion</span></code></a><ul>
+<li><a class="reference internal" href="#mathlib.Quaternion.__init__"><code class="docutils literal notranslate"><span class="pre">Quaternion.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Quaternion.invalidate"><code class="docutils literal notranslate"><span class="pre">Quaternion.invalidate()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Quaternion.is_valid"><code class="docutils literal notranslate"><span class="pre">Quaternion.is_valid()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Quaternion.w"><code class="docutils literal notranslate"><span class="pre">Quaternion.w</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Quaternion.x"><code class="docutils literal notranslate"><span class="pre">Quaternion.x</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Quaternion.y"><code class="docutils literal notranslate"><span class="pre">Quaternion.y</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Quaternion.z"><code class="docutils literal notranslate"><span class="pre">Quaternion.z</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mathlib.RadianEuler"><code class="docutils literal notranslate"><span class="pre">RadianEuler</span></code></a><ul>
+<li><a class="reference internal" href="#mathlib.RadianEuler.__init__"><code class="docutils literal notranslate"><span class="pre">RadianEuler.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.RadianEuler.invalidate"><code class="docutils literal notranslate"><span class="pre">RadianEuler.invalidate()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.RadianEuler.is_valid"><code class="docutils literal notranslate"><span class="pre">RadianEuler.is_valid()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.RadianEuler.to_qangle"><code class="docutils literal notranslate"><span class="pre">RadianEuler.to_qangle()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.RadianEuler.x"><code class="docutils literal notranslate"><span class="pre">RadianEuler.x</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.RadianEuler.y"><code class="docutils literal notranslate"><span class="pre">RadianEuler.y</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.RadianEuler.z"><code class="docutils literal notranslate"><span class="pre">RadianEuler.z</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mathlib.Vector"><code class="docutils literal notranslate"><span class="pre">Vector</span></code></a><ul>
+<li><a class="reference internal" href="#mathlib.Vector.__init__"><code class="docutils literal notranslate"><span class="pre">Vector.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.as_vector_2D"><code class="docutils literal notranslate"><span class="pre">Vector.as_vector_2D()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.copy"><code class="docutils literal notranslate"><span class="pre">Vector.copy()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.cross"><code class="docutils literal notranslate"><span class="pre">Vector.cross()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.dot"><code class="docutils literal notranslate"><span class="pre">Vector.dot()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.get_distance"><code class="docutils literal notranslate"><span class="pre">Vector.get_distance()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.get_distance_sqr"><code class="docutils literal notranslate"><span class="pre">Vector.get_distance_sqr()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.get_vector_angles"><code class="docutils literal notranslate"><span class="pre">Vector.get_vector_angles()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.get_vector_vectors"><code class="docutils literal notranslate"><span class="pre">Vector.get_vector_vectors()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.init"><code class="docutils literal notranslate"><span class="pre">Vector.init()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.invalidate"><code class="docutils literal notranslate"><span class="pre">Vector.invalidate()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.is_length_greater_than"><code class="docutils literal notranslate"><span class="pre">Vector.is_length_greater_than()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.is_length_less_than"><code class="docutils literal notranslate"><span class="pre">Vector.is_length_less_than()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.is_valid"><code class="docutils literal notranslate"><span class="pre">Vector.is_valid()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.is_within_box"><code class="docutils literal notranslate"><span class="pre">Vector.is_within_box()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.is_zero"><code class="docutils literal notranslate"><span class="pre">Vector.is_zero()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.max"><code class="docutils literal notranslate"><span class="pre">Vector.max()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.min"><code class="docutils literal notranslate"><span class="pre">Vector.min()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.mul_add"><code class="docutils literal notranslate"><span class="pre">Vector.mul_add()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.negate"><code class="docutils literal notranslate"><span class="pre">Vector.negate()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.normalize"><code class="docutils literal notranslate"><span class="pre">Vector.normalize()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.normalized"><code class="docutils literal notranslate"><span class="pre">Vector.normalized()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.random"><code class="docutils literal notranslate"><span class="pre">Vector.random()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.zero"><code class="docutils literal notranslate"><span class="pre">Vector.zero()</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.length"><code class="docutils literal notranslate"><span class="pre">Vector.length</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.length_2D"><code class="docutils literal notranslate"><span class="pre">Vector.length_2D</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.length_2D_sqr"><code class="docutils literal notranslate"><span class="pre">Vector.length_2D_sqr</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.length_sqr"><code class="docutils literal notranslate"><span class="pre">Vector.length_sqr</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.x"><code class="docutils literal notranslate"><span class="pre">Vector.x</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.y"><code class="docutils literal notranslate"><span class="pre">Vector.y</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.Vector.z"><code class="docutils literal notranslate"><span class="pre">Vector.z</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#mathlib.NULL_MATRIX"><code class="docutils literal notranslate"><span class="pre">NULL_MATRIX</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.NULL_QANGLE"><code class="docutils literal notranslate"><span class="pre">NULL_QANGLE</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.NULL_QUATERNION"><code class="docutils literal notranslate"><span class="pre">NULL_QUATERNION</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.NULL_RADIANEULER"><code class="docutils literal notranslate"><span class="pre">NULL_RADIANEULER</span></code></a></li>
+<li><a class="reference internal" href="#mathlib.NULL_VECTOR"><code class="docutils literal notranslate"><span class="pre">NULL_VECTOR</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/mathlib.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">mathlib module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

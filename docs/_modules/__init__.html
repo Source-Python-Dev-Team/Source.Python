@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>__init__ &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=2780edc4" />
+    
+    <script src="../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">__init__</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for __init__</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../__init__.py</span>
+
+<span class="sd">&quot;&quot;&quot;This is the main file that loads/unloads the Python part of the plugin.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source Python</span>
+<span class="c1"># Copyright (C) 2012-2015 Source Python Development Team.  All rights reserved.</span>
+<span class="c1"># =============================================================================</span>
+
+<span class="c1"># This program is free software; you can redistribute it and/or modify it</span>
+<span class="c1"># under the terms of the GNU General Public License, version 3.0, as</span>
+<span class="c1"># published by the Free Software Foundation.</span>
+
+<span class="c1"># This program is distributed in the hope that it will be useful, but WITHOUT</span>
+<span class="c1"># ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or</span>
+<span class="c1"># FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for</span>
+<span class="c1"># more details.</span>
+
+<span class="c1"># You should have received a copy of the GNU General Public License along</span>
+<span class="c1"># with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span>
+
+<span class="c1"># As a special exception, the Source.Python Team gives you permission</span>
+<span class="c1"># to link the code of this program (as well as its derivative works) to</span>
+<span class="c1"># &quot;Half-Life 2,&quot; the &quot;Source Engine,&quot; and any Game MODs that run on software</span>
+<span class="c1"># by the Valve Corporation.  You must obey the GNU General Public License in</span>
+<span class="c1"># all respects for all other code used.  Additionally, the Source.Python</span>
+<span class="c1"># Development Team grants this exception to all derivative works.</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FILE ACCESS LOGGER</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># If True, all calls to open() with a path to a Source.Python data file will be</span>
+<span class="c1"># logged in ../logs/file_access.log. The log entry will contain the file that</span>
+<span class="c1"># is being accessed and a full stack trace. The logger will be removed as soon</span>
+<span class="c1"># as setup_data_update() is called.</span>
+<span class="c1"># This is a debug option to ensure that no data files are being accessed before</span>
+<span class="c1"># the data has been updated. Release builds should have this option set to</span>
+<span class="c1"># False.</span>
+<span class="n">LOG_FILE_OPERATIONS</span> <span class="o">=</span> <span class="kc">False</span>
+
+<span class="k">if</span> <span class="n">LOG_FILE_OPERATIONS</span><span class="p">:</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">builtins</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">traceback</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">SP_DATA_PATH</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">LOG_PATH</span>
+
+    <span class="n">LOG_FILE</span> <span class="o">=</span> <span class="n">LOG_PATH</span> <span class="o">/</span> <span class="s1">&#39;file_access.log&#39;</span>
+
+    <span class="c1"># Clear log file</span>
+    <span class="n">LOG_FILE</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="n">old_open</span> <span class="o">=</span> <span class="n">builtins</span><span class="o">.</span><span class="n">open</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">new_open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">f</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">SP_DATA_PATH</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">LOG_FILE</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">log_f</span><span class="p">:</span>
+                <span class="n">log_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;File access: </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="p">))</span>
+                <span class="n">traceback</span><span class="o">.</span><span class="n">print_stack</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">log_f</span><span class="p">)</span>
+                <span class="n">log_f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">old_open</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">builtins</span><span class="o">.</span><span class="n">open</span> <span class="o">=</span> <span class="n">new_open</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Loggers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">loggers</span><span class="w"> </span><span class="kn">import</span> <span class="n">_sp_logger</span>  <span class="c1"># It&#39;s save to import this here</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; LOAD &amp; UNLOAD</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="load">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.load">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Load Source.Python&#39;s Python side.&quot;&quot;&quot;</span>
+    <span class="n">setup_stdout_redirect</span><span class="p">()</span>
+    <span class="n">setup_core_settings</span><span class="p">()</span>
+    <span class="n">setup_logging</span><span class="p">()</span>
+    <span class="n">setup_exception_hooks</span><span class="p">()</span>
+    <span class="n">setup_data_update</span><span class="p">()</span>
+    <span class="n">setup_translations</span><span class="p">()</span>
+    <span class="n">setup_data</span><span class="p">()</span>
+    <span class="n">setup_global_pointers</span><span class="p">()</span>
+    <span class="n">setup_sp_command</span><span class="p">()</span>
+    <span class="n">setup_auth</span><span class="p">()</span>
+    <span class="n">setup_user_settings</span><span class="p">()</span>
+    <span class="n">setup_entities_listener</span><span class="p">()</span>
+    <span class="n">setup_versioning</span><span class="p">()</span>
+    <span class="n">setup_sqlite</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="unload">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.unload">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">unload</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unload Source.Python&#39;s Python side.&quot;&quot;&quot;</span>
+    <span class="n">unload_plugins</span><span class="p">()</span>
+    <span class="n">remove_entities_listener</span><span class="p">()</span>
+    <span class="n">unload_auth</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; DATA UPDATE</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="setup_data_update">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.setup_data_update">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_data_update</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Setup data update.&quot;&quot;&quot;</span>
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Setting up data update...&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">LOG_FILE_OPERATIONS</span><span class="p">:</span>
+        <span class="n">builtins</span><span class="o">.</span><span class="n">open</span> <span class="o">=</span> <span class="n">old_open</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">core.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">_core_settings</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_core_settings</span><span class="o">.</span><span class="n">auto_data_update</span><span class="p">:</span>
+        <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Automatic data updates are disable.&#39;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s1">&#39;Checking for data updates...&#39;</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">core.update</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_new_data_available</span><span class="p">,</span> <span class="n">update_data</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">translations.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">language_manager</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">is_new_data_available</span><span class="p">():</span>
+            <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s1">&#39;New data is available. Downloading...&#39;</span><span class="p">)</span>
+            <span class="n">update_data</span><span class="p">()</span>
+
+            <span class="c1"># languages.ini is loaded before the data has been updated. Thus,</span>
+            <span class="c1"># we need to reload the file.</span>
+            <span class="n">language_manager</span><span class="o">.</span><span class="n">reload</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_info</span><span class="p">(</span><span class="s1">&#39;No new data is available.&#39;</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_exception</span><span class="p">(</span>
+            <span class="s1">&#39;An error occured during the data update.&#39;</span><span class="p">,</span> <span class="n">exc_info</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="setup_data">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.setup_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_data</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Setup data.&quot;&quot;&quot;</span>
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Setting up data...&#39;</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">GameConfigObj</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">memory.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">manager</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">SP_DATA_PATH</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">players</span>
+    <span class="n">players</span><span class="o">.</span><span class="n">BaseClient</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">create_type_from_dict</span><span class="p">(</span>
+        <span class="s1">&#39;BaseClient&#39;</span><span class="p">,</span>
+        <span class="n">GameConfigObj</span><span class="p">(</span><span class="n">SP_DATA_PATH</span> <span class="o">/</span> <span class="s1">&#39;client&#39;</span> <span class="o">/</span> <span class="s1">&#39;CBaseClient.ini&#39;</span><span class="p">))</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">core.cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">CachedProperty</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_function_info</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">memory.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemberFunction</span>
+    <span class="n">CachedProperty</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">info</span><span class="p">:</span> <span class="n">MemberFunction</span><span class="p">(</span>
+            <span class="n">manager</span><span class="p">,</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">return_type</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">make_virtual_function</span><span class="p">(</span><span class="n">info</span><span class="p">),</span>
+            <span class="bp">self</span>
+        <span class="p">),</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Fires the given game event to this client.</span>
+
+<span class="s2">        :param GameEvent game_event:</span>
+<span class="s2">            The game event instance to fire.</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">get_function_info</span><span class="p">(</span><span class="s1">&#39;IGameEventListener2&#39;</span><span class="p">,</span> <span class="s1">&#39;FireGameEvent&#39;</span><span class="p">),)</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">bind</span><span class="p">(</span><span class="n">players</span><span class="o">.</span><span class="n">BaseClient</span><span class="p">,</span> <span class="s1">&#39;fire_game_event&#39;</span><span class="p">)</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">entities</span>
+    <span class="n">entities</span><span class="o">.</span><span class="n">_BaseEntityOutput</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">create_type_from_dict</span><span class="p">(</span>
+        <span class="s1">&#39;BaseEntityOutput&#39;</span><span class="p">,</span>
+        <span class="n">GameConfigObj</span><span class="p">(</span><span class="n">SP_DATA_PATH</span> <span class="o">/</span> <span class="s1">&#39;entity_output&#39;</span> <span class="o">/</span> <span class="s1">&#39;CBaseEntityOutput.ini&#39;</span><span class="p">))</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">_entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEntityOutput</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">_fire_output</span> <span class="o">=</span> <span class="n">entities</span><span class="o">.</span><span class="n">_BaseEntityOutput</span><span class="o">.</span><span class="n">fire_output</span>
+
+        <span class="n">BaseEntityOutput</span><span class="o">.</span><span class="n">fire_output</span> <span class="o">=</span> <span class="n">_fire_output</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s1">&#39;Did not find address for BaseEntityOutput.fire_output. &#39;</span>
+            <span class="s1">&#39;OnEntityOutput listener will not fire.&#39;</span>
+        <span class="p">)</span>
+        <span class="n">BaseEntityOutput</span><span class="o">.</span><span class="n">fire_output</span> <span class="o">=</span> <span class="bp">NotImplemented</span>
+    <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s1">&#39;BaseEntityOutput.fire_output not found. &#39;</span>
+            <span class="s1">&#39;OnEntityOutput listener will not fire.&#39;</span>
+        <span class="p">)</span>
+        <span class="n">BaseEntityOutput</span><span class="o">.</span><span class="n">fire_output</span> <span class="o">=</span> <span class="bp">NotImplemented</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CORE SETTINGS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="setup_core_settings">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.setup_core_settings">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_core_settings</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Setup core settings.&quot;&quot;&quot;</span>
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Setting up core settings...&#39;</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">core.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">_core_settings</span>
+    <span class="n">_core_settings</span><span class="o">.</span><span class="n">load</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; LOGGING</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="setup_logging">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.setup_logging">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_logging</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set up logging.&quot;&quot;&quot;</span>
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Setting up logging...&#39;</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">configobj</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigObjError</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">cvars</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConVar</span>
+
+    <span class="c1"># Use try/except in case the logging values are not integers</span>
+    <span class="k">try</span><span class="p">:</span>
+
+        <span class="c1"># Import the core settings dictionary</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">core.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">_core_settings</span>
+
+        <span class="c1"># Set the logging level</span>
+        <span class="n">ConVar</span><span class="p">(</span><span class="s1">&#39;sp_logging_level&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">set_int</span><span class="p">(</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">_core_settings</span><span class="p">[</span><span class="s1">&#39;LOG_SETTINGS&#39;</span><span class="p">][</span><span class="s1">&#39;level&#39;</span><span class="p">]))</span>
+
+        <span class="c1"># Set the logging areas</span>
+        <span class="n">ConVar</span><span class="p">(</span><span class="s1">&#39;sp_logging_areas&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">set_int</span><span class="p">(</span>
+            <span class="nb">int</span><span class="p">(</span><span class="n">_core_settings</span><span class="p">[</span><span class="s1">&#39;LOG_SETTINGS&#39;</span><span class="p">][</span><span class="s1">&#39;areas&#39;</span><span class="p">]))</span>
+
+    <span class="c1"># Was an exception raised?</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="n">ConfigObjError</span><span class="p">):</span>
+
+        <span class="c1"># Set the logging level to max (5)</span>
+        <span class="n">ConVar</span><span class="p">(</span><span class="s1">&#39;sp_logging_level&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">set_int</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+        <span class="c1"># Set the logging area to include console, SP logs, and main log</span>
+        <span class="n">ConVar</span><span class="p">(</span><span class="s1">&#39;sp_logging_areas&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">set_int</span><span class="p">(</span><span class="mi">7</span><span class="p">)</span>
+
+        <span class="c1"># Log a message about the value</span>
+        <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="s1">&#39;[Source.Python] Plugin did not load properly &#39;</span> <span class="o">+</span>
+            <span class="s1">&#39;due to the following error:&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Re-raise the error</span>
+        <span class="k">raise</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; HOOKS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="setup_exception_hooks">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.setup_exception_hooks">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_exception_hooks</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set up hooks.&quot;&quot;&quot;</span>
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Setting up exception hooks...&#39;</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">hooks.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">except_hooks</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">hooks.warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warning_hooks</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; TRANSLATIONS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="setup_translations">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.setup_translations">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_translations</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set up translations.&quot;&quot;&quot;</span>
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Setting up translations...&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Import the Language Manager</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">translations.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">language_manager</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">core.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">_core_settings</span>
+
+    <span class="c1"># Set the default language</span>
+    <span class="n">language_manager</span><span class="o">.</span><span class="n">_register_default_language</span><span class="p">(</span>
+        <span class="n">_core_settings</span><span class="p">[</span><span class="s1">&#39;BASE_SETTINGS&#39;</span><span class="p">][</span><span class="s1">&#39;language&#39;</span><span class="p">])</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL POINTERS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="setup_global_pointers">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.setup_global_pointers">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_global_pointers</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set up global pointers.&quot;&quot;&quot;</span>
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Setting up global pointers...&#39;</span><span class="p">)</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">GameConfigObj</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">memory.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">manager</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">SP_DATA_PATH</span>
+
+    <span class="n">manager</span><span class="o">.</span><span class="n">create_global_pointers_from_file</span><span class="p">(</span><span class="n">GameConfigObj</span><span class="p">(</span>
+        <span class="n">SP_DATA_PATH</span> <span class="o">/</span> <span class="s1">&#39;memory&#39;</span> <span class="o">/</span> <span class="s1">&#39;global_pointers.ini&#39;</span><span class="p">))</span>
+
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Setting up global &quot;server&quot; variables...&#39;</span><span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">engines</span><span class="w"> </span><span class="kn">import</span> <span class="n">server</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">server</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">server</span><span class="o">.</span><span class="n">engine_server</span><span class="o">.</span><span class="n">server</span>
+    <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">server</span><span class="o">.</span><span class="n">server</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">get_global_pointer</span><span class="p">(</span><span class="s1">&#39;Server&#39;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]))</span>
+
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Setting up global &quot;factory_dictionary&quot; variables...&#39;</span><span class="p">)</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">factories</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">_entities._factories</span><span class="w"> </span><span class="kn">import</span> <span class="n">factory_dictionary</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">factory_dictionary</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">get_global_pointer</span><span class="p">(</span>
+                <span class="s1">&#39;EntityFactoryDictionary&#39;</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()[</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">return</span>
+
+    <span class="n">factories</span><span class="o">.</span><span class="n">factory_dictionary</span> <span class="o">=</span> <span class="n">factory_dictionary</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; SP COMMAND</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="setup_sp_command">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.setup_sp_command">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_sp_command</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set up the &#39;sp&#39; command.&quot;&quot;&quot;</span>
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Setting up the &quot;sp&quot; command...&#39;</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">core.command</span><span class="w"> </span><span class="kn">import</span> <span class="n">auth</span><span class="p">,</span> <span class="n">docs</span><span class="p">,</span> <span class="n">dump</span><span class="p">,</span> <span class="n">plugin</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; AUTH</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="setup_auth">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.setup_auth">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_auth</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set up authentification.&quot;&quot;&quot;</span>
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Setting up auth...&#39;</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">auth.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">auth_manager</span>
+    <span class="n">auth_manager</span><span class="o">.</span><span class="n">load</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="unload_auth">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.unload_auth">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">unload_auth</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unload authentification.&quot;&quot;&quot;</span>
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Unloading auth...&#39;</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">auth.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">auth_manager</span>
+    <span class="n">auth_manager</span><span class="o">.</span><span class="n">unload</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; USER_SETTINGS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="setup_user_settings">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.setup_user_settings">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_user_settings</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set up user settings.&quot;&quot;&quot;</span>
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Setting up user settings...&#39;</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">commands.client</span><span class="w"> </span><span class="kn">import</span> <span class="n">client_command_manager</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">commands.say</span><span class="w"> </span><span class="kn">import</span> <span class="n">say_command_manager</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">settings.menu</span><span class="w"> </span><span class="kn">import</span> <span class="n">_player_settings</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">core.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">_core_settings</span>
+
+    <span class="c1"># Are there any private user settings say commands?</span>
+    <span class="k">if</span> <span class="n">_core_settings</span><span class="p">[</span><span class="s1">&#39;USER_SETTINGS&#39;</span><span class="p">][</span><span class="s1">&#39;private_say_commands&#39;</span><span class="p">]:</span>
+
+        <span class="c1"># Register the private user settings say commands</span>
+        <span class="n">say_command_manager</span><span class="o">.</span><span class="n">register_commands</span><span class="p">(</span><span class="n">_core_settings</span><span class="p">[</span>
+            <span class="s1">&#39;USER_SETTINGS&#39;</span><span class="p">][</span><span class="s1">&#39;private_say_commands&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+            <span class="s1">&#39;,&#39;</span><span class="p">),</span> <span class="n">_player_settings</span><span class="o">.</span><span class="n">_private_send_menu</span><span class="p">)</span>
+
+    <span class="c1"># Are there any public user settings say commands?</span>
+    <span class="k">if</span> <span class="n">_core_settings</span><span class="p">[</span><span class="s1">&#39;USER_SETTINGS&#39;</span><span class="p">][</span><span class="s1">&#39;public_say_commands&#39;</span><span class="p">]:</span>
+
+        <span class="c1"># Register the public user settings say commands</span>
+        <span class="n">say_command_manager</span><span class="o">.</span><span class="n">register_commands</span><span class="p">(</span><span class="n">_core_settings</span><span class="p">[</span>
+            <span class="s1">&#39;USER_SETTINGS&#39;</span><span class="p">][</span><span class="s1">&#39;public_say_commands&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+            <span class="s1">&#39;,&#39;</span><span class="p">),</span> <span class="n">_player_settings</span><span class="o">.</span><span class="n">_send_menu</span><span class="p">)</span>
+
+    <span class="c1"># Are there any client user settings commands?</span>
+    <span class="k">if</span> <span class="n">_core_settings</span><span class="p">[</span><span class="s1">&#39;USER_SETTINGS&#39;</span><span class="p">][</span><span class="s1">&#39;client_commands&#39;</span><span class="p">]:</span>
+
+        <span class="c1"># Register the client user settings commands</span>
+        <span class="n">client_command_manager</span><span class="o">.</span><span class="n">register_commands</span><span class="p">(</span><span class="n">_core_settings</span><span class="p">[</span>
+            <span class="s1">&#39;USER_SETTINGS&#39;</span><span class="p">][</span><span class="s1">&#39;client_commands&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span>
+            <span class="s1">&#39;,&#39;</span><span class="p">),</span> <span class="n">_player_settings</span><span class="o">.</span><span class="n">_send_menu</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ENTITIES LISTENER</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="setup_entities_listener">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.setup_entities_listener">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_entities_listener</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Set up entities listener.&quot;&quot;&quot;</span>
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Setting up entities listener...&#39;</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">_sp_plugin</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">_entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_entity_list</span>
+        <span class="n">_global_entity_list</span><span class="o">.</span><span class="n">add_entity_listener</span><span class="p">(</span><span class="n">_sp_plugin</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">memory.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">manager</span>
+            <span class="n">manager</span><span class="o">.</span><span class="n">get_global_pointer</span><span class="p">(</span>
+                <span class="s1">&#39;GlobalEntityList&#39;</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">add_entity_listener</span><span class="p">(</span><span class="n">_sp_plugin</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">NameError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="remove_entities_listener">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.remove_entities_listener">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">remove_entities_listener</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Remove entities listener.&quot;&quot;&quot;</span>
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Removing entities listener...&#39;</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">_sp_plugin</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">_entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">_global_entity_list</span>
+        <span class="n">_global_entity_list</span><span class="o">.</span><span class="n">remove_entity_listener</span><span class="p">(</span><span class="n">_sp_plugin</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">memory.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">manager</span>
+            <span class="n">manager</span><span class="o">.</span><span class="n">get_global_pointer</span><span class="p">(</span>
+                <span class="s1">&#39;GlobalEntityList&#39;</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">remove_entity_listener</span><span class="p">(</span><span class="n">_sp_plugin</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">NameError</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; PLUGINS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="unload_plugins">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.unload_plugins">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">unload_plugins</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Unload all plugins.&quot;&quot;&quot;</span>
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Unloading plugins...&#39;</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">plugins.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">plugin_manager</span>
+
+    <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">plugin_manager</span><span class="o">.</span><span class="n">loaded_plugins</span><span class="p">:</span>
+        <span class="n">plugin</span><span class="o">.</span><span class="n">unload</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; VERSION</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="setup_versioning">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.setup_versioning">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_versioning</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Setup versioning.&quot;&quot;&quot;</span>
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Setting up versioning...&#39;</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">version</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; SQLITE3</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="setup_sqlite">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.setup_sqlite">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_sqlite</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pre-load libsqlite3.so.0 on Linux.&quot;&quot;&quot;</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">PLATFORM</span>
+    <span class="k">if</span> <span class="n">PLATFORM</span> <span class="o">!=</span> <span class="s1">&#39;linux&#39;</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Pre-loading libsqlite3.so.0...&#39;</span><span class="p">)</span>
+
+    <span class="kn">import</span><span class="w"> </span><span class="nn">ctypes</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">BASE_PATH</span>
+
+    <span class="c1"># This is required, because some systems don&#39;t have the required sqlite</span>
+    <span class="c1"># version installed. This fixes the issue by loading the library into the</span>
+    <span class="c1"># memory using its absolute path.</span>
+    <span class="c1"># Using RPATH might be a better solution, but I don&#39;t get it working...</span>
+    <span class="n">ctypes</span><span class="o">.</span><span class="n">cdll</span><span class="o">.</span><span class="n">LoadLibrary</span><span class="p">(</span>
+    	<span class="n">BASE_PATH</span> <span class="o">/</span> <span class="s1">&#39;Python3/plat-linux/libsqlite3.so.0&#39;</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; STDOUT</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="setup_stdout_redirect">
+<a class="viewcode-back" href="../developing/modules/source-python.html#__init__.setup_stdout_redirect">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">setup_stdout_redirect</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Setup sys.stdout redirect.&quot;&quot;&quot;</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+    <span class="c1"># The idea is to always redirect sys.stdout, because this allows us to use</span>
+    <span class="c1"># print(), which will also print the output to the client console, if it</span>
+    <span class="c1"># has been triggered via RCON or on a listen server. However, the downside</span>
+    <span class="c1"># of this is that we can&#39;t flush the console anymore, which is quite</span>
+    <span class="c1"># useful in some cases (e.g. generating the wiki).</span>
+    <span class="c1"># Thus, we only redirect sys.stdout if it&#39;s None for now, which only seems</span>
+    <span class="c1"># to happen on Windows 10. Otherwise, print() wouldn&#39;t output anything.</span>
+    <span class="c1"># See also:</span>
+    <span class="c1"># https://github.com/Source-Python-Dev-Team/Source.Python/issues/151</span>
+    <span class="c1"># https://github.com/Source-Python-Dev-Team/Source.Python/issues/175</span>
+    <span class="c1"># https://github.com/Source-Python-Dev-Team/Source.Python/issues/193</span>
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">_sp_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Setting up sys.stdout/sys.stderr redirect...&#39;</span><span class="p">)</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">console_message</span>
+
+    <span class="k">class</span><span class="w"> </span><span class="nc">OutputRedirect</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+            <span class="n">console_message</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">flush</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="c1"># We can&#39;t flush anymore...</span>
+            <span class="k">pass</span>
+
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span> <span class="o">=</span> <span class="n">OutputRedirect</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span> <span class="o">=</span> <span class="n">OutputRedirect</span><span class="p">()</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">engines.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">engine_server</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">engine_server</span><span class="o">.</span><span class="n">is_dedicated_server</span><span class="p">():</span>
+        <span class="c1"># Return here for listen servers, because we only want to see the</span>
+        <span class="c1"># warning if reconnecting the output streams failed, which is only</span>
+        <span class="c1"># done on dedicated servers. For listen servers creating OutputRedirect</span>
+        <span class="c1"># instances is the proper fix.</span>
+        <span class="k">return</span>
+
+    <span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
+    <span class="n">warn</span><span class="p">(</span>
+        <span class="s1">&#39;sys.stdout and/or sys.stderr is None. All data will be redirected through &#39;</span>
+        <span class="s1">&#39;core.console_message() instead. If you receive this warning, please &#39;</span>
+        <span class="s1">&#39;notify us and tell us your operating system, game and Source.Python &#39;</span>
+        <span class="s1">&#39;version. The information can be posted here: &#39;</span>
+        <span class="s1">&#39;https://github.com/Source-Python-Dev-Team/Source.Python/issues/175. &#39;</span>
+        <span class="s1">&#39;Source.Python should continue working, but we would like to figure &#39;</span>
+        <span class="s1">&#39;out in which situations sys.stdout is None to be able to fix this &#39;</span>
+        <span class="s1">&#39;issue instead of applying a workaround.&#39;</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">__init__</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

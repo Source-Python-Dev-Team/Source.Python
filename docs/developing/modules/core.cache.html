@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>core.cache module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">core.cache module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-core.cache">
+<span id="core-cache-module"></span><h1>core.cache module<a class="headerlink" href="#module-core.cache" title="Link to this heading">¶</a></h1>
+<p>Provides caching functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="core.cache.CachedProperty">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">core.cache.</span></span><span class="sig-name descname"><span class="pre">CachedProperty</span></span><a class="headerlink" href="#core.cache.CachedProperty" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="core.cache.CachedProperty.wrap_descriptor">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wrap_descriptor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(object)owner=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)name=''</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(tuple)args=()</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(object)kwargs=None</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">CachedProperty</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core.cache.CachedProperty.wrap_descriptor" title="Link to this definition">¶</a></dt>
+<dd><p>Wraps a descriptor as a cached property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>descriptor</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#property" title="(in Python v3.13)"><em>property</em></a>) – Property descriptor to wrap.
+Must have a __get__, __set__ and a __delete__ methods bound to it, either       callable or set to None.</p></li>
+<li><p><strong>owner</strong> (<em>class</em>) – The class the wrapped property should be bound to.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of this property.</p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>) – Extra arguments passed to the getter, setter and deleter functions.</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Extra keyword arguments passed to the getter, setter and deleter functions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#AttributeError" title="(in Python v3.13)"><strong>AttributeError</strong></a> – If the given descriptor doesn’t have the required methods.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If the getter, setter or deleter are not callable.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="core.cache.CachedProperty.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)self</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(object)fget=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(object)fset=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(object)fdel=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(object)doc=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(tuple)args=()</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(object)kwargs=None</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core.cache.CachedProperty.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Represents a property attribute that is only computed once and cached.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fget</strong> (<em>function</em>) – <p>Optional getter function.
+Once the value has been computed, the result is cached and returned if this property is requested again.</p>
+<p>Getter signature: self, <a href="#id1"><span class="problematic" id="id2">*</span></a>args, <a href="#id3"><span class="problematic" id="id4">**</span></a>kwargs</p>
+</p></li>
+<li><p><strong>fset</strong> (<em>function</em>) – <p>Optional setter function.
+When a new value is assigned to this property, that function is called and the cache is invalidated if nothing was returned otherwise the cached value is updated accordingly.</p>
+<p>Setter signature: self, value, <a href="#id5"><span class="problematic" id="id6">*</span></a>args, <a href="#id7"><span class="problematic" id="id8">**</span></a>kwargs</p>
+</p></li>
+<li><p><strong>fdel</strong> (<em>function</em>) – <p>Optional deleter function.
+When this property is deleted, that function is called and the cached value (if any) is invalidated.</p>
+<p>Deleter signature: self, <a href="#id9"><span class="problematic" id="id10">*</span></a>args, <a href="#id11"><span class="problematic" id="id12">**</span></a>kwargs</p>
+</p></li>
+<li><p><strong>doc</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Documentation string for this property.</p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>) – Extra arguments passed to the getter, setter and deleter functions.</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Extra keyword arguments passed to the getter, setter and deleter functions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If the given getter, setter or deleter is not callable.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Generator values cannot be cached.</p>
+</div>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="kn">import</span> <span class="n">randint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Test</span><span class="p">:</span>
+    <span class="nd">@cached_property</span><span class="p">(</span><span class="n">kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)))</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">range</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">randint</span><span class="p">(</span><span class="o">*</span><span class="nb">range</span><span class="p">)</span>
+
+    <span class="nd">@test</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">range</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">test</span> <span class="o">=</span> <span class="n">Test</span><span class="p">()</span>
+
+<span class="c1"># Compute and cache the value for the first time</span>
+<span class="n">i</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span>
+
+<span class="c1"># The first computed value was cached, so it should always be the same</span>
+<span class="k">assert</span> <span class="n">i</span> <span class="ow">is</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span>
+<span class="k">assert</span> <span class="n">i</span> <span class="ow">is</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span>
+<span class="k">assert</span> <span class="n">i</span> <span class="ow">is</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span>
+<span class="k">assert</span> <span class="n">i</span> <span class="ow">is</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span>
+
+<span class="c1"># Deleting the property is invalidating the cache</span>
+<span class="k">del</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span>
+<span class="k">assert</span> <span class="n">i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span>
+
+<span class="c1"># The cache will be updated to 5, because our setter computes value / 2</span>
+<span class="n">test</span><span class="o">.</span><span class="n">test</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">assert</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span> <span class="ow">is</span> <span class="mi">5</span>
+
+<span class="c1"># The new value should be 1, because we updated our userdata</span>
+<span class="n">Test</span><span class="o">.</span><span class="n">test</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span>
+<span class="k">assert</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span> <span class="ow">is</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="core.cache.CachedProperty.bind">
+<span class="sig-name descname"><span class="pre">bind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)owner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core.cache.CachedProperty.bind" title="Link to this definition">¶</a></dt>
+<dd><p>Binds this property to the given class as the given name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>class</em>) – The class the property should be bound to.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of this property.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#core.cache.CachedProperty" title="core.cache.CachedProperty">CachedProperty</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="core.cache.CachedProperty.delete_cached_value">
+<span class="sig-name descname"><span class="pre">delete_cached_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CachedProperty)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)instance</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core.cache.CachedProperty.delete_cached_value" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes the cached value for the given instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>instance</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><em>object</em></a>) – The instance to delete the cached value for.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="core.cache.CachedProperty.deleter">
+<span class="sig-name descname"><span class="pre">deleter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CachedProperty)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)fdel</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core.cache.CachedProperty.deleter" title="Link to this definition">¶</a></dt>
+<dd><p>Decorator used to register the deleter function for this property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fdel</strong> (<em>function</em>) – The function to register as deleter function.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="core.cache.CachedProperty.get_cached_value">
+<span class="sig-name descname"><span class="pre">get_cached_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CachedProperty)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)instance</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core.cache.CachedProperty.get_cached_value" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the cached value for the given instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>instance</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><em>object</em></a>) – The instance to get the cached value for.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#KeyError" title="(in Python v3.13)"><strong>KeyError</strong></a> – If the given instance didn’t have a cached value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)">object</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="core.cache.CachedProperty.getter">
+<span class="sig-name descname"><span class="pre">getter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CachedProperty)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)fget</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core.cache.CachedProperty.getter" title="Link to this definition">¶</a></dt>
+<dd><p>Decorator used to register the getter function for this property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fget</strong> (<em>function</em>) – The function to register as getter function.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="core.cache.CachedProperty.set_cached_value">
+<span class="sig-name descname"><span class="pre">set_cached_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CachedProperty)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core.cache.CachedProperty.set_cached_value" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the cached value for the given instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instance</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><em>object</em></a>) – The instance to set the cached value for.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><em>object</em></a>) – The value to set as cached value.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="core.cache.CachedProperty.setter">
+<span class="sig-name descname"><span class="pre">setter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CachedProperty)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)fset</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core.cache.CachedProperty.setter" title="Link to this definition">¶</a></dt>
+<dd><p>Decorator used to register the setter function for this property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fset</strong> (<em>function</em>) – The function to register as setter function.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="core.cache.CachedProperty.args">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#core.cache.CachedProperty.args" title="Link to this definition">¶</a></dt>
+<dd><p>The extra arguments passed to the getter, setter and deleter functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="core.cache.CachedProperty.fdel">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fdel</span></span><a class="headerlink" href="#core.cache.CachedProperty.fdel" title="Link to this definition">¶</a></dt>
+<dd><p>The deleter function used to delete this property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="core.cache.CachedProperty.fget">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fget</span></span><a class="headerlink" href="#core.cache.CachedProperty.fget" title="Link to this definition">¶</a></dt>
+<dd><p>The getter function used to compute the value of this property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="core.cache.CachedProperty.fset">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fset</span></span><a class="headerlink" href="#core.cache.CachedProperty.fset" title="Link to this definition">¶</a></dt>
+<dd><p>The setter function used to assign the value of this property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="core.cache.CachedProperty.kwargs">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kwargs</span></span><a class="headerlink" href="#core.cache.CachedProperty.kwargs" title="Link to this definition">¶</a></dt>
+<dd><p>The extra keyword arguments passed to the getter, setter and deleter functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="core.cache.CachedProperty.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#core.cache.CachedProperty.name" title="Link to this definition">¶</a></dt>
+<dd><p>The name this property is registered as.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="core.cache.CachedProperty.owner">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">owner</span></span><a class="headerlink" href="#core.cache.CachedProperty.owner" title="Link to this definition">¶</a></dt>
+<dd><p>The owner class this property attribute was bound to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#type" title="(in Python v3.13)">type</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="core.cache.cached_property">
+<span class="sig-prename descclassname"><span class="pre">core.cache.</span></span><span class="sig-name descname"><span class="pre">cached_property</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fget</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core/cache.html#cached_property"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.cache.cached_property" title="Link to this definition">¶</a></dt>
+<dd><p>Decorator used to register or wrap a cached property.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="core.cache.cached_result">
+<span class="sig-prename descclassname"><span class="pre">core.cache.</span></span><span class="sig-name descname"><span class="pre">cached_result</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fget</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core/cache.html#cached_result"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.cache.cached_result" title="Link to this definition">¶</a></dt>
+<dd><p>Decorator used to register a cached method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fget</strong> (<em>function</em>) – Method that is only called once and its result cached for subsequent
+calls.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#core.cache.CachedProperty" title="core.cache.CachedProperty">CachedProperty</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="core._cache.CachedProperty">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">_core._cache.</span></span><span class="sig-name descname"><span class="pre">CachedProperty</span></span><a class="headerlink" href="#core._cache.CachedProperty" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="core._cache.CachedProperty.wrap_descriptor">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wrap_descriptor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(object)owner=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)name=''</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(tuple)args=()</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(object)kwargs=None</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">CachedProperty</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core._cache.CachedProperty.wrap_descriptor" title="Link to this definition">¶</a></dt>
+<dd><p>Wraps a descriptor as a cached property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>descriptor</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#property" title="(in Python v3.13)"><em>property</em></a>) – Property descriptor to wrap.
+Must have a __get__, __set__ and a __delete__ methods bound to it, either       callable or set to None.</p></li>
+<li><p><strong>owner</strong> (<em>class</em>) – The class the wrapped property should be bound to.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of this property.</p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>) – Extra arguments passed to the getter, setter and deleter functions.</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Extra keyword arguments passed to the getter, setter and deleter functions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#AttributeError" title="(in Python v3.13)"><strong>AttributeError</strong></a> – If the given descriptor doesn’t have the required methods.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If the getter, setter or deleter are not callable.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="core._cache.CachedProperty.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)self</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(object)fget=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(object)fset=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(object)fdel=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(object)doc=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(tuple)args=()</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(object)kwargs=None</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core._cache.CachedProperty.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Represents a property attribute that is only computed once and cached.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fget</strong> (<em>function</em>) – <p>Optional getter function.
+Once the value has been computed, the result is cached and returned if this property is requested again.</p>
+<p>Getter signature: self, <a href="#id13"><span class="problematic" id="id14">*</span></a>args, <a href="#id15"><span class="problematic" id="id16">**</span></a>kwargs</p>
+</p></li>
+<li><p><strong>fset</strong> (<em>function</em>) – <p>Optional setter function.
+When a new value is assigned to this property, that function is called and the cache is invalidated if nothing was returned otherwise the cached value is updated accordingly.</p>
+<p>Setter signature: self, value, <a href="#id17"><span class="problematic" id="id18">*</span></a>args, <a href="#id19"><span class="problematic" id="id20">**</span></a>kwargs</p>
+</p></li>
+<li><p><strong>fdel</strong> (<em>function</em>) – <p>Optional deleter function.
+When this property is deleted, that function is called and the cached value (if any) is invalidated.</p>
+<p>Deleter signature: self, <a href="#id21"><span class="problematic" id="id22">*</span></a>args, <a href="#id23"><span class="problematic" id="id24">**</span></a>kwargs</p>
+</p></li>
+<li><p><strong>doc</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Documentation string for this property.</p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>) – Extra arguments passed to the getter, setter and deleter functions.</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Extra keyword arguments passed to the getter, setter and deleter functions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – If the given getter, setter or deleter is not callable.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Generator values cannot be cached.</p>
+</div>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">random</span><span class="w"> </span><span class="kn">import</span> <span class="n">randint</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">Test</span><span class="p">:</span>
+    <span class="nd">@cached_property</span><span class="p">(</span><span class="n">kwargs</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="nb">range</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)))</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">range</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">randint</span><span class="p">(</span><span class="o">*</span><span class="nb">range</span><span class="p">)</span>
+
+    <span class="nd">@test</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_test</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="nb">range</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">test</span> <span class="o">=</span> <span class="n">Test</span><span class="p">()</span>
+
+<span class="c1"># Compute and cache the value for the first time</span>
+<span class="n">i</span> <span class="o">=</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span>
+
+<span class="c1"># The first computed value was cached, so it should always be the same</span>
+<span class="k">assert</span> <span class="n">i</span> <span class="ow">is</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span>
+<span class="k">assert</span> <span class="n">i</span> <span class="ow">is</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span>
+<span class="k">assert</span> <span class="n">i</span> <span class="ow">is</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span>
+<span class="k">assert</span> <span class="n">i</span> <span class="ow">is</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span>
+
+<span class="c1"># Deleting the property is invalidating the cache</span>
+<span class="k">del</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span>
+<span class="k">assert</span> <span class="n">i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span>
+
+<span class="c1"># The cache will be updated to 5, because our setter computes value / 2</span>
+<span class="n">test</span><span class="o">.</span><span class="n">test</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="k">assert</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span> <span class="ow">is</span> <span class="mi">5</span>
+
+<span class="c1"># The new value should be 1, because we updated our userdata</span>
+<span class="n">Test</span><span class="o">.</span><span class="n">test</span><span class="p">[</span><span class="s1">&#39;range&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">del</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span>
+<span class="k">assert</span> <span class="n">test</span><span class="o">.</span><span class="n">test</span> <span class="ow">is</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="core._cache.CachedProperty.bind">
+<span class="sig-name descname"><span class="pre">bind</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)owner</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core._cache.CachedProperty.bind" title="Link to this definition">¶</a></dt>
+<dd><p>Binds this property to the given class as the given name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>owner</strong> (<em>class</em>) – The class the property should be bound to.</p></li>
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of this property.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#core._cache.CachedProperty" title="_core._cache.CachedProperty">CachedProperty</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="core._cache.CachedProperty.delete_cached_value">
+<span class="sig-name descname"><span class="pre">delete_cached_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CachedProperty)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)instance</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core._cache.CachedProperty.delete_cached_value" title="Link to this definition">¶</a></dt>
+<dd><p>Deletes the cached value for the given instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>instance</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><em>object</em></a>) – The instance to delete the cached value for.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="core._cache.CachedProperty.deleter">
+<span class="sig-name descname"><span class="pre">deleter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CachedProperty)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)fdel</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core._cache.CachedProperty.deleter" title="Link to this definition">¶</a></dt>
+<dd><p>Decorator used to register the deleter function for this property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fdel</strong> (<em>function</em>) – The function to register as deleter function.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="core._cache.CachedProperty.get_cached_value">
+<span class="sig-name descname"><span class="pre">get_cached_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CachedProperty)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)instance</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core._cache.CachedProperty.get_cached_value" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the cached value for the given instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>instance</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><em>object</em></a>) – The instance to get the cached value for.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#KeyError" title="(in Python v3.13)"><strong>KeyError</strong></a> – If the given instance didn’t have a cached value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)">object</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="core._cache.CachedProperty.getter">
+<span class="sig-name descname"><span class="pre">getter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CachedProperty)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)fget</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core._cache.CachedProperty.getter" title="Link to this definition">¶</a></dt>
+<dd><p>Decorator used to register the getter function for this property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fget</strong> (<em>function</em>) – The function to register as getter function.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="core._cache.CachedProperty.set_cached_value">
+<span class="sig-name descname"><span class="pre">set_cached_value</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CachedProperty)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)instance</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core._cache.CachedProperty.set_cached_value" title="Link to this definition">¶</a></dt>
+<dd><p>Sets the cached value for the given instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>instance</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><em>object</em></a>) – The instance to set the cached value for.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><em>object</em></a>) – The value to set as cached value.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="core._cache.CachedProperty.setter">
+<span class="sig-name descname"><span class="pre">setter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CachedProperty)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)fset</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core._cache.CachedProperty.setter" title="Link to this definition">¶</a></dt>
+<dd><p>Decorator used to register the setter function for this property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>fset</strong> (<em>function</em>) – The function to register as setter function.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="core._cache.CachedProperty.args">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#core._cache.CachedProperty.args" title="Link to this definition">¶</a></dt>
+<dd><p>The extra arguments passed to the getter, setter and deleter functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="core._cache.CachedProperty.fdel">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fdel</span></span><a class="headerlink" href="#core._cache.CachedProperty.fdel" title="Link to this definition">¶</a></dt>
+<dd><p>The deleter function used to delete this property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="core._cache.CachedProperty.fget">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fget</span></span><a class="headerlink" href="#core._cache.CachedProperty.fget" title="Link to this definition">¶</a></dt>
+<dd><p>The getter function used to compute the value of this property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="core._cache.CachedProperty.fset">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fset</span></span><a class="headerlink" href="#core._cache.CachedProperty.fset" title="Link to this definition">¶</a></dt>
+<dd><p>The setter function used to assign the value of this property.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>function</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="core._cache.CachedProperty.kwargs">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kwargs</span></span><a class="headerlink" href="#core._cache.CachedProperty.kwargs" title="Link to this definition">¶</a></dt>
+<dd><p>The extra keyword arguments passed to the getter, setter and deleter functions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="core._cache.CachedProperty.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#core._cache.CachedProperty.name" title="Link to this definition">¶</a></dt>
+<dd><p>The name this property is registered as.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="core._cache.CachedProperty.owner">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">owner</span></span><a class="headerlink" href="#core._cache.CachedProperty.owner" title="Link to this definition">¶</a></dt>
+<dd><p>The owner class this property attribute was bound to.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#type" title="(in Python v3.13)">type</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">core.cache module</a><ul>
+<li><a class="reference internal" href="#core.cache.CachedProperty"><code class="docutils literal notranslate"><span class="pre">CachedProperty</span></code></a><ul>
+<li><a class="reference internal" href="#core.cache.CachedProperty.wrap_descriptor"><code class="docutils literal notranslate"><span class="pre">CachedProperty.wrap_descriptor()</span></code></a></li>
+<li><a class="reference internal" href="#core.cache.CachedProperty.__init__"><code class="docutils literal notranslate"><span class="pre">CachedProperty.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#core.cache.CachedProperty.bind"><code class="docutils literal notranslate"><span class="pre">CachedProperty.bind()</span></code></a></li>
+<li><a class="reference internal" href="#core.cache.CachedProperty.delete_cached_value"><code class="docutils literal notranslate"><span class="pre">CachedProperty.delete_cached_value()</span></code></a></li>
+<li><a class="reference internal" href="#core.cache.CachedProperty.deleter"><code class="docutils literal notranslate"><span class="pre">CachedProperty.deleter()</span></code></a></li>
+<li><a class="reference internal" href="#core.cache.CachedProperty.get_cached_value"><code class="docutils literal notranslate"><span class="pre">CachedProperty.get_cached_value()</span></code></a></li>
+<li><a class="reference internal" href="#core.cache.CachedProperty.getter"><code class="docutils literal notranslate"><span class="pre">CachedProperty.getter()</span></code></a></li>
+<li><a class="reference internal" href="#core.cache.CachedProperty.set_cached_value"><code class="docutils literal notranslate"><span class="pre">CachedProperty.set_cached_value()</span></code></a></li>
+<li><a class="reference internal" href="#core.cache.CachedProperty.setter"><code class="docutils literal notranslate"><span class="pre">CachedProperty.setter()</span></code></a></li>
+<li><a class="reference internal" href="#core.cache.CachedProperty.args"><code class="docutils literal notranslate"><span class="pre">CachedProperty.args</span></code></a></li>
+<li><a class="reference internal" href="#core.cache.CachedProperty.fdel"><code class="docutils literal notranslate"><span class="pre">CachedProperty.fdel</span></code></a></li>
+<li><a class="reference internal" href="#core.cache.CachedProperty.fget"><code class="docutils literal notranslate"><span class="pre">CachedProperty.fget</span></code></a></li>
+<li><a class="reference internal" href="#core.cache.CachedProperty.fset"><code class="docutils literal notranslate"><span class="pre">CachedProperty.fset</span></code></a></li>
+<li><a class="reference internal" href="#core.cache.CachedProperty.kwargs"><code class="docutils literal notranslate"><span class="pre">CachedProperty.kwargs</span></code></a></li>
+<li><a class="reference internal" href="#core.cache.CachedProperty.name"><code class="docutils literal notranslate"><span class="pre">CachedProperty.name</span></code></a></li>
+<li><a class="reference internal" href="#core.cache.CachedProperty.owner"><code class="docutils literal notranslate"><span class="pre">CachedProperty.owner</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#core.cache.cached_property"><code class="docutils literal notranslate"><span class="pre">cached_property()</span></code></a></li>
+<li><a class="reference internal" href="#core.cache.cached_result"><code class="docutils literal notranslate"><span class="pre">cached_result()</span></code></a></li>
+<li><a class="reference internal" href="#core._cache.CachedProperty"><code class="docutils literal notranslate"><span class="pre">CachedProperty</span></code></a><ul>
+<li><a class="reference internal" href="#core._cache.CachedProperty.wrap_descriptor"><code class="docutils literal notranslate"><span class="pre">CachedProperty.wrap_descriptor()</span></code></a></li>
+<li><a class="reference internal" href="#core._cache.CachedProperty.__init__"><code class="docutils literal notranslate"><span class="pre">CachedProperty.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#core._cache.CachedProperty.bind"><code class="docutils literal notranslate"><span class="pre">CachedProperty.bind()</span></code></a></li>
+<li><a class="reference internal" href="#core._cache.CachedProperty.delete_cached_value"><code class="docutils literal notranslate"><span class="pre">CachedProperty.delete_cached_value()</span></code></a></li>
+<li><a class="reference internal" href="#core._cache.CachedProperty.deleter"><code class="docutils literal notranslate"><span class="pre">CachedProperty.deleter()</span></code></a></li>
+<li><a class="reference internal" href="#core._cache.CachedProperty.get_cached_value"><code class="docutils literal notranslate"><span class="pre">CachedProperty.get_cached_value()</span></code></a></li>
+<li><a class="reference internal" href="#core._cache.CachedProperty.getter"><code class="docutils literal notranslate"><span class="pre">CachedProperty.getter()</span></code></a></li>
+<li><a class="reference internal" href="#core._cache.CachedProperty.set_cached_value"><code class="docutils literal notranslate"><span class="pre">CachedProperty.set_cached_value()</span></code></a></li>
+<li><a class="reference internal" href="#core._cache.CachedProperty.setter"><code class="docutils literal notranslate"><span class="pre">CachedProperty.setter()</span></code></a></li>
+<li><a class="reference internal" href="#core._cache.CachedProperty.args"><code class="docutils literal notranslate"><span class="pre">CachedProperty.args</span></code></a></li>
+<li><a class="reference internal" href="#core._cache.CachedProperty.fdel"><code class="docutils literal notranslate"><span class="pre">CachedProperty.fdel</span></code></a></li>
+<li><a class="reference internal" href="#core._cache.CachedProperty.fget"><code class="docutils literal notranslate"><span class="pre">CachedProperty.fget</span></code></a></li>
+<li><a class="reference internal" href="#core._cache.CachedProperty.fset"><code class="docutils literal notranslate"><span class="pre">CachedProperty.fset</span></code></a></li>
+<li><a class="reference internal" href="#core._cache.CachedProperty.kwargs"><code class="docutils literal notranslate"><span class="pre">CachedProperty.kwargs</span></code></a></li>
+<li><a class="reference internal" href="#core._cache.CachedProperty.name"><code class="docutils literal notranslate"><span class="pre">CachedProperty.name</span></code></a></li>
+<li><a class="reference internal" href="#core._cache.CachedProperty.owner"><code class="docutils literal notranslate"><span class="pre">CachedProperty.owner</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/core.cache.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">core.cache module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

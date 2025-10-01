@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>menus.radio module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">menus.radio module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-menus.radio">
+<span id="menus-radio-module"></span><h1>menus.radio module<a class="headerlink" href="#module-menus.radio" title="Link to this heading">¶</a></h1>
+<p>Provides ShowMenu based functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="menus.radio.ListRadioMenu">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">menus.radio.</span></span><span class="sig-name descname"><span class="pre">ListRadioMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/menus/radio.html#ListRadioMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#menus.radio.ListRadioMenu" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#menus.radio.PagedRadioMenu" title="menus.radio.PagedRadioMenu"><code class="xref py py-class docutils literal notranslate"><span class="pre">PagedRadioMenu</span></code></a></p>
+<p>Creates a list-like radio menu.</p>
+<p>Navigation options are added automatically.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="menus.radio.ListRadioMenu.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">build_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'------------------------------'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'------------------------------'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_menu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">items_per_page</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_pages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/menus/radio.html#ListRadioMenu.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#menus.radio.ListRadioMenu.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>iterable</em><em>|</em><em>None</em>) – See <code class="xref py py-meth docutils literal notranslate"><span class="pre">menus.base._BaseMenu.__init__()</span></code>.</p></li>
+<li><p><strong>select_callback</strong> (<em>callable</em><em>|</em><em>None</em>) – See
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">menus.base._BaseMenu.__init__()</span></code>.</p></li>
+<li><p><strong>build_callback</strong> (<em>callable</em><em>|</em><em>None</em>) – See
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">menus.base._BaseMenu.__init__()</span></code>.</p></li>
+<li><p><strong>close_callback</strong> (<em>callable</em><em>|</em><em>None</em>) – See
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">menus.base._BaseMenu.__init__()</span></code>.</p></li>
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>|</em><em>None</em>) – See <a class="reference internal" href="#menus.radio.PagedRadioMenu.__init__" title="menus.radio.PagedRadioMenu.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PagedRadioMenu.__init__()</span></code></a>.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>|</em><em>None</em>) – See <a class="reference internal" href="#menus.radio.PagedRadioMenu.__init__" title="menus.radio.PagedRadioMenu.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PagedRadioMenu.__init__()</span></code></a>.</p></li>
+<li><p><strong>top_separator</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – See <a class="reference internal" href="#menus.radio.PagedRadioMenu.__init__" title="menus.radio.PagedRadioMenu.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PagedRadioMenu.__init__()</span></code></a>.</p></li>
+<li><p><strong>bottom_separator</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – See <a class="reference internal" href="#menus.radio.PagedRadioMenu.__init__" title="menus.radio.PagedRadioMenu.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PagedRadioMenu.__init__()</span></code></a>.</p></li>
+<li><p><strong>fill</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – See <a class="reference internal" href="#menus.radio.PagedRadioMenu.__init__" title="menus.radio.PagedRadioMenu.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PagedRadioMenu.__init__()</span></code></a>.</p></li>
+<li><p><strong>parent_menu</strong> (<em>_BaseMenu</em>) – See <a class="reference internal" href="#menus.radio.PagedRadioMenu.__init__" title="menus.radio.PagedRadioMenu.__init__"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PagedRadioMenu.__init__()</span></code></a>.</p></li>
+<li><p><strong>items_per_page</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of options that should be displayed
+on a single page.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="menus.radio.ListRadioOption">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">menus.radio.</span></span><span class="sig-name descname"><span class="pre">ListRadioOption</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">highlight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enumerated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/menus/radio.html#ListRadioOption"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#menus.radio.ListRadioOption" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#menus.radio.PagedRadioOption" title="menus.radio.PagedRadioOption"><code class="xref py py-class docutils literal notranslate"><span class="pre">PagedRadioOption</span></code></a></p>
+<p>Provides options for <a class="reference internal" href="#menus.radio.ListRadioMenu" title="menus.radio.ListRadioMenu"><code class="xref py py-class docutils literal notranslate"><span class="pre">ListRadioMenu</span></code></a> objects.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="menus.radio.ListRadioOption.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">highlight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">enumerated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/menus/radio.html#ListRadioOption.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#menus.radio.ListRadioOption.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the option.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – See <code class="xref py py-meth docutils literal notranslate"><span class="pre">menus.base._BaseOption.__init__()</span></code>.</p></li>
+<li><p><strong>hightlight</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True the text will be highlighted.</p></li>
+<li><p><strong>enumerated</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True the number of the option will be added
+in front of the text.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">highlight</span></code> only works if <code class="docutils literal notranslate"><span class="pre">enumerated</span></code> is set to True.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="menus.radio.PagedRadioMenu">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">menus.radio.</span></span><span class="sig-name descname"><span class="pre">PagedRadioMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/menus/radio.html#PagedRadioMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#menus.radio.PagedRadioMenu" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#menus.radio.SimpleRadioMenu" title="menus.radio.SimpleRadioMenu"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimpleRadioMenu</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_PagedMenuBase</span></code></p>
+<p>Create menus with an unlimited number of options.</p>
+<p>Navigation options will be added automatically.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="menus.radio.PagedRadioMenu.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">select_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">build_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">close_callback</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top_separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'------------------------------'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom_separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'------------------------------'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent_menu</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_pages</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/menus/radio.html#PagedRadioMenu.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#menus.radio.PagedRadioMenu.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<em>iterable</em><em>|</em><em>None</em>) – See <code class="xref py py-meth docutils literal notranslate"><span class="pre">menus.base._BaseMenu.__init__()</span></code>.</p></li>
+<li><p><strong>select_callback</strong> (<em>callable</em><em>|</em><em>None</em>) – See
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">menus.base._BaseMenu.__init__()</span></code>.</p></li>
+<li><p><strong>build_callback</strong> (<em>callable</em><em>|</em><em>None</em>) – See
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">menus.base._BaseMenu.__init__()</span></code>.</p></li>
+<li><p><strong>close_callback</strong> (<em>callable</em><em>|</em><em>None</em>) – See
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">menus.base._BaseMenu.__init__()</span></code>.</p></li>
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>|</em><em>None</em>) – A description that is displayed under the
+title.</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a><em>|</em><em>None</em>) – A title that is displayed at the top of the
+menu.</p></li>
+<li><p><strong>top_separator</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – A separator that is displayed right after
+the title/description.</p></li>
+<li><p><strong>bottom_separator</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – A separator that is displayed right after
+the body.</p></li>
+<li><p><strong>fill</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True the menu will be filled so that it will
+always have the same  size.</p></li>
+<li><p><strong>parent_menu</strong> (<em>_BaseMenu</em>) – A menu that will be displayed when
+hitting ‘Back’ on the first page.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="menus.radio.PagedRadioOption">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">menus.radio.</span></span><span class="sig-name descname"><span class="pre">PagedRadioOption</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">highlight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selectable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/menus/radio.html#PagedRadioOption"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#menus.radio.PagedRadioOption" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseRadioOption</span></code></p>
+<p>Provides options for <a class="reference internal" href="#menus.radio.PagedRadioMenu" title="menus.radio.PagedRadioMenu"><code class="xref py py-class docutils literal notranslate"><span class="pre">PagedRadioMenu</span></code></a> objects.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="menus.radio.SimpleRadioMenu">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">menus.radio.</span></span><span class="sig-name descname"><span class="pre">SimpleRadioMenu</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/menus/radio.html#SimpleRadioMenu"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#menus.radio.SimpleRadioMenu" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseMenu</span></code></p>
+<p>This class creates a basic radio menu.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="menus.radio.SimpleRadioOption">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">menus.radio.</span></span><span class="sig-name descname"><span class="pre">SimpleRadioOption</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">choice_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">highlight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selectable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/menus/radio.html#SimpleRadioOption"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#menus.radio.SimpleRadioOption" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseRadioOption</span></code></p>
+<p>Provides options for <a class="reference internal" href="#menus.radio.SimpleRadioMenu" title="menus.radio.SimpleRadioMenu"><code class="xref py py-class docutils literal notranslate"><span class="pre">SimpleRadioMenu</span></code></a> objects.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="menus.radio.SimpleRadioOption.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">choice_index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">text</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">highlight</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">selectable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/menus/radio.html#SimpleRadioOption.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#menus.radio.SimpleRadioOption.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the option.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>choice_index</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The number that is required to select the
+option.</p></li>
+<li><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – See <code class="xref py py-meth docutils literal notranslate"><span class="pre">menus.base._BaseOption.__init__()</span></code>.</p></li>
+<li><p><strong>value</strong> – See <code class="xref py py-meth docutils literal notranslate"><span class="pre">menus.base._BaseOption.__init__()</span></code>.</p></li>
+<li><p><strong>hightlight</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True the text will be highlighted.</p></li>
+<li><p><strong>selectable</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True the option will be selectable.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">menus.radio module</a><ul>
+<li><a class="reference internal" href="#menus.radio.ListRadioMenu"><code class="docutils literal notranslate"><span class="pre">ListRadioMenu</span></code></a><ul>
+<li><a class="reference internal" href="#menus.radio.ListRadioMenu.__init__"><code class="docutils literal notranslate"><span class="pre">ListRadioMenu.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#menus.radio.ListRadioOption"><code class="docutils literal notranslate"><span class="pre">ListRadioOption</span></code></a><ul>
+<li><a class="reference internal" href="#menus.radio.ListRadioOption.__init__"><code class="docutils literal notranslate"><span class="pre">ListRadioOption.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#menus.radio.PagedRadioMenu"><code class="docutils literal notranslate"><span class="pre">PagedRadioMenu</span></code></a><ul>
+<li><a class="reference internal" href="#menus.radio.PagedRadioMenu.__init__"><code class="docutils literal notranslate"><span class="pre">PagedRadioMenu.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#menus.radio.PagedRadioOption"><code class="docutils literal notranslate"><span class="pre">PagedRadioOption</span></code></a></li>
+<li><a class="reference internal" href="#menus.radio.SimpleRadioMenu"><code class="docutils literal notranslate"><span class="pre">SimpleRadioMenu</span></code></a></li>
+<li><a class="reference internal" href="#menus.radio.SimpleRadioOption"><code class="docutils literal notranslate"><span class="pre">SimpleRadioOption</span></code></a><ul>
+<li><a class="reference internal" href="#menus.radio.SimpleRadioOption.__init__"><code class="docutils literal notranslate"><span class="pre">SimpleRadioOption.__init__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/menus.radio.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">menus.radio module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

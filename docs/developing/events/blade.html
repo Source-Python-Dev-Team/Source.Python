@@ -1,0 +1,2076 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Blade Symphony &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Black Mesa: Source" href="bms.html" />
+    <link rel="prev" title="Events" href="../events.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="bms.html" title="Black Mesa: Source"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../events.html" title="Events"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../events.html" accesskey="U">Events</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Blade Symphony</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="blade-symphony">
+<h1>Blade Symphony<a class="headerlink" href="#blade-symphony" title="Link to this heading">¶</a></h1>
+<p>This is a summary of all known Blade Symphony events.</p>
+<section id="achievement-earned">
+<h2>achievement_earned<a class="headerlink" href="#achievement-earned" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>achievement</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>player</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="achievement-event">
+<h2>achievement_event<a class="headerlink" href="#achievement-event" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>achievement_name</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>cur_val</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>max_val</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="berimbau-action-started">
+<h2>berimbau_action_started<a class="headerlink" href="#berimbau-action-started" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>actionid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="berimbau-attack-started">
+<h2>berimbau_attack_started<a class="headerlink" href="#berimbau-attack-started" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>direction</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="berimbau-blocked">
+<h2>berimbau_blocked<a class="headerlink" href="#berimbau-blocked" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>attackerid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>defenderid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>multiblockcount</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="berimbau-break-block">
+<h2>berimbau_break_block<a class="headerlink" href="#berimbau-break-block" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>attackerid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>defenderid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="berimbau-character-change">
+<h2>berimbau_character_change<a class="headerlink" href="#berimbau-character-change" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="berimbau-grab">
+<h2>berimbau_grab<a class="headerlink" href="#berimbau-grab" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>attackerid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>defenderid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="berimbau-intercepted">
+<h2>berimbau_intercepted<a class="headerlink" href="#berimbau-intercepted" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>attackerid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>defenderid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="berimbau-jumped">
+<h2>berimbau_jumped<a class="headerlink" href="#berimbau-jumped" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="berimbau-map-change">
+<h2>berimbau_map_change<a class="headerlink" href="#berimbau-map-change" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="berimbau-parried">
+<h2>berimbau_parried<a class="headerlink" href="#berimbau-parried" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>attackerid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>defenderid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>delta</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="berimbau-wallrun">
+<h2>berimbau_wallrun<a class="headerlink" href="#berimbau-wallrun" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>jump</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bonus-updated">
+<h2>bonus_updated<a class="headerlink" href="#bonus-updated" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>numadvanced</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>numbronze</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>numgold</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>numsilver</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="break-breakable">
+<h2>break_breakable<a class="headerlink" href="#break-breakable" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entindex</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>material</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="break-prop">
+<h2>break_prop<a class="headerlink" href="#break-prop" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entindex</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="entity-killed">
+<h2>entity_killed<a class="headerlink" href="#entity-killed" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>damagebits</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>entindex_attacker</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>entindex_inflictor</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>entindex_killed</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="entity-visible">
+<h2>entity_visible<a class="headerlink" href="#entity-visible" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>classname</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>entityname</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>subject</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="flare-ignite-npc">
+<h2>flare_ignite_npc<a class="headerlink" href="#flare-ignite-npc" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entindex</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="game-end">
+<h2>game_end<a class="headerlink" href="#game-end" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>winner</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="game-init">
+<h2>game_init<a class="headerlink" href="#game-init" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="game-message">
+<h2>game_message<a class="headerlink" href="#game-message" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>target</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>text</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="game-newmap">
+<h2>game_newmap<a class="headerlink" href="#game-newmap" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>mapname</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="game-shutdown">
+<h2>game_shutdown<a class="headerlink" href="#game-shutdown" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="game-start">
+<h2>game_start<a class="headerlink" href="#game-start" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>fraglimit</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>objective</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>roundslimit</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>timelimit</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gameinstructor-draw">
+<h2>gameinstructor_draw<a class="headerlink" href="#gameinstructor-draw" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gameinstructor-nodraw">
+<h2>gameinstructor_nodraw<a class="headerlink" href="#gameinstructor-nodraw" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="helicopter-grenade-punt-miss">
+<h2>helicopter_grenade_punt_miss<a class="headerlink" href="#helicopter-grenade-punt-miss" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-cameraman">
+<h2>hltv_cameraman<a class="headerlink" href="#hltv-cameraman" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>index</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-chase">
+<h2>hltv_chase<a class="headerlink" href="#hltv-chase" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>distance</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>inertia</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>ineye</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>phi</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>target1</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>target2</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>theta</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-chat">
+<h2>hltv_chat<a class="headerlink" href="#hltv-chat" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>text</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-fixed">
+<h2>hltv_fixed<a class="headerlink" href="#hltv-fixed" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>fov</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>offset</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>phi</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>posx</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>posy</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>posz</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>target</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>theta</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-message">
+<h2>hltv_message<a class="headerlink" href="#hltv-message" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>text</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-rank-camera">
+<h2>hltv_rank_camera<a class="headerlink" href="#hltv-rank-camera" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>index</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>rank</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>target</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-rank-entity">
+<h2>hltv_rank_entity<a class="headerlink" href="#hltv-rank-entity" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>index</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>rank</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>target</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-status">
+<h2>hltv_status<a class="headerlink" href="#hltv-status" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>clients</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>master</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>proxies</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>slots</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-title">
+<h2>hltv_title<a class="headerlink" href="#hltv-title" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>text</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="instructor-server-hint-create">
+<h2>instructor_server_hint_create<a class="headerlink" href="#instructor-server-hint-create" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hint_activator_caption</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_activator_userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_allow_nodraw_target</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_binding</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_caption</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_color</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_flags</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_forcecaption</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_gamepad_binding</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_icon_offscreen</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_icon_offset</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_icon_onscreen</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_local_player_only</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_name</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_nooffscreen</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_range</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_replace_key</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_target</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_timeout</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="instructor-server-hint-stop">
+<h2>instructor_server_hint_stop<a class="headerlink" href="#instructor-server-hint-stop" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hint_name</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="map-transition">
+<h2>map_transition<a class="headerlink" href="#map-transition" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="physgun-pickup">
+<h2>physgun_pickup<a class="headerlink" href="#physgun-pickup" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entindex</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-activate">
+<h2>player_activate<a class="headerlink" href="#player-activate" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-changename">
+<h2>player_changename<a class="headerlink" href="#player-changename" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>newname</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>oldname</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-chat">
+<h2>player_chat<a class="headerlink" href="#player-chat" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>teamonly</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>text</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-class">
+<h2>player_class<a class="headerlink" href="#player-class" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>class</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-connect">
+<h2>player_connect<a class="headerlink" href="#player-connect" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>address</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>index</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>name</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>networkid</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-connect-full">
+<h2>player_connect_full<a class="headerlink" href="#player-connect-full" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>name</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-death">
+<h2>player_death<a class="headerlink" href="#player-death" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>attacker</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>weapon</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-disconnect">
+<h2>player_disconnect<a class="headerlink" href="#player-disconnect" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>name</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>reason</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-drop">
+<h2>player_drop<a class="headerlink" href="#player-drop" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entity</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-fullyjoined">
+<h2>player_fullyjoined<a class="headerlink" href="#player-fullyjoined" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>name</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-hintmessage">
+<h2>player_hintmessage<a class="headerlink" href="#player-hintmessage" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hintmessage</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-hit">
+<h2>player_hit<a class="headerlink" href="#player-hit" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>type</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-hurt">
+<h2>player_hurt<a class="headerlink" href="#player-hurt" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>attacker</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>health</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-info">
+<h2>player_info<a class="headerlink" href="#player-info" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>bot</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>index</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>name</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>networkid</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-lost">
+<h2>player_lost<a class="headerlink" href="#player-lost" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-say">
+<h2>player_say<a class="headerlink" href="#player-say" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>text</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-score">
+<h2>player_score<a class="headerlink" href="#player-score" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>deaths</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>kills</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>score</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-shoot">
+<h2>player_shoot<a class="headerlink" href="#player-shoot" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>mode</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>weapon</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-spawn">
+<h2>player_spawn<a class="headerlink" href="#player-spawn" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-team">
+<h2>player_team<a class="headerlink" href="#player-team" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>autoteam</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>disconnect</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>oldteam</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>silent</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>team</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-use">
+<h2>player_use<a class="headerlink" href="#player-use" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entity</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-was-blocked">
+<h2>player_was_blocked<a class="headerlink" href="#player-was-blocked" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-won">
+<h2>player_won<a class="headerlink" href="#player-won" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ragdoll-dissolved">
+<h2>ragdoll_dissolved<a class="headerlink" href="#ragdoll-dissolved" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entindex</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-end">
+<h2>round_end<a class="headerlink" href="#round-end" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>message</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>reason</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>winner</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-start">
+<h2>round_start<a class="headerlink" href="#round-start" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>fraglimit</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>objective</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>timelimit</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="server-addban">
+<h2>server_addban<a class="headerlink" href="#server-addban" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>by</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>duration</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>ip</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>kicked</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>name</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>networkid</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="server-cvar">
+<h2>server_cvar<a class="headerlink" href="#server-cvar" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>cvarname</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>cvarvalue</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="server-message">
+<h2>server_message<a class="headerlink" href="#server-message" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>text</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="server-pre-shutdown">
+<h2>server_pre_shutdown<a class="headerlink" href="#server-pre-shutdown" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>reason</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="server-removeban">
+<h2>server_removeban<a class="headerlink" href="#server-removeban" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>by</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>ip</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>networkid</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="server-shutdown">
+<h2>server_shutdown<a class="headerlink" href="#server-shutdown" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>reason</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="server-spawn">
+<h2>server_spawn<a class="headerlink" href="#server-spawn" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>address</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>dedicated</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>game</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>hostname</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>mapname</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>maxplayers</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>os</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>password</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>port</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="set-instructor-group-enabled">
+<h2>set_instructor_group_enabled<a class="headerlink" href="#set-instructor-group-enabled" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>enabled</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>group</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="spec-target-updated">
+<h2>spec_target_updated<a class="headerlink" href="#spec-target-updated" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="team-info">
+<h2>team_info<a class="headerlink" href="#team-info" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>teamid</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>teamname</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="team-score">
+<h2>team_score<a class="headerlink" href="#team-score" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>score</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>teamid</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="teamplay-broadcast-audio">
+<h2>teamplay_broadcast_audio<a class="headerlink" href="#teamplay-broadcast-audio" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>sound</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>team</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="user-data-downloaded">
+<h2>user_data_downloaded<a class="headerlink" href="#user-data-downloaded" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Blade Symphony</a><ul>
+<li><a class="reference internal" href="#achievement-earned">achievement_earned</a></li>
+<li><a class="reference internal" href="#achievement-event">achievement_event</a></li>
+<li><a class="reference internal" href="#berimbau-action-started">berimbau_action_started</a></li>
+<li><a class="reference internal" href="#berimbau-attack-started">berimbau_attack_started</a></li>
+<li><a class="reference internal" href="#berimbau-blocked">berimbau_blocked</a></li>
+<li><a class="reference internal" href="#berimbau-break-block">berimbau_break_block</a></li>
+<li><a class="reference internal" href="#berimbau-character-change">berimbau_character_change</a></li>
+<li><a class="reference internal" href="#berimbau-grab">berimbau_grab</a></li>
+<li><a class="reference internal" href="#berimbau-intercepted">berimbau_intercepted</a></li>
+<li><a class="reference internal" href="#berimbau-jumped">berimbau_jumped</a></li>
+<li><a class="reference internal" href="#berimbau-map-change">berimbau_map_change</a></li>
+<li><a class="reference internal" href="#berimbau-parried">berimbau_parried</a></li>
+<li><a class="reference internal" href="#berimbau-wallrun">berimbau_wallrun</a></li>
+<li><a class="reference internal" href="#bonus-updated">bonus_updated</a></li>
+<li><a class="reference internal" href="#break-breakable">break_breakable</a></li>
+<li><a class="reference internal" href="#break-prop">break_prop</a></li>
+<li><a class="reference internal" href="#entity-killed">entity_killed</a></li>
+<li><a class="reference internal" href="#entity-visible">entity_visible</a></li>
+<li><a class="reference internal" href="#flare-ignite-npc">flare_ignite_npc</a></li>
+<li><a class="reference internal" href="#game-end">game_end</a></li>
+<li><a class="reference internal" href="#game-init">game_init</a></li>
+<li><a class="reference internal" href="#game-message">game_message</a></li>
+<li><a class="reference internal" href="#game-newmap">game_newmap</a></li>
+<li><a class="reference internal" href="#game-shutdown">game_shutdown</a></li>
+<li><a class="reference internal" href="#game-start">game_start</a></li>
+<li><a class="reference internal" href="#gameinstructor-draw">gameinstructor_draw</a></li>
+<li><a class="reference internal" href="#gameinstructor-nodraw">gameinstructor_nodraw</a></li>
+<li><a class="reference internal" href="#helicopter-grenade-punt-miss">helicopter_grenade_punt_miss</a></li>
+<li><a class="reference internal" href="#hltv-cameraman">hltv_cameraman</a></li>
+<li><a class="reference internal" href="#hltv-chase">hltv_chase</a></li>
+<li><a class="reference internal" href="#hltv-chat">hltv_chat</a></li>
+<li><a class="reference internal" href="#hltv-fixed">hltv_fixed</a></li>
+<li><a class="reference internal" href="#hltv-message">hltv_message</a></li>
+<li><a class="reference internal" href="#hltv-rank-camera">hltv_rank_camera</a></li>
+<li><a class="reference internal" href="#hltv-rank-entity">hltv_rank_entity</a></li>
+<li><a class="reference internal" href="#hltv-status">hltv_status</a></li>
+<li><a class="reference internal" href="#hltv-title">hltv_title</a></li>
+<li><a class="reference internal" href="#instructor-server-hint-create">instructor_server_hint_create</a></li>
+<li><a class="reference internal" href="#instructor-server-hint-stop">instructor_server_hint_stop</a></li>
+<li><a class="reference internal" href="#map-transition">map_transition</a></li>
+<li><a class="reference internal" href="#physgun-pickup">physgun_pickup</a></li>
+<li><a class="reference internal" href="#player-activate">player_activate</a></li>
+<li><a class="reference internal" href="#player-changename">player_changename</a></li>
+<li><a class="reference internal" href="#player-chat">player_chat</a></li>
+<li><a class="reference internal" href="#player-class">player_class</a></li>
+<li><a class="reference internal" href="#player-connect">player_connect</a></li>
+<li><a class="reference internal" href="#player-connect-full">player_connect_full</a></li>
+<li><a class="reference internal" href="#player-death">player_death</a></li>
+<li><a class="reference internal" href="#player-disconnect">player_disconnect</a></li>
+<li><a class="reference internal" href="#player-drop">player_drop</a></li>
+<li><a class="reference internal" href="#player-fullyjoined">player_fullyjoined</a></li>
+<li><a class="reference internal" href="#player-hintmessage">player_hintmessage</a></li>
+<li><a class="reference internal" href="#player-hit">player_hit</a></li>
+<li><a class="reference internal" href="#player-hurt">player_hurt</a></li>
+<li><a class="reference internal" href="#player-info">player_info</a></li>
+<li><a class="reference internal" href="#player-lost">player_lost</a></li>
+<li><a class="reference internal" href="#player-say">player_say</a></li>
+<li><a class="reference internal" href="#player-score">player_score</a></li>
+<li><a class="reference internal" href="#player-shoot">player_shoot</a></li>
+<li><a class="reference internal" href="#player-spawn">player_spawn</a></li>
+<li><a class="reference internal" href="#player-team">player_team</a></li>
+<li><a class="reference internal" href="#player-use">player_use</a></li>
+<li><a class="reference internal" href="#player-was-blocked">player_was_blocked</a></li>
+<li><a class="reference internal" href="#player-won">player_won</a></li>
+<li><a class="reference internal" href="#ragdoll-dissolved">ragdoll_dissolved</a></li>
+<li><a class="reference internal" href="#round-end">round_end</a></li>
+<li><a class="reference internal" href="#round-start">round_start</a></li>
+<li><a class="reference internal" href="#server-addban">server_addban</a></li>
+<li><a class="reference internal" href="#server-cvar">server_cvar</a></li>
+<li><a class="reference internal" href="#server-message">server_message</a></li>
+<li><a class="reference internal" href="#server-pre-shutdown">server_pre_shutdown</a></li>
+<li><a class="reference internal" href="#server-removeban">server_removeban</a></li>
+<li><a class="reference internal" href="#server-shutdown">server_shutdown</a></li>
+<li><a class="reference internal" href="#server-spawn">server_spawn</a></li>
+<li><a class="reference internal" href="#set-instructor-group-enabled">set_instructor_group_enabled</a></li>
+<li><a class="reference internal" href="#spec-target-updated">spec_target_updated</a></li>
+<li><a class="reference internal" href="#team-info">team_info</a></li>
+<li><a class="reference internal" href="#team-score">team_score</a></li>
+<li><a class="reference internal" href="#teamplay-broadcast-audio">teamplay_broadcast_audio</a></li>
+<li><a class="reference internal" href="#user-data-downloaded">user_data_downloaded</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../events.html"
+                          title="previous chapter">Events</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="bms.html"
+                          title="next chapter">Black Mesa: Source</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/events/blade.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="bms.html" title="Black Mesa: Source"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../events.html" title="Events"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../events.html" >Events</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Blade Symphony</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>filesystem module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">filesystem module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-filesystem">
+<span id="filesystem-module"></span><h1>filesystem module<a class="headerlink" href="#module-filesystem" title="Link to this heading">¶</a></h1>
+<p>Provides access to engine’s filesystem interface.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="filesystem.SeekType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">filesystem.</span></span><span class="sig-name descname"><span class="pre">SeekType</span></span><a class="headerlink" href="#filesystem.SeekType" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="filesystem.SeekType.CURRENT">
+<span class="sig-name descname"><span class="pre">CURRENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_filesystem.SeekType.CURRENT</span></em><a class="headerlink" href="#filesystem.SeekType.CURRENT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="filesystem.SeekType.HEAD">
+<span class="sig-name descname"><span class="pre">HEAD</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_filesystem.SeekType.HEAD</span></em><a class="headerlink" href="#filesystem.SeekType.HEAD" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="filesystem.SeekType.TAIL">
+<span class="sig-name descname"><span class="pre">TAIL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_filesystem.SeekType.TAIL</span></em><a class="headerlink" href="#filesystem.SeekType.TAIL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="filesystem.SeekType.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'CURRENT':</span> <span class="pre">_filesystem.SeekType.CURRENT,</span> <span class="pre">'HEAD':</span> <span class="pre">_filesystem.SeekType.HEAD,</span> <span class="pre">'TAIL':</span> <span class="pre">_filesystem.SeekType.TAIL}</span></em><a class="headerlink" href="#filesystem.SeekType.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="filesystem.SeekType.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">_filesystem.SeekType.HEAD,</span> <span class="pre">1:</span> <span class="pre">_filesystem.SeekType.CURRENT,</span> <span class="pre">2:</span> <span class="pre">_filesystem.SeekType.TAIL}</span></em><a class="headerlink" href="#filesystem.SeekType.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="filesystem.SourceFile">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">filesystem.</span></span><span class="sig-name descname"><span class="pre">SourceFile</span></span><a class="headerlink" href="#filesystem.SourceFile" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.open">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">open</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(str)file_path</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)mode='rt'</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)path_id=None</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#filesystem.SourceFile" title="filesystem.SourceFile"><span class="pre">SourceFile</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.open" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SourceFile)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.close" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.fileno">
+<span class="sig-name descname"><span class="pre">fileno</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SourceFile)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.fileno" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.flush">
+<span class="sig-name descname"><span class="pre">flush</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SourceFile)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.flush" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.isatty">
+<span class="sig-name descname"><span class="pre">isatty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SourceFile)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.isatty" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SourceFile)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)size=-1</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><span class="pre">object</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.read" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.readable">
+<span class="sig-name descname"><span class="pre">readable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SourceFile)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.readable" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.readline">
+<span class="sig-name descname"><span class="pre">readline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SourceFile)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)size=-1</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><span class="pre">object</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.readline" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.readlines">
+<span class="sig-name descname"><span class="pre">readlines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SourceFile)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)hint=-1</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><span class="pre">list</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.readlines" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SourceFile)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)file_path</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.save" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.seek">
+<span class="sig-name descname"><span class="pre">seek</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SourceFile)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)offset</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)whence=_filesystem.SeekType.HEAD</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.seek" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.seekable">
+<span class="sig-name descname"><span class="pre">seekable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SourceFile)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.seekable" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.tell">
+<span class="sig-name descname"><span class="pre">tell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SourceFile)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.tell" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.truncate">
+<span class="sig-name descname"><span class="pre">truncate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SourceFile)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)size=-1</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.truncate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SourceFile)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.write" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.writeable">
+<span class="sig-name descname"><span class="pre">writeable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SourceFile)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.writeable" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="filesystem.SourceFile.writelines">
+<span class="sig-name descname"><span class="pre">writelines</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SourceFile)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(list)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#filesystem.SourceFile.writelines" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="filesystem.SourceFile.closed">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">closed</span></span><a class="headerlink" href="#filesystem.SourceFile.closed" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_filesystem.SourceFile)arg1) -&gt; bool</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="filesystem.SourceFile.eof">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">eof</span></span><a class="headerlink" href="#filesystem.SourceFile.eof" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_filesystem.SourceFile)arg1) -&gt; bool</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="filesystem.SourceFile.handle">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">handle</span></span><a class="headerlink" href="#filesystem.SourceFile.handle" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_filesystem.SourceFile)arg1) -&gt; object</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="filesystem.SourceFile.size">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#filesystem.SourceFile.size" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_filesystem.SourceFile)arg1) -&gt; int</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="filesystem.is_vpk_file">
+<span class="sig-prename descclassname"><span class="pre">filesystem.</span></span><span class="sig-name descname"><span class="pre">is_vpk_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(str)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#filesystem.is_vpk_file" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="filesystem.source_file">
+<span class="sig-prename descclassname"><span class="pre">filesystem.</span></span><span class="sig-name descname"><span class="pre">source_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/filesystem.html#source_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#filesystem.source_file" title="Link to this definition">¶</a></dt>
+<dd><p>Ensures that the given file has a visible name on the file system.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the file was packed in a VPK archive, it gets copied to a
+temporary file. Thus, modifying the file has no effect on the original
+file.</p>
+</div>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">with</span> <span class="n">source_file</span><span class="p">(</span><span class="s1">&#39;credits.txt&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">file_path</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Visible path:&#39;</span><span class="p">,</span> <span class="n">file_path</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Content:&#39;</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">filesystem module</a><ul>
+<li><a class="reference internal" href="#filesystem.SeekType"><code class="docutils literal notranslate"><span class="pre">SeekType</span></code></a><ul>
+<li><a class="reference internal" href="#filesystem.SeekType.CURRENT"><code class="docutils literal notranslate"><span class="pre">SeekType.CURRENT</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SeekType.HEAD"><code class="docutils literal notranslate"><span class="pre">SeekType.HEAD</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SeekType.TAIL"><code class="docutils literal notranslate"><span class="pre">SeekType.TAIL</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SeekType.names"><code class="docutils literal notranslate"><span class="pre">SeekType.names</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SeekType.values"><code class="docutils literal notranslate"><span class="pre">SeekType.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#filesystem.SourceFile"><code class="docutils literal notranslate"><span class="pre">SourceFile</span></code></a><ul>
+<li><a class="reference internal" href="#filesystem.SourceFile.open"><code class="docutils literal notranslate"><span class="pre">SourceFile.open()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.__init__"><code class="docutils literal notranslate"><span class="pre">SourceFile.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.close"><code class="docutils literal notranslate"><span class="pre">SourceFile.close()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.fileno"><code class="docutils literal notranslate"><span class="pre">SourceFile.fileno()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.flush"><code class="docutils literal notranslate"><span class="pre">SourceFile.flush()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.isatty"><code class="docutils literal notranslate"><span class="pre">SourceFile.isatty()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.read"><code class="docutils literal notranslate"><span class="pre">SourceFile.read()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.readable"><code class="docutils literal notranslate"><span class="pre">SourceFile.readable()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.readline"><code class="docutils literal notranslate"><span class="pre">SourceFile.readline()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.readlines"><code class="docutils literal notranslate"><span class="pre">SourceFile.readlines()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.save"><code class="docutils literal notranslate"><span class="pre">SourceFile.save()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.seek"><code class="docutils literal notranslate"><span class="pre">SourceFile.seek()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.seekable"><code class="docutils literal notranslate"><span class="pre">SourceFile.seekable()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.tell"><code class="docutils literal notranslate"><span class="pre">SourceFile.tell()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.truncate"><code class="docutils literal notranslate"><span class="pre">SourceFile.truncate()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.write"><code class="docutils literal notranslate"><span class="pre">SourceFile.write()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.writeable"><code class="docutils literal notranslate"><span class="pre">SourceFile.writeable()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.writelines"><code class="docutils literal notranslate"><span class="pre">SourceFile.writelines()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.closed"><code class="docutils literal notranslate"><span class="pre">SourceFile.closed</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.eof"><code class="docutils literal notranslate"><span class="pre">SourceFile.eof</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.handle"><code class="docutils literal notranslate"><span class="pre">SourceFile.handle</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.SourceFile.size"><code class="docutils literal notranslate"><span class="pre">SourceFile.size</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#filesystem.is_vpk_file"><code class="docutils literal notranslate"><span class="pre">is_vpk_file()</span></code></a></li>
+<li><a class="reference internal" href="#filesystem.source_file"><code class="docutils literal notranslate"><span class="pre">source_file()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/filesystem.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">filesystem module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

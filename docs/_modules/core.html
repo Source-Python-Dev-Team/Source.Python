@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>core &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=2780edc4" />
+    
+    <script src="../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">core</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for core</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../core/__init__.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides core functionality that doesn&#39;t fit into any other package.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Codecs</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">codecs</span>
+<span class="c1">#   Collections</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="c1">#   Contextlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
+<span class="c1">#   Hashlib</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">hashlib</span>
+<span class="c1">#   Inspect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">getmodule</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">getmodulename</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">currentframe</span>
+<span class="c1">#   OS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">os</span><span class="w"> </span><span class="kn">import</span> <span class="n">sep</span>
+<span class="c1">#   Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">path</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="c1">#   Platform</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">platform</span><span class="w"> </span><span class="kn">import</span> <span class="n">system</span>
+<span class="c1">#   RE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">re</span><span class="w"> </span><span class="kn">import</span> <span class="nb">compile</span> <span class="k">as</span> <span class="n">re_compile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">re</span><span class="w"> </span><span class="kn">import</span> <span class="n">finditer</span>
+<span class="c1">#   Sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="c1">#   Urllib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.request</span><span class="w"> </span><span class="kn">import</span> <span class="n">urlopen</span>
+<span class="c1">#   Weakref</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">weakref</span><span class="w"> </span><span class="kn">import</span> <span class="n">WeakValueDictionary</span>
+
+<span class="c1"># Site-Packages Imports</span>
+<span class="c1">#   ConfigObj</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">configobj</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigObj</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">GAME_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">CFG_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">PLUGIN_PATH</span>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FORWARD IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">BoostPythonClass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">console_message</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_interface</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_core_modules</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">OutputReturn</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">SOURCE_ENGINE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_core</span><span class="w"> </span><span class="kn">import</span> <span class="n">SOURCE_ENGINE_BRANCH</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;AutoUnload&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;BoostPythonClass&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ConfigFile&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;GameConfigObj&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;WeakAutoUnload&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;GAME_NAME&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OutputReturn&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;PLATFORM&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SOURCE_ENGINE&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SOURCE_ENGINE_BRANCH&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Tokenize&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;check_info_output&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;console_message&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;create_checksum&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;echo_console&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;get_core_modules&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;get_interface&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;get_public_ip&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ignore_unicode_errors&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;server_output&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Get the specific game for the server</span>
+<span class="n">GAME_NAME</span> <span class="o">=</span> <span class="n">GAME_PATH</span><span class="o">.</span><span class="n">name</span>
+
+<span class="c1"># Get the platform the server is on</span>
+<span class="n">PLATFORM</span> <span class="o">=</span> <span class="n">system</span><span class="p">()</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="AutoUnload">
+<a class="viewcode-back" href="../developing/modules/core.html#core.AutoUnload">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AutoUnload</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to auto unload specific instances.</span>
+
+<span class="sd">    Each inheriting class must implement an _unload_instance method.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Create a dictionary to store AutoUnload objects in</span>
+    <span class="n">_module_instances</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Overwrite __new__ to store the calling module.&quot;&quot;&quot;</span>
+        <span class="c1"># Get the class instance</span>
+        <span class="bp">self</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+
+        <span class="c1"># Get the calling frame</span>
+        <span class="n">frame</span> <span class="o">=</span> <span class="n">currentframe</span><span class="p">()</span><span class="o">.</span><span class="n">f_back</span>
+
+        <span class="c1"># Get the calling path</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_filename</span>
+
+        <span class="c1"># Don&#39;t keep hostage instances that will never be unloaded</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">PLUGIN_PATH</span><span class="p">):</span>
+            <span class="n">frame</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_back</span>
+            <span class="k">if</span> <span class="n">frame</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_code</span><span class="o">.</span><span class="n">co_filename</span>
+            <span class="k">if</span> <span class="n">path</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;&lt;frozen&#39;</span><span class="p">):</span>
+                <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="c1"># Resolve the calling module name</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">frame</span><span class="o">.</span><span class="n">f_globals</span><span class="p">[</span><span class="s1">&#39;__name__&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">getmodule</span><span class="p">(</span><span class="n">frame</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="n">getmodulename</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+        <span class="c1"># Call class-specific logic for adding the instance.</span>
+        <span class="k">if</span> <span class="n">name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_instance</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="c1"># Return the instance</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caller</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the instance to self._module_instances.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_module_instances</span><span class="p">[</span><span class="n">caller</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Base _unload_instance implementation.&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="WeakAutoUnload">
+<a class="viewcode-back" href="../developing/modules/core.html#core.WeakAutoUnload">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">WeakAutoUnload</span><span class="p">(</span><span class="n">AutoUnload</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Subclass of AutoUnload used to store weak references to instances.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Create a dictionary to store WeakAutoUnload objects in</span>
+    <span class="n">_module_instances</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">WeakValueDictionary</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caller</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the instance to self._module_instances.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_module_instances</span><span class="p">[</span><span class="n">caller</span><span class="p">][</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span></div>
+
+
+
+<div class="viewcode-block" id="GameConfigObj">
+<a class="viewcode-back" href="../developing/modules/core.html#core.GameConfigObj">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GameConfigObj</span><span class="p">(</span><span class="n">ConfigObj</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to parse specific game data.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="GameConfigObj.__init__">
+<a class="viewcode-back" href="../developing/modules/core.html#core.GameConfigObj.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">infile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper class that merges the given file with engine/game files.&quot;&quot;&quot;</span>
+        <span class="c1"># Get the file directory/name...</span>
+        <span class="n">path</span><span class="p">,</span> <span class="n">name</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">infile</span><span class="p">)</span><span class="o">.</span><span class="n">splitpath</span><span class="p">()</span>
+
+        <span class="c1"># Call ConfigObj&#39;s __init__ method...</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Move the path to the current engine sub-directory...</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">path</span> <span class="o">/</span> <span class="n">SOURCE_ENGINE</span>
+
+        <span class="c1"># Parse and merge the specific engine file...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">ConfigObj</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+        <span class="c1"># Finally, parse the specific game file...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">ConfigObj</span><span class="p">(</span><span class="n">path</span> <span class="o">/</span> <span class="n">GAME_NAME</span> <span class="o">/</span> <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Tokenize">
+<a class="viewcode-back" href="../developing/modules/core.html#core.Tokenize">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Tokenize</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parses the arguments from the given string.&quot;&quot;&quot;</span>
+
+    <span class="n">_pattern</span> <span class="o">=</span> <span class="n">re_compile</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;&quot;[^&quot;]*&quot;|[^ \t]+&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Tokenize.__init__">
+<a class="viewcode-back" href="../developing/modules/core.html#core.Tokenize.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">comment_prefix</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Splits the arguments from the given string.&quot;&quot;&quot;</span>
+        <span class="c1"># Initialize the list</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Store the given string as is</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="n">string</span>
+
+        <span class="c1"># Loop through all tokens</span>
+        <span class="k">for</span> <span class="n">match</span> <span class="ow">in</span> <span class="n">finditer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_pattern</span><span class="p">,</span> <span class="n">string</span><span class="p">):</span>
+
+            <span class="c1"># Get the current match as a string</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="n">match</span><span class="o">.</span><span class="n">group</span><span class="p">()</span>
+
+            <span class="c1"># Strip end line comment</span>
+            <span class="k">if</span> <span class="n">comment_prefix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">arg</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">comment_prefix</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">[:</span><span class="n">match</span><span class="o">.</span><span class="n">start</span><span class="p">()]</span>
+                <span class="k">break</span>
+
+            <span class="c1"># Add the current argument to the list</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">strip</span><span class="p">(</span><span class="s1">&#39;&quot;&#39;</span><span class="p">))</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the original string (without end-line comment).&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">string</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Hashes the original string.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">string</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ConfigFile">
+<a class="viewcode-back" href="../developing/modules/core.html#core.ConfigFile">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConfigFile</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to parse a configuration file.&quot;&quot;&quot;</span>
+    
+<div class="viewcode-block" id="ConfigFile.__init__">
+<a class="viewcode-back" href="../developing/modules/core.html#core.ConfigFile.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">,</span> <span class="n">comment_prefix</span><span class="o">=</span><span class="s1">&#39;//&#39;</span><span class="p">,</span> <span class="n">as_strings</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parses the given configuation file path.</span>
+
+<span class="sd">        :param Path path:</span>
+<span class="sd">            The path of the file to parse.</span>
+<span class="sd">        :param str encoding:</span>
+<span class="sd">            The encoding to use when opening the file.</span>
+<span class="sd">        :param str comment_prefix:</span>
+<span class="sd">            The prefix of end line comments.</span>
+<span class="sd">        :param bool as_strings:</span>
+<span class="sd">            Whether the parsed lines should be stored as strings rather than</span>
+<span class="sd">            argument lists.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># If the given path doesn&#39;t exist, search for it in the cfg directory</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">CFG_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+            <span class="c1"># If no file was found, return an empty list</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+                <span class="k">return</span>
+
+        <span class="c1"># Import this here to fix cyclic imports</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">translations.strings</span><span class="w"> </span><span class="kn">import</span> <span class="n">LangStrings</span>
+
+        <span class="c1"># Open the given file and parse its content</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="n">encoding</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+
+            <span class="c1"># Loop through all lines</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">():</span>
+
+                <span class="c1"># Parse the argument from the current line</span>
+                <span class="n">args</span> <span class="o">=</span> <span class="n">Tokenize</span><span class="p">(</span>
+                    <span class="n">LangStrings</span><span class="o">.</span><span class="n">_replace_escaped_sequences</span><span class="p">(</span><span class="n">line</span><span class="p">),</span>
+                    <span class="n">comment_prefix</span><span class="p">)</span>
+
+                <span class="c1"># Skip empty/commented lines</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># Add the current line to the list</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">args</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">as_strings</span> <span class="k">else</span> <span class="nb">str</span><span class="p">(</span><span class="n">args</span><span class="p">))</span></div>
+</div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FUNCTIONS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="echo_console">
+<a class="viewcode-back" href="../developing/modules/core.html#core.echo_console">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">echo_console</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Echo a message to the server&#39;s console.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        Unlike ``console_message``, this function automatically adds a newline</span>
+<span class="sd">        at the end of the message.</span>
+
+<span class="sd">    :param str text:</span>
+<span class="sd">        Message to print to the console.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">console_message</span><span class="p">(</span><span class="n">text</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ignore_unicode_errors">
+<a class="viewcode-back" href="../developing/modules/core.html#core.ignore_unicode_errors">[docs]</a>
+<span class="nd">@contextmanager</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">ignore_unicode_errors</span><span class="p">(</span><span class="n">errors</span><span class="o">=</span><span class="s1">&#39;ignore&#39;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Overwrite the ``strict`` codecs error handler temporarily.</span>
+
+<span class="sd">    This is useful e.g. if the engine truncates a string, which results in a</span>
+<span class="sd">    string that contains a splitted multi-byte character at the end of the</span>
+<span class="sd">    string.</span>
+
+<span class="sd">    :param str errors:</span>
+<span class="sd">        Error handler that will be looked up via :func:`codecs.lookup_error`.</span>
+<span class="sd">    :raise LookupError:</span>
+<span class="sd">        Raised if the error handler was not found.</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    .. code:: python</span>
+
+<span class="sd">        import memory</span>
+
+<span class="sd">        # Allocate four bytes to create an erroneous string</span>
+<span class="sd">        ptr = memory.alloc(4)</span>
+
+<span class="sd">        # Write data to the memory that will usually result in a</span>
+<span class="sd">        # UnicodeDecodeError</span>
+<span class="sd">        ptr.set_uchar(ord(&#39;a&#39;), 0)</span>
+<span class="sd">        ptr.set_uchar(ord(&#39;b&#39;), 1)</span>
+<span class="sd">        ptr.set_uchar(226, 2) # Add the invalid byte</span>
+<span class="sd">        ptr.set_uchar(0, 3) # Indicate the end of the string</span>
+
+<span class="sd">        with ignore_unicode_errors():</span>
+<span class="sd">            # Read the data as a string. Now, it will only print &#39;ab&#39;, because</span>
+<span class="sd">            # the invalid byte has been removed/ignored.</span>
+<span class="sd">            print(ptr.get_string_array())</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">old_handler</span> <span class="o">=</span> <span class="n">codecs</span><span class="o">.</span><span class="n">lookup_error</span><span class="p">(</span><span class="s1">&#39;strict&#39;</span><span class="p">)</span>
+    <span class="n">codecs</span><span class="o">.</span><span class="n">register_error</span><span class="p">(</span><span class="s1">&#39;strict&#39;</span><span class="p">,</span> <span class="n">codecs</span><span class="o">.</span><span class="n">lookup_error</span><span class="p">(</span><span class="n">errors</span><span class="p">))</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">codecs</span><span class="o">.</span><span class="n">register_error</span><span class="p">(</span><span class="s1">&#39;strict&#39;</span><span class="p">,</span> <span class="n">old_handler</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_public_ip">
+<a class="viewcode-back" href="../developing/modules/core.html#core.get_public_ip">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_public_ip</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the server&#39;s public IPv4.</span>
+
+<span class="sd">    :rtype: str</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        This functions makes a call to ``http://api.ipify.org`` to retrieve the public IP.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">urlopen</span><span class="p">(</span><span class="s1">&#39;http://api.ipify.org/&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">()</span></div>
+
+
+
+<div class="viewcode-block" id="server_output">
+<a class="viewcode-back" href="../developing/modules/core.html#core.server_output">[docs]</a>
+<span class="nd">@contextmanager</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">server_output</span><span class="p">(</span><span class="n">action</span><span class="o">=</span><span class="n">OutputReturn</span><span class="o">.</span><span class="n">CONTINUE</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Gather all server output sent during the execution of the with-statement.</span>
+
+<span class="sd">    :param OutputReturn action:</span>
+<span class="sd">        Determines what happens with the output.</span>
+<span class="sd">    :rtype: list</span>
+<span class="sd">    :return:</span>
+<span class="sd">        A list that will be filled with a tuple for every line that is being</span>
+<span class="sd">        logged. The tuple contains the severity and the message.</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    .. code:: python</span>
+
+<span class="sd">        from cvars import cvar</span>
+<span class="sd">        from core import server_output</span>
+<span class="sd">        from core import OutputReturn</span>
+
+<span class="sd">        status = cvar.find_command(&#39;status&#39;)</span>
+
+<span class="sd">        with server_output(OutputReturn.BLOCK) as output:</span>
+<span class="sd">            status()</span>
+
+<span class="sd">        # Print everything that was logged by the &#39;status&#39; command</span>
+<span class="sd">        print(output)</span>
+
+
+<span class="sd">    Output:</span>
+
+<span class="sd">    .. code:: python</span>
+
+<span class="sd">        [(_core.MessageSeverity.MESSAGE, &#39;hostname: Counter-Strike: Global Offensive\\n&#39;),</span>
+<span class="sd">         (_core.MessageSeverity.MESSAGE, &#39;version : 1.35.8.4/13584 513/6771 secure  [A:1:2435270659:8640] \\n&#39;),</span>
+<span class="sd">         (_core.MessageSeverity.MESSAGE, &#39;udp/ip  : 192.168.178.60:27015  (public ip: 46.83.158.27)\\n&#39;),</span>
+<span class="sd">         (_core.MessageSeverity.MESSAGE, &#39;os      :  Windows\\n&#39;),</span>
+<span class="sd">         (_core.MessageSeverity.MESSAGE, &#39;type    :  community dedicated\\n&#39;),</span>
+<span class="sd">         (_core.MessageSeverity.MESSAGE, &#39;players : 0 humans, 0 bots (20/0 max) (hibernating)\\n\\n&#39;),</span>
+<span class="sd">         (_core.MessageSeverity.MESSAGE, &#39;# userid name uniqueid connected ping loss state rate&#39;),</span>
+<span class="sd">         (_core.MessageSeverity.MESSAGE, &#39; adr&#39;),</span>
+<span class="sd">         (_core.MessageSeverity.MESSAGE, &#39;\\n&#39;),</span>
+<span class="sd">         (_core.MessageSeverity.MESSAGE, &#39;#end\\n&#39;)]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Import this here to fix a cyclic import</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnServerOutput</span>
+
+    <span class="n">msg_buffer</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">intercepter</span><span class="p">(</span><span class="n">severity</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+        <span class="n">msg_buffer</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">severity</span><span class="p">,</span> <span class="n">msg</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">action</span>
+
+    <span class="n">OnServerOutput</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">register_listener</span><span class="p">(</span><span class="n">intercepter</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">msg_buffer</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">OnServerOutput</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">unregister_listener</span><span class="p">(</span><span class="n">intercepter</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="create_checksum">
+<a class="viewcode-back" href="../developing/modules/core.html#core.create_checksum">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">create_checksum</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">ignore_wchars</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create an MD5 checksum for the given string.</span>
+
+<span class="sd">    :param str data:</span>
+<span class="sd">        The string for which a checksum should be created.</span>
+<span class="sd">    :param bool ignore_wchars:</span>
+<span class="sd">        If ``True`` whitespace characters are ignored.</span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">ignore_wchars</span><span class="p">:</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+
+    <span class="k">return</span> <span class="n">hashlib</span><span class="o">.</span><span class="n">new</span><span class="p">(</span><span class="s1">&#39;md5&#39;</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;utf-8&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">hexdigest</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="check_info_output">
+<a class="viewcode-back" href="../developing/modules/core.html#core.check_info_output">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">check_info_output</span><span class="p">(</span><span class="n">output</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether the output of ``sp info`` has been modified.</span>
+
+<span class="sd">    :param str output:</span>
+<span class="sd">        The output of ``sp info``.</span>
+<span class="sd">    :raise ValueError:</span>
+<span class="sd">        Raised if the checksum was not found in the output.</span>
+<span class="sd">    :return:</span>
+<span class="sd">        ``True`` if the output has been modified.</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">checksum</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">lines</span> <span class="o">=</span> <span class="n">output</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Search the checksum entry</span>
+    <span class="k">while</span> <span class="n">lines</span><span class="p">:</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Checksum&#39;</span><span class="p">):</span>
+            <span class="n">checksum</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;:&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">break</span>
+
+    <span class="k">if</span> <span class="n">checksum</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Checksum not found.&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Ignore last line if it&#39;s the separator</span>
+    <span class="k">if</span> <span class="n">lines</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;-&#39;</span><span class="p">):</span>
+        <span class="n">lines</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">create_checksum</span><span class="p">(</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">lines</span><span class="p">))</span> <span class="o">!=</span> <span class="n">checksum</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">core</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>colors module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">colors module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-colors">
+<span id="colors-module"></span><h1>colors module<a class="headerlink" href="#module-colors" title="Link to this heading">¶</a></h1>
+<p>Provides Color objects with RGBA values.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="colors.Color">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">Color</span></span><a class="headerlink" href="#colors.Color" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<p>This class is used to store a 32 bit color. The color is stored in its RGBA components.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="colors.Color.__eq__">
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Color)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Color)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><span class="pre">object</span></a></span></span><a class="headerlink" href="#colors.Color.__eq__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colors.Color.__getitem__">
+<span class="sig-name descname"><span class="pre">__getitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Color)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)index</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#colors.Color.__getitem__" title="Link to this definition">¶</a></dt>
+<dd><p>Return the color component at the given index (0 - 3).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – An index between 0 and 3 that defines the color component to get.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The color component value.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colors.Color.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(int)r=0</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(int)g=0</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(int)b=0</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(int)a=255</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#colors.Color.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the Color object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – See <a class="reference internal" href="#colors.Color.r" title="colors.Color.r"><code class="xref py py-attr docutils literal notranslate"><span class="pre">r</span></code></a>.</p></li>
+<li><p><strong>g</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – See <a class="reference internal" href="#colors.Color.g" title="colors.Color.g"><code class="xref py py-attr docutils literal notranslate"><span class="pre">g</span></code></a>.</p></li>
+<li><p><strong>b</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – See <a class="reference internal" href="#colors.Color.b" title="colors.Color.b"><code class="xref py py-attr docutils literal notranslate"><span class="pre">b</span></code></a>.</p></li>
+<li><p><strong>a</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – See <a class="reference internal" href="#colors.Color.a" title="colors.Color.a"><code class="xref py py-attr docutils literal notranslate"><span class="pre">a</span></code></a>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colors.Color.__ne__">
+<span class="sig-name descname"><span class="pre">__ne__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Color)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Color)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><span class="pre">object</span></a></span></span><a class="headerlink" href="#colors.Color.__ne__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colors.Color.__reduce__">
+<span class="sig-name descname"><span class="pre">__reduce__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#colors.Color.__reduce__" title="Link to this definition">¶</a></dt>
+<dd><p>Helper for pickle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colors.Color.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Color)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span> <span class="pre">:</span></span></span><a class="headerlink" href="#colors.Color.__repr__" title="Link to this definition">¶</a></dt>
+<dd><p>Return the color as a stringified tuple.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colors.Color.__setitem__">
+<span class="sig-name descname"><span class="pre">__setitem__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Color)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(int)value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#colors.Color.__setitem__" title="Link to this definition">¶</a></dt>
+<dd><p>Set the color component at the given index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – An index between 0 and 3 that defines the color component to set.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – A value between 0 and 255 that defines the new color component value.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colors.Color.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Color)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span> <span class="pre">:</span></span></span><a class="headerlink" href="#colors.Color.__str__" title="Link to this definition">¶</a></dt>
+<dd><p>Return the color as a hexadecimal string.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="colors.Color.with_alpha">
+<span class="sig-name descname"><span class="pre">with_alpha</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Color)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(int)a</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Color</span> <span class="pre">:</span></span></span><a class="headerlink" href="#colors.Color.with_alpha" title="Link to this definition">¶</a></dt>
+<dd><p>Return a copy of the color with a new alpha value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>a</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The new alpha value.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="colors.Color.a">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">a</span></span><a class="headerlink" href="#colors.Color.a" title="Link to this definition">¶</a></dt>
+<dd><p>A value between 0 and 255 that defines the alpha value (transparency).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="colors.Color.b">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">b</span></span><a class="headerlink" href="#colors.Color.b" title="Link to this definition">¶</a></dt>
+<dd><p>A value between 0 and 255 that defines the blue component of the color.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="colors.Color.g">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">g</span></span><a class="headerlink" href="#colors.Color.g" title="Link to this definition">¶</a></dt>
+<dd><p>A value between 0 and 255 that defines the green component of the color.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="colors.Color.r">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">r</span></span><a class="headerlink" href="#colors.Color.r" title="Link to this definition">¶</a></dt>
+<dd><p>A value between 0 and 255 that defines the red component of the color.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.BLACK">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">BLACK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(0,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.BLACK" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.BLUE">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">BLUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(0,</span> <span class="pre">0,</span> <span class="pre">255,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.BLUE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.BROWN">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">BROWN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(139,</span> <span class="pre">69,</span> <span class="pre">19,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.BROWN" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.CYAN">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">CYAN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(0,</span> <span class="pre">255,</span> <span class="pre">255,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.CYAN" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.DARK_BLUE">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">DARK_BLUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(0,</span> <span class="pre">0,</span> <span class="pre">128,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.DARK_BLUE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.DARK_GRAY">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">DARK_GRAY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(64,</span> <span class="pre">64,</span> <span class="pre">64,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.DARK_GRAY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.DARK_GREEN">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">DARK_GREEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(0,</span> <span class="pre">128,</span> <span class="pre">0,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.DARK_GREEN" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.DARK_RED">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">DARK_RED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(128,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.DARK_RED" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.GRAY">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">GRAY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(128,</span> <span class="pre">128,</span> <span class="pre">128,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.GRAY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.GREEN">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">GREEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(0,</span> <span class="pre">255,</span> <span class="pre">0,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.GREEN" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.LIGHT_BLUE">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">LIGHT_BLUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(128,</span> <span class="pre">128,</span> <span class="pre">255,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.LIGHT_BLUE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.LIGHT_GRAY">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">LIGHT_GRAY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(192,</span> <span class="pre">192,</span> <span class="pre">192,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.LIGHT_GRAY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.LIGHT_GREEN">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">LIGHT_GREEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(128,</span> <span class="pre">255,</span> <span class="pre">128,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.LIGHT_GREEN" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.LIGHT_RED">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">LIGHT_RED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(255,</span> <span class="pre">80,</span> <span class="pre">80,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.LIGHT_RED" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.OLIVE">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">OLIVE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(128,</span> <span class="pre">128,</span> <span class="pre">0,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.OLIVE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.ORANGE">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">ORANGE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(255,</span> <span class="pre">165,</span> <span class="pre">0,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.ORANGE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.PURPLE">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">PURPLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(255,</span> <span class="pre">0,</span> <span class="pre">255,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.PURPLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.RED">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">RED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(255,</span> <span class="pre">0,</span> <span class="pre">0,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.RED" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.WHITE">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">WHITE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(255,</span> <span class="pre">255,</span> <span class="pre">255,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.WHITE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="colors.YELLOW">
+<span class="sig-prename descclassname"><span class="pre">colors.</span></span><span class="sig-name descname"><span class="pre">YELLOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">Color(255,</span> <span class="pre">255,</span> <span class="pre">0,</span> <span class="pre">255)</span></em><a class="headerlink" href="#colors.YELLOW" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">colors module</a><ul>
+<li><a class="reference internal" href="#colors.Color"><code class="docutils literal notranslate"><span class="pre">Color</span></code></a><ul>
+<li><a class="reference internal" href="#colors.Color.__eq__"><code class="docutils literal notranslate"><span class="pre">Color.__eq__()</span></code></a></li>
+<li><a class="reference internal" href="#colors.Color.__getitem__"><code class="docutils literal notranslate"><span class="pre">Color.__getitem__()</span></code></a></li>
+<li><a class="reference internal" href="#colors.Color.__init__"><code class="docutils literal notranslate"><span class="pre">Color.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#colors.Color.__ne__"><code class="docutils literal notranslate"><span class="pre">Color.__ne__()</span></code></a></li>
+<li><a class="reference internal" href="#colors.Color.__reduce__"><code class="docutils literal notranslate"><span class="pre">Color.__reduce__()</span></code></a></li>
+<li><a class="reference internal" href="#colors.Color.__repr__"><code class="docutils literal notranslate"><span class="pre">Color.__repr__()</span></code></a></li>
+<li><a class="reference internal" href="#colors.Color.__setitem__"><code class="docutils literal notranslate"><span class="pre">Color.__setitem__()</span></code></a></li>
+<li><a class="reference internal" href="#colors.Color.__str__"><code class="docutils literal notranslate"><span class="pre">Color.__str__()</span></code></a></li>
+<li><a class="reference internal" href="#colors.Color.with_alpha"><code class="docutils literal notranslate"><span class="pre">Color.with_alpha()</span></code></a></li>
+<li><a class="reference internal" href="#colors.Color.a"><code class="docutils literal notranslate"><span class="pre">Color.a</span></code></a></li>
+<li><a class="reference internal" href="#colors.Color.b"><code class="docutils literal notranslate"><span class="pre">Color.b</span></code></a></li>
+<li><a class="reference internal" href="#colors.Color.g"><code class="docutils literal notranslate"><span class="pre">Color.g</span></code></a></li>
+<li><a class="reference internal" href="#colors.Color.r"><code class="docutils literal notranslate"><span class="pre">Color.r</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#colors.BLACK"><code class="docutils literal notranslate"><span class="pre">BLACK</span></code></a></li>
+<li><a class="reference internal" href="#colors.BLUE"><code class="docutils literal notranslate"><span class="pre">BLUE</span></code></a></li>
+<li><a class="reference internal" href="#colors.BROWN"><code class="docutils literal notranslate"><span class="pre">BROWN</span></code></a></li>
+<li><a class="reference internal" href="#colors.CYAN"><code class="docutils literal notranslate"><span class="pre">CYAN</span></code></a></li>
+<li><a class="reference internal" href="#colors.DARK_BLUE"><code class="docutils literal notranslate"><span class="pre">DARK_BLUE</span></code></a></li>
+<li><a class="reference internal" href="#colors.DARK_GRAY"><code class="docutils literal notranslate"><span class="pre">DARK_GRAY</span></code></a></li>
+<li><a class="reference internal" href="#colors.DARK_GREEN"><code class="docutils literal notranslate"><span class="pre">DARK_GREEN</span></code></a></li>
+<li><a class="reference internal" href="#colors.DARK_RED"><code class="docutils literal notranslate"><span class="pre">DARK_RED</span></code></a></li>
+<li><a class="reference internal" href="#colors.GRAY"><code class="docutils literal notranslate"><span class="pre">GRAY</span></code></a></li>
+<li><a class="reference internal" href="#colors.GREEN"><code class="docutils literal notranslate"><span class="pre">GREEN</span></code></a></li>
+<li><a class="reference internal" href="#colors.LIGHT_BLUE"><code class="docutils literal notranslate"><span class="pre">LIGHT_BLUE</span></code></a></li>
+<li><a class="reference internal" href="#colors.LIGHT_GRAY"><code class="docutils literal notranslate"><span class="pre">LIGHT_GRAY</span></code></a></li>
+<li><a class="reference internal" href="#colors.LIGHT_GREEN"><code class="docutils literal notranslate"><span class="pre">LIGHT_GREEN</span></code></a></li>
+<li><a class="reference internal" href="#colors.LIGHT_RED"><code class="docutils literal notranslate"><span class="pre">LIGHT_RED</span></code></a></li>
+<li><a class="reference internal" href="#colors.OLIVE"><code class="docutils literal notranslate"><span class="pre">OLIVE</span></code></a></li>
+<li><a class="reference internal" href="#colors.ORANGE"><code class="docutils literal notranslate"><span class="pre">ORANGE</span></code></a></li>
+<li><a class="reference internal" href="#colors.PURPLE"><code class="docutils literal notranslate"><span class="pre">PURPLE</span></code></a></li>
+<li><a class="reference internal" href="#colors.RED"><code class="docutils literal notranslate"><span class="pre">RED</span></code></a></li>
+<li><a class="reference internal" href="#colors.WHITE"><code class="docutils literal notranslate"><span class="pre">WHITE</span></code></a></li>
+<li><a class="reference internal" href="#colors.YELLOW"><code class="docutils literal notranslate"><span class="pre">YELLOW</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/colors.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">colors module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

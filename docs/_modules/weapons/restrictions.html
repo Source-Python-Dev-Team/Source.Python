@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>weapons.restrictions &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">weapons.restrictions</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for weapons.restrictions</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../weapons/restrictions.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides player weapon restriction functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Collections</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoUnload</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">GAME_NAME</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">SOURCE_ENGINE</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">INVALID_ENTITY_INDEX</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">edict_from_pointer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">EntityCondition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">EntityPreHook</span>
+<span class="c1">#   Filters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.players</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlayerIter</span>
+<span class="c1">#   Listeners</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnLevelInit</span>
+<span class="c1">#   Memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_object</span>
+<span class="c1">#   Players</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.teams</span><span class="w"> </span><span class="kn">import</span> <span class="n">teams_by_name</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.teams</span><span class="w"> </span><span class="kn">import</span> <span class="n">teams_by_number</span>
+<span class="c1">#   Weapons</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">weapons.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Weapon</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">weapons.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">weapon_manager</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_WeaponRestrictionManager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;WeaponRestrictionHandler&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;weapon_restriction_handler&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;weapon_restriction_manager&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_WeaponRestrictionManager</span><span class="p">(</span><span class="nb">set</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store weapon restriction handlers.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_player_bumping_weapon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">weapon</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the player is restricted from bumping the weapon.</span>
+
+<span class="sd">        :param Player player: The player that is bumping the weapon.</span>
+<span class="sd">        :param str weapon: The name of the weapon the player is bumping.</span>
+<span class="sd">        :return: Return whether to block bumping the weapon.</span>
+<span class="sd">            None is used if the bumping should be allowed.</span>
+<span class="sd">        :rtype: bool/None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the weapon&#39;s basename</span>
+        <span class="n">weapon_name</span> <span class="o">=</span> <span class="n">weapon_manager</span><span class="p">[</span><span class="n">weapon</span><span class="p">]</span><span class="o">.</span><span class="n">basename</span>
+
+        <span class="c1"># Loop through all of the current handlers</span>
+        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+
+            <span class="c1"># If the current handler wishes to restrict, return such</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">on_player_bumping_weapon</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">weapon_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># If no handlers restrict the weapon, explicitly return None</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_player_purchasing_weapon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">weapon</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the player is restricted from buying the weapon.</span>
+
+<span class="sd">        :param Player player: The player that is purchasing the weapon.</span>
+<span class="sd">        :param str weapon: The name of the weapon the player is purchasing.</span>
+<span class="sd">        :return: Return whether to block purchasing the weapon.</span>
+<span class="sd">            None is used if the purchasing should be allowed.</span>
+<span class="sd">        :rtype: bool/None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># This conditional prevents an AttributeError when purchasing armor/nvg</span>
+        <span class="k">if</span> <span class="n">weapon</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">weapon_manager</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Get the weapon&#39;s basename</span>
+        <span class="n">weapon_name</span> <span class="o">=</span> <span class="n">weapon_manager</span><span class="p">[</span><span class="n">weapon</span><span class="p">]</span><span class="o">.</span><span class="n">basename</span>
+
+        <span class="c1"># Loop through all of the current handlers</span>
+        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+
+            <span class="c1"># If the current handler wishes to restrict, return such</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">handler</span><span class="o">.</span><span class="n">on_player_purchasing_weapon</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">weapon_name</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">value</span> <span class="ow">and</span> <span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># If no handlers restrict the weapon, explicitly return None</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_player_restricted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">weapon</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the player is restricted from the weapon.</span>
+
+<span class="sd">        :param Player player: The player to check for restriction.</span>
+<span class="sd">        :param str weapon: The name of the weapon to check for restriction.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the weapon&#39;s basename</span>
+        <span class="n">weapon_name</span> <span class="o">=</span> <span class="n">weapon_manager</span><span class="p">[</span><span class="n">weapon</span><span class="p">]</span><span class="o">.</span><span class="n">basename</span>
+
+        <span class="c1"># Loop through all of the current handlers</span>
+        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+
+            <span class="c1"># If the current handler wishes to restrict, return such</span>
+            <span class="k">if</span> <span class="n">handler</span><span class="o">.</span><span class="n">is_player_restricted</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">weapon_name</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># If no handlers restrict the weapon, explicitly return None</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_team_restricted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team</span><span class="p">,</span> <span class="n">weapon</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the team is restricted from the weapon.</span>
+
+<span class="sd">        :param int team: The team to check for restriction.</span>
+<span class="sd">            Value can also be a str alias for the team (ie t/ct).</span>
+<span class="sd">        :param str weapon: The name of the weapon to check for restriction.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the weapon&#39;s basename</span>
+        <span class="n">weapon_name</span> <span class="o">=</span> <span class="n">weapon_manager</span><span class="p">[</span><span class="n">weapon</span><span class="p">]</span><span class="o">.</span><span class="n">basename</span>
+
+        <span class="c1"># Loop through all of the current handlers</span>
+        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+
+            <span class="c1"># If the current handler wishes to restrict, return such</span>
+            <span class="k">if</span> <span class="n">handler</span><span class="o">.</span><span class="n">is_team_restricted</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">weapon_name</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># If no handlers restrict the weapon, explicitly return None</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the handler to the set.</span>
+
+<span class="sd">        :param WeaponRestrictionHandler handler: The handler</span>
+<span class="sd">            to add to the dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handler</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the handler from the set.</span>
+
+<span class="sd">        :param WeaponRestrictionHandler handler: The handler</span>
+<span class="sd">            to remove from the dictionary.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">discard</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Clear all handlers of any restrictions.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">handler</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+<span class="c1"># Get the _WeaponRestrictionManager instance</span>
+<span class="n">weapon_restriction_manager</span> <span class="o">=</span> <span class="n">_WeaponRestrictionManager</span><span class="p">()</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_TeamRestrictions</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store team weapon restrictions.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store all teams and their aliases for the current game.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Store all of the aliases</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">aliases</span> <span class="o">=</span> <span class="p">{</span><span class="o">**</span><span class="n">teams_by_name</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">x</span><span class="p">:</span> <span class="nb">set</span><span class="p">()</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aliases</span><span class="o">.</span><span class="n">values</span><span class="p">()})</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the proper set object for the given team.&quot;&quot;&quot;</span>
+        <span class="c1"># Was a known team number given?</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="c1"># Was a known team alias given?</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aliases</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">aliases</span><span class="p">[</span><span class="n">item</span><span class="p">])</span>
+
+        <span class="c1"># Invalid item was passed</span>
+        <span class="k">raise</span> <span class="ne">KeyError</span><span class="p">(</span>
+            <span class="s1">&#39;&quot;</span><span class="si">{0}</span><span class="s1">&quot; is neither a team number nor an alias.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">x</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="WeaponRestrictionHandler">
+<a class="viewcode-back" href="../../developing/modules/weapons.restrictions.html#weapons.restrictions.WeaponRestrictionHandler">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">WeaponRestrictionHandler</span><span class="p">(</span><span class="n">AutoUnload</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to handle player and team restrictions.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="WeaponRestrictionHandler.__init__">
+<a class="viewcode-back" href="../../developing/modules/weapons.restrictions.html#weapons.restrictions.WeaponRestrictionHandler.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the instance and add it to the manager.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">team_restrictions</span> <span class="o">=</span> <span class="n">_TeamRestrictions</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player_restrictions</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+        <span class="n">weapon_restriction_manager</span><span class="o">.</span><span class="n">add_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WeaponRestrictionHandler.clear">
+<a class="viewcode-back" href="../../developing/modules/weapons.restrictions.html#weapons.restrictions.WeaponRestrictionHandler.clear">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all team and player restrictions.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player_restrictions</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">team_restrictions</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="WeaponRestrictionHandler.add_player_restrictions">
+<a class="viewcode-back" href="../../developing/modules/weapons.restrictions.html#weapons.restrictions.WeaponRestrictionHandler.add_player_restrictions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_player_restrictions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="o">*</span><span class="n">weapons</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the weapons to the player&#39;s restriction set.</span>
+
+<span class="sd">        :param Player player: The player to add the restrictions to.</span>
+<span class="sd">        :param str weapons: A weapon or any number of weapons to add</span>
+<span class="sd">            as restricted for the player.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the player&#39;s current restrictions</span>
+        <span class="n">current_restrictions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">player_restrictions</span><span class="p">[</span><span class="n">player</span><span class="o">.</span><span class="n">userid</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="c1"># Add the weapons to the player&#39;s restrictions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player_restrictions</span><span class="p">[</span><span class="n">player</span><span class="o">.</span><span class="n">userid</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">([</span>
+            <span class="n">weapon_manager</span><span class="p">[</span><span class="n">weapon</span><span class="p">]</span><span class="o">.</span><span class="n">basename</span> <span class="k">for</span> <span class="n">weapon</span> <span class="ow">in</span> <span class="n">weapons</span><span class="p">])</span>
+
+        <span class="c1"># Get all weapons added to the player&#39;s restriction set</span>
+        <span class="n">new_restrictions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">player_restrictions</span><span class="p">[</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">userid</span><span class="p">]</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">current_restrictions</span><span class="p">)</span>
+
+        <span class="c1"># Notify of each new weapon restriction</span>
+        <span class="k">for</span> <span class="n">weapon</span> <span class="ow">in</span> <span class="n">new_restrictions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_player_restriction_added</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">weapon</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WeaponRestrictionHandler.remove_player_restrictions">
+<a class="viewcode-back" href="../../developing/modules/weapons.restrictions.html#weapons.restrictions.WeaponRestrictionHandler.remove_player_restrictions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_player_restrictions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="o">*</span><span class="n">weapons</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the weapons from the player&#39;s restriction set.</span>
+
+<span class="sd">        :param Player player: The player to remove the restrictions from.</span>
+<span class="sd">        :param str weapons: A weapon or any number of weapons to remove</span>
+<span class="sd">            as restricted for the player.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player_restrictions</span><span class="p">[</span><span class="n">player</span><span class="o">.</span><span class="n">userid</span><span class="p">]</span><span class="o">.</span><span class="n">difference_update</span><span class="p">([</span>
+            <span class="n">weapon_manager</span><span class="p">[</span><span class="n">weapon</span><span class="p">]</span><span class="o">.</span><span class="n">basename</span> <span class="k">for</span> <span class="n">weapon</span> <span class="ow">in</span> <span class="n">weapons</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="WeaponRestrictionHandler.add_team_restrictions">
+<a class="viewcode-back" href="../../developing/modules/weapons.restrictions.html#weapons.restrictions.WeaponRestrictionHandler.add_team_restrictions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_team_restrictions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team</span><span class="p">,</span> <span class="o">*</span><span class="n">weapons</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the weapons to the team&#39;s restriction set.</span>
+
+<span class="sd">        :param int team: The team to add the restrictions to.</span>
+<span class="sd">            Value can also be a team alias (ie t/ct).</span>
+<span class="sd">        :param str weapons: A weapon or any number of weapons to add</span>
+<span class="sd">            as restricted for the team.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the number of the given team</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">team</span> <span class="o">=</span> <span class="n">teams_by_name</span><span class="p">[</span><span class="n">team</span><span class="p">]</span>
+
+        <span class="c1"># Get the team&#39;s current restrictions</span>
+        <span class="n">current_restrictions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">team_restrictions</span><span class="p">[</span><span class="n">team</span><span class="p">])</span>
+
+        <span class="c1"># Add the weapons to the team&#39;s restrictions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">team_restrictions</span><span class="p">[</span><span class="n">team</span><span class="p">]</span><span class="o">.</span><span class="n">update</span><span class="p">([</span>
+            <span class="n">weapon_manager</span><span class="p">[</span><span class="n">weapon</span><span class="p">]</span><span class="o">.</span><span class="n">basename</span> <span class="k">for</span> <span class="n">weapon</span> <span class="ow">in</span> <span class="n">weapons</span><span class="p">])</span>
+
+        <span class="c1"># Get all weapons added to the player&#39;s restriction set</span>
+        <span class="n">new_restrictions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">team_restrictions</span><span class="p">[</span>
+            <span class="n">team</span><span class="p">]</span><span class="o">.</span><span class="n">difference</span><span class="p">(</span><span class="n">current_restrictions</span><span class="p">)</span>
+
+        <span class="c1"># Notify of each new weapon restriction</span>
+        <span class="k">for</span> <span class="n">weapon</span> <span class="ow">in</span> <span class="n">new_restrictions</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_team_restriction_added</span><span class="p">(</span><span class="n">team</span><span class="p">,</span> <span class="n">weapon</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WeaponRestrictionHandler.remove_team_restrictions">
+<a class="viewcode-back" href="../../developing/modules/weapons.restrictions.html#weapons.restrictions.WeaponRestrictionHandler.remove_team_restrictions">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_team_restrictions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team</span><span class="p">,</span> <span class="o">*</span><span class="n">weapons</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the weapons from the team&#39;s restriction set.</span>
+
+<span class="sd">        :param int team: The team to remove the restrictions from.</span>
+<span class="sd">            Value can also be a team alias (ie t/ct).</span>
+<span class="sd">        :param str weapons: A weapon or any number of weapons to remove</span>
+<span class="sd">            as restricted for the team.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">team_restrictions</span><span class="p">[</span><span class="n">team</span><span class="p">]</span><span class="o">.</span><span class="n">difference_update</span><span class="p">([</span>
+            <span class="n">weapon_manager</span><span class="p">[</span><span class="n">weapon</span><span class="p">]</span><span class="o">.</span><span class="n">basename</span> <span class="k">for</span> <span class="n">weapon</span> <span class="ow">in</span> <span class="n">weapons</span><span class="p">])</span></div>
+
+
+<div class="viewcode-block" id="WeaponRestrictionHandler.on_player_bumping_weapon">
+<a class="viewcode-back" href="../../developing/modules/weapons.restrictions.html#weapons.restrictions.WeaponRestrictionHandler.on_player_bumping_weapon">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_player_bumping_weapon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">weapon</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the player can bump the weapon.</span>
+
+<span class="sd">        :param Player player: The player that is bumping the weapon.</span>
+<span class="sd">        :param str weapon: The name of the weapon the player is bumping.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_player_restricted</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">weapon</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WeaponRestrictionHandler.on_player_purchasing_weapon">
+<a class="viewcode-back" href="../../developing/modules/weapons.restrictions.html#weapons.restrictions.WeaponRestrictionHandler.on_player_purchasing_weapon">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_player_purchasing_weapon</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">weapon</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the player can purchase the weapon.</span>
+
+<span class="sd">        :param Player player: The player that is purchasing the weapon.</span>
+<span class="sd">        :param str weapon: The name of the weapon the player is purchasing.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_player_restricted</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">weapon</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WeaponRestrictionHandler.is_player_restricted">
+<a class="viewcode-back" href="../../developing/modules/weapons.restrictions.html#weapons.restrictions.WeaponRestrictionHandler.is_player_restricted">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_player_restricted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">weapon</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the player is restricted from the weapon.</span>
+
+<span class="sd">        :param Player player: The player to check against restriction.</span>
+<span class="sd">        :param str weapon: The name of the weapon to check against restriction.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the weapon&#39;s proper basename</span>
+        <span class="n">weapon_name</span> <span class="o">=</span> <span class="n">weapon_manager</span><span class="p">[</span><span class="n">weapon</span><span class="p">]</span><span class="o">.</span><span class="n">basename</span>
+
+        <span class="c1"># Is the player restricted from the weapon?</span>
+        <span class="k">if</span> <span class="n">weapon_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">player_restrictions</span><span class="p">[</span><span class="n">player</span><span class="o">.</span><span class="n">userid</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># Return whether the player&#39;s team is restricted from the weapon</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_team_restricted</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">team</span><span class="p">,</span> <span class="n">weapon_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WeaponRestrictionHandler.is_team_restricted">
+<a class="viewcode-back" href="../../developing/modules/weapons.restrictions.html#weapons.restrictions.WeaponRestrictionHandler.is_team_restricted">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_team_restricted</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team</span><span class="p">,</span> <span class="n">weapon</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the team is restricted from the weapon.</span>
+
+<span class="sd">        :param int team: The team to check for restriction.</span>
+<span class="sd">            Value can also be a str alias for the team (ie t/ct).</span>
+<span class="sd">        :param str weapon: The name of the weapon to check for restriction.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">weapon_manager</span><span class="p">[</span><span class="n">weapon</span><span class="p">]</span><span class="o">.</span><span class="n">basename</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">team_restrictions</span><span class="p">[</span><span class="n">team</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="WeaponRestrictionHandler.on_player_restriction_added">
+<a class="viewcode-back" href="../../developing/modules/weapons.restrictions.html#weapons.restrictions.WeaponRestrictionHandler.on_player_restriction_added">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_player_restriction_added</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="n">weapon</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Notify the handler if the player is carrying the weapon.</span>
+
+<span class="sd">        :param Player player: The player that just had a restriction added.</span>
+<span class="sd">        :param str weapon: The weapon that was just restricted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Does the player own the weapon type?</span>
+        <span class="n">weapon_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_player_weapon_index</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">weapon</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">weapon_index</span> <span class="ow">is</span> <span class="n">INVALID_ENTITY_INDEX</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Notify the player is carrying the weapon</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">on_player_carrying_restricted_weapon</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">Weapon</span><span class="p">(</span><span class="n">weapon_index</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="WeaponRestrictionHandler.on_team_restriction_added">
+<a class="viewcode-back" href="../../developing/modules/weapons.restrictions.html#weapons.restrictions.WeaponRestrictionHandler.on_team_restriction_added">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_team_restriction_added</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team</span><span class="p">,</span> <span class="n">weapon</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Notify the handler of each player on the restricted team.</span>
+
+<span class="sd">        :param int team: The team that just had a restriction added.</span>
+<span class="sd">        :param str weapon: The weapon that was just restricted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">player</span> <span class="ow">in</span> <span class="n">PlayerIter</span><span class="p">(</span><span class="n">teams_by_number</span><span class="p">[</span><span class="n">team</span><span class="p">]):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_player_restriction_added</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">weapon</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="WeaponRestrictionHandler.on_player_carrying_restricted_weapon">
+<a class="viewcode-back" href="../../developing/modules/weapons.restrictions.html#weapons.restrictions.WeaponRestrictionHandler.on_player_carrying_restricted_weapon">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">on_player_carrying_restricted_weapon</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">weapon</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Force the player to drop the weapon.</span>
+
+<span class="sd">        :param Player player: The player that is carrying a restricted weapon.</span>
+<span class="sd">        :param Weapon weapon: The weapon that the player is carrying</span>
+<span class="sd">            and is newly restricted.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">drop_weapon</span><span class="p">(</span><span class="n">weapon</span><span class="o">.</span><span class="n">pointer</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_player_weapon_index</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">weapon</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the index of the weapon if the player is carrying one.&quot;&quot;&quot;</span>
+        <span class="c1"># Return the index</span>
+        <span class="k">for</span> <span class="n">weapon_index</span> <span class="ow">in</span> <span class="n">player</span><span class="o">.</span><span class="n">weapon_indexes</span><span class="p">(</span><span class="n">weapon_manager</span><span class="p">[</span><span class="n">weapon</span><span class="p">]</span><span class="o">.</span><span class="n">name</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">weapon_index</span>
+
+        <span class="c1"># If no index was found, return invalid</span>
+        <span class="k">return</span> <span class="n">INVALID_ENTITY_INDEX</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the instance from the manager.&quot;&quot;&quot;</span>
+        <span class="n">weapon_restriction_manager</span><span class="o">.</span><span class="n">remove_handler</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<span class="c1"># Get the default WeaponRestrictionHandler</span>
+<span class="c1">#   instance to be used by the Player class.</span>
+<span class="n">weapon_restriction_handler</span> <span class="o">=</span> <span class="n">WeaponRestrictionHandler</span><span class="p">()</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FUNCTION HOOKS</span>
+<span class="c1"># =============================================================================</span>
+<span class="nd">@EntityPreHook</span><span class="p">(</span><span class="n">EntityCondition</span><span class="o">.</span><span class="n">is_human_player</span><span class="p">,</span> <span class="s1">&#39;bump_weapon&#39;</span><span class="p">)</span>
+<span class="nd">@EntityPreHook</span><span class="p">(</span><span class="n">EntityCondition</span><span class="o">.</span><span class="n">is_bot_player</span><span class="p">,</span> <span class="s1">&#39;bump_weapon&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_on_weapon_bump</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return whether the player is allowed to pickup the weapon.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">weapon_restriction_manager</span><span class="o">.</span><span class="n">on_player_bumping_weapon</span><span class="p">(</span>
+        <span class="n">make_object</span><span class="p">(</span><span class="n">Player</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="n">make_object</span><span class="p">(</span><span class="n">Weapon</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">weapon_name</span>
+    <span class="p">)</span>
+
+
+<span class="k">if</span> <span class="n">GAME_NAME</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;cstrike&#39;</span><span class="p">,</span> <span class="s1">&#39;csgo&#39;</span><span class="p">):</span>
+    <span class="nd">@EntityPreHook</span><span class="p">(</span><span class="n">EntityCondition</span><span class="o">.</span><span class="n">is_player</span><span class="p">,</span> <span class="s1">&#39;buy_internal&#39;</span><span class="p">)</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_on_weapon_purchase</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the player is allowed to purchase the weapon.&quot;&quot;&quot;</span>
+        <span class="c1"># TODO:</span>
+        <span class="c1"># In CS:GO it seems like the weapon isn&#39;t passed as a string anymore.</span>
+        <span class="c1"># Instead it&#39;s rather a pointer that might be NULL. If it&#39;s not NULL,</span>
+        <span class="c1"># the function sets it to some value:</span>
+        <span class="c1">#if ( a3 )</span>
+        <span class="c1">#        *(_DWORD *)a3 = v16;</span>
+        <span class="n">weapon_name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span> <span class="k">if</span> <span class="n">SOURCE_ENGINE</span> <span class="o">!=</span> <span class="s1">&#39;csgo&#39;</span> <span class="k">else</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">weapon_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">return</span> <span class="n">weapon_restriction_manager</span><span class="o">.</span><span class="n">on_player_purchasing_weapon</span><span class="p">(</span>
+            <span class="n">make_object</span><span class="p">(</span><span class="n">Player</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span>
+            <span class="n">weapon_name</span>
+        <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; LISTENERS</span>
+<span class="c1"># =============================================================================</span>
+<span class="nd">@OnLevelInit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_level_init</span><span class="p">(</span><span class="n">map_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clear all restrictions.&quot;&quot;&quot;</span>
+    <span class="n">weapon_restriction_manager</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">weapons.restrictions</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

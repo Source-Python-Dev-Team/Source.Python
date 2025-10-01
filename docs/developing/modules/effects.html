@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>effects package &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">effects package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="effects-package">
+<h1>effects package<a class="headerlink" href="#effects-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="effects.base.html">effects.base module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="effects.hooks.html">effects.hooks module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="effects.templates.html">effects.templates module</a></li>
+</ul>
+</div>
+</section>
+<section id="module-effects">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-effects" title="Link to this heading">¶</a></h2>
+<p>Provides access to all effects within the engine.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="effects.BloodColor">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">effects.</span></span><span class="sig-name descname"><span class="pre">BloodColor</span></span><a class="headerlink" href="#effects.BloodColor" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="effects.BloodColor.DONT_BLEED">
+<span class="sig-name descname"><span class="pre">DONT_BLEED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_effects.BloodColor.DONT_BLEED</span></em><a class="headerlink" href="#effects.BloodColor.DONT_BLEED" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="effects.BloodColor.GREEN">
+<span class="sig-name descname"><span class="pre">GREEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_effects.BloodColor.GREEN</span></em><a class="headerlink" href="#effects.BloodColor.GREEN" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="effects.BloodColor.MECH">
+<span class="sig-name descname"><span class="pre">MECH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_effects.BloodColor.MECH</span></em><a class="headerlink" href="#effects.BloodColor.MECH" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="effects.BloodColor.RED">
+<span class="sig-name descname"><span class="pre">RED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_effects.BloodColor.RED</span></em><a class="headerlink" href="#effects.BloodColor.RED" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="effects.BloodColor.YELLOW">
+<span class="sig-name descname"><span class="pre">YELLOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_effects.BloodColor.YELLOW</span></em><a class="headerlink" href="#effects.BloodColor.YELLOW" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="effects.BloodColor.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'DONT_BLEED':</span> <span class="pre">_effects.BloodColor.DONT_BLEED,</span> <span class="pre">'GREEN':</span> <span class="pre">_effects.BloodColor.GREEN,</span> <span class="pre">'MECH':</span> <span class="pre">_effects.BloodColor.MECH,</span> <span class="pre">'RED':</span> <span class="pre">_effects.BloodColor.RED,</span> <span class="pre">'YELLOW':</span> <span class="pre">_effects.BloodColor.YELLOW}</span></em><a class="headerlink" href="#effects.BloodColor.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="effects.BloodColor.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{-1:</span> <span class="pre">_effects.BloodColor.DONT_BLEED,</span> <span class="pre">0:</span> <span class="pre">_effects.BloodColor.RED,</span> <span class="pre">1:</span> <span class="pre">_effects.BloodColor.YELLOW,</span> <span class="pre">2:</span> <span class="pre">_effects.BloodColor.GREEN,</span> <span class="pre">3:</span> <span class="pre">_effects.BloodColor.MECH}</span></em><a class="headerlink" href="#effects.BloodColor.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="effects.ShatterSurface">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">effects.</span></span><span class="sig-name descname"><span class="pre">ShatterSurface</span></span><a class="headerlink" href="#effects.ShatterSurface" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="effects.ShatterSurface.GLASS">
+<span class="sig-name descname"><span class="pre">GLASS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_effects.ShatterSurface.GLASS</span></em><a class="headerlink" href="#effects.ShatterSurface.GLASS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="effects.ShatterSurface.TILE">
+<span class="sig-name descname"><span class="pre">TILE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_effects.ShatterSurface.TILE</span></em><a class="headerlink" href="#effects.ShatterSurface.TILE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="effects.ShatterSurface.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'GLASS':</span> <span class="pre">_effects.ShatterSurface.GLASS,</span> <span class="pre">'TILE':</span> <span class="pre">_effects.ShatterSurface.TILE}</span></em><a class="headerlink" href="#effects.ShatterSurface.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="effects.ShatterSurface.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">_effects.ShatterSurface.GLASS,</span> <span class="pre">1:</span> <span class="pre">_effects.ShatterSurface.TILE}</span></em><a class="headerlink" href="#effects.ShatterSurface.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="effects.ball">
+<span class="sig-prename descclassname"><span class="pre">effects.</span></span><span class="sig-name descname"><span class="pre">ball</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipients</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">15</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">upper_half</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lower_half</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/effects.html#ball"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#effects.ball" title="Link to this definition">¶</a></dt>
+<dd><p>Create a ball by using the remporary effect <code class="docutils literal notranslate"><span class="pre">BeamRingPoint</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>recipients</strong> (<a class="reference internal" href="filters.recipients.html#filters.recipients.RecipientFilter" title="filters.recipients.RecipientFilter"><em>RecipientFilter</em></a>) – Players that should see the beam.</p></li>
+<li><p><strong>center</strong> (<a class="reference internal" href="mathlib.html#mathlib.Vector" title="mathlib.Vector"><em>Vector</em></a>) – The center location of the ball.</p></li>
+<li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The radius of the ball.</p></li>
+<li><p><strong>steps</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of rings that should be used to create the ball.</p></li>
+<li><p><strong>upper_half</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If False, the upper half of the ball isn’t created.</p></li>
+<li><p><strong>lower_half</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If False, the lower half of the ball isn’t created.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The number of steps is used for the lower and upper half. So, if you
+define 15 steps, 29 rings are created (the center ring is shared by
+both halves).</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="effects.beam">
+<span class="sig-prename descclassname"><span class="pre">effects.</span></span><span class="sig-name descname"><span class="pre">beam</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipients</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/effects.html#beam"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#effects.beam" title="Link to this definition">¶</a></dt>
+<dd><p>A simple wrapper for the temporary effect <code class="docutils literal notranslate"><span class="pre">BeamEntPoint</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>recipients</strong> (<a class="reference internal" href="filters.recipients.html#filters.recipients.RecipientFilter" title="filters.recipients.RecipientFilter"><em>RecipientFilter</em></a>) – Players that should see the beam.</p></li>
+<li><p><strong>start</strong> (<em>int/BaseEntity/Vector</em>) – The start location of the beam.</p></li>
+<li><p><strong>end</strong> (<em>int/BaseEntity/Vector</em>) – The end location of the beam.</p></li>
+<li><p><strong>parent</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, the beam will be parented to the given entities.</p></li>
+<li><p><strong>kwargs</strong> – Additional attributes that will be send to the effect.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="effects.box">
+<span class="sig-prename descclassname"><span class="pre">effects.</span></span><span class="sig-name descname"><span class="pre">box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipients</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/effects.html#box"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#effects.box" title="Link to this definition">¶</a></dt>
+<dd><p>Create a box using the temporary effect <code class="docutils literal notranslate"><span class="pre">BeamPoints</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>recipients</strong> (<a class="reference internal" href="filters.recipients.html#filters.recipients.RecipientFilter" title="filters.recipients.RecipientFilter"><em>RecipientFilter</em></a>) – Players that should see the beam.</p></li>
+<li><p><strong>start</strong> (<a class="reference internal" href="mathlib.html#mathlib.Vector" title="mathlib.Vector"><em>Vector</em></a>) – Upper left corner of the box.</p></li>
+<li><p><strong>end</strong> (<a class="reference internal" href="mathlib.html#mathlib.Vector" title="mathlib.Vector"><em>Vector</em></a>) – Lower right corner of the box.</p></li>
+<li><p><strong>kwargs</strong> – Additional attributes that will be send to the effect.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="effects.polygon">
+<span class="sig-prename descclassname"><span class="pre">effects.</span></span><span class="sig-name descname"><span class="pre">polygon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipients</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">points</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/effects.html#polygon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#effects.polygon" title="Link to this definition">¶</a></dt>
+<dd><p>Create a polygon using <a class="reference internal" href="#effects.beam" title="effects.beam"><code class="xref py py-func docutils literal notranslate"><span class="pre">beam()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>recipients</strong> (<a class="reference internal" href="filters.recipients.html#filters.recipients.RecipientFilter" title="filters.recipients.RecipientFilter"><em>RecipientFilter</em></a>) – Players that should see the beam.</p></li>
+<li><p><strong>points</strong> (<em>iterable</em>) – An iterable that contains at least 3 <a class="reference internal" href="mathlib.html#mathlib.Vector" title="mathlib.Vector"><code class="xref py py-class docutils literal notranslate"><span class="pre">mathlib.Vector</span></code></a> instances.</p></li>
+<li><p><strong>parent</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, the beam will be parented to the given entities.</p></li>
+<li><p><strong>kwargs</strong> – Additional attributes that will be send to the effect.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="effects.square">
+<span class="sig-prename descclassname"><span class="pre">effects.</span></span><span class="sig-name descname"><span class="pre">square</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">recipients</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">end</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/effects.html#square"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#effects.square" title="Link to this definition">¶</a></dt>
+<dd><p>Create a square using the temporary effect <code class="docutils literal notranslate"><span class="pre">BeamPoints</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>recipients</strong> (<a class="reference internal" href="filters.recipients.html#filters.recipients.RecipientFilter" title="filters.recipients.RecipientFilter"><em>RecipientFilter</em></a>) – Players that should see the beam.</p></li>
+<li><p><strong>start</strong> (<a class="reference internal" href="mathlib.html#mathlib.Vector" title="mathlib.Vector"><em>Vector</em></a>) – Upper left corner of the square.</p></li>
+<li><p><strong>end</strong> (<a class="reference internal" href="mathlib.html#mathlib.Vector" title="mathlib.Vector"><em>Vector</em></a>) – Lower right corner of the square.</p></li>
+<li><p><strong>kwargs</strong> – Additional attributes that will be send to the effect.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">effects package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-effects">Module contents</a><ul>
+<li><a class="reference internal" href="#effects.BloodColor"><code class="docutils literal notranslate"><span class="pre">BloodColor</span></code></a><ul>
+<li><a class="reference internal" href="#effects.BloodColor.DONT_BLEED"><code class="docutils literal notranslate"><span class="pre">BloodColor.DONT_BLEED</span></code></a></li>
+<li><a class="reference internal" href="#effects.BloodColor.GREEN"><code class="docutils literal notranslate"><span class="pre">BloodColor.GREEN</span></code></a></li>
+<li><a class="reference internal" href="#effects.BloodColor.MECH"><code class="docutils literal notranslate"><span class="pre">BloodColor.MECH</span></code></a></li>
+<li><a class="reference internal" href="#effects.BloodColor.RED"><code class="docutils literal notranslate"><span class="pre">BloodColor.RED</span></code></a></li>
+<li><a class="reference internal" href="#effects.BloodColor.YELLOW"><code class="docutils literal notranslate"><span class="pre">BloodColor.YELLOW</span></code></a></li>
+<li><a class="reference internal" href="#effects.BloodColor.names"><code class="docutils literal notranslate"><span class="pre">BloodColor.names</span></code></a></li>
+<li><a class="reference internal" href="#effects.BloodColor.values"><code class="docutils literal notranslate"><span class="pre">BloodColor.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#effects.ShatterSurface"><code class="docutils literal notranslate"><span class="pre">ShatterSurface</span></code></a><ul>
+<li><a class="reference internal" href="#effects.ShatterSurface.GLASS"><code class="docutils literal notranslate"><span class="pre">ShatterSurface.GLASS</span></code></a></li>
+<li><a class="reference internal" href="#effects.ShatterSurface.TILE"><code class="docutils literal notranslate"><span class="pre">ShatterSurface.TILE</span></code></a></li>
+<li><a class="reference internal" href="#effects.ShatterSurface.names"><code class="docutils literal notranslate"><span class="pre">ShatterSurface.names</span></code></a></li>
+<li><a class="reference internal" href="#effects.ShatterSurface.values"><code class="docutils literal notranslate"><span class="pre">ShatterSurface.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#effects.ball"><code class="docutils literal notranslate"><span class="pre">ball()</span></code></a></li>
+<li><a class="reference internal" href="#effects.beam"><code class="docutils literal notranslate"><span class="pre">beam()</span></code></a></li>
+<li><a class="reference internal" href="#effects.box"><code class="docutils literal notranslate"><span class="pre">box()</span></code></a></li>
+<li><a class="reference internal" href="#effects.polygon"><code class="docutils literal notranslate"><span class="pre">polygon()</span></code></a></li>
+<li><a class="reference internal" href="#effects.square"><code class="docutils literal notranslate"><span class="pre">square()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/effects.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">effects package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

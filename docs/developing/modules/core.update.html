@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>core.update module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">core.update module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-core.update">
+<span id="core-update-module"></span><h1>core.update module<a class="headerlink" href="#module-core.update" title="Link to this heading">¶</a></h1>
+<p>Provides functions to update Source.Python and its data files.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="core.update.download_file">
+<span class="sig-prename descclassname"><span class="pre">core.update.</span></span><span class="sig-name descname"><span class="pre">download_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">url_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core/update.html#download_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.update.download_file" title="Link to this definition">¶</a></dt>
+<dd><p>Download a file from an URL to a specific file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url_path</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The URL that should be opened.</p></li>
+<li><p><strong>file_path</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The file where the content of the URL should be stored.</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Number of seconds that need to pass until a timeout occurs.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="core.update.get_build_artifacts">
+<span class="sig-prename descclassname"><span class="pre">core.update.</span></span><span class="sig-name descname"><span class="pre">get_build_artifacts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core/update.html#get_build_artifacts"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.update.get_build_artifacts" title="Link to this definition">¶</a></dt>
+<dd><p>Return the artifacts of the latest Source.Python build.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Number of seconds that need to pass until a timeout occurs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="core.update.get_download_url">
+<span class="sig-prename descclassname"><span class="pre">core.update.</span></span><span class="sig-name descname"><span class="pre">get_download_url</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">game</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'css'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core/update.html#get_download_url"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.update.get_download_url" title="Link to this definition">¶</a></dt>
+<dd><p>Get the latest Source.Python download URL for a specific game.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>game</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The game game to look for (e.g. <code class="docutils literal notranslate"><span class="pre">css</span></code>).</p></li>
+<li><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Number of seconds that need to pass until a timeout occurs.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Raised if the game wasn’t found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="core.update.get_latest_data_checksum">
+<span class="sig-prename descclassname"><span class="pre">core.update.</span></span><span class="sig-name descname"><span class="pre">get_latest_data_checksum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core/update.html#get_latest_data_checksum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.update.get_latest_data_checksum" title="Link to this definition">¶</a></dt>
+<dd><p>Return the MD5 checksum of the latest data from the build server.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Number of seconds that need to pass until a timeout occurs.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="core.update.is_new_data_available">
+<span class="sig-prename descclassname"><span class="pre">core.update.</span></span><span class="sig-name descname"><span class="pre">is_new_data_available</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core/update.html#is_new_data_available"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.update.is_new_data_available" title="Link to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if new data is available.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Number of seconds that need to pass until a timeout occurs.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="core.update.update_data">
+<span class="sig-prename descclassname"><span class="pre">core.update.</span></span><span class="sig-name descname"><span class="pre">update_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeout</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core/update.html#update_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.update.update_data" title="Link to this definition">¶</a></dt>
+<dd><p>Download and unpack the latest data from the build server.</p>
+<p>Old data gets deleted before unpacking.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>timeout</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Number of seconds that need to pass until a timeout occurs.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="core.update.update_in_progress">
+<span class="sig-prename descclassname"><span class="pre">core.update.</span></span><span class="sig-name descname"><span class="pre">update_in_progress</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">False</span></em><a class="headerlink" href="#core.update.update_in_progress" title="Link to this definition">¶</a></dt>
+<dd><p>Indicates, whether an update is in progress (stage 1 has been applied).</p>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">core.update module</a><ul>
+<li><a class="reference internal" href="#core.update.download_file"><code class="docutils literal notranslate"><span class="pre">download_file()</span></code></a></li>
+<li><a class="reference internal" href="#core.update.get_build_artifacts"><code class="docutils literal notranslate"><span class="pre">get_build_artifacts()</span></code></a></li>
+<li><a class="reference internal" href="#core.update.get_download_url"><code class="docutils literal notranslate"><span class="pre">get_download_url()</span></code></a></li>
+<li><a class="reference internal" href="#core.update.get_latest_data_checksum"><code class="docutils literal notranslate"><span class="pre">get_latest_data_checksum()</span></code></a></li>
+<li><a class="reference internal" href="#core.update.is_new_data_available"><code class="docutils literal notranslate"><span class="pre">is_new_data_available()</span></code></a></li>
+<li><a class="reference internal" href="#core.update.update_data"><code class="docutils literal notranslate"><span class="pre">update_data()</span></code></a></li>
+<li><a class="reference internal" href="#core.update.update_in_progress"><code class="docutils literal notranslate"><span class="pre">update_in_progress</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/core.update.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">core.update module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

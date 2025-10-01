@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>menus &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="plugins" href="plugins.html" />
+    <link rel="prev" title="memory" href="memory.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.html" title="plugins"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="memory.html" title="memory"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../module_tutorials.html" accesskey="U">Module tutorials</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">menus</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="menus">
+<h1>menus<a class="headerlink" href="#menus" title="Link to this heading">¶</a></h1>
+<p>This page contains tutorials about the <a class="reference internal" href="../modules/menus.html#module-menus" title="menus"><code class="xref py py-mod docutils literal notranslate"><span class="pre">menus</span></code></a> package.</p>
+<section id="creating-pagedmenu">
+<h2>Creating PagedMenu<a class="headerlink" href="#creating-pagedmenu" title="Link to this heading">¶</a></h2>
+<p>This is a simple example to create a <a class="reference internal" href="../modules/menus.html#menus.PagedMenu" title="menus.PagedMenu"><code class="xref py py-class docutils literal notranslate"><span class="pre">menus.PagedMenu</span></code></a>, which shows 20 options.
+After selecting an option the menu will be shuffled and shown again.</p>
+<p>You can use paged menus if you have many menu entries and want Source.Python
+to take care about the pagination. If you need more control about the menu
+take a look at <a class="reference internal" href="../modules/menus.html#menus.SimpleMenu" title="menus.SimpleMenu"><code class="xref py py-class docutils literal notranslate"><span class="pre">menus.SimpleMenu</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">random</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">commands.say</span><span class="w"> </span><span class="kn">import</span> <span class="n">SayCommand</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">menus</span><span class="w"> </span><span class="kn">import</span> <span class="n">PagedMenu</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">menus</span><span class="w"> </span><span class="kn">import</span> <span class="n">PagedOption</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+
+
+<span class="c1"># Register menu command</span>
+<span class="nd">@SayCommand</span><span class="p">([</span><span class="s1">&#39;menu&#39;</span><span class="p">,</span> <span class="s1">&#39;/menu&#39;</span><span class="p">,</span> <span class="s1">&#39;!menu&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">say_command</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">teamonly</span><span class="p">):</span>
+    <span class="c1"># Send the menu to the player who issued the say command.</span>
+    <span class="n">menu</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">my_select_callback</span><span class="p">(</span><span class="n">menu</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">option</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Called whenever a selection was made.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Shuffle the menu : D</span>
+    <span class="n">random</span><span class="o">.</span><span class="n">shuffle</span><span class="p">(</span><span class="n">menu</span><span class="p">)</span>
+
+    <span class="c1"># Make it sticky. If you return a menu, it will be shown immediately.</span>
+    <span class="k">return</span> <span class="n">menu</span>
+
+<span class="n">menu</span> <span class="o">=</span> <span class="n">PagedMenu</span><span class="p">(</span>
+    <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Welcome menu&#39;</span><span class="p">,</span>
+    <span class="n">description</span><span class="o">=</span><span class="s1">&#39;Choose an option:&#39;</span><span class="p">,</span>
+    <span class="n">select_callback</span><span class="o">=</span><span class="n">my_select_callback</span>
+<span class="p">)</span>
+
+<span class="c1"># Add options from 1 to 20</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">):</span>
+    <span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">PagedOption</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Option </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span> <span class="n">i</span><span class="p">))</span>
+
+<span class="c1"># Instead of passing the select, build and close callbacks to the constructor</span>
+<span class="c1"># of PagedMenu, you can also use a decorator to register the callbacks.</span>
+<span class="nd">@menu</span><span class="o">.</span><span class="n">register_close_callback</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_on_close_menu</span><span class="p">(</span><span class="n">menu</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Called when the player closes the menu.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Send the menu again</span>
+    <span class="n">menu</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="creating-simplemenu">
+<h2>Creating SimpleMenu<a class="headerlink" href="#creating-simplemenu" title="Link to this heading">¶</a></h2>
+<p>This is an example to create <a class="reference internal" href="../modules/menus.html#menus.SimpleMenu" title="menus.SimpleMenu"><code class="xref py py-class docutils literal notranslate"><span class="pre">menus.SimpleMenu</span></code></a> which asks a player to accept the server rules.
+If he declines, he will be kicked from the server.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">commands.say</span><span class="w"> </span><span class="kn">import</span> <span class="n">SayCommand</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">menus</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleMenu</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">menus</span><span class="w"> </span><span class="kn">import</span> <span class="n">SimpleOption</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SayText2</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+
+<span class="c1"># Register menu command</span>
+<span class="nd">@SayCommand</span><span class="p">([</span><span class="s1">&#39;menus&#39;</span><span class="p">,</span> <span class="s1">&#39;/menus&#39;</span><span class="p">,</span> <span class="s1">&#39;!menus&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">say_menus_command</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">teamonly</span><span class="p">):</span>
+    <span class="c1"># Send the menu</span>
+    <span class="n">menu</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">my_menu_select_callback</span><span class="p">(</span><span class="n">menu</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">option</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Called whenever a selection was made.&quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="n">option</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s1">&#39;yes&#39;</span><span class="p">:</span>
+        <span class="n">SayText2</span><span class="p">(</span><span class="s1">&#39;Thank you for accepting the rules!&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="c1"># Player has selected no option</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># Kick player for selecting no option</span>
+        <span class="n">Player</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">kick</span><span class="p">(</span><span class="s1">&#39;You have to accept the rules!&#39;</span><span class="p">)</span>
+
+<span class="n">menu</span> <span class="o">=</span> <span class="n">SimpleMenu</span><span class="p">()</span>
+
+<span class="c1"># Tell the current time</span>
+<span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Current Time: </span><span class="si">{</span><span class="n">time</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%H:%M:%S&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Add empty line</span>
+<span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+<span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Do you accept the rules?&#39;</span><span class="p">)</span>
+<span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="p">)</span>
+
+<span class="c1"># Add menu options</span>
+<span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleOption</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;Yes&#39;</span><span class="p">,</span> <span class="s1">&#39;yes&#39;</span><span class="p">))</span>
+<span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">SimpleOption</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;No&#39;</span><span class="p">,</span> <span class="s1">&#39;no&#39;</span><span class="p">))</span>
+
+<span class="c1"># Another way to define a select callback.</span>
+<span class="n">menu</span><span class="o">.</span><span class="n">select_callback</span> <span class="o">=</span> <span class="n">my_menu_select_callback</span>
+</pre></div>
+</div>
+</section>
+<section id="creating-listmenu">
+<h2>Creating ListMenu<a class="headerlink" href="#creating-listmenu" title="Link to this heading">¶</a></h2>
+<p>This example shows how to create a <a class="reference internal" href="../modules/menus.html#menus.ListMenu" title="menus.ListMenu"><code class="xref py py-class docutils literal notranslate"><span class="pre">menus.ListMenu</span></code></a>.
+The goal of a list menu is to show a lot of data, but the menu entries are not selectable.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">commands.say</span><span class="w"> </span><span class="kn">import</span> <span class="n">SayCommand</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">menus</span><span class="w"> </span><span class="kn">import</span> <span class="n">ListMenu</span>
+
+<span class="c1"># Register menu command</span>
+<span class="nd">@SayCommand</span><span class="p">([</span><span class="s1">&#39;menus&#39;</span><span class="p">,</span> <span class="s1">&#39;/menus&#39;</span><span class="p">,</span> <span class="s1">&#39;!menus&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">say_menus_command</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">teamonly</span><span class="p">):</span>
+    <span class="c1"># Send the menu</span>
+    <span class="n">menu</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+    <span class="k">return</span> <span class="kc">False</span>
+
+<span class="n">menu</span> <span class="o">=</span> <span class="n">ListMenu</span><span class="p">()</span>
+
+<span class="c1"># Add menu text</span>
+<span class="n">menu</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;This is an example text&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">menus</a><ul>
+<li><a class="reference internal" href="#creating-pagedmenu">Creating PagedMenu</a></li>
+<li><a class="reference internal" href="#creating-simplemenu">Creating SimpleMenu</a></li>
+<li><a class="reference internal" href="#creating-listmenu">Creating ListMenu</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="memory.html"
+                          title="previous chapter">memory</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="plugins.html"
+                          title="next chapter">plugins</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/module_tutorials/menus.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="plugins.html" title="plugins"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="memory.html" title="memory"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../module_tutorials.html" >Module tutorials</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">menus</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

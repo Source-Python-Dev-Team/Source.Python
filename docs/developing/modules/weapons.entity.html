@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>weapons.entity module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">weapons.entity module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-weapons.entity">
+<span id="weapons-entity-module"></span><h1>weapons.entity module<a class="headerlink" href="#module-weapons.entity" title="Link to this heading">¶</a></h1>
+<p>Provides simplified weapon functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="weapons.entity.Weapon">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">weapons.entity.</span></span><span class="sig-name descname"><span class="pre">Weapon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caching</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/_base.html#Weapon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.entity.Weapon" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#weapons._entity.WeaponMixin" title="_weapons._entity.WeaponMixin"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeaponMixin</span></code></a>, <a class="reference internal" href="entities.entity.html#entities.entity.Entity" title="entities._base.Entity"><code class="xref py py-class docutils literal notranslate"><span class="pre">Entity</span></code></a></p>
+<p>Allows easy usage of the weapon’s attributes.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.entity.Weapon.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">caching</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/_base.html#Weapon.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.entity.Weapon.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – A valid weapon index.</p></li>
+<li><p><strong>caching</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to lookup the cache for an existing instance or not.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Raised if the index is invalid.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.entity.Weapon.get_ammo">
+<span class="sig-name descname"><span class="pre">get_ammo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/_base.html#Weapon.get_ammo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.entity.Weapon.get_ammo" title="Link to this definition">¶</a></dt>
+<dd><p>Return the amount of ammo the player has for the weapon.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.entity.Weapon.get_clip">
+<span class="sig-name descname"><span class="pre">get_clip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/_base.html#Weapon.get_clip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.entity.Weapon.get_clip" title="Link to this definition">¶</a></dt>
+<dd><p>Return the amount of ammo in the weapon’s clip.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.entity.Weapon.get_secondary_fire_ammo">
+<span class="sig-name descname"><span class="pre">get_secondary_fire_ammo</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/_base.html#Weapon.get_secondary_fire_ammo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.entity.Weapon.get_secondary_fire_ammo" title="Link to this definition">¶</a></dt>
+<dd><p>Return the secondary fire ammo the player has for the weapon.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.entity.Weapon.get_secondary_fire_clip">
+<span class="sig-name descname"><span class="pre">get_secondary_fire_clip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/_base.html#Weapon.get_secondary_fire_clip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.entity.Weapon.get_secondary_fire_clip" title="Link to this definition">¶</a></dt>
+<dd><p>Return the amount of ammo in the weapon’s secondary fire clip.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.entity.Weapon.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/_base.html#Weapon.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.entity.Weapon.remove" title="Link to this definition">¶</a></dt>
+<dd><p>Remove the weapon.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.entity.Weapon.set_ammo">
+<span class="sig-name descname"><span class="pre">set_ammo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/_base.html#Weapon.set_ammo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.entity.Weapon.set_ammo" title="Link to this definition">¶</a></dt>
+<dd><p>Set the player’s ammo property for the weapon.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.entity.Weapon.set_clip">
+<span class="sig-name descname"><span class="pre">set_clip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/_base.html#Weapon.set_clip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.entity.Weapon.set_clip" title="Link to this definition">¶</a></dt>
+<dd><p>Set the amount of ammo in the weapon’s clip.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.entity.Weapon.set_secondary_fire_ammo">
+<span class="sig-name descname"><span class="pre">set_secondary_fire_ammo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/_base.html#Weapon.set_secondary_fire_ammo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.entity.Weapon.set_secondary_fire_ammo" title="Link to this definition">¶</a></dt>
+<dd><p>Set the player’s secondary fire ammo property for the weapon.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.entity.Weapon.set_secondary_fire_clip">
+<span class="sig-name descname"><span class="pre">set_secondary_fire_clip</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/_base.html#Weapon.set_secondary_fire_clip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.entity.Weapon.set_secondary_fire_clip" title="Link to this definition">¶</a></dt>
+<dd><p>Set the amount of ammo in the weapon’s secondary fire clip.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.entity.Weapon.ammo">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ammo</span></span><a class="headerlink" href="#weapons.entity.Weapon.ammo" title="Link to this definition">¶</a></dt>
+<dd><p>Property to get/set the weapon’s ammo.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.entity.Weapon.clip">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clip</span></span><a class="headerlink" href="#weapons.entity.Weapon.clip" title="Link to this definition">¶</a></dt>
+<dd><p>Property to get/set the weapon’s clip.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.entity.Weapon.secondary_fire_ammo">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">secondary_fire_ammo</span></span><a class="headerlink" href="#weapons.entity.Weapon.secondary_fire_ammo" title="Link to this definition">¶</a></dt>
+<dd><p>Property to get/set the weapon’s secondary fire ammo.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.entity.Weapon.secondary_fire_clip">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">secondary_fire_clip</span></span><a class="headerlink" href="#weapons.entity.Weapon.secondary_fire_clip" title="Link to this definition">¶</a></dt>
+<dd><p>Property to get/set the weapon’s secondary fire clip.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.entity.Weapon.weapon_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weapon_name</span></span><a class="headerlink" href="#weapons.entity.Weapon.weapon_name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the full class name of the weapon.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="weapons._entity.WeaponMixin">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">_weapons._entity.</span></span><span class="sig-name descname"><span class="pre">WeaponMixin</span></span><a class="headerlink" href="#weapons._entity.WeaponMixin" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="entities.entity.html#entities.entity.BaseEntity" title="_entities._entity.BaseEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEntity</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons._entity.WeaponMixin.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(int)entity_index</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><span class="pre">object</span></a></span></span><a class="headerlink" href="#weapons._entity.WeaponMixin.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons._entity.WeaponMixin.is_networked">
+<span class="sig-name descname"><span class="pre">is_networked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(WeaponMixin)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#weapons._entity.WeaponMixin.is_networked" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if the entity is networked.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons._entity.WeaponMixin.is_player">
+<span class="sig-name descname"><span class="pre">is_player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(WeaponMixin)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#weapons._entity.WeaponMixin.is_player" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if the entity is a player.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons._entity.WeaponMixin.is_weapon">
+<span class="sig-name descname"><span class="pre">is_weapon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(WeaponMixin)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#weapons._entity.WeaponMixin.is_weapon" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if the entity is a weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons._entity.WeaponMixin.ammoprop">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ammoprop</span></span><a class="headerlink" href="#weapons._entity.WeaponMixin.ammoprop" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the weapons’s primary fire ammo prop type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons._entity.WeaponMixin.flip_view_model">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flip_view_model</span></span><a class="headerlink" href="#weapons._entity.WeaponMixin.flip_view_model" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the weapons’s flip view model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons._entity.WeaponMixin.next_attack">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">next_attack</span></span><a class="headerlink" href="#weapons._entity.WeaponMixin.next_attack" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the weapons’s next primary fire attack time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons._entity.WeaponMixin.next_secondary_fire_attack">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">next_secondary_fire_attack</span></span><a class="headerlink" href="#weapons._entity.WeaponMixin.next_secondary_fire_attack" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the weapons’s next secondary fire attack time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons._entity.WeaponMixin.owner_handle">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">owner_handle</span></span><a class="headerlink" href="#weapons._entity.WeaponMixin.owner_handle" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the weapons’s owner handle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons._entity.WeaponMixin.primary_ammo_count">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">primary_ammo_count</span></span><a class="headerlink" href="#weapons._entity.WeaponMixin.primary_ammo_count" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the weapons’s primary ammo count.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in CS:GO.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons._entity.WeaponMixin.secondary_ammo_count">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">secondary_ammo_count</span></span><a class="headerlink" href="#weapons._entity.WeaponMixin.secondary_ammo_count" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the weapons’s secondary ammo count.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in CS:GO.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons._entity.WeaponMixin.secondary_fire_ammoprop">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">secondary_fire_ammoprop</span></span><a class="headerlink" href="#weapons._entity.WeaponMixin.secondary_fire_ammoprop" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the weapons’s secondary fire ammo prop type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons._entity.WeaponMixin.world_model_index">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">world_model_index</span></span><a class="headerlink" href="#weapons._entity.WeaponMixin.world_model_index" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the weapons’s world model index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">weapons.entity module</a><ul>
+<li><a class="reference internal" href="#weapons.entity.Weapon"><code class="docutils literal notranslate"><span class="pre">Weapon</span></code></a><ul>
+<li><a class="reference internal" href="#weapons.entity.Weapon.__init__"><code class="docutils literal notranslate"><span class="pre">Weapon.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.entity.Weapon.get_ammo"><code class="docutils literal notranslate"><span class="pre">Weapon.get_ammo()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.entity.Weapon.get_clip"><code class="docutils literal notranslate"><span class="pre">Weapon.get_clip()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.entity.Weapon.get_secondary_fire_ammo"><code class="docutils literal notranslate"><span class="pre">Weapon.get_secondary_fire_ammo()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.entity.Weapon.get_secondary_fire_clip"><code class="docutils literal notranslate"><span class="pre">Weapon.get_secondary_fire_clip()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.entity.Weapon.remove"><code class="docutils literal notranslate"><span class="pre">Weapon.remove()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.entity.Weapon.set_ammo"><code class="docutils literal notranslate"><span class="pre">Weapon.set_ammo()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.entity.Weapon.set_clip"><code class="docutils literal notranslate"><span class="pre">Weapon.set_clip()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.entity.Weapon.set_secondary_fire_ammo"><code class="docutils literal notranslate"><span class="pre">Weapon.set_secondary_fire_ammo()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.entity.Weapon.set_secondary_fire_clip"><code class="docutils literal notranslate"><span class="pre">Weapon.set_secondary_fire_clip()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.entity.Weapon.ammo"><code class="docutils literal notranslate"><span class="pre">Weapon.ammo</span></code></a></li>
+<li><a class="reference internal" href="#weapons.entity.Weapon.clip"><code class="docutils literal notranslate"><span class="pre">Weapon.clip</span></code></a></li>
+<li><a class="reference internal" href="#weapons.entity.Weapon.secondary_fire_ammo"><code class="docutils literal notranslate"><span class="pre">Weapon.secondary_fire_ammo</span></code></a></li>
+<li><a class="reference internal" href="#weapons.entity.Weapon.secondary_fire_clip"><code class="docutils literal notranslate"><span class="pre">Weapon.secondary_fire_clip</span></code></a></li>
+<li><a class="reference internal" href="#weapons.entity.Weapon.weapon_name"><code class="docutils literal notranslate"><span class="pre">Weapon.weapon_name</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#weapons._entity.WeaponMixin"><code class="docutils literal notranslate"><span class="pre">WeaponMixin</span></code></a><ul>
+<li><a class="reference internal" href="#weapons._entity.WeaponMixin.__init__"><code class="docutils literal notranslate"><span class="pre">WeaponMixin.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#weapons._entity.WeaponMixin.is_networked"><code class="docutils literal notranslate"><span class="pre">WeaponMixin.is_networked()</span></code></a></li>
+<li><a class="reference internal" href="#weapons._entity.WeaponMixin.is_player"><code class="docutils literal notranslate"><span class="pre">WeaponMixin.is_player()</span></code></a></li>
+<li><a class="reference internal" href="#weapons._entity.WeaponMixin.is_weapon"><code class="docutils literal notranslate"><span class="pre">WeaponMixin.is_weapon()</span></code></a></li>
+<li><a class="reference internal" href="#weapons._entity.WeaponMixin.ammoprop"><code class="docutils literal notranslate"><span class="pre">WeaponMixin.ammoprop</span></code></a></li>
+<li><a class="reference internal" href="#weapons._entity.WeaponMixin.flip_view_model"><code class="docutils literal notranslate"><span class="pre">WeaponMixin.flip_view_model</span></code></a></li>
+<li><a class="reference internal" href="#weapons._entity.WeaponMixin.next_attack"><code class="docutils literal notranslate"><span class="pre">WeaponMixin.next_attack</span></code></a></li>
+<li><a class="reference internal" href="#weapons._entity.WeaponMixin.next_secondary_fire_attack"><code class="docutils literal notranslate"><span class="pre">WeaponMixin.next_secondary_fire_attack</span></code></a></li>
+<li><a class="reference internal" href="#weapons._entity.WeaponMixin.owner_handle"><code class="docutils literal notranslate"><span class="pre">WeaponMixin.owner_handle</span></code></a></li>
+<li><a class="reference internal" href="#weapons._entity.WeaponMixin.primary_ammo_count"><code class="docutils literal notranslate"><span class="pre">WeaponMixin.primary_ammo_count</span></code></a></li>
+<li><a class="reference internal" href="#weapons._entity.WeaponMixin.secondary_ammo_count"><code class="docutils literal notranslate"><span class="pre">WeaponMixin.secondary_ammo_count</span></code></a></li>
+<li><a class="reference internal" href="#weapons._entity.WeaponMixin.secondary_fire_ammoprop"><code class="docutils literal notranslate"><span class="pre">WeaponMixin.secondary_fire_ammoprop</span></code></a></li>
+<li><a class="reference internal" href="#weapons._entity.WeaponMixin.world_model_index"><code class="docutils literal notranslate"><span class="pre">WeaponMixin.world_model_index</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/weapons.entity.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">weapons.entity module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

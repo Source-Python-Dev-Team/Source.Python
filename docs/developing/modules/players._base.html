@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>players._base module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">players._base module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-players._base">
+<span id="players-base-module"></span><h1>players._base module<a class="headerlink" href="#module-players._base" title="Link to this heading">¶</a></h1>
+<p>Provides a class used to interact with a specific player.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="players.PlayerMixin">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">_players.</span></span><span class="sig-name descname"><span class="pre">PlayerMixin</span></span><a class="headerlink" href="#players.PlayerMixin" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="entities.entity.html#entities.entity.BaseEntity" title="_entities._entity.BaseEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseEntity</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="players.PlayerMixin.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(int)entity_index</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><span class="pre">object</span></a></span></span><a class="headerlink" href="#players.PlayerMixin.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="players.PlayerMixin.get_view_angle">
+<span class="sig-name descname"><span class="pre">get_view_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(PlayerMixin)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_mathlib.QAngle</span> <span class="pre">:</span></span></span><a class="headerlink" href="#players.PlayerMixin.get_view_angle" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the player’s view angle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="mathlib.html#mathlib.QAngle" title="mathlib.QAngle">QAngle</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="players.PlayerMixin.is_networked">
+<span class="sig-name descname"><span class="pre">is_networked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(PlayerMixin)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#players.PlayerMixin.is_networked" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if the entity is networked.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="players.PlayerMixin.is_player">
+<span class="sig-name descname"><span class="pre">is_player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(PlayerMixin)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#players.PlayerMixin.is_player" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if the entity is a player.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="players.PlayerMixin.is_weapon">
+<span class="sig-name descname"><span class="pre">is_weapon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(PlayerMixin)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#players.PlayerMixin.is_weapon" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if the entity is a weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="players.PlayerMixin.set_view_angle">
+<span class="sig-name descname"><span class="pre">set_view_angle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(PlayerMixin)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_mathlib.QAngle)arg2</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)fixangle=1</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#players.PlayerMixin.set_view_angle" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="players.PlayerMixin.snap_to_position">
+<span class="sig-name descname"><span class="pre">snap_to_position</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(PlayerMixin)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(_mathlib.Vector)origin=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(_mathlib.QAngle)angles=None</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#players.PlayerMixin.snap_to_position" title="Link to this definition">¶</a></dt>
+<dd><p>Teleports the player at the given position and angles.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>origin</strong> (<a class="reference internal" href="mathlib.html#mathlib.Vector" title="mathlib.Vector"><em>Vector</em></a>) – The coordinates to teleport the player at.</p></li>
+<li><p><strong>angles</strong> (<a class="reference internal" href="mathlib.html#mathlib.QAngle" title="mathlib.QAngle"><em>QAngle</em></a>) – The angles to set the player’s view to.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.active_devices">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">active_devices</span></span><a class="headerlink" href="#players.PlayerMixin.active_devices" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s active devices.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in HL2.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.active_weapon_handle">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">active_weapon_handle</span></span><a class="headerlink" href="#players.PlayerMixin.active_weapon_handle" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s active weapon_handle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.armor">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">armor</span></span><a class="headerlink" href="#players.PlayerMixin.armor" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s armor.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in CS:GO and CS:S.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.buttons">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">buttons</span></span><a class="headerlink" href="#players.PlayerMixin.buttons" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s currently pressed buttons.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.cash">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cash</span></span><a class="headerlink" href="#players.PlayerMixin.cash" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s cash.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in CS:GO and CS:S.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.dead">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dead</span></span><a class="headerlink" href="#players.PlayerMixin.dead" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether the player is dead.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.deaths">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">deaths</span></span><a class="headerlink" href="#players.PlayerMixin.deaths" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s death count.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.default_fov">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_fov</span></span><a class="headerlink" href="#players.PlayerMixin.default_fov" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s default field of view (FOV).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.desired_player_class">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">desired_player_class</span></span><a class="headerlink" href="#players.PlayerMixin.desired_player_class" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s desired player class.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in TF2.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.draw_view_model">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">draw_view_model</span></span><a class="headerlink" href="#players.PlayerMixin.draw_view_model" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s draw view model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.eye_angle">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">eye_angle</span></span><a class="headerlink" href="#players.PlayerMixin.eye_angle" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s eye angle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="mathlib.html#mathlib.QAngle" title="mathlib.QAngle">QAngle</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.fall_velocity">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fall_velocity</span></span><a class="headerlink" href="#players.PlayerMixin.fall_velocity" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s fall velocity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.flags">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flags</span></span><a class="headerlink" href="#players.PlayerMixin.flags" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s flags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.flash_alpha">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flash_alpha</span></span><a class="headerlink" href="#players.PlayerMixin.flash_alpha" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s flash alpha.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in CS:GO and CS:S.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.flash_duration">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flash_duration</span></span><a class="headerlink" href="#players.PlayerMixin.flash_duration" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s flash duration.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in CS:GO and CS:S.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.fov">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fov</span></span><a class="headerlink" href="#players.PlayerMixin.fov" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s field of view (FOV).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.fov_rate">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fov_rate</span></span><a class="headerlink" href="#players.PlayerMixin.fov_rate" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s field of view (FOV) rate.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.fov_start">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fov_start</span></span><a class="headerlink" href="#players.PlayerMixin.fov_start" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s field of view (FOV) start.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.fov_time">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fov_time</span></span><a class="headerlink" href="#players.PlayerMixin.fov_time" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s field of view (FOV) time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.gun_offset">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gun_offset</span></span><a class="headerlink" href="#players.PlayerMixin.gun_offset" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s gun offset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="mathlib.html#mathlib.Vector" title="mathlib.Vector">Vector</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.has_defuser">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_defuser</span></span><a class="headerlink" href="#players.PlayerMixin.has_defuser" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set whether the player has a defuser.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in CS:GO and CS:S.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.has_helmet">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_helmet</span></span><a class="headerlink" href="#players.PlayerMixin.has_helmet" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set whether the player has a helmet.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in CS:GO and CS:S.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.hidden_huds">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hidden_huds</span></span><a class="headerlink" href="#players.PlayerMixin.hidden_huds" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s hidden HUDs.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.in_bomb_zone">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">in_bomb_zone</span></span><a class="headerlink" href="#players.PlayerMixin.in_bomb_zone" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set whether the player is in a bomb zone.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in CS:GO and CS:S.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.in_buy_zone">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">in_buy_zone</span></span><a class="headerlink" href="#players.PlayerMixin.in_buy_zone" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set whether the player is in a buy zone.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in CS:GO and CS:S.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.in_rescue_zone">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">in_rescue_zone</span></span><a class="headerlink" href="#players.PlayerMixin.in_rescue_zone" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set whether the player is in a hostage rescue zone.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in CS:GO and CS:S.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.is_defusing">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_defusing</span></span><a class="headerlink" href="#players.PlayerMixin.is_defusing" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set whether the player is currently defusing the bomb.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in CS:GO and CS:S.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.is_ducked">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_ducked</span></span><a class="headerlink" href="#players.PlayerMixin.is_ducked" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether the player is ducked.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.is_ducking">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_ducking</span></span><a class="headerlink" href="#players.PlayerMixin.is_ducking" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether the player is duckeding.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.kills">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kills</span></span><a class="headerlink" href="#players.PlayerMixin.kills" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s kill count.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.last_hitgroup">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">last_hitgroup</span></span><a class="headerlink" href="#players.PlayerMixin.last_hitgroup" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s last hitgroup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.last_weapon">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">last_weapon</span></span><a class="headerlink" href="#players.PlayerMixin.last_weapon" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s last weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.life_state">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">life_state</span></span><a class="headerlink" href="#players.PlayerMixin.life_state" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s life state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.nightvision_on">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nightvision_on</span></span><a class="headerlink" href="#players.PlayerMixin.nightvision_on" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set whether the player is currently using nightvision.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in CS:GO and CS:S.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.observer_mode">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">observer_mode</span></span><a class="headerlink" href="#players.PlayerMixin.observer_mode" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s observer mode.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.observer_target">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">observer_target</span></span><a class="headerlink" href="#players.PlayerMixin.observer_target" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s observer target.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.phys_damage_scale">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">phys_damage_scale</span></span><a class="headerlink" href="#players.PlayerMixin.phys_damage_scale" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s physical damage scale.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.place">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">place</span></span><a class="headerlink" href="#players.PlayerMixin.place" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s current place.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.player_class">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">player_class</span></span><a class="headerlink" href="#players.PlayerMixin.player_class" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s player class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.player_state">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">player_state</span></span><a class="headerlink" href="#players.PlayerMixin.player_state" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s player state.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.ragdoll">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ragdoll</span></span><a class="headerlink" href="#players.PlayerMixin.ragdoll" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s ragdoll.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.relationship">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">relationship</span></span><a class="headerlink" href="#players.PlayerMixin.relationship" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s relationship.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.shots_fired">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shots_fired</span></span><a class="headerlink" href="#players.PlayerMixin.shots_fired" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the the number of shots fired by the player.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in CS:GO and CS:S.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.speed">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">speed</span></span><a class="headerlink" href="#players.PlayerMixin.speed" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s speed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.stamina">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stamina</span></span><a class="headerlink" href="#players.PlayerMixin.stamina" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s stamina.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in CS:GO and CS:S.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.suit_power_load">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">suit_power_load</span></span><a class="headerlink" href="#players.PlayerMixin.suit_power_load" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s suit power load.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only available in HL2.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.view_angle">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">view_angle</span></span><a class="headerlink" href="#players.PlayerMixin.view_angle" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s view angle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="mathlib.html#mathlib.QAngle" title="mathlib.QAngle">QAngle</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.view_offset">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">view_offset</span></span><a class="headerlink" href="#players.PlayerMixin.view_offset" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s view offset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="mathlib.html#mathlib.Vector" title="mathlib.Vector">Vector</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="players.PlayerMixin.view_vector">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">view_vector</span></span><a class="headerlink" href="#players.PlayerMixin.view_vector" title="Link to this definition">¶</a></dt>
+<dd><p>Get/set the player’s view vector.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="mathlib.html#mathlib.Vector" title="mathlib.Vector">Vector</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">players._base module</a><ul>
+<li><a class="reference internal" href="#players.PlayerMixin"><code class="docutils literal notranslate"><span class="pre">PlayerMixin</span></code></a><ul>
+<li><a class="reference internal" href="#players.PlayerMixin.__init__"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.get_view_angle"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.get_view_angle()</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.is_networked"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.is_networked()</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.is_player"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.is_player()</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.is_weapon"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.is_weapon()</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.set_view_angle"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.set_view_angle()</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.snap_to_position"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.snap_to_position()</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.active_devices"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.active_devices</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.active_weapon_handle"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.active_weapon_handle</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.armor"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.armor</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.buttons"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.buttons</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.cash"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.cash</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.dead"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.dead</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.deaths"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.deaths</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.default_fov"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.default_fov</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.desired_player_class"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.desired_player_class</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.draw_view_model"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.draw_view_model</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.eye_angle"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.eye_angle</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.fall_velocity"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.fall_velocity</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.flags"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.flags</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.flash_alpha"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.flash_alpha</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.flash_duration"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.flash_duration</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.fov"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.fov</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.fov_rate"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.fov_rate</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.fov_start"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.fov_start</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.fov_time"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.fov_time</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.gun_offset"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.gun_offset</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.has_defuser"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.has_defuser</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.has_helmet"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.has_helmet</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.hidden_huds"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.hidden_huds</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.in_bomb_zone"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.in_bomb_zone</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.in_buy_zone"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.in_buy_zone</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.in_rescue_zone"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.in_rescue_zone</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.is_defusing"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.is_defusing</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.is_ducked"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.is_ducked</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.is_ducking"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.is_ducking</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.kills"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.kills</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.last_hitgroup"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.last_hitgroup</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.last_weapon"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.last_weapon</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.life_state"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.life_state</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.nightvision_on"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.nightvision_on</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.observer_mode"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.observer_mode</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.observer_target"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.observer_target</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.phys_damage_scale"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.phys_damage_scale</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.place"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.place</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.player_class"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.player_class</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.player_state"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.player_state</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.ragdoll"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.ragdoll</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.relationship"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.relationship</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.shots_fired"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.shots_fired</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.speed"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.speed</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.stamina"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.stamina</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.suit_power_load"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.suit_power_load</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.view_angle"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.view_angle</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.view_offset"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.view_offset</span></code></a></li>
+<li><a class="reference internal" href="#players.PlayerMixin.view_vector"><code class="docutils literal notranslate"><span class="pre">PlayerMixin.view_vector</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/players._base.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">players._base module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

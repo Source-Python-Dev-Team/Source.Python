@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>listeners.tick &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../listeners.html" accesskey="U">listeners</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">listeners.tick</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for listeners.tick</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../listeners/tick.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides tick listener based functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">bisect</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntEnum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">threading</span><span class="w"> </span><span class="kn">import</span> <span class="n">Thread</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
+
+<span class="c1"># Source.Python</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoUnload</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">WeakAutoUnload</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hooks.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">except_hooks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">listeners_logger</span><span class="p">,</span> <span class="n">on_tick_listener_manager</span><span class="p">,</span> <span class="n">OnLevelEnd</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;Delay&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;GameThread&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;Repeat&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;RepeatStatus&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Get the sp.listeners.tick logger</span>
+<span class="n">listeners_tick_logger</span> <span class="o">=</span> <span class="n">listeners_logger</span><span class="o">.</span><span class="n">tick</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; THREAD WORKAROUND</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="GameThread">
+<a class="viewcode-back" href="../../developing/modules/listeners.tick.html#listeners.tick.GameThread">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">GameThread</span><span class="p">(</span><span class="n">WeakAutoUnload</span><span class="p">,</span> <span class="n">Thread</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A subclass of :class:`threading.Thread` that throws a warning if the</span>
+<span class="sd">    plugin that created the thread has been unloaded while the thread is still</span>
+<span class="sd">    running.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">caller</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_add_instance</span><span class="p">(</span><span class="n">caller</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_caller</span> <span class="o">=</span> <span class="n">caller</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_alive</span><span class="p">():</span>
+            <span class="n">warn</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s1">&#39;Thread &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s1">&quot; (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">ident</span><span class="si">}</span><span class="s1">) from &quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_caller</span><span class="si">}</span><span class="s1">&quot; &#39;</span>
+                <span class="sa">f</span><span class="s1">&#39;is running even though its plugin has been unloaded!&#39;</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; DELAY CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_DelayManager</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A class that is responsible for executing delays.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">on_tick_listener_manager</span><span class="o">.</span><span class="n">register_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_tick</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_tick</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Internal tick listener.&quot;&quot;&quot;</span>
+        <span class="n">current_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+        <span class="k">while</span> <span class="bp">self</span> <span class="ow">and</span> <span class="bp">self</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">exec_time</span> <span class="o">&lt;=</span> <span class="n">current_time</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delay</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a delay to the list.</span>
+
+<span class="sd">        :param Delay delay:</span>
+<span class="sd">            The delay to add.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">bisect</span><span class="o">.</span><span class="n">insort_right</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">delay</span><span class="p">)</span>
+
+<span class="n">_delay_manager</span> <span class="o">=</span> <span class="n">_DelayManager</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="Delay">
+<a class="viewcode-back" href="../../developing/modules/listeners.tick.html#listeners.tick.Delay">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Delay</span><span class="p">(</span><span class="n">WeakAutoUnload</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Execute a callback after a given delay.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Delay.__init__">
+<a class="viewcode-back" href="../../developing/modules/listeners.tick.html#listeners.tick.Delay.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">delay</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cancel_on_level_end</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the delay.</span>
+
+<span class="sd">        :param float delay:</span>
+<span class="sd">            The delay in seconds.</span>
+<span class="sd">        :param callback:</span>
+<span class="sd">            A callable object that should be called after the delay expired.</span>
+<span class="sd">        :param tuple args:</span>
+<span class="sd">            Arguments that should be passed to the callback.</span>
+<span class="sd">        :param dict kwargs:</span>
+<span class="sd">            Keyword arguments that should be passed to the callback.</span>
+<span class="sd">        :param bool cancel_on_level_end:</span>
+<span class="sd">            Whether or not to cancel the delay at the end of the map.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the given callback is not callable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Given callback is not callable.&#39;</span><span class="p">)</span>
+
+        <span class="c1">#: Delay in seconds.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">delay</span> <span class="o">=</span> <span class="n">delay</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="c1">#: Time when the delay will be executed.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">exec_time</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span> <span class="o">+</span> <span class="n">delay</span>
+
+        <span class="c1">#: Callback to call when the delay expired.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">callback</span>
+
+        <span class="c1">#: Arguments to pass to the callback.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+
+        <span class="c1">#: Keyword arguments to pass to the callback.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="c1">#: Whether or not to cancel the delay at the end of the map.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancel_on_level_end</span> <span class="o">=</span> <span class="n">cancel_on_level_end</span>
+        <span class="n">_delay_manager</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__lt__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if this :attr:`exec_time` is less than the other&#39;s.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_time</span> <span class="o">&lt;</span> <span class="n">other</span><span class="o">.</span><span class="n">exec_time</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cancel the delay and immediately call the callback.</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            The result of :meth:`execute`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">execute</span><span class="p">()</span>
+
+<div class="viewcode-block" id="Delay.execute">
+<a class="viewcode-back" href="../../developing/modules/listeners.tick.html#listeners.tick.Delay.execute">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call the callback.</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            The result of :attr:`callback`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Delay.cancel">
+<a class="viewcode-back" href="../../developing/modules/listeners.tick.html#listeners.tick.Delay.cancel">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Cancel the delay.</span>
+
+<span class="sd">        :raise ValueError: Raised if the delay is not running.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_delay_manager</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">running</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the delay running.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="ow">in</span> <span class="n">_delay_manager</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">time_remaining</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the remaining time (in seconds) until the Delay ends.</span>
+
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">exec_time</span> <span class="o">-</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">time_elapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the amount of time (in seconds) since the Delay started.</span>
+
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">running</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_start_time</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; REPEAT CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="RepeatStatus">
+<a class="viewcode-back" href="../../developing/modules/listeners.tick.html#listeners.tick.RepeatStatus">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RepeatStatus</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store RepeatStatus values.&quot;&quot;&quot;</span>
+
+    <span class="n">STOPPED</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">RUNNING</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">PAUSED</span> <span class="o">=</span> <span class="mi">3</span></div>
+
+
+
+<div class="viewcode-block" id="Repeat">
+<a class="viewcode-back" href="../../developing/modules/listeners.tick.html#listeners.tick.Repeat">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Repeat</span><span class="p">(</span><span class="n">AutoUnload</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to create and call repeats.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Repeat.__init__">
+<a class="viewcode-back" href="../../developing/modules/listeners.tick.html#listeners.tick.Repeat.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">cancel_on_level_end</span><span class="o">=</span><span class="kc">False</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store all instance attributes.</span>
+
+<span class="sd">        :param callback:</span>
+<span class="sd">            A callable object that should be called at the end of each loop.</span>
+<span class="sd">        :param tuple args:</span>
+<span class="sd">            Arguments that should be passed to the callback.</span>
+<span class="sd">        :param dict kwargs:</span>
+<span class="sd">            Keyword arguments that should be passed to the callback.</span>
+<span class="sd">        :param bool cancel_on_level_end:</span>
+<span class="sd">            Whether or not to cancel the repeat at the end of the map.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the given callback is not callable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Given callback is not callable.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Store the base attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="n">args</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span> <span class="o">=</span> <span class="n">kwargs</span> <span class="k">if</span> <span class="n">kwargs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cancel_on_level_end</span> <span class="o">=</span> <span class="n">cancel_on_level_end</span>
+
+        <span class="c1"># Log the __init__ message</span>
+        <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+            <span class="s1">&#39;Repeat.__init__: &lt;</span><span class="si">{self.callback}</span><span class="s1">&gt; &lt;</span><span class="si">{self.args}</span><span class="s1">&gt;&#39;</span>
+            <span class="s1">&#39; &lt;</span><span class="si">{self.kwargs}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">=</span><span class="bp">self</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Set up private attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interval</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_original_loops</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loops_elapsed</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_adjusted_loops</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">RepeatStatus</span><span class="o">.</span><span class="n">STOPPED</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loop_time_for_pause</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_original_start_time</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">interval</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the interval in which the callback will be called.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interval</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">adjusted_loops</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the number of loops that have been adjusted.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_adjusted_loops</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loops_remaining</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the remaining number of loops in the repeat.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_loops</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">loops_elapsed</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loops_elapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the current number of loops made in the repeat.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_loops_elapsed</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_loops</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the total number of loops to be made.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_original_loops</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_adjusted_loops</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">original_loops</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the number of loops the repeat has been started with.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_original_loops</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_time_remaining</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the remaining time till the end of the repeat.</span>
+
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">delay_time_remaining</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">loops_remaining</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span> <span class="o">+</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">delay_time_remaining</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_time_elapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the elapsed time since the repeat started.</span>
+
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_original_start_time</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">total_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the total time it will take to complete the repeat.</span>
+
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_loops</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">interval</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delay_time_remaining</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the time remaining in the current loop.</span>
+
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span><span class="o">.</span><span class="n">time_remaining</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delay_time_elapsed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the time elapsed in the current loop.</span>
+
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span><span class="o">.</span><span class="n">time_elapsed</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">status</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the status of the repeat.</span>
+
+<span class="sd">        :rtype: RepeatStatus</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span>
+
+<div class="viewcode-block" id="Repeat.start">
+<a class="viewcode-back" href="../../developing/modules/listeners.tick.html#listeners.tick.Repeat.start">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">interval</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">,</span> <span class="n">execute_on_start</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Start the repeat loop.</span>
+
+<span class="sd">        :param float interval:</span>
+<span class="sd">            The time (in seconds) for each loop.</span>
+<span class="sd">        :param int limit:</span>
+<span class="sd">            The maximum number of times to loop. If :data:`math.inf` is</span>
+<span class="sd">            passed, there is no limit, and the Repeat will loop indefinitely.</span>
+<span class="sd">        :param bool execute_on_start:</span>
+<span class="sd">            Whether to execute the callback when the Repeat is started. Note</span>
+<span class="sd">            that this does not affect the &#39;limit&#39; as the number of loops will</span>
+<span class="sd">            remain the same.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Log the start message</span>
+        <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+            <span class="s1">&#39;Repeat.start: &lt;</span><span class="si">{interval}</span><span class="s1">&gt; &lt;</span><span class="si">{limit}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">interval</span><span class="o">=</span><span class="n">interval</span><span class="p">,</span>
+                <span class="n">limit</span><span class="o">=</span><span class="n">limit</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Is the repeat already running?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="ow">is</span> <span class="n">RepeatStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
+
+            <span class="c1"># Log the status</span>
+            <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+                <span class="s1">&#39;Repeat.start - RepeatStatus.RUNNING&#39;</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Do not start the repeat</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Log starting the repeat</span>
+        <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+            <span class="s1">&#39;Repeat.start - !RepeatStatus.RUNNING - Starting Repeat&#39;</span>
+        <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">RepeatStatus</span><span class="o">.</span><span class="n">RUNNING</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_interval</span> <span class="o">=</span> <span class="n">interval</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_original_loops</span> <span class="o">=</span> <span class="n">limit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loops_elapsed</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_adjusted_loops</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_original_start_time</span> <span class="o">=</span> <span class="n">time</span><span class="o">.</span><span class="n">time</span><span class="p">()</span>
+
+        <span class="c1"># Start the delay</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span> <span class="o">=</span> <span class="n">Delay</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">,</span>
+            <span class="n">cancel_on_level_end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cancel_on_level_end</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Call the callback if set to execute on start</span>
+        <span class="k">if</span> <span class="n">execute_on_start</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Repeat.stop">
+<a class="viewcode-back" href="../../developing/modules/listeners.tick.html#listeners.tick.Repeat.stop">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop the repeat loop.&quot;&quot;&quot;</span>
+        <span class="c1"># Log the stop message</span>
+        <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Repeat.stop&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Is the repeat running?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">RepeatStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
+
+            <span class="c1"># Log the status</span>
+            <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+                <span class="s1">&#39;Repeat.stop - !RepeatStatus.RUNNING&#39;</span>
+            <span class="p">)</span>
+
+            <span class="c1"># No need to stop it</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Log stopping the repeat</span>
+        <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+            <span class="s1">&#39;Repeat.stop - RepeatStatus.RUNNING - Stopping Repeat&#39;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Set the status to stopped</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">RepeatStatus</span><span class="o">.</span><span class="n">STOPPED</span>
+
+        <span class="c1"># Cancel the delay</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Repeat.restart">
+<a class="viewcode-back" href="../../developing/modules/listeners.tick.html#listeners.tick.Repeat.restart">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">restart</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Restart the repeat.&quot;&quot;&quot;</span>
+        <span class="c1"># Log restarting the repeat</span>
+        <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Repeat.restart&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Stop the repeat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+        <span class="c1"># Start the repeat</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">start</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_loops</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Repeat.pause">
+<a class="viewcode-back" href="../../developing/modules/listeners.tick.html#listeners.tick.Repeat.pause">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">pause</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Pause the repeat.</span>
+
+<span class="sd">        Pausing allows the repeat to be resumed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Log the pause message</span>
+        <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Repeat.pause&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Is the repeat running?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">RepeatStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
+
+            <span class="c1"># Log the status</span>
+            <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+                <span class="s1">&#39;Repeat.pause - !RepeatStatus.RUNNING&#39;</span>
+            <span class="p">)</span>
+
+            <span class="c1"># No need to pause</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Log pausing the repeat</span>
+        <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+            <span class="s1">&#39;Repeat.pause - RepeatStatus.RUNNING - Pausing Repeat&#39;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Set the status to paused</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">RepeatStatus</span><span class="o">.</span><span class="n">PAUSED</span>
+
+        <span class="c1"># Set the remaining time in the current loop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loop_time_for_pause</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span><span class="o">.</span><span class="n">time_remaining</span>
+
+        <span class="c1"># Cancel the delay</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Repeat.resume">
+<a class="viewcode-back" href="../../developing/modules/listeners.tick.html#listeners.tick.Repeat.resume">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">resume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resume the repeat.</span>
+
+<span class="sd">        Can only resume if in paused status.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Log the resume message</span>
+        <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Repeat.resume&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Is the repeat paused?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="ow">is</span> <span class="ow">not</span> <span class="n">RepeatStatus</span><span class="o">.</span><span class="n">PAUSED</span><span class="p">:</span>
+
+            <span class="c1"># Log the status</span>
+            <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+                <span class="s1">&#39;Repeat.resume - !RepeatStatus.PAUSED&#39;</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Do not resume</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Log resuming the repeat</span>
+        <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+            <span class="s1">&#39;Repeat.resume - RepeatStatus.PAUSED - Resuming Repeat&#39;</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Set the status to running</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">RepeatStatus</span><span class="o">.</span><span class="n">RUNNING</span>
+
+        <span class="c1"># Start the delay</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span> <span class="o">=</span> <span class="n">Delay</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_loop_time_for_pause</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">,</span>
+            <span class="n">cancel_on_level_end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cancel_on_level_end</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Repeat.extend">
+<a class="viewcode-back" href="../../developing/modules/listeners.tick.html#listeners.tick.Repeat.extend">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adjustment</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add to the number of loops to be made.</span>
+
+<span class="sd">        :param int adjustment:</span>
+<span class="sd">            The number of loops to be added to the limit.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if given adjustment is not a positive integer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Repeat.extend&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Is there no limit for this repeat?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_loops</span> <span class="o">==</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span>
+            <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+                <span class="s1">&#39;Unable to extend, Repeat instance has no limit.&#39;</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Was a positive integer given?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adjustment</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">adjustment</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Adjusted value must be a positive integer&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Add to the adjusted number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_adjusted_loops</span> <span class="o">+=</span> <span class="n">adjustment</span></div>
+
+
+<div class="viewcode-block" id="Repeat.reduce">
+<a class="viewcode-back" href="../../developing/modules/listeners.tick.html#listeners.tick.Repeat.reduce">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reduce</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">adjustment</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reduce the number of loops to be made.</span>
+
+<span class="sd">        :param int adjustment:</span>
+<span class="sd">            The number of loops to be removed from the limit.</span>
+<span class="sd">        :raises ValueError:</span>
+<span class="sd">            Raised if given adjustment is not a positive integer.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Repeat.reduce&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Is there no limit for this repeat?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">total_loops</span> <span class="o">==</span> <span class="n">math</span><span class="o">.</span><span class="n">inf</span><span class="p">:</span>
+            <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+                <span class="s1">&#39;Unable to reduce, Repeat instance has no limit.&#39;</span>
+            <span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Was a positive integer given?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">adjustment</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">or</span> <span class="n">adjustment</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Adjusted value must be a positive integer&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Subtract from the adjusted number</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_adjusted_loops</span> <span class="o">-=</span> <span class="n">adjustment</span>
+
+        <span class="c1"># Should the repeat be stopped?</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">loops_remaining</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">RepeatStatus</span><span class="o">.</span><span class="n">RUNNING</span>
+        <span class="p">):</span>
+            <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+                <span class="s1">&#39;Repeat.reduce - Reduce caused repeat to stop&#39;</span>
+            <span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_execute</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Execute the repeat&#39;s callback with its arguments and keywords.&quot;&quot;&quot;</span>
+        <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span><span class="s1">&#39;Repeat._execute&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_loops_elapsed</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="c1"># Are any more loops to be made?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">loops_remaining</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+                <span class="s1">&#39;Repeat._execute - Remaining - </span><span class="si">{remaining}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">remaining</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loops_remaining</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Call the delay again</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_delay</span> <span class="o">=</span> <span class="n">Delay</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">interval</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_execute</span><span class="p">,</span>
+                <span class="n">cancel_on_level_end</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">cancel_on_level_end</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">listeners_tick_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+                <span class="s1">&#39;Repeat._execute - Stopping the loop&#39;</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Set the status to stopped</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_status</span> <span class="o">=</span> <span class="n">RepeatStatus</span><span class="o">.</span><span class="n">STOPPED</span>
+
+        <span class="c1"># Call the repeat&#39;s callback for this loop</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop the repeat with being unloaded.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; HELPER FUNCTIONS</span>
+<span class="c1"># =============================================================================</span>
+<span class="nd">@OnLevelEnd</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_cancel_delays_on_level_end</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">delay</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">_delay_manager</span><span class="p">):</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">delay</span><span class="o">.</span><span class="n">cancel_on_level_end</span><span class="p">:</span>
+            <span class="k">continue</span>
+
+        <span class="n">callback</span> <span class="o">=</span> <span class="n">delay</span><span class="o">.</span><span class="n">callback</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">callback</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;_execute&#39;</span> <span class="ow">and</span>
+            <span class="nb">hasattr</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="s1">&#39;__self__&#39;</span><span class="p">)</span> <span class="ow">and</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">callback</span><span class="o">.</span><span class="vm">__self__</span><span class="p">,</span> <span class="n">Repeat</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="n">callback</span><span class="o">.</span><span class="vm">__self__</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">delay</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../listeners.html" >listeners</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">listeners.tick</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

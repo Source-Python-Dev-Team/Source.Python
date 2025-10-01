@@ -1,0 +1,89 @@
+Credits
+=======
+
+Project Leaders
+---------------
+
+===========  ==============
+Nickname     Real name
+===========  ==============
+Ayuto        Robin Gohmert
+L'In20Cible  Jordan BriÃ¨re
+satoon101    Stephen Toon
+===========  ==============
+
+
+Developers
+----------
+
+==============  ================
+Nickname        Real name
+==============  ================
+ashbash1987     Ashley Muncaster
+freddukes       Steven Hartin
+Monday          Luke Robinson
+necavi          
+XE_ManUp        Michael Barr
+your-name-here  Deniz Sezen
+==============  ================
+
+
+Contributors
+------------
+
+=================  ===============
+Nickname           Real name
+=================  ===============
+jsza               
+KirillMysnik       Kirill Mysnik
+Mahi               Markus Meskanen
+olegtsvetkov       Oleg Tsvetkov
+OmegaK2            
+ThaPwned           
+vinci6k            
+CookStar           Jonathan
+timo-reichl        Timo Reichl
+kamikazekuh        
+invisiblesoldiers  
+njanke96           Nathan Janke
+ThomasVieth        Thomas Vieth
+ericentin          Eric Entin
+roflmuffin         Michael
+laurirasanen       Lauri RÃ¤sÃ¤nen
+=================  ===============
+
+
+Web Administrators/Designers
+----------------------------
+
+=========  =============
+Nickname   Real name
+=========  =============
+La Muerte  Tim Paelinckx
+=========  =============
+
+
+Translators
+-----------
+
+=================  =========
+Nickname           Real name
+=================  =========
+Doldol/ismael-git  
+MrMalina           
+Hackmastr          
+2389736818         
+=================  =========
+
+
+Special Thanks
+--------------
+
+=============  =============
+Nickname       Real name
+=============  =============
+AlliedModders  
+Mattie         Mattie Casper
+=============  =============
+
+

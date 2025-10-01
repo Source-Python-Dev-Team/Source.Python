@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>filesystem &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=2780edc4" />
+    
+    <script src="../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">filesystem</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for filesystem</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../filesystem.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides access to engine&#39;s filesystem interface.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FORWARD IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Filesystem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_filesystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_vpk_file</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_filesystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">SeekType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_filesystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">SourceFile</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python</span>
+<span class="c1">#   Os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="c1">#   tempfile</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">tempfile</span>
+<span class="c1">#   Contextlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextmanager</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;is_vpk_file&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;source_file&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SeekType&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SourceFile&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FUNCTIONS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="source_file">
+<a class="viewcode-back" href="../developing/modules/filesystem.html#filesystem.source_file">[docs]</a>
+<span class="nd">@contextmanager</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">source_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Ensures that the given file has a visible name on the file system.</span>
+
+<span class="sd">    .. note:: If the file was packed in a VPK archive, it gets copied to a</span>
+<span class="sd">        temporary file. Thus, modifying the file has no effect on the original</span>
+<span class="sd">        file.</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    .. code:: python</span>
+
+<span class="sd">        with source_file(&#39;credits.txt&#39;) as file_path:</span>
+<span class="sd">            print(&#39;Visible path:&#39;, file_path)</span>
+<span class="sd">            with open(file_path) as f:</span>
+<span class="sd">                print(&#39;Content:&#39;, f.read())</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">is_vpk_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+        <span class="n">temp_file</span> <span class="o">=</span> <span class="n">_get_temp_file_name</span><span class="p">()</span>
+
+        <span class="c1"># Copy the file to the real file system</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">SourceFile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">file_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">temp_file</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">temp_file</span> <span class="o">=</span> <span class="n">file_path</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">yield</span> <span class="n">temp_file</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">temp_file</span> <span class="o">!=</span> <span class="n">file_path</span><span class="p">:</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">temp_file</span><span class="p">)</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FUNCTIONS</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_temp_file_name</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a temporary file name with an absolute path.</span>
+<span class="sd">    </span>
+<span class="sd">    :rtype: str</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">_get_default_tempdir</span><span class="p">()</span>
+        <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span>
+        <span class="o">+</span> <span class="nb">next</span><span class="p">(</span><span class="n">tempfile</span><span class="o">.</span><span class="n">_get_candidate_names</span><span class="p">()))</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">filesystem</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

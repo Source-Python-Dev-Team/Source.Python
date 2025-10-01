@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>memory &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="menus" href="menus.html" />
+    <link rel="prev" title="listeners" href="listeners.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="menus.html" title="menus"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="listeners.html" title="listeners"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../module_tutorials.html" accesskey="U">Module tutorials</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">memory</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="memory">
+<h1>memory<a class="headerlink" href="#memory" title="Link to this heading">¶</a></h1>
+<p>This page contains tutorials about the <a class="reference internal" href="../modules/memory.html#module-memory" title="memory"><code class="xref py py-mod docutils literal notranslate"><span class="pre">memory</span></code></a> package.</p>
+<section id="calling-a-virtual-function">
+<h2>Calling a virtual function<a class="headerlink" href="#calling-a-virtual-function" title="Link to this heading">¶</a></h2>
+<p>This is a simple example for calling a virtual function in CS:S.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">core</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">Convention</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">mathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vector</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">pointer_from_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">index_from_pointer</span>
+
+<span class="c1"># CBaseEntity* CCSPlayer::GiveNamedItem(char const*, int)</span>
+<span class="c1"># Index on Windows is 400. On Linux it is 401.</span>
+<span class="n">GIVE_NAMED_ITEM_INDEX</span> <span class="o">=</span> <span class="mi">400</span> <span class="k">if</span> <span class="n">core</span><span class="o">.</span><span class="n">PLATFORM</span> <span class="o">==</span> <span class="s1">&#39;windows&#39;</span> <span class="k">else</span> <span class="mi">401</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">give_named_item</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">slot</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+    <span class="c1"># Retrieve the player&#39;s pointer.</span>
+    <span class="n">ptr</span> <span class="o">=</span> <span class="n">pointer_from_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="c1"># Now, we can get and wrap the virtual function. To do this, we need</span>
+    <span class="c1"># to pass the index of the virtual function in the virtual function table</span>
+    <span class="c1"># of the CCSPlayer class. This index might change after a game update.</span>
+
+    <span class="c1"># We also need to specify the calling convention. Since it&#39;s a normal</span>
+    <span class="c1"># member function, the calling convention is THISCALL.</span>
+
+    <span class="c1"># For the third argument a tuple is required that defines the types of the</span>
+    <span class="c1"># arguments of the function. In this case we need to pass a pointer</span>
+    <span class="c1"># (the this-pointer), a string that specifies the item that should be</span>
+    <span class="c1"># given and an integer that defines the slot/sub type of the item.</span>
+
+    <span class="c1"># For the fourth and last argument we need to define the return type of the</span>
+    <span class="c1"># virtual function. In this case the function returns a pointer to the</span>
+    <span class="c1"># created entity.</span>
+    <span class="n">GiveNamedItem</span> <span class="o">=</span> <span class="n">ptr</span><span class="o">.</span><span class="n">make_virtual_function</span><span class="p">(</span>
+        <span class="n">GIVE_NAMED_ITEM_INDEX</span><span class="p">,</span>
+        <span class="n">Convention</span><span class="o">.</span><span class="n">THISCALL</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">DataType</span><span class="o">.</span><span class="n">POINTER</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">INT</span><span class="p">),</span>
+        <span class="n">DataType</span><span class="o">.</span><span class="n">POINTER</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Finally, we can call the virtual function! Since many functions in</span>
+    <span class="c1"># Source.Python&#39;s API require an index instead of a pointer, we will</span>
+    <span class="c1"># convert the returned pointer to an index.</span>
+    <span class="k">return</span> <span class="n">index_from_pointer</span><span class="p">(</span><span class="n">GiveNamedItem</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">slot</span><span class="p">))</span>
+
+<span class="c1"># Usage example:</span>
+<span class="c1"># entity_index = give_named_item(my_player_index, &#39;weapon_awp&#39;)</span>
+</pre></div>
+</div>
+</section>
+<section id="calling-a-virtual-function-with-non-atomic-arguments">
+<h2>Calling a virtual function with non atomic arguments<a class="headerlink" href="#calling-a-virtual-function-with-non-atomic-arguments" title="Link to this heading">¶</a></h2>
+<p>This example will cover calling a virtual function which requires two non atomic arguments. This example was made for CS:S.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">core</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">Convention</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">mathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Vector</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">pointer_from_index</span>
+
+<span class="c1"># void CBaseAnimating::GetVelocity(Vector*, Vector*)</span>
+<span class="c1"># Index on Windows is 140. On Linux it is 141.</span>
+<span class="n">GET_VELOCITY_INDEX</span> <span class="o">=</span> <span class="mi">140</span> <span class="k">if</span> <span class="n">core</span><span class="o">.</span><span class="n">PLATFORM</span> <span class="o">==</span> <span class="s1">&#39;windows&#39;</span> <span class="k">else</span> <span class="mi">141</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_velocity</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+    <span class="c1"># Retrieve the entity&#39;s pointer.</span>
+    <span class="n">ptr</span> <span class="o">=</span> <span class="n">pointer_from_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="c1"># Now, get and wrap the virtual function. Again, we need to pass the</span>
+    <span class="c1"># virtual function index and the calling convention.</span>
+
+    <span class="c1"># The tuple that defines the types of the arguments will now contain three</span>
+    <span class="c1"># times Argument.POINTER. The first pointer stands for the this-pointer.</span>
+    <span class="c1"># The other two stand for the Vector* arguments.</span>
+
+    <span class="c1"># This time the function doesn&#39;t return anything. Instead the return value</span>
+    <span class="c1"># is &quot;returned&quot; by modifying the two Vector arguments. This is a common</span>
+    <span class="c1"># practice in C/C++ to return multiple return values.</span>
+    <span class="n">GetVelocity</span> <span class="o">=</span> <span class="n">ptr</span><span class="o">.</span><span class="n">make_virtual_function</span><span class="p">(</span>
+        <span class="n">GET_VELOCITY_INDEX</span><span class="p">,</span>
+        <span class="n">Convention</span><span class="o">.</span><span class="n">THISCALL</span><span class="p">,</span>
+        <span class="p">(</span><span class="n">DataType</span><span class="o">.</span><span class="n">POINTER</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">POINTER</span><span class="p">,</span> <span class="n">DataType</span><span class="o">.</span><span class="n">POINTER</span><span class="p">),</span>
+        <span class="n">DataType</span><span class="o">.</span><span class="n">VOID</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Since Source.Python exposes the Vector class, we don&#39;t even need to</span>
+    <span class="c1"># reconstruct the memory structure of the both vectors. So, we just need</span>
+    <span class="c1"># to create two new Vector objects.</span>
+    <span class="n">velocity</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">()</span>
+    <span class="n">angle</span> <span class="o">=</span> <span class="n">Vector</span><span class="p">()</span>
+
+    <span class="c1"># Finally, call the function! But what&#39;s happening here? Source.Python</span>
+    <span class="c1"># converts both Vector objects to a Pointer object at first and then</span>
+    <span class="c1"># accesses the memory addresses of the Vector objects which were allocated</span>
+    <span class="c1"># internally. Pretty cool, eh? This works with every object whose class</span>
+    <span class="c1"># was exposed by Source.Python and every object that is an instance of</span>
+    <span class="c1"># CustomType.</span>
+    <span class="n">GetVelocity</span><span class="p">(</span><span class="n">ptr</span><span class="p">,</span> <span class="n">velocity</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
+
+    <span class="c1"># After the function modified the vectors just return them.</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">velocity</span><span class="p">,</span> <span class="n">angle</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">memory</a><ul>
+<li><a class="reference internal" href="#calling-a-virtual-function">Calling a virtual function</a></li>
+<li><a class="reference internal" href="#calling-a-virtual-function-with-non-atomic-arguments">Calling a virtual function with non atomic arguments</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="listeners.html"
+                          title="previous chapter">listeners</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="menus.html"
+                          title="next chapter">menus</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/module_tutorials/memory.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="menus.html" title="menus"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="listeners.html" title="listeners"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../module_tutorials.html" >Module tutorials</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">memory</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

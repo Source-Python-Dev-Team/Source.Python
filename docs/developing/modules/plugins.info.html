@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>plugins.info module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins.info module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-plugins.info">
+<span id="plugins-info-module"></span><h1>plugins.info module<a class="headerlink" href="#module-plugins.info" title="Link to this heading">¶</a></h1>
+<p>Provides plugin information storing.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.info.PluginInfo">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.info.</span></span><span class="sig-name descname"><span class="pre">PluginInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permissions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">public_convar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_in_listing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/info.html#PluginInfo"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.info.PluginInfo" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+<p>Store information for a plugin.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.info.PluginInfo.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">author</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">version</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">url</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permissions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">public_convar</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">display_in_listing</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/info.html#PluginInfo.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.info.PluginInfo.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the plugin on the file system.</p></li>
+<li><p><strong>verbose_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – A verbose name for the plugin (e.g. GunGame).</p></li>
+<li><p><strong>author</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the author.</p></li>
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – A short description of what the plugin does.</p></li>
+<li><p><strong>version</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Current version of the plugin.</p></li>
+<li><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – A link to a thread in the ‘Plugin Releases’ forum section or the
+plugin’s SPPM link.</p></li>
+<li><p><strong>permissions</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – A list of permissions defined or used by the plugin. The list
+should contain tuples that define the permission and a short
+description of the permission.</p></li>
+<li><p><strong>public_convar</strong> – If set to <code class="docutils literal notranslate"><span class="pre">True</span></code>, a public convar will be generated based on the
+plugin name, verbose name and version. Set it to <code class="docutils literal notranslate"><span class="pre">False</span></code> if you
+don’t want a public convar or set it to a dictionary containing
+the parameters to create a <code class="xref py py-class docutils literal notranslate"><span class="pre">cvars.public.PublicConvar</span></code>
+instance.</p></li>
+<li><p><strong>display_in_listing</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><em>list</em></a>) – A list that contains custom attributes that should appear in the
+plugin listing (e.g. sp plugin list).</p></li>
+<li><p><strong>kwargs</strong> – Any additional attributes you want to set. If you want those
+attributes to appear in the plugin listing, update
+<code class="xref py py-attr docutils literal notranslate"><span class="pre">display_in_listing</span></code>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.info.PluginInfo.get_verbose_name">
+<span class="sig-name descname"><span class="pre">get_verbose_name</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/info.html#PluginInfo.get_verbose_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.info.PluginInfo.get_verbose_name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the verbose name of the plugin.</p>
+<p>If no verbose name has been set, the plugin name will be titled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.info.PluginInfo.get_version">
+<span class="sig-name descname"><span class="pre">get_version</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/info.html#PluginInfo.get_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.info.PluginInfo.get_version" title="Link to this definition">¶</a></dt>
+<dd><p>Return the plugin’s version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.info.PluginInfo.set_verbose_name">
+<span class="sig-name descname"><span class="pre">set_verbose_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/info.html#PluginInfo.set_verbose_name"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.info.PluginInfo.set_verbose_name" title="Link to this definition">¶</a></dt>
+<dd><p>Set the verbose name of the plugin.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.info.PluginInfo.set_version">
+<span class="sig-name descname"><span class="pre">set_version</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/info.html#PluginInfo.set_version"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.info.PluginInfo.set_version" title="Link to this definition">¶</a></dt>
+<dd><p>Set the plugin’s version.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.info.PluginInfo.verbose_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">verbose_name</span></span><a class="headerlink" href="#plugins.info.PluginInfo.verbose_name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the verbose name of the plugin.</p>
+<p>If no verbose name has been set, the plugin name will be titled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.info.PluginInfo.version">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">version</span></span><a class="headerlink" href="#plugins.info.PluginInfo.version" title="Link to this definition">¶</a></dt>
+<dd><p>Return the plugin’s version.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">plugins.info module</a><ul>
+<li><a class="reference internal" href="#plugins.info.PluginInfo"><code class="docutils literal notranslate"><span class="pre">PluginInfo</span></code></a><ul>
+<li><a class="reference internal" href="#plugins.info.PluginInfo.__init__"><code class="docutils literal notranslate"><span class="pre">PluginInfo.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.info.PluginInfo.get_verbose_name"><code class="docutils literal notranslate"><span class="pre">PluginInfo.get_verbose_name()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.info.PluginInfo.get_version"><code class="docutils literal notranslate"><span class="pre">PluginInfo.get_version()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.info.PluginInfo.set_verbose_name"><code class="docutils literal notranslate"><span class="pre">PluginInfo.set_verbose_name()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.info.PluginInfo.set_version"><code class="docutils literal notranslate"><span class="pre">PluginInfo.set_version()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.info.PluginInfo.verbose_name"><code class="docutils literal notranslate"><span class="pre">PluginInfo.verbose_name</span></code></a></li>
+<li><a class="reference internal" href="#plugins.info.PluginInfo.version"><code class="docutils literal notranslate"><span class="pre">PluginInfo.version</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/plugins.info.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins.info module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

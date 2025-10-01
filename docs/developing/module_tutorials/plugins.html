@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>plugins &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="stringtables" href="stringtables.html" />
+    <link rel="prev" title="menus" href="menus.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="stringtables.html" title="stringtables"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="menus.html" title="menus"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../module_tutorials.html" accesskey="U">Module tutorials</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="plugins">
+<h1>plugins<a class="headerlink" href="#plugins" title="Link to this heading">¶</a></h1>
+<p>This page contains tutorials about the <a class="reference internal" href="../modules/plugins.html#module-plugins" title="plugins"><code class="xref py py-mod docutils literal notranslate"><span class="pre">plugins</span></code></a> package.</p>
+<section id="plugininfo">
+<h2>PluginInfo<a class="headerlink" href="#plugininfo" title="Link to this heading">¶</a></h2>
+<p>For every plugin a <a class="reference internal" href="../modules/plugins.info.html#plugins.info.PluginInfo" title="plugins.info.PluginInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">plugins.info.PluginInfo</span></code></a> instance can be retrieved,
+even if the plugin isn’t loaded. The <a class="reference internal" href="../modules/plugins.info.html#plugins.info.PluginInfo" title="plugins.info.PluginInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">plugins.info.PluginInfo</span></code></a> instance
+is created based on a file called <code class="docutils literal notranslate"><span class="pre">info.ini</span></code> that has to reside in the
+plugin’s main directory. This file is completely optional. So, if it doesn’t
+exist, the <a class="reference internal" href="../modules/plugins.info.html#plugins.info.PluginInfo" title="plugins.info.PluginInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">plugins.info.PluginInfo</span></code></a> instance will still be created,
+but it won’t contain much more information beside the name of the plugin.</p>
+<p>Here is an example <code class="docutils literal notranslate"><span class="pre">info.ini</span></code> file containing the most basic options:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># A verbose name of the plugin.</span>
+<span class="c1"># If this option is not defined, the plugin&#39;s name will be used, all</span>
+<span class="c1"># underscores are replaced with spaces and the first letter of every word is</span>
+<span class="c1"># being capitalized.</span>
+<span class="na">verbose_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Paintball&quot;</span>
+
+<span class="c1"># Name of the Author.</span>
+<span class="c1"># If this option is not defined, the plugin info will contain &#39;None&#39;.</span>
+<span class="na">author</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Ayuto&quot;</span>
+
+<span class="c1"># A description of what the plugin does.</span>
+<span class="c1"># If this option is not defined, the plugin info will contain &#39;None&#39;.</span>
+<span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Adds paintball effects to the game.&quot;</span>
+
+<span class="c1"># Version of the plugin.</span>
+<span class="c1"># If this option is not defined, the plugin info will contain &#39;unversioned&#39;.</span>
+<span class="na">version</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;1.3&quot;</span>
+
+<span class="c1"># An link to the &#39;Plugin Releases&#39; forum or the plugin&#39;s SPPM link (hopefully</span>
+<span class="c1"># coming some day).</span>
+<span class="c1"># If this option is not defined, the plugin info will contain &#39;None&#39;.</span>
+<span class="na">url</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;http://forums.sourcepython.com/viewtopic.php?f=7&amp;t=502&quot;</span>
+</pre></div>
+</div>
+<p>You can also note which permissions are defined by your plugin. This helps
+server owners to configure their authorization settings properly. See the
+example below:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="c1"># Permissions defined by the plugin.</span>
+<span class="c1"># If this option is not defined, the plugin info will contain an empty list.</span>
+<span class="k">[permissions]</span>
+<span class="w">    </span><span class="na">admin.kick</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Ability to kick a player.&quot;</span>
+<span class="w">    </span><span class="na">admin.ban</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Ability to ban a player.&quot;</span>
+</pre></div>
+</div>
+<p>As soon as a plugin is being loaded, a public console variable is created that
+contains the following information:</p>
+<ul class="simple">
+<li><p>Name: <code class="docutils literal notranslate"><span class="pre">&lt;plugin</span> <span class="pre">name&gt;_version</span></code></p></li>
+<li><p>Value: <code class="docutils literal notranslate"><span class="pre">&lt;version</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">plugin&gt;</span></code></p></li>
+<li><p>Description: <code class="docutils literal notranslate"><span class="pre">&lt;verbose</span> <span class="pre">name&gt;</span> <span class="pre">version.</span></code></p></li>
+</ul>
+<p>If you don’t want a public console variable, you can simply use the following
+option in your info file to disable that feature:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">public_convar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">False</span>
+</pre></div>
+</div>
+<p>If you wish to use different values to create the public console variable, you
+can use the following in your info file:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[public_convar]</span>
+<span class="w">    </span><span class="c1"># All of these options are optional.</span>
+<span class="w">    </span><span class="na">name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;my_plugin_version&quot;</span>
+<span class="w">    </span><span class="na">value</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;My custom value.&quot;</span>
+<span class="w">    </span><span class="na">description</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;My custom description.&quot;</span>
+</pre></div>
+</div>
+<p>Sometimes you might also want to define some custom options for the plugin
+info. Adding those is quite easy. You just need to define them:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">my_custom_option</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;something&quot;</span>
+<span class="na">my_custom_option2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;something else&quot;</span>
+</pre></div>
+</div>
+<p>Since those are custom options, they are not displayed when the list of loaded
+plugins is printed (e.g. via <code class="docutils literal notranslate"><span class="pre">sp</span> <span class="pre">plugin</span> <span class="pre">list</span></code>). If you want to change that
+behaviour, you can define the <code class="docutils literal notranslate"><span class="pre">display_in_listing</span></code> option:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="na">display_in_listing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;my_custom_option&quot;</span><span class="na">, &quot;my_custom_option2&quot;</span>
+</pre></div>
+</div>
+<section id="retrieving-a-plugininfo-instance">
+<h3>Retrieving a PluginInfo instance<a class="headerlink" href="#retrieving-a-plugininfo-instance" title="Link to this heading">¶</a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you retrieve a <a class="reference internal" href="../modules/plugins.info.html#plugins.info.PluginInfo" title="plugins.info.PluginInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">plugins.info.PluginInfo</span></code></a> instance of a plugin
+that isn’t loaded, the <a class="reference internal" href="../modules/plugins.info.html#plugins.info.PluginInfo" title="plugins.info.PluginInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">plugins.info.PluginInfo</span></code></a> instance is
+recreated everytime you retrieve it. Only loaded plugins will cache the
+instance.</p>
+</div>
+<p>The following example will show how to retrieve a
+<a class="reference internal" href="../modules/plugins.info.html#plugins.info.PluginInfo" title="plugins.info.PluginInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">plugins.info.PluginInfo</span></code></a> instance for a specific plugin.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">plugins.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">plugin_manager</span>
+
+<span class="c1"># Retrieve the plugin info of the paintball plugin. This is case sensitive!</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">plugin_manager</span><span class="o">.</span><span class="n">get_plugin_info</span><span class="p">(</span><span class="s1">&#39;paintball&#39;</span><span class="p">)</span>
+
+<span class="c1"># Print the plugin&#39;s description</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You are not only restricted to the plugin’s name, but you can also use the
+plugin’s import path. See the example below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">plugins.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">plugin_manager</span>
+
+<span class="n">info</span> <span class="o">=</span> <span class="n">plugin_manager</span><span class="o">.</span><span class="n">get_plugin_info</span><span class="p">(</span><span class="s1">&#39;paintball.paintball&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Obviously, this doesn’t make much sense as the first example is shorter and
+both result in the same. But this feature has been added, so plugin’s can pass
+their own <code class="docutils literal notranslate"><span class="pre">__name__</span></code> variable, which contains their import path. Thus, you
+can use the following snippet to retrieve the plugin info of your own plugin,
+without directly specifying the plugin’s name.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">plugins.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">plugin_manager</span>
+
+<span class="n">info</span> <span class="o">=</span> <span class="n">plugin_manager</span><span class="o">.</span><span class="n">get_plugin_info</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>You can also use this snippet outside of your plugin’s main file (e.g. in
+other sub-modules or sub-packages).</p>
+</section>
+</section>
+<section id="adding-sub-plugins">
+<h2>Adding sub-plugins<a class="headerlink" href="#adding-sub-plugins" title="Link to this heading">¶</a></h2>
+<p>Adding sub-plugins to your plugin is done a very few steps. All you actually
+need is a new instance of the <a class="reference internal" href="../modules/plugins.manager.html#plugins.manager.PluginManager" title="plugins.manager.PluginManager"><code class="xref py py-class docutils literal notranslate"><span class="pre">plugins.manager.PluginManager</span></code></a> class.
+This instance allows you to load plugins from a specific directory.</p>
+<p>Imagine your plugin resides in <code class="docutils literal notranslate"><span class="pre">../addons/source-python/plugins/my_plugin</span></code>
+and within that directory you have created a new directory called <code class="docutils literal notranslate"><span class="pre">plugins</span></code>,
+which should contain all sub-plugins of <code class="docutils literal notranslate"><span class="pre">my_plugin</span></code>. Then the plugin manager
+could be created using the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">plugins.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">PluginManager</span>
+
+<span class="n">my_plugin_manager</span> <span class="o">=</span> <span class="n">PluginManager</span><span class="p">(</span><span class="s1">&#39;my_plugin.plugins.&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>That’s all you need! Now you can load sub-plugins using <code class="docutils literal notranslate"><span class="pre">my_plugin_manager</span></code>
+from your sub-plugins directory with the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Load the plugin &#39;my_sub_plugin&#39; from</span>
+<span class="c1"># ../addons/source-python/plugins/my_plugin/plugins</span>
+<span class="n">my_plugin_manager</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="s1">&#39;my_sub_plugin&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>However, this doesn’t print any messages like Source.Python does when you load
+a plugin via <code class="docutils literal notranslate"><span class="pre">sp</span> <span class="pre">plugin</span> <span class="pre">load</span></code>. If you would like to have those messages as
+well, without implementing them on your own, you can simply create an instance
+of <code class="docutils literal notranslate"><span class="pre">plugins.command.SubCommandManager</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">plugins.command</span><span class="w"> </span><span class="kn">import</span> <span class="n">SubCommandManager</span>
+
+<span class="n">my_sub_command_manager</span> <span class="o">=</span> <span class="n">SubCommandManager</span><span class="p">(</span>
+    <span class="c1"># Tell the sub command manager to use this plugin manager to load plugins</span>
+    <span class="n">my_plugin_manager</span><span class="p">,</span>
+
+    <span class="c1"># If you create sub-commands, they will use &#39;my_plugin&#39; as the base</span>
+    <span class="c1"># command like Source.Python uses &#39;sp&#39;</span>
+    <span class="s1">&#39;my_plugin&#39;</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<p>Now, you can load your sub-plugin using the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">my_sub_command_manager</span><span class="o">.</span><span class="n">load_plugin</span><span class="p">(</span><span class="s1">&#39;my_sub_plugin&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>So far, so good. But what if you want to load your plugins via a server
+command? Well, just add it using the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@my_sub_command_manager</span><span class="o">.</span><span class="n">server_sub_command</span><span class="p">([</span><span class="s1">&#39;plugin&#39;</span><span class="p">,</span> <span class="s1">&#39;load&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">plugin_load</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">plugin</span><span class="p">):</span>
+    <span class="n">my_sub_command_manager</span><span class="o">.</span><span class="n">load_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+
+<span class="nd">@my_sub_command_manager</span><span class="o">.</span><span class="n">server_sub_command</span><span class="p">([</span><span class="s1">&#39;plugin&#39;</span><span class="p">,</span> <span class="s1">&#39;unload&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">plugin_unload</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">plugin</span><span class="p">):</span>
+    <span class="n">my_sub_command_manager</span><span class="o">.</span><span class="n">unload_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now you can also load your sub-plugins using <code class="docutils literal notranslate"><span class="pre">my_plugin</span> <span class="pre">plugin</span> <span class="pre">load</span></code> and
+unload them using <code class="docutils literal notranslate"><span class="pre">my_plugin</span> <span class="pre">plugin</span> <span class="pre">unload</span></code>.</p>
+<p>There is only one last thing left to do. If your main plugin is being
+unloaded, you should also unload all of your sub-plugins. It doesn’t cause any
+problems with Source.Python if you don’t do that, because Source.Python also
+unloads all <a class="reference internal" href="../modules/core.html#core.AutoUnload" title="core.AutoUnload"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.AutoUnload</span></code></a> and <a class="reference internal" href="../modules/core.html#core.WeakAutoUnload" title="core.WeakAutoUnload"><code class="xref py py-class docutils literal notranslate"><span class="pre">core.WeakAutoUnload</span></code></a>
+instances of your sub-plugins. But if you don’t do that the <code class="docutils literal notranslate"><span class="pre">unload</span></code>
+functions of your sub-plugins are never getting called. To avoid this issue
+use the following code:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">unload</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">my_plugin_manager</span><span class="o">.</span><span class="n">loaded_plugins</span><span class="p">:</span>
+        <span class="n">plugin</span><span class="o">.</span><span class="n">unload</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Here is the full example code to implement sub-plugins:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">plugins.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">PluginManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plugins.command</span><span class="w"> </span><span class="kn">import</span> <span class="n">SubCommandManager</span>
+
+<span class="n">my_plugin_manager</span> <span class="o">=</span> <span class="n">PluginManager</span><span class="p">(</span><span class="s1">&#39;my_plugin.plugins.&#39;</span><span class="p">)</span>
+<span class="n">my_sub_command_manager</span> <span class="o">=</span> <span class="n">SubCommandManager</span><span class="p">(</span>
+    <span class="c1"># Tell the sub command manager to use this plugin manager to load plugins</span>
+    <span class="n">my_plugin_manager</span><span class="p">,</span>
+
+    <span class="c1"># If you create sub-commands, they will use &#39;my_plugin&#39; as the base</span>
+    <span class="c1"># command like Source.Python uses &#39;sp&#39;</span>
+    <span class="s1">&#39;my_plugin&#39;</span>
+<span class="p">)</span>
+
+<span class="nd">@my_sub_command_manager</span><span class="o">.</span><span class="n">server_sub_command</span><span class="p">([</span><span class="s1">&#39;plugin&#39;</span><span class="p">,</span> <span class="s1">&#39;load&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">plugin_load</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">plugin</span><span class="p">):</span>
+    <span class="n">my_sub_command_manager</span><span class="o">.</span><span class="n">load_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+
+<span class="nd">@my_sub_command_manager</span><span class="o">.</span><span class="n">server_sub_command</span><span class="p">([</span><span class="s1">&#39;plugin&#39;</span><span class="p">,</span> <span class="s1">&#39;unload&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">plugin_unload</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">plugin</span><span class="p">):</span>
+    <span class="n">my_sub_command_manager</span><span class="o">.</span><span class="n">unload_plugin</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">unload</span><span class="p">():</span>
+    <span class="k">for</span> <span class="n">plugin</span> <span class="ow">in</span> <span class="n">my_plugin_manager</span><span class="o">.</span><span class="n">loaded_plugins</span><span class="p">:</span>
+        <span class="n">plugin</span><span class="o">.</span><span class="n">unload</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">plugins</a><ul>
+<li><a class="reference internal" href="#plugininfo">PluginInfo</a><ul>
+<li><a class="reference internal" href="#retrieving-a-plugininfo-instance">Retrieving a PluginInfo instance</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#adding-sub-plugins">Adding sub-plugins</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="menus.html"
+                          title="previous chapter">menus</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="stringtables.html"
+                          title="next chapter">stringtables</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/module_tutorials/plugins.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="stringtables.html" title="stringtables"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="menus.html" title="menus"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../module_tutorials.html" >Module tutorials</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

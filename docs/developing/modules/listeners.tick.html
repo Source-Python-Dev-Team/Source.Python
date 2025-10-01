@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>listeners.tick package &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">listeners.tick package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-listeners.tick">
+<span id="listeners-tick-package"></span><h1>listeners.tick package<a class="headerlink" href="#module-listeners.tick" title="Link to this heading">¶</a></h1>
+<p>Provides tick listener based functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.tick.Delay">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.tick.</span></span><span class="sig-name descname"><span class="pre">Delay</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners/tick.html#Delay"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.tick.Delay" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#core.WeakAutoUnload" title="core.WeakAutoUnload"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeakAutoUnload</span></code></a></p>
+<p>Execute a callback after a given delay.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.tick.Delay.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">delay</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cancel_on_level_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners/tick.html#Delay.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.tick.Delay.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the delay.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>delay</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The delay in seconds.</p></li>
+<li><p><strong>callback</strong> – A callable object that should be called after the delay expired.</p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>) – Arguments that should be passed to the callback.</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Keyword arguments that should be passed to the callback.</p></li>
+<li><p><strong>cancel_on_level_end</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether or not to cancel the delay at the end of the map.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Raised if the given callback is not callable.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.tick.Delay.cancel">
+<span class="sig-name descname"><span class="pre">cancel</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners/tick.html#Delay.cancel"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.tick.Delay.cancel" title="Link to this definition">¶</a></dt>
+<dd><p>Cancel the delay.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Raised if the delay is not running.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.tick.Delay.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners/tick.html#Delay.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.tick.Delay.execute" title="Link to this definition">¶</a></dt>
+<dd><p>Call the callback.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The result of <a class="reference internal" href="#listeners.tick.Delay.callback" title="listeners.tick.Delay.callback"><code class="xref py py-attr docutils literal notranslate"><span class="pre">callback</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.tick.Delay.args">
+<span class="sig-name descname"><span class="pre">args</span></span><a class="headerlink" href="#listeners.tick.Delay.args" title="Link to this definition">¶</a></dt>
+<dd><p>Arguments to pass to the callback.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.tick.Delay.callback">
+<span class="sig-name descname"><span class="pre">callback</span></span><a class="headerlink" href="#listeners.tick.Delay.callback" title="Link to this definition">¶</a></dt>
+<dd><p>Callback to call when the delay expired.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.tick.Delay.cancel_on_level_end">
+<span class="sig-name descname"><span class="pre">cancel_on_level_end</span></span><a class="headerlink" href="#listeners.tick.Delay.cancel_on_level_end" title="Link to this definition">¶</a></dt>
+<dd><p>Whether or not to cancel the delay at the end of the map.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.tick.Delay.delay">
+<span class="sig-name descname"><span class="pre">delay</span></span><a class="headerlink" href="#listeners.tick.Delay.delay" title="Link to this definition">¶</a></dt>
+<dd><p>Delay in seconds.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.tick.Delay.exec_time">
+<span class="sig-name descname"><span class="pre">exec_time</span></span><a class="headerlink" href="#listeners.tick.Delay.exec_time" title="Link to this definition">¶</a></dt>
+<dd><p>Time when the delay will be executed.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.tick.Delay.kwargs">
+<span class="sig-name descname"><span class="pre">kwargs</span></span><a class="headerlink" href="#listeners.tick.Delay.kwargs" title="Link to this definition">¶</a></dt>
+<dd><p>Keyword arguments to pass to the callback.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.tick.Delay.running">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">running</span></span><a class="headerlink" href="#listeners.tick.Delay.running" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if the delay running.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.tick.Delay.time_elapsed">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time_elapsed</span></span><a class="headerlink" href="#listeners.tick.Delay.time_elapsed" title="Link to this definition">¶</a></dt>
+<dd><p>Return the amount of time (in seconds) since the Delay started.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.tick.Delay.time_remaining">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time_remaining</span></span><a class="headerlink" href="#listeners.tick.Delay.time_remaining" title="Link to this definition">¶</a></dt>
+<dd><p>Return the remaining time (in seconds) until the Delay ends.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.tick.GameThread">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.tick.</span></span><span class="sig-name descname"><span class="pre">GameThread</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners/tick.html#GameThread"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.tick.GameThread" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#core.WeakAutoUnload" title="core.WeakAutoUnload"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeakAutoUnload</span></code></a>, <a class="reference external" href="https://docs.python.org/3.13/library/threading.html#threading.Thread" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Thread</span></code></a></p>
+<p>A subclass of <a class="reference external" href="https://docs.python.org/3.13/library/threading.html#threading.Thread" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">threading.Thread</span></code></a> that throws a warning if the
+plugin that created the thread has been unloaded while the thread is still
+running.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.tick.Repeat">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.tick.</span></span><span class="sig-name descname"><span class="pre">Repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners/tick.html#Repeat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.tick.Repeat" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#core.AutoUnload" title="core.AutoUnload"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoUnload</span></code></a></p>
+<p>Class used to create and call repeats.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kwargs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cancel_on_level_end</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners/tick.html#Repeat.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.tick.Repeat.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Store all instance attributes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>callback</strong> – A callable object that should be called at the end of each loop.</p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#tuple" title="(in Python v3.13)"><em>tuple</em></a>) – Arguments that should be passed to the callback.</p></li>
+<li><p><strong>kwargs</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Keyword arguments that should be passed to the callback.</p></li>
+<li><p><strong>cancel_on_level_end</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether or not to cancel the repeat at the end of the map.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Raised if the given callback is not callable.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.extend">
+<span class="sig-name descname"><span class="pre">extend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adjustment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners/tick.html#Repeat.extend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.tick.Repeat.extend" title="Link to this definition">¶</a></dt>
+<dd><p>Add to the number of loops to be made.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>adjustment</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The number of loops to be added to the limit.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Raised if given adjustment is not a positive integer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.pause">
+<span class="sig-name descname"><span class="pre">pause</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners/tick.html#Repeat.pause"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.tick.Repeat.pause" title="Link to this definition">¶</a></dt>
+<dd><p>Pause the repeat.</p>
+<p>Pausing allows the repeat to be resumed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.reduce">
+<span class="sig-name descname"><span class="pre">reduce</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">adjustment</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners/tick.html#Repeat.reduce"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.tick.Repeat.reduce" title="Link to this definition">¶</a></dt>
+<dd><p>Reduce the number of loops to be made.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>adjustment</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The number of loops to be removed from the limit.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Raised if given adjustment is not a positive integer.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.restart">
+<span class="sig-name descname"><span class="pre">restart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners/tick.html#Repeat.restart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.tick.Repeat.restart" title="Link to this definition">¶</a></dt>
+<dd><p>Restart the repeat.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.resume">
+<span class="sig-name descname"><span class="pre">resume</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners/tick.html#Repeat.resume"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.tick.Repeat.resume" title="Link to this definition">¶</a></dt>
+<dd><p>Resume the repeat.</p>
+<p>Can only resume if in paused status.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.start">
+<span class="sig-name descname"><span class="pre">start</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">interval</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">limit</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">inf</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">execute_on_start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners/tick.html#Repeat.start"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.tick.Repeat.start" title="Link to this definition">¶</a></dt>
+<dd><p>Start the repeat loop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>interval</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The time (in seconds) for each loop.</p></li>
+<li><p><strong>limit</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The maximum number of times to loop. If <a class="reference external" href="https://docs.python.org/3.13/library/math.html#math.inf" title="(in Python v3.13)"><code class="xref py py-data docutils literal notranslate"><span class="pre">math.inf</span></code></a> is
+passed, there is no limit, and the Repeat will loop indefinitely.</p></li>
+<li><p><strong>execute_on_start</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether to execute the callback when the Repeat is started. Note
+that this does not affect the ‘limit’ as the number of loops will
+remain the same.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.stop">
+<span class="sig-name descname"><span class="pre">stop</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners/tick.html#Repeat.stop"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.tick.Repeat.stop" title="Link to this definition">¶</a></dt>
+<dd><p>Stop the repeat loop.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.adjusted_loops">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">adjusted_loops</span></span><a class="headerlink" href="#listeners.tick.Repeat.adjusted_loops" title="Link to this definition">¶</a></dt>
+<dd><p>Return the number of loops that have been adjusted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.delay_time_elapsed">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delay_time_elapsed</span></span><a class="headerlink" href="#listeners.tick.Repeat.delay_time_elapsed" title="Link to this definition">¶</a></dt>
+<dd><p>Return the time elapsed in the current loop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.delay_time_remaining">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delay_time_remaining</span></span><a class="headerlink" href="#listeners.tick.Repeat.delay_time_remaining" title="Link to this definition">¶</a></dt>
+<dd><p>Return the time remaining in the current loop.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.interval">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">interval</span></span><a class="headerlink" href="#listeners.tick.Repeat.interval" title="Link to this definition">¶</a></dt>
+<dd><p>Return the interval in which the callback will be called.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.loops_elapsed">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">loops_elapsed</span></span><a class="headerlink" href="#listeners.tick.Repeat.loops_elapsed" title="Link to this definition">¶</a></dt>
+<dd><p>Return the current number of loops made in the repeat.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.loops_remaining">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">loops_remaining</span></span><a class="headerlink" href="#listeners.tick.Repeat.loops_remaining" title="Link to this definition">¶</a></dt>
+<dd><p>Return the remaining number of loops in the repeat.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.original_loops">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">original_loops</span></span><a class="headerlink" href="#listeners.tick.Repeat.original_loops" title="Link to this definition">¶</a></dt>
+<dd><p>Return the number of loops the repeat has been started with.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.status">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">status</span></span><a class="headerlink" href="#listeners.tick.Repeat.status" title="Link to this definition">¶</a></dt>
+<dd><p>Return the status of the repeat.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#listeners.tick.RepeatStatus" title="listeners.tick.RepeatStatus">RepeatStatus</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.total_loops">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">total_loops</span></span><a class="headerlink" href="#listeners.tick.Repeat.total_loops" title="Link to this definition">¶</a></dt>
+<dd><p>Return the total number of loops to be made.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.total_time">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">total_time</span></span><a class="headerlink" href="#listeners.tick.Repeat.total_time" title="Link to this definition">¶</a></dt>
+<dd><p>Return the total time it will take to complete the repeat.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.total_time_elapsed">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">total_time_elapsed</span></span><a class="headerlink" href="#listeners.tick.Repeat.total_time_elapsed" title="Link to this definition">¶</a></dt>
+<dd><p>Return the elapsed time since the repeat started.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="listeners.tick.Repeat.total_time_remaining">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">total_time_remaining</span></span><a class="headerlink" href="#listeners.tick.Repeat.total_time_remaining" title="Link to this definition">¶</a></dt>
+<dd><p>Return the remaining time till the end of the repeat.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="listeners.tick.RepeatStatus">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">listeners.tick.</span></span><span class="sig-name descname"><span class="pre">RepeatStatus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/listeners/tick.html#RepeatStatus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#listeners.tick.RepeatStatus" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/enum.html#enum.IntEnum" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntEnum</span></code></a></p>
+<p>Class used to store RepeatStatus values.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.tick.RepeatStatus.PAUSED">
+<span class="sig-name descname"><span class="pre">PAUSED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#listeners.tick.RepeatStatus.PAUSED" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.tick.RepeatStatus.RUNNING">
+<span class="sig-name descname"><span class="pre">RUNNING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#listeners.tick.RepeatStatus.RUNNING" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="listeners.tick.RepeatStatus.STOPPED">
+<span class="sig-name descname"><span class="pre">STOPPED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#listeners.tick.RepeatStatus.STOPPED" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">listeners.tick package</a><ul>
+<li><a class="reference internal" href="#listeners.tick.Delay"><code class="docutils literal notranslate"><span class="pre">Delay</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.tick.Delay.__init__"><code class="docutils literal notranslate"><span class="pre">Delay.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Delay.cancel"><code class="docutils literal notranslate"><span class="pre">Delay.cancel()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Delay.execute"><code class="docutils literal notranslate"><span class="pre">Delay.execute()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Delay.args"><code class="docutils literal notranslate"><span class="pre">Delay.args</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Delay.callback"><code class="docutils literal notranslate"><span class="pre">Delay.callback</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Delay.cancel_on_level_end"><code class="docutils literal notranslate"><span class="pre">Delay.cancel_on_level_end</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Delay.delay"><code class="docutils literal notranslate"><span class="pre">Delay.delay</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Delay.exec_time"><code class="docutils literal notranslate"><span class="pre">Delay.exec_time</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Delay.kwargs"><code class="docutils literal notranslate"><span class="pre">Delay.kwargs</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Delay.running"><code class="docutils literal notranslate"><span class="pre">Delay.running</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Delay.time_elapsed"><code class="docutils literal notranslate"><span class="pre">Delay.time_elapsed</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Delay.time_remaining"><code class="docutils literal notranslate"><span class="pre">Delay.time_remaining</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.tick.GameThread"><code class="docutils literal notranslate"><span class="pre">GameThread</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat"><code class="docutils literal notranslate"><span class="pre">Repeat</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.tick.Repeat.__init__"><code class="docutils literal notranslate"><span class="pre">Repeat.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.extend"><code class="docutils literal notranslate"><span class="pre">Repeat.extend()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.pause"><code class="docutils literal notranslate"><span class="pre">Repeat.pause()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.reduce"><code class="docutils literal notranslate"><span class="pre">Repeat.reduce()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.restart"><code class="docutils literal notranslate"><span class="pre">Repeat.restart()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.resume"><code class="docutils literal notranslate"><span class="pre">Repeat.resume()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.start"><code class="docutils literal notranslate"><span class="pre">Repeat.start()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.stop"><code class="docutils literal notranslate"><span class="pre">Repeat.stop()</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.adjusted_loops"><code class="docutils literal notranslate"><span class="pre">Repeat.adjusted_loops</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.delay_time_elapsed"><code class="docutils literal notranslate"><span class="pre">Repeat.delay_time_elapsed</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.delay_time_remaining"><code class="docutils literal notranslate"><span class="pre">Repeat.delay_time_remaining</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.interval"><code class="docutils literal notranslate"><span class="pre">Repeat.interval</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.loops_elapsed"><code class="docutils literal notranslate"><span class="pre">Repeat.loops_elapsed</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.loops_remaining"><code class="docutils literal notranslate"><span class="pre">Repeat.loops_remaining</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.original_loops"><code class="docutils literal notranslate"><span class="pre">Repeat.original_loops</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.status"><code class="docutils literal notranslate"><span class="pre">Repeat.status</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.total_loops"><code class="docutils literal notranslate"><span class="pre">Repeat.total_loops</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.total_time"><code class="docutils literal notranslate"><span class="pre">Repeat.total_time</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.total_time_elapsed"><code class="docutils literal notranslate"><span class="pre">Repeat.total_time_elapsed</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.Repeat.total_time_remaining"><code class="docutils literal notranslate"><span class="pre">Repeat.total_time_remaining</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#listeners.tick.RepeatStatus"><code class="docutils literal notranslate"><span class="pre">RepeatStatus</span></code></a><ul>
+<li><a class="reference internal" href="#listeners.tick.RepeatStatus.PAUSED"><code class="docutils literal notranslate"><span class="pre">RepeatStatus.PAUSED</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.RepeatStatus.RUNNING"><code class="docutils literal notranslate"><span class="pre">RepeatStatus.RUNNING</span></code></a></li>
+<li><a class="reference internal" href="#listeners.tick.RepeatStatus.STOPPED"><code class="docutils literal notranslate"><span class="pre">RepeatStatus.STOPPED</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/listeners.tick.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">listeners.tick package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

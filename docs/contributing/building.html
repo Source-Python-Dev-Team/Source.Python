@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Building &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=2780edc4" />
+    
+    <script src="../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Contributing" href="contributing.html" />
+    <link rel="prev" title="stringtables" href="../developing/module_tutorials/stringtables.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="contributing.html" title="Contributing"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../developing/module_tutorials/stringtables.html" title="stringtables"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Building</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="building">
+<h1>Building<a class="headerlink" href="#building" title="Link to this heading">¶</a></h1>
+<p>On this page you will learn on how to build the Source.Python binaries
+(<code class="docutils literal notranslate"><span class="pre">source-python.so</span></code>, <code class="docutils literal notranslate"><span class="pre">source-python.dll</span></code>, <code class="docutils literal notranslate"><span class="pre">core.so</span></code> and <code class="docutils literal notranslate"><span class="pre">core.dll</span></code>) on
+your own. This allows you to do tests or contribute to the C++ side of
+Source.Python by applying fixes, making improvements or exposing useful stuff
+to the Python side.</p>
+<section id="linux">
+<h2>Linux<a class="headerlink" href="#linux" title="Link to this heading">¶</a></h2>
+<p>To build Source.Python on Linux, you need the following requirements:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://cmake.org/download/">CMake 3.15 or later</a></p></li>
+<li><p><a class="reference external" href="https://git-scm.com/downloads">Git</a></p></li>
+<li><p><a class="reference external" href="https://gcc.gnu.org/">GCC 8 or later</a></p></li>
+</ul>
+<p>Once you have installed the requirements, follow these steps to build Source.Python:</p>
+<ol class="arabic simple">
+<li><p>Create a clone of the <a class="reference external" href="https://github.com/Source-Python-Dev-Team/Source.Python/">Source.Python repository</a>.</p></li>
+<li><p>Navigate to the <code class="docutils literal notranslate"><span class="pre">src</span></code> directory.</p></li>
+<li><p>Start the <code class="docutils literal notranslate"><span class="pre">Build.sh</span></code> script.</p></li>
+<li><p>Choose the game for which you want to build Source.Python.</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default only one CPU core is used to build the binaries. If you wish to
+use more, set the variable <code class="docutils literal notranslate"><span class="pre">NUM_CORES</span></code> to the number of core you would
+like to use. This will speed up the build process, but also requires more
+resources.</p>
+</div>
+<p>You can shorten these steps by simply passing the game’s name to the script
+e.g. <code class="docutils literal notranslate"><span class="pre">./Build.sh</span> <span class="pre">css</span></code>.</p>
+<p>If the build finished successfully, it will say something like this:
+<code class="docutils literal notranslate"><span class="pre">[100%]</span> <span class="pre">Built</span> <span class="pre">target</span> <span class="pre">core</span></code>.</p>
+<p>The compiled binaries are stored in <code class="docutils literal notranslate"><span class="pre">src/Builds/Linux/&lt;game&gt;/Release</span></code>.</p>
+</section>
+<section id="windows">
+<h2>Windows<a class="headerlink" href="#windows" title="Link to this heading">¶</a></h2>
+<p>To build Source.Python on Windows, you need the following requirements:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://cmake.org/download/">CMake 3.15 or later</a></p></li>
+<li><p><a class="reference external" href="https://git-scm.com/downloads">Git</a></p></li>
+<li><p><a class="reference external" href="https://visualstudio.microsoft.com/de/vs/">Visual C++ 2022</a></p></li>
+<li><p><a class="reference external" href="https://www.microsoft.com/en-us/download/details.aspx?id=48159">Microsoft Build Tools (optional, to build directly via Build.bat)</a></p></li>
+</ul>
+<p>Once you have installed the requirements, follow these steps to build Source.Python:</p>
+<ol class="arabic simple">
+<li><p>Create a clone of the <a class="reference external" href="https://github.com/Source-Python-Dev-Team/Source.Python/">Source.Python repository</a>.</p></li>
+<li><p>Navigate to the <code class="docutils literal notranslate"><span class="pre">src</span></code> directory.</p></li>
+<li><p>Start the <code class="docutils literal notranslate"><span class="pre">Build.bat</span></code> script.</p></li>
+<li><p>Choose the game for which you want to build Source.Python.</p></li>
+<li><p>Go to <code class="docutils literal notranslate"><span class="pre">src/Builds/Windows/&lt;game&gt;</span></code>.</p></li>
+<li><p>Open <code class="docutils literal notranslate"><span class="pre">source-python.sln</span></code>.</p></li>
+<li><p>Switch the build mode to <code class="docutils literal notranslate"><span class="pre">Release</span></code>.</p></li>
+<li><p>Hit <code class="docutils literal notranslate"><span class="pre">F7</span></code> to start the build.</p></li>
+</ol>
+<p>If the build finished successfully, it will say something like that:
+<a href="#id4"><span class="problematic" id="id5">``</span></a>========== Build: 3 succeeded, 0 failed, 0 up-to-date, 1 skipped ========== <a href="#id6"><span class="problematic" id="id7">``</span></a>.</p>
+<p>You can shorten these steps if you have installed the Microsoft Build Tools.
+In that case you can simply start the script and pass the game’s name e.g.
+<code class="docutils literal notranslate"><span class="pre">Build.bat</span> <span class="pre">css</span></code>.</p>
+<p>However, in both cases the compiled binaries are stored in <code class="docutils literal notranslate"><span class="pre">src/Builds/Windows/&lt;game&gt;/Release</span></code>.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Building</a><ul>
+<li><a class="reference internal" href="#linux">Linux</a></li>
+<li><a class="reference internal" href="#windows">Windows</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../developing/module_tutorials/stringtables.html"
+                          title="previous chapter">stringtables</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="contributing.html"
+                          title="next chapter">Contributing</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/contributing/building.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="contributing.html" title="Contributing"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../developing/module_tutorials/stringtables.html" title="stringtables"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Building</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Console commands &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=2780edc4" />
+    
+    <script src="../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Known issues" href="known-issues.html" />
+    <link rel="prev" title="Configuring authorization" href="config-auth.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="known-issues.html" title="Known issues"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="config-auth.html" title="Configuring authorization"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Console commands</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="console-commands">
+<h1>Console commands<a class="headerlink" href="#console-commands" title="Link to this heading">¶</a></h1>
+<p>This page provides a list of all “sp” sub-commands.</p>
+<section id="auth">
+<h2>auth<a class="headerlink" href="#auth" title="Link to this heading">¶</a></h2>
+<p>Provide authorization specific commands.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp auth &lt;sub-command&gt;
+</pre></div>
+</div>
+<section id="backend">
+<h3>backend<a class="headerlink" href="#backend" title="Link to this heading">¶</a></h3>
+<p>Provide backend specific commands.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp auth backend &lt;sub-command&gt;
+</pre></div>
+</div>
+<section id="set">
+<h4>set<a class="headerlink" href="#set" title="Link to this heading">¶</a></h4>
+<p>Set the active backend.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp auth backend set &lt;backend&gt;
+
+// Tell Source.Python to use the SQL backend
+sp auth backend set sql
+</pre></div>
+</div>
+</section>
+<section id="list">
+<h4>list<a class="headerlink" href="#list" title="Link to this heading">¶</a></h4>
+<p>List all available backends and mark the active backend.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp auth backend list
+</pre></div>
+</div>
+</section>
+</section>
+<section id="permission">
+<h3>permission<a class="headerlink" href="#permission" title="Link to this heading">¶</a></h3>
+<p>Provide permission specific commands.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp auth permission &lt;sub-command&gt;
+</pre></div>
+</div>
+<section id="parent">
+<h4>parent<a class="headerlink" href="#parent" title="Link to this heading">¶</a></h4>
+<p>Provide commands to modify parent permissions.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp auth permission parent &lt;sub-command&gt;
+</pre></div>
+</div>
+<section id="add">
+<h5>add<a class="headerlink" href="#add" title="Link to this heading">¶</a></h5>
+<p>Add a permission to a parent. If the given parent does not exist, it will be created.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp auth permission parent add &lt;parent&gt; &lt;permission&gt; [server_id:int=None]
+
+// Add the permission &#39;my_plugin.something&#39; to the &#39;administrator&#39; parent
+sp auth permission parent add administrator my_plugin.something
+</pre></div>
+</div>
+</section>
+<section id="add-parent">
+<h5>add_parent<a class="headerlink" href="#add-parent" title="Link to this heading">¶</a></h5>
+<p>Add a parent to a parent. If the given parents don’t exist, they will be created.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp auth permission parent add_parent &lt;parent&gt; &lt;parent_to_add&gt;
+
+// Add the parent &#39;moderator&#39; to the &#39;administrator&#39; parent
+sp auth permission parent add_parent administrator moderator
+</pre></div>
+</div>
+</section>
+<section id="remove">
+<h5>remove<a class="headerlink" href="#remove" title="Link to this heading">¶</a></h5>
+<p>Remove a permission from a parent.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp auth permission parent remove &lt;parent&gt; &lt;permission&gt; [server_id:int=None]
+
+// Remove the permissions &#39;my_plugin.something&#39; from the &#39;administrator&#39; parent
+sp auth permission parent remove administrator my_plugin.something
+</pre></div>
+</div>
+</section>
+<section id="remove-parent">
+<h5>remove_parent<a class="headerlink" href="#remove-parent" title="Link to this heading">¶</a></h5>
+<p>Remove a parent from a parent.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp auth permission parent remove_parent &lt;parent&gt; &lt;parent_to_remove&gt;
+
+// Remove the parent &#39;moderator&#39; from the &#39;administrator&#39; parent
+permission parent remove_parent administrator moderator
+</pre></div>
+</div>
+</section>
+</section>
+<section id="player">
+<h4>player<a class="headerlink" href="#player" title="Link to this heading">¶</a></h4>
+<p>Provide commands to modify player permissions.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp auth permission player &lt;sub-command&gt;
+</pre></div>
+</div>
+<section id="id1">
+<h5>add<a class="headerlink" href="#id1" title="Link to this heading">¶</a></h5>
+<p>Grant a permission to players.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp auth permission player add &lt;players:filter_str&gt; &lt;permission&gt; [server_id:int=None]
+
+// Grant all players that are currently on the server the permission &#39;my_plugin.something&#39;
+sp auth permission player add all my_plugin.something
+</pre></div>
+</div>
+</section>
+<section id="id2">
+<h5>add_parent<a class="headerlink" href="#id2" title="Link to this heading">¶</a></h5>
+<p>Add a parent to players. If the parent does not exist, it will be created.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp auth permission player add_parent &lt;players:filter_str&gt; &lt;parent&gt;
+
+// Add the parent &#39;administrator&#39; to all players that are currently on the server
+sp auth permission player add_parent all administrator
+</pre></div>
+</div>
+</section>
+<section id="id3">
+<h5>remove<a class="headerlink" href="#id3" title="Link to this heading">¶</a></h5>
+<p>Remove a parent from players.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp auth permission player remove &lt;players:filter_str&gt; &lt;permission&gt; [server_id:int=None]
+
+// Remove the permission &#39;my_plugin.something&#39; from all players that are currently on the server
+sp auth permission player remove all my_plugin.something
+</pre></div>
+</div>
+</section>
+<section id="id4">
+<h5>remove_parent<a class="headerlink" href="#id4" title="Link to this heading">¶</a></h5>
+<p>Remove a parent from players.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp auth permission player remove_parent &lt;players:filter_str&gt; &lt;parent&gt;
+
+// Remove the parent &#39;administrator&#39; from all players that are currently on the server
+sp auth permission player remove_parent all administrator
+</pre></div>
+</div>
+</section>
+<section id="test">
+<h5>test<a class="headerlink" href="#test" title="Link to this heading">¶</a></h5>
+<p>Test which players are granted a specific permission.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp auth permission player test &lt;permission&gt;
+
+// Tests who has the permission &#39;my_plugin.something&#39;
+sp auth permission player test my_plugin.something
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+</section>
+<section id="credits">
+<h2>credits<a class="headerlink" href="#credits" title="Link to this heading">¶</a></h2>
+<p>Display credits for the Source.Python plugin.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp credits
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="credits.html"><span class="doc">credits</span></a></p>
+</div>
+</section>
+<section id="delay">
+<h2>delay<a class="headerlink" href="#delay" title="Link to this heading">¶</a></h2>
+<p>Execute a server command after the given delay.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp delay &lt;delay&gt; &lt;command&gt; [arguments]
+
+// Execute a command after a delay of 2 seconds
+sp delay 2 changelevel cs_office
+
+// Also can be used to set variables after a delay
+sp delay 2 bot_quota 5
+</pre></div>
+</div>
+</section>
+<section id="docs">
+<h2>docs<a class="headerlink" href="#docs" title="Link to this heading">¶</a></h2>
+<p>Create, generate or build a Sphinx project.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp docs &lt;sub-command&gt; &lt;source-python/custom-package/plugin&gt;
+</pre></div>
+</div>
+<section id="build">
+<h3>build<a class="headerlink" href="#build" title="Link to this heading">¶</a></h3>
+<p>Build a Sphinx project.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp docs build &lt;source-python/custom-package/plugin&gt;
+
+// Build the Source.Python documentation
+sp docs build source-python
+
+// Build documentation for a plugin
+sp docs build my_plugin
+</pre></div>
+</div>
+</section>
+<section id="create">
+<h3>create<a class="headerlink" href="#create" title="Link to this heading">¶</a></h3>
+<p>Create a Sphinx project.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp docs create &lt;source-python/custom-package/plugin&gt;
+
+// Create documentation for a plugin
+sp docs create my_plugin
+</pre></div>
+</div>
+</section>
+<section id="generate">
+<h3>generate<a class="headerlink" href="#generate" title="Link to this heading">¶</a></h3>
+<p>Generate a Sphinx project.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp docs generate &lt;source-python/custom-package/plugin&gt;
+
+// Generate documentation files for a plugin
+sp docs generate my_plugin
+</pre></div>
+</div>
+</section>
+</section>
+<section id="dump">
+<h2>dump<a class="headerlink" href="#dump" title="Link to this heading">¶</a></h2>
+<p>Dump data to a file. The filename given will be created at ../logs/source-python/&lt;filename&gt;.txt</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp dump &lt;sub-command&gt;
+</pre></div>
+</div>
+<section id="class-info">
+<h3>class_info<a class="headerlink" href="#class-info" title="Link to this heading">¶</a></h3>
+<p>Dump class information to a file.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp dump class_info &lt;file_name&gt;
+
+// Dump class information to ../logs/source-python/class_info.txt
+sp dump class_info class_info
+</pre></div>
+</div>
+</section>
+<section id="convars">
+<h3>convars<a class="headerlink" href="#convars" title="Link to this heading">¶</a></h3>
+<p>Dump console variables to a file.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp dump convars &lt;file_name&gt;
+
+// Dump console variables to ../logs/source-python/convars.txt
+sp dump convars convars
+</pre></div>
+</div>
+</section>
+<section id="datamaps">
+<h3>datamaps<a class="headerlink" href="#datamaps" title="Link to this heading">¶</a></h3>
+<p>Dump datamaps to a file.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp dump datamaps &lt;file_name&gt;
+
+// Dump datamaps to ../logs/source-python/datamaps.txt
+sp dump datamaps datamaps
+</pre></div>
+</div>
+</section>
+<section id="server-classes">
+<h3>server_classes<a class="headerlink" href="#server-classes" title="Link to this heading">¶</a></h3>
+<p>Dump server classes to a file.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp dump server_classes &lt;file_name&gt;
+
+// Dump server classes to ../logs/source-python/server_classes.txt
+sp dump server_classes server_classes
+</pre></div>
+</div>
+</section>
+<section id="string-tables">
+<h3>string_tables<a class="headerlink" href="#string-tables" title="Link to this heading">¶</a></h3>
+<p>Dump string tables to a file.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp dump string_tables &lt;file_name&gt;
+
+// Dump string tables to ../logs/source-python/string_tables.txt
+sp dump string_tables string_tables
+</pre></div>
+</div>
+</section>
+<section id="weapon-scripts">
+<h3>weapon_scripts<a class="headerlink" href="#weapon-scripts" title="Link to this heading">¶</a></h3>
+<p>Dump weapon scripts to a file.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp dump weapon_scripts &lt;file_name&gt;
+
+// Dump weapon scripts to ../logs/source-python/weapon_scripts.txt
+sp dump weapon_scripts weapon_scripts
+</pre></div>
+</div>
+</section>
+</section>
+<section id="help">
+<h2>help<a class="headerlink" href="#help" title="Link to this heading">¶</a></h2>
+<p>List all ‘sp’ sub-commands or provide help on server commands registered with Source.Python.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp help [command=None] [*sub_commands]
+
+// List all &#39;sp&#39; sub-commands
+sp help
+
+// Print help on &#39;sp load&#39;
+sp help sp load
+</pre></div>
+</div>
+</section>
+<section id="info">
+<h2>info<a class="headerlink" href="#info" title="Link to this heading">¶</a></h2>
+<p>Print information about the server’s operating system, Source.Python and installed plugins.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp info
+
+// Example output
+Date          : 2017-01-15 17:11:05.553293
+OS            : Windows-7-6.1.7601-SP1
+Game          : css
+SP version    : 528
+Server plugins:
+   00: Mattie&#39;s EventScripts, http://www.eventscripts.com, Version:2.1.1.379
+   01: Metamod:Source 1.10.6
+   02: Source.Python, (C) 2012-2016, Source.Python Team.
+SP plugins:
+   00: paintball, 1.3, http://forums.sourcepython.com/viewtopic.php?f=7&amp;t=502
+</pre></div>
+</div>
+</section>
+<section id="plugin">
+<h2>plugin<a class="headerlink" href="#plugin" title="Link to this heading">¶</a></h2>
+<p>Provide plugin specific commands.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp plugin &lt;sub-command&gt;
+</pre></div>
+</div>
+<section id="id5">
+<h3>list<a class="headerlink" href="#id5" title="Link to this heading">¶</a></h3>
+<p>List all currently loaded plugins.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp plugin list
+</pre></div>
+</div>
+</section>
+<section id="load">
+<h3>load<a class="headerlink" href="#load" title="Link to this heading">¶</a></h3>
+<p>Load a plugin by name.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp plugin load &lt;plugin&gt;
+
+// Load the plugin &#39;test&#39;
+sp plugin load test
+</pre></div>
+</div>
+</section>
+<section id="reload">
+<h3>reload<a class="headerlink" href="#reload" title="Link to this heading">¶</a></h3>
+<p>Reload a plugin by name.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp plugin reload &lt;plugin&gt;
+
+// Reload the plugin &#39;test&#39;
+sp plugin reload test
+</pre></div>
+</div>
+</section>
+<section id="unload">
+<h3>unload<a class="headerlink" href="#unload" title="Link to this heading">¶</a></h3>
+<p>Unload a plugin by name.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp plugin unload &lt;plugin&gt;
+
+// Unload the plugin &#39;test&#39;
+sp plugin unload test
+</pre></div>
+</div>
+</section>
+</section>
+<section id="update">
+<h2>update<a class="headerlink" href="#update" title="Link to this heading">¶</a></h2>
+<p>Update Source.Python to the latest version. A restart of the server is required
+to apply the new update.</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>// Usage
+// sp update
+</pre></div>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Console commands</a><ul>
+<li><a class="reference internal" href="#auth">auth</a><ul>
+<li><a class="reference internal" href="#backend">backend</a><ul>
+<li><a class="reference internal" href="#set">set</a></li>
+<li><a class="reference internal" href="#list">list</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#permission">permission</a><ul>
+<li><a class="reference internal" href="#parent">parent</a><ul>
+<li><a class="reference internal" href="#add">add</a></li>
+<li><a class="reference internal" href="#add-parent">add_parent</a></li>
+<li><a class="reference internal" href="#remove">remove</a></li>
+<li><a class="reference internal" href="#remove-parent">remove_parent</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#player">player</a><ul>
+<li><a class="reference internal" href="#id1">add</a></li>
+<li><a class="reference internal" href="#id2">add_parent</a></li>
+<li><a class="reference internal" href="#id3">remove</a></li>
+<li><a class="reference internal" href="#id4">remove_parent</a></li>
+<li><a class="reference internal" href="#test">test</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#credits">credits</a></li>
+<li><a class="reference internal" href="#delay">delay</a></li>
+<li><a class="reference internal" href="#docs">docs</a><ul>
+<li><a class="reference internal" href="#build">build</a></li>
+<li><a class="reference internal" href="#create">create</a></li>
+<li><a class="reference internal" href="#generate">generate</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#dump">dump</a><ul>
+<li><a class="reference internal" href="#class-info">class_info</a></li>
+<li><a class="reference internal" href="#convars">convars</a></li>
+<li><a class="reference internal" href="#datamaps">datamaps</a></li>
+<li><a class="reference internal" href="#server-classes">server_classes</a></li>
+<li><a class="reference internal" href="#string-tables">string_tables</a></li>
+<li><a class="reference internal" href="#weapon-scripts">weapon_scripts</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#help">help</a></li>
+<li><a class="reference internal" href="#info">info</a></li>
+<li><a class="reference internal" href="#plugin">plugin</a><ul>
+<li><a class="reference internal" href="#id5">list</a></li>
+<li><a class="reference internal" href="#load">load</a></li>
+<li><a class="reference internal" href="#reload">reload</a></li>
+<li><a class="reference internal" href="#unload">unload</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#update">update</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="config-auth.html"
+                          title="previous chapter">Configuring authorization</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="known-issues.html"
+                          title="next chapter">Known issues</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/general/sp-commands.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="known-issues.html" title="Known issues"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="config-auth.html" title="Configuring authorization"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Console commands</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

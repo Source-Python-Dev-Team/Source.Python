@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>memory &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=2780edc4" />
+    
+    <script src="../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">memory</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for memory</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../memory/__init__.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides binary/memory based functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">inspect</span>
+
+<span class="c1"># Source.Python</span>
+<span class="c1">#   Loggers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">loggers</span><span class="w"> </span><span class="kn">import</span> <span class="n">_sp_logger</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FORWARD IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python</span>
+<span class="c1">#   core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoUnload</span>
+<span class="c1">#   memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">BinaryFile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">CallingConvention</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">CLASS_INFO</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">Convention</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">DataType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">EXPOSED_CLASSES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">Function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">FunctionInfo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">NULL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pointer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProcessorRegister</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">Register</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">Registers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">StackData</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_SIZES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">alloc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_binary</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_data_type_size</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_object_pointer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_size</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_object</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;BinaryFile&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;CLASS_INFO&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Callback&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;CallingConvention&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Convention&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;DataType&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;EXPOSED_CLASSES&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Function&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;FunctionInfo&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;NULL&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Pointer&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ProcessorRegister&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Register&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Registers&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;StackData&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TYPE_SIZES&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;alloc&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;find_binary&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;get_class&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;get_class_info&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;get_class_name&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;get_data_type_size&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;get_function_info&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;get_object_pointer&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;get_size&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;get_virtual_function&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;make_object&#39;</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Get the sp.memory logger</span>
+<span class="n">memory_logger</span> <span class="o">=</span> <span class="n">_sp_logger</span><span class="o">.</span><span class="n">memory</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="Callback">
+<a class="viewcode-back" href="../developing/modules/memory.html#memory.Callback">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Callback</span><span class="p">(</span><span class="n">AutoUnload</span><span class="p">,</span> <span class="n">Function</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator to create a function in memory to call a Python callback.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Callback.__init__">
+<a class="viewcode-back" href="../developing/modules/memory.html#memory.Callback.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">convention</span><span class="p">,</span> <span class="n">arg_types</span><span class="p">,</span> <span class="n">return_type</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the Callback object.</span>
+
+<span class="sd">        :param Convention|CallingConvention convention: Calling convention</span>
+<span class="sd">            that should be used for this callback.</span>
+<span class="sd">        :param iterable arg_types: Argument types of the callback.</span>
+<span class="sd">        :param return_type: Return type of the callback.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Allocate enough space for a jump, so we can hook it later. Then</span>
+        <span class="c1"># convert it to a function. Of course, this isn&#39;t a function, but the</span>
+        <span class="c1"># hook will override it.</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">alloc</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="n">convention</span><span class="p">,</span> <span class="n">arg_types</span><span class="p">,</span> <span class="n">return_type</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">add_pre_hook</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hook</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call the callback and get the return value.&quot;&quot;&quot;</span>
+        <span class="n">return_value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">return_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">return_value</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">return_type</span> <span class="o">==</span> <span class="n">DataType</span><span class="o">.</span><span class="n">VOID</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+
+        <span class="c1"># We will crash now :(</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Return value is not allowed to be None.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store the given callback on the first call.</span>
+
+<span class="sd">        All further calls will call the created callback function.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">callable</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kw</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the hook, restore the allocated space and deallocate it.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_delete_hook</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dealloc</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FUNCTIONS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="get_virtual_function">
+<a class="viewcode-back" href="../developing/modules/memory.html#memory.get_virtual_function">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_virtual_function</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">function_name</span><span class="p">,</span> <span class="n">function_index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a :class:`Function` object.</span>
+
+<span class="sd">    Create the :class:`Function` object by using</span>
+<span class="sd">    a :class:`FunctionInfo` object.</span>
+
+<span class="sd">    :param obj: An object of an exposed class.</span>
+<span class="sd">    :param str function_name: See :func:`get_function_info`.</span>
+<span class="sd">    :param int function_index: See :func:`get_function_info`.</span>
+<span class="sd">    :raise ValueError: See :func:`get_class_name`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">get_object_pointer</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span><span class="o">.</span><span class="n">make_virtual_function</span><span class="p">(</span>
+        <span class="n">get_function_info</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">function_name</span><span class="p">,</span> <span class="n">function_index</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="get_function_info">
+<a class="viewcode-back" href="../developing/modules/memory.html#memory.get_function_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_function_info</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">function_name</span><span class="p">,</span> <span class="n">function_index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the :class:`FunctionInfo` object of a member function.</span>
+
+<span class="sd">    :param str cls: See :func:`get_class_info`.</span>
+<span class="sd">    :param str function_name: The name of the member function on the C++ side.</span>
+<span class="sd">    :param int function_index: The index of the member function in the</span>
+<span class="sd">        function info list. This is only required if the function is</span>
+<span class="sd">        overloaded and you want to get a different FunctionInfo object than</span>
+<span class="sd">        the first one.</span>
+<span class="sd">    :raise ValueError: See :func:`get_class_name`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">get_class_info</span><span class="p">(</span><span class="bp">cls</span><span class="p">)[</span><span class="n">function_name</span><span class="p">][</span><span class="n">function_index</span><span class="p">]</span></div>
+
+
+
+<div class="viewcode-block" id="get_class_info">
+<a class="viewcode-back" href="../developing/modules/memory.html#memory.get_class_info">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_class_info</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the class info dictionary of a class.</span>
+
+<span class="sd">    :param str cls:  A string that defines the name of the class on the C++</span>
+<span class="sd">        side or an exposed class or an object of an exposed class.</span>
+<span class="sd">    :raise ValueError: See :func:`get_class_name`.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">CLASS_INFO</span><span class="p">[</span><span class="bp">cls</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__class__</span>
+
+    <span class="k">return</span> <span class="n">get_class_info</span><span class="p">(</span><span class="n">get_class_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="get_class_name">
+<a class="viewcode-back" href="../developing/modules/memory.html#memory.get_class_name">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_class_name</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the name of a class or class object on the C++ side.</span>
+
+<span class="sd">    :param cls: A class or class object.</span>
+<span class="sd">    :raise ValueError: Raised if the class was not exposed by Source.Python.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">inspect</span><span class="o">.</span><span class="n">isclass</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+        <span class="bp">cls</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__class__</span>
+
+    <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">possible_cls</span> <span class="ow">in</span> <span class="n">EXPOSED_CLASSES</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="bp">cls</span> <span class="ow">is</span> <span class="n">possible_cls</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">name</span>
+
+    <span class="k">for</span> <span class="n">base_class</span> <span class="ow">in</span> <span class="bp">cls</span><span class="o">.</span><span class="vm">__bases__</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">class_name</span> <span class="o">=</span> <span class="n">get_class_name</span><span class="p">(</span><span class="n">base_class</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">class_name</span>
+
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Given class was not exposed.&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="get_class">
+<a class="viewcode-back" href="../developing/modules/memory.html#memory.get_class">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_class</span><span class="p">(</span><span class="n">classname</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the class of an exposed class by its C++ class name.</span>
+
+<span class="sd">    :param str classname: The name of the exposed class on the C++ side.</span>
+<span class="sd">    :raise KeyError: Raised if the `classname` is not the name of an exposed</span>
+<span class="sd">        class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">EXPOSED_CLASSES</span><span class="p">[</span><span class="n">classname</span><span class="p">]</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">memory</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

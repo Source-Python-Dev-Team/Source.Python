@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>config.manager module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">config.manager module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-config.manager">
+<span id="config-manager-module"></span><h1>config.manager module<a class="headerlink" href="#module-config.manager" title="Link to this heading">¶</a></h1>
+<p>Provides a way to create and execute configuration files.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="config.manager.ConfigManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">config.manager.</span></span><span class="sig-name descname"><span class="pre">ConfigManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cvar_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indention</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_line_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">79</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/config/manager.html#ConfigManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.manager.ConfigManager" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Config Management class used to create a config file.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="config.manager.ConfigManager.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cvar_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indention</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_line_length</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">79</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/config/manager.html#ConfigManager.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.manager.ConfigManager.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialized the configuration manager.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filepath</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Location where the configuration should be stored. The extension
+<code class="docutils literal notranslate"><span class="pre">.cfg</span></code> can be skipped. It will be added automatically.</p></li>
+<li><p><strong>cvar_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – A prefix that should be added to every console variable.</p></li>
+<li><p><strong>indention</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Number of spaces used to indent values within the configuration
+file.</p></li>
+<li><p><strong>max_line_length</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – Maximum line length within the configuration file.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="config.manager.ConfigManager.command">
+<span class="sig-name descname"><span class="pre">command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/config/manager.html#ConfigManager.command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.manager.ConfigManager.command" title="Link to this definition">¶</a></dt>
+<dd><p>Add/return a command instance to add to the config file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the command to add.</p></li>
+<li><p><strong>description</strong> (<em>str/TranslationString</em>) – Description of the command.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>_CommandManager</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="config.manager.ConfigManager.cvar">
+<span class="sig-name descname"><span class="pre">cvar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">default</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/config/manager.html#ConfigManager.cvar"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.manager.ConfigManager.cvar" title="Link to this definition">¶</a></dt>
+<dd><p>Add/return a cvar instance to add to the config file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the console variable.</p></li>
+<li><p><strong>default</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><em>object</em></a>) – A default value for the console variable. It will be converted to
+a string.</p></li>
+<li><p><strong>description</strong> (<em>str/TranslationStrings</em>) – A description of the console variable.</p></li>
+<li><p><strong>flags</strong> (<a class="reference internal" href="cvars.flags.html#cvars.flags.ConVarFlags" title="cvars.flags.ConVarFlags"><em>ConVarFlags</em></a>) – Flags that should be used for the console variable.</p></li>
+<li><p><strong>min_value</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Minimum value.</p></li>
+<li><p><strong>max_value</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – Maximum value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>_CvarManager</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="config.manager.ConfigManager.execute">
+<span class="sig-name descname"><span class="pre">execute</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/config/manager.html#ConfigManager.execute"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.manager.ConfigManager.execute" title="Link to this definition">¶</a></dt>
+<dd><p>Execute the config file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="config.manager.ConfigManager.section">
+<span class="sig-name descname"><span class="pre">section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">separator</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'#'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/config/manager.html#ConfigManager.section"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.manager.ConfigManager.section" title="Link to this definition">¶</a></dt>
+<dd><p>Add/return a section instance to add to the config file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>str/TranslationStrings</em>) – Name of the section to add.</p></li>
+<li><p><strong>separator</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – A single separator character to use to separate the section.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>_SectionManager</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="config.manager.ConfigManager.text">
+<span class="sig-name descname"><span class="pre">text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/config/manager.html#ConfigManager.text"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.manager.ConfigManager.text" title="Link to this definition">¶</a></dt>
+<dd><p>Add text to the config file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<em>str/TranslationStrings</em>) – The text to add.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="config.manager.ConfigManager.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/config/manager.html#ConfigManager.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#config.manager.ConfigManager.write" title="Link to this definition">¶</a></dt>
+<dd><p>Write the config file.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="config.manager.ConfigManager.cvar_prefix">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cvar_prefix</span></span><a class="headerlink" href="#config.manager.ConfigManager.cvar_prefix" title="Link to this definition">¶</a></dt>
+<dd><p>Return the convar prefix for the config file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="config.manager.ConfigManager.filepath">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filepath</span></span><a class="headerlink" href="#config.manager.ConfigManager.filepath" title="Link to this definition">¶</a></dt>
+<dd><p>Return the file path for the config file.</p>
+<p>The path does not include the <code class="docutils literal notranslate"><span class="pre">.cfg</span></code> file extension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="config.manager.ConfigManager.fullpath">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fullpath</span></span><a class="headerlink" href="#config.manager.ConfigManager.fullpath" title="Link to this definition">¶</a></dt>
+<dd><p>Return the full path to the configuration file.</p>
+<p>The path include the <code class="docutils literal notranslate"><span class="pre">.cfg</span></code> file extension.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>path.Path</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="config.manager.ConfigManager.indention">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">indention</span></span><a class="headerlink" href="#config.manager.ConfigManager.indention" title="Link to this definition">¶</a></dt>
+<dd><p>Return the indention value for the config file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="config.manager.ConfigManager.max_line_length">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_line_length</span></span><a class="headerlink" href="#config.manager.ConfigManager.max_line_length" title="Link to this definition">¶</a></dt>
+<dd><p>Return the max line length for the config file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">config.manager module</a><ul>
+<li><a class="reference internal" href="#config.manager.ConfigManager"><code class="docutils literal notranslate"><span class="pre">ConfigManager</span></code></a><ul>
+<li><a class="reference internal" href="#config.manager.ConfigManager.__init__"><code class="docutils literal notranslate"><span class="pre">ConfigManager.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#config.manager.ConfigManager.command"><code class="docutils literal notranslate"><span class="pre">ConfigManager.command()</span></code></a></li>
+<li><a class="reference internal" href="#config.manager.ConfigManager.cvar"><code class="docutils literal notranslate"><span class="pre">ConfigManager.cvar()</span></code></a></li>
+<li><a class="reference internal" href="#config.manager.ConfigManager.execute"><code class="docutils literal notranslate"><span class="pre">ConfigManager.execute()</span></code></a></li>
+<li><a class="reference internal" href="#config.manager.ConfigManager.section"><code class="docutils literal notranslate"><span class="pre">ConfigManager.section()</span></code></a></li>
+<li><a class="reference internal" href="#config.manager.ConfigManager.text"><code class="docutils literal notranslate"><span class="pre">ConfigManager.text()</span></code></a></li>
+<li><a class="reference internal" href="#config.manager.ConfigManager.write"><code class="docutils literal notranslate"><span class="pre">ConfigManager.write()</span></code></a></li>
+<li><a class="reference internal" href="#config.manager.ConfigManager.cvar_prefix"><code class="docutils literal notranslate"><span class="pre">ConfigManager.cvar_prefix</span></code></a></li>
+<li><a class="reference internal" href="#config.manager.ConfigManager.filepath"><code class="docutils literal notranslate"><span class="pre">ConfigManager.filepath</span></code></a></li>
+<li><a class="reference internal" href="#config.manager.ConfigManager.fullpath"><code class="docutils literal notranslate"><span class="pre">ConfigManager.fullpath</span></code></a></li>
+<li><a class="reference internal" href="#config.manager.ConfigManager.indention"><code class="docutils literal notranslate"><span class="pre">ConfigManager.indention</span></code></a></li>
+<li><a class="reference internal" href="#config.manager.ConfigManager.max_line_length"><code class="docutils literal notranslate"><span class="pre">ConfigManager.max_line_length</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/config.manager.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">config.manager module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

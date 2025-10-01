@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>weapons.restrictions module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">weapons.restrictions module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-weapons.restrictions">
+<span id="weapons-restrictions-module"></span><h1>weapons.restrictions module<a class="headerlink" href="#module-weapons.restrictions" title="Link to this heading">¶</a></h1>
+<p>Provides player weapon restriction functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="weapons.restrictions.WeaponRestrictionHandler">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">weapons.restrictions.</span></span><span class="sig-name descname"><span class="pre">WeaponRestrictionHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/restrictions.html#WeaponRestrictionHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.restrictions.WeaponRestrictionHandler" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#core.AutoUnload" title="core.AutoUnload"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoUnload</span></code></a></p>
+<p>Class used to handle player and team restrictions.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.restrictions.WeaponRestrictionHandler.on_player_carrying_restricted_weapon">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">on_player_carrying_restricted_weapon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weapon</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/restrictions.html#WeaponRestrictionHandler.on_player_carrying_restricted_weapon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.restrictions.WeaponRestrictionHandler.on_player_carrying_restricted_weapon" title="Link to this definition">¶</a></dt>
+<dd><p>Force the player to drop the weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> (<a class="reference internal" href="players.engines.bms.html#players.engines.bms.Player" title="players.engines.bms.Player"><em>Player</em></a>) – The player that is carrying a restricted weapon.</p></li>
+<li><p><strong>weapon</strong> (<a class="reference internal" href="weapons.engines.csgo.html#weapons.engines.csgo.Weapon" title="weapons.engines.csgo.Weapon"><em>Weapon</em></a>) – The weapon that the player is carrying
+and is newly restricted.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.restrictions.WeaponRestrictionHandler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/restrictions.html#WeaponRestrictionHandler.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.restrictions.WeaponRestrictionHandler.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the instance and add it to the manager.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.restrictions.WeaponRestrictionHandler.add_player_restrictions">
+<span class="sig-name descname"><span class="pre">add_player_restrictions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">weapons</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/restrictions.html#WeaponRestrictionHandler.add_player_restrictions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.restrictions.WeaponRestrictionHandler.add_player_restrictions" title="Link to this definition">¶</a></dt>
+<dd><p>Add the weapons to the player’s restriction set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> (<a class="reference internal" href="players.engines.bms.html#players.engines.bms.Player" title="players.engines.bms.Player"><em>Player</em></a>) – The player to add the restrictions to.</p></li>
+<li><p><strong>weapons</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – A weapon or any number of weapons to add
+as restricted for the player.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.restrictions.WeaponRestrictionHandler.add_team_restrictions">
+<span class="sig-name descname"><span class="pre">add_team_restrictions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">team</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">weapons</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/restrictions.html#WeaponRestrictionHandler.add_team_restrictions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.restrictions.WeaponRestrictionHandler.add_team_restrictions" title="Link to this definition">¶</a></dt>
+<dd><p>Add the weapons to the team’s restriction set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>team</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The team to add the restrictions to.
+Value can also be a team alias (ie t/ct).</p></li>
+<li><p><strong>weapons</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – A weapon or any number of weapons to add
+as restricted for the team.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.restrictions.WeaponRestrictionHandler.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/restrictions.html#WeaponRestrictionHandler.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.restrictions.WeaponRestrictionHandler.clear" title="Link to this definition">¶</a></dt>
+<dd><p>Remove all team and player restrictions.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.restrictions.WeaponRestrictionHandler.is_player_restricted">
+<span class="sig-name descname"><span class="pre">is_player_restricted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weapon</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/restrictions.html#WeaponRestrictionHandler.is_player_restricted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.restrictions.WeaponRestrictionHandler.is_player_restricted" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether the player is restricted from the weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> (<a class="reference internal" href="players.engines.bms.html#players.engines.bms.Player" title="players.engines.bms.Player"><em>Player</em></a>) – The player to check against restriction.</p></li>
+<li><p><strong>weapon</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of the weapon to check against restriction.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.restrictions.WeaponRestrictionHandler.is_team_restricted">
+<span class="sig-name descname"><span class="pre">is_team_restricted</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">team</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weapon</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/restrictions.html#WeaponRestrictionHandler.is_team_restricted"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.restrictions.WeaponRestrictionHandler.is_team_restricted" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether the team is restricted from the weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>team</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The team to check for restriction.
+Value can also be a str alias for the team (ie t/ct).</p></li>
+<li><p><strong>weapon</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of the weapon to check for restriction.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.restrictions.WeaponRestrictionHandler.on_player_bumping_weapon">
+<span class="sig-name descname"><span class="pre">on_player_bumping_weapon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weapon</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/restrictions.html#WeaponRestrictionHandler.on_player_bumping_weapon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.restrictions.WeaponRestrictionHandler.on_player_bumping_weapon" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether the player can bump the weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> (<a class="reference internal" href="players.engines.bms.html#players.engines.bms.Player" title="players.engines.bms.Player"><em>Player</em></a>) – The player that is bumping the weapon.</p></li>
+<li><p><strong>weapon</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of the weapon the player is bumping.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.restrictions.WeaponRestrictionHandler.on_player_purchasing_weapon">
+<span class="sig-name descname"><span class="pre">on_player_purchasing_weapon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weapon</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/restrictions.html#WeaponRestrictionHandler.on_player_purchasing_weapon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.restrictions.WeaponRestrictionHandler.on_player_purchasing_weapon" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether the player can purchase the weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> (<a class="reference internal" href="players.engines.bms.html#players.engines.bms.Player" title="players.engines.bms.Player"><em>Player</em></a>) – The player that is purchasing the weapon.</p></li>
+<li><p><strong>weapon</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of the weapon the player is purchasing.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.restrictions.WeaponRestrictionHandler.on_player_restriction_added">
+<span class="sig-name descname"><span class="pre">on_player_restriction_added</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weapon</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/restrictions.html#WeaponRestrictionHandler.on_player_restriction_added"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.restrictions.WeaponRestrictionHandler.on_player_restriction_added" title="Link to this definition">¶</a></dt>
+<dd><p>Notify the handler if the player is carrying the weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> (<a class="reference internal" href="players.engines.bms.html#players.engines.bms.Player" title="players.engines.bms.Player"><em>Player</em></a>) – The player that just had a restriction added.</p></li>
+<li><p><strong>weapon</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The weapon that was just restricted.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.restrictions.WeaponRestrictionHandler.on_team_restriction_added">
+<span class="sig-name descname"><span class="pre">on_team_restriction_added</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">team</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weapon</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/restrictions.html#WeaponRestrictionHandler.on_team_restriction_added"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.restrictions.WeaponRestrictionHandler.on_team_restriction_added" title="Link to this definition">¶</a></dt>
+<dd><p>Notify the handler of each player on the restricted team.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>team</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The team that just had a restriction added.</p></li>
+<li><p><strong>weapon</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The weapon that was just restricted.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.restrictions.WeaponRestrictionHandler.remove_player_restrictions">
+<span class="sig-name descname"><span class="pre">remove_player_restrictions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">player</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">weapons</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/restrictions.html#WeaponRestrictionHandler.remove_player_restrictions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.restrictions.WeaponRestrictionHandler.remove_player_restrictions" title="Link to this definition">¶</a></dt>
+<dd><p>Remove the weapons from the player’s restriction set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>player</strong> (<a class="reference internal" href="players.engines.bms.html#players.engines.bms.Player" title="players.engines.bms.Player"><em>Player</em></a>) – The player to remove the restrictions from.</p></li>
+<li><p><strong>weapons</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – A weapon or any number of weapons to remove
+as restricted for the player.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.restrictions.WeaponRestrictionHandler.remove_team_restrictions">
+<span class="sig-name descname"><span class="pre">remove_team_restrictions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">team</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">weapons</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/restrictions.html#WeaponRestrictionHandler.remove_team_restrictions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.restrictions.WeaponRestrictionHandler.remove_team_restrictions" title="Link to this definition">¶</a></dt>
+<dd><p>Remove the weapons from the team’s restriction set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>team</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The team to remove the restrictions from.
+Value can also be a team alias (ie t/ct).</p></li>
+<li><p><strong>weapons</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – A weapon or any number of weapons to remove
+as restricted for the team.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="weapons.restrictions.weapon_restriction_handler">
+<span class="sig-prename descclassname"><span class="pre">weapons.restrictions.</span></span><span class="sig-name descname"><span class="pre">weapon_restriction_handler</span></span><a class="headerlink" href="#weapons.restrictions.weapon_restriction_handler" title="Link to this definition">¶</a></dt>
+<dd><p>The base instance of the <a class="reference internal" href="#weapons.restrictions.WeaponRestrictionHandler" title="weapons.restrictions.WeaponRestrictionHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeaponRestrictionHandler</span></code></a> class that
+is used internally by the <a class="reference internal" href="players.entity.html#players.entity.Player" title="players.entity.Player"><code class="xref py py-class docutils literal notranslate"><span class="pre">players.entity.Player</span></code></a> class.</p>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="weapons.restrictions.weapon_restriction_manager">
+<span class="sig-prename descclassname"><span class="pre">weapons.restrictions.</span></span><span class="sig-name descname"><span class="pre">weapon_restriction_manager</span></span><a class="headerlink" href="#weapons.restrictions.weapon_restriction_manager" title="Link to this definition">¶</a></dt>
+<dd><p>The singleton object of the <code class="xref py py-class docutils literal notranslate"><span class="pre">_WeaponRestrictionManager</span></code> class.</p>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">weapons.restrictions module</a><ul>
+<li><a class="reference internal" href="#weapons.restrictions.WeaponRestrictionHandler"><code class="docutils literal notranslate"><span class="pre">WeaponRestrictionHandler</span></code></a><ul>
+<li><a class="reference internal" href="#weapons.restrictions.WeaponRestrictionHandler.on_player_carrying_restricted_weapon"><code class="docutils literal notranslate"><span class="pre">WeaponRestrictionHandler.on_player_carrying_restricted_weapon()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.restrictions.WeaponRestrictionHandler.__init__"><code class="docutils literal notranslate"><span class="pre">WeaponRestrictionHandler.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.restrictions.WeaponRestrictionHandler.add_player_restrictions"><code class="docutils literal notranslate"><span class="pre">WeaponRestrictionHandler.add_player_restrictions()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.restrictions.WeaponRestrictionHandler.add_team_restrictions"><code class="docutils literal notranslate"><span class="pre">WeaponRestrictionHandler.add_team_restrictions()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.restrictions.WeaponRestrictionHandler.clear"><code class="docutils literal notranslate"><span class="pre">WeaponRestrictionHandler.clear()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.restrictions.WeaponRestrictionHandler.is_player_restricted"><code class="docutils literal notranslate"><span class="pre">WeaponRestrictionHandler.is_player_restricted()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.restrictions.WeaponRestrictionHandler.is_team_restricted"><code class="docutils literal notranslate"><span class="pre">WeaponRestrictionHandler.is_team_restricted()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.restrictions.WeaponRestrictionHandler.on_player_bumping_weapon"><code class="docutils literal notranslate"><span class="pre">WeaponRestrictionHandler.on_player_bumping_weapon()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.restrictions.WeaponRestrictionHandler.on_player_purchasing_weapon"><code class="docutils literal notranslate"><span class="pre">WeaponRestrictionHandler.on_player_purchasing_weapon()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.restrictions.WeaponRestrictionHandler.on_player_restriction_added"><code class="docutils literal notranslate"><span class="pre">WeaponRestrictionHandler.on_player_restriction_added()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.restrictions.WeaponRestrictionHandler.on_team_restriction_added"><code class="docutils literal notranslate"><span class="pre">WeaponRestrictionHandler.on_team_restriction_added()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.restrictions.WeaponRestrictionHandler.remove_player_restrictions"><code class="docutils literal notranslate"><span class="pre">WeaponRestrictionHandler.remove_player_restrictions()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.restrictions.WeaponRestrictionHandler.remove_team_restrictions"><code class="docutils literal notranslate"><span class="pre">WeaponRestrictionHandler.remove_team_restrictions()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#weapons.restrictions.weapon_restriction_handler"><code class="docutils literal notranslate"><span class="pre">weapon_restriction_handler</span></code></a></li>
+<li><a class="reference internal" href="#weapons.restrictions.weapon_restriction_manager"><code class="docutils literal notranslate"><span class="pre">weapon_restriction_manager</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/weapons.restrictions.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">weapons.restrictions module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

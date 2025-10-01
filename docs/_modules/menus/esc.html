@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>menus.esc &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">menus.esc</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for menus.esc</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../menus/esc.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides ESC Menu functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Colors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">colors</span><span class="w"> </span><span class="kn">import</span> <span class="n">WHITE</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">edict_from_index</span>
+<span class="c1">#   Keyvalues</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keyvalues</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyValues</span>
+<span class="c1">#   Menus</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">menus.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_BaseMenu</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">menus.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_PagedMenuBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">menus.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_BaseOption</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">menus.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_format_paged_title</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">menus.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_translate_text</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">menus.queue</span><span class="w"> </span><span class="kn">import</span> <span class="n">ESC_SELECTION_CMD</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">menus.queue</span><span class="w"> </span><span class="kn">import</span> <span class="n">_esc_queues</span>
+<span class="c1">#   Messages</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">DialogType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_message</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;ListESCMenu&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ListESCOption&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;PagedESCMenu&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;PagedESCOption&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SimpleESCMenu&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SimpleESCOption&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CONSTANTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">VALID_CHOICES</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="SimpleESCMenu">
+<a class="viewcode-back" href="../../developing/modules/menus.esc.html#menus.esc.SimpleESCMenu">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SimpleESCMenu</span><span class="p">(</span><span class="n">_BaseMenu</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class creates basic ESC menus.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SimpleESCMenu.__init__">
+<a class="viewcode-back" href="../../developing/modules/menus.esc.html#menus.esc.SimpleESCMenu.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">select_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">build_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">close_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title_color</span><span class="o">=</span><span class="n">WHITE</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the object.</span>
+
+<span class="sd">        :param iterable|None data: See :meth:`menus.base._BaseMenu.__init__`.</span>
+<span class="sd">        :param callable|None select_callback: See</span>
+<span class="sd">            :meth:`menus.base._BaseMenu.__init__`.</span>
+<span class="sd">        :param callable|None build_callback: See</span>
+<span class="sd">            :meth:`menus.base._BaseMenu.__init__`.</span>
+<span class="sd">        :param callable|None close_callback: See</span>
+<span class="sd">            :meth:`menus.base._BaseMenu.__init__`</span>
+<span class="sd">        :param str|None description: A description that is displayed under the</span>
+<span class="sd">            title.</span>
+<span class="sd">        :param str|None title: A title that is displayed at the top of the</span>
+<span class="sd">            menu.</span>
+<span class="sd">        :param Color title_color: The color of the title.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">select_callback</span><span class="p">,</span> <span class="n">build_callback</span><span class="p">,</span> <span class="n">close_callback</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title_color</span> <span class="o">=</span> <span class="n">title_color</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_menu_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return all menu data as a :class:`keyvalues.KeyValues` object.</span>
+
+<span class="sd">        :param int player_index: See</span>
+<span class="sd">            :meth:`menus.base._BaseMenu._get_menu_data`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">KeyValues</span><span class="p">(</span><span class="s1">&#39;menu&#39;</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span>
+            <span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="n">_translate_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">player_index</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">data</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span>
+                <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="n">_translate_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">player_index</span><span class="p">))</span>
+
+        <span class="n">data</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">title_color</span><span class="p">)</span>
+
+        <span class="n">page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_player_pages</span><span class="p">[</span><span class="n">player_index</span><span class="p">]</span>
+        <span class="n">page</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Loop through all options of the current page</span>
+        <span class="k">for</span> <span class="n">raw_data</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">SimpleESCOption</span><span class="p">):</span>
+                <span class="n">page</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="n">raw_data</span><span class="o">.</span><span class="n">choice_index</span><span class="p">]</span> <span class="o">=</span> <span class="n">raw_data</span>
+                <span class="n">button</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">find_key</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">raw_data</span><span class="o">.</span><span class="n">choice_index</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">_render</span><span class="p">(</span><span class="n">player_index</span><span class="p">))</span>
+                <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;command&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">ESC_SELECTION_CMD</span><span class="p">,</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">choice_index</span><span class="p">))</span>
+
+        <span class="n">close</span> <span class="o">=</span> <span class="n">SimpleESCOption</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;Close&#39;</span><span class="p">)</span>
+        <span class="n">button</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">find_key</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">close</span><span class="o">.</span><span class="n">choice_index</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="n">close</span><span class="o">.</span><span class="n">_render</span><span class="p">(</span><span class="n">player_index</span><span class="p">))</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;command&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">ESC_SELECTION_CMD</span><span class="p">,</span> <span class="n">close</span><span class="o">.</span><span class="n">choice_index</span><span class="p">))</span>
+
+        <span class="c1"># Return the menu data</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">,</span> <span class="n">choice_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See :meth:`menus.base._BaseMenu._select`.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">choice_index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_close</span><span class="p">(</span><span class="n">player_index</span><span class="p">)</span>
+
+        <span class="n">option</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_player_pages</span><span class="p">[</span><span class="n">player_index</span><span class="p">]</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="n">choice_index</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">option</span><span class="o">.</span><span class="n">selectable</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">player_index</span><span class="p">,</span> <span class="n">option</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build and send the menu to the given player via create_message().</span>
+
+<span class="sd">        :param int player_index: See :meth:`menus.base._BaseMenu._send`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_user_queue</span><span class="p">(</span><span class="n">player_index</span><span class="p">)</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">priority</span> <span class="o">-=</span> <span class="mi">1</span>
+
+        <span class="c1"># Build the menu</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build</span><span class="p">(</span><span class="n">player_index</span><span class="p">)</span>
+
+        <span class="c1"># Set priority and display time</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">set_int</span><span class="p">(</span><span class="s1">&#39;level&#39;</span><span class="p">,</span> <span class="n">queue</span><span class="o">.</span><span class="n">priority</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">set_int</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+
+        <span class="c1"># Send the menu</span>
+        <span class="n">create_message</span><span class="p">(</span>
+            <span class="n">edict_from_index</span><span class="p">(</span><span class="n">player_index</span><span class="p">),</span>
+            <span class="n">DialogType</span><span class="o">.</span><span class="n">MENU</span><span class="p">,</span>
+            <span class="n">data</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See :meth:`menus.base._BaseMenu._close`.&quot;&quot;&quot;</span>
+        <span class="n">queue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_user_queue</span><span class="p">(</span><span class="n">player_index</span><span class="p">)</span>
+        <span class="n">queue</span><span class="o">.</span><span class="n">priority</span> <span class="o">-=</span> <span class="mi">1</span>
+
+        <span class="c1"># Unfortunately, this doesn&#39;t hide the menu :(</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">KeyValues</span><span class="p">(</span><span class="s1">&#39;menu&#39;</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">set_int</span><span class="p">(</span><span class="s1">&#39;level&#39;</span><span class="p">,</span> <span class="n">queue</span><span class="o">.</span><span class="n">priority</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">set_int</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">create_message</span><span class="p">(</span><span class="n">edict_from_index</span><span class="p">(</span><span class="n">player_index</span><span class="p">),</span> <span class="n">DialogType</span><span class="o">.</span><span class="n">MENU</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_queue_holder</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the queue for ESC menus.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_esc_queues</span></div>
+
+
+
+<div class="viewcode-block" id="PagedESCMenu">
+<a class="viewcode-back" href="../../developing/modules/menus.esc.html#menus.esc.PagedESCMenu">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PagedESCMenu</span><span class="p">(</span><span class="n">SimpleESCMenu</span><span class="p">,</span> <span class="n">_PagedMenuBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create menus with an unlimited number of options.</span>
+
+<span class="sd">    Navigation options will be added automatically.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PagedESCMenu.__init__">
+<a class="viewcode-back" href="../../developing/modules/menus.esc.html#menus.esc.PagedESCMenu.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">select_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">build_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">close_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title_color</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">parent_menu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show_pages</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the object.</span>
+
+<span class="sd">        :param iterable|None data: See :meth:`menus.base._BaseMenu.__init__`.</span>
+<span class="sd">        :param callable|None select_callback: See</span>
+<span class="sd">            :meth:`menus.base._BaseMenu.__init__`.</span>
+<span class="sd">        :param callable|None build_callback: See</span>
+<span class="sd">            :meth:`menus.base._BaseMenu.__init__`.</span>
+<span class="sd">        :param callable|None close_callback: See</span>
+<span class="sd">            :meth:`menus.base._BaseMenu.__init__`.</span>
+<span class="sd">        :param str|None description: See :meth:`SimpleESCMenu.__init__`.</span>
+<span class="sd">        :param str|None title: See :meth:`SimpleESCMenu.__init__`.</span>
+<span class="sd">        :param Color title_color: See :meth:`SimpleESCMenu.__init__`.</span>
+<span class="sd">        :param bool fill: If True the menu will always have the same size by</span>
+<span class="sd">            filling unused options.</span>
+<span class="sd">        :param _BaseMenu parent_menu: A menu that will be displayed when</span>
+<span class="sd">            hitting &#39;Back&#39; on the first page.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">data</span><span class="p">,</span> <span class="n">select_callback</span><span class="p">,</span> <span class="n">build_callback</span><span class="p">,</span> <span class="n">close_callback</span><span class="p">,</span>
+            <span class="n">description</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">title_color</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fill</span> <span class="o">=</span> <span class="n">fill</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parent_menu</span> <span class="o">=</span> <span class="n">parent_menu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">show_pages</span> <span class="o">=</span> <span class="n">show_pages</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_max_item_count</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum possible item count per page.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="mi">5</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_header</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare the header for the menu.</span>
+
+<span class="sd">        :param int player_index: A player index.</span>
+<span class="sd">        :param _PlayerPage page: The player&#39;s current page.</span>
+<span class="sd">        :param KeyValues data: The current menu data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">buffer</span> <span class="o">=</span> <span class="n">_format_paged_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">,</span> <span class="n">page</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="n">buffer</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_body</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare the body for the menu.</span>
+
+<span class="sd">        :param int player_index: A player index.</span>
+<span class="sd">        :param _PlayerPage page: The player&#39;s current page.</span>
+<span class="sd">        :param KeyValues data: The current menu data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Loop through all options of the current page</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">option</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_options</span><span class="p">(</span><span class="n">page</span><span class="o">.</span><span class="n">index</span><span class="p">),</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">option</span><span class="p">,</span> <span class="n">PagedESCOption</span><span class="p">):</span>
+                <span class="n">page</span><span class="o">.</span><span class="n">options</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">option</span>
+                <span class="n">button</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">find_key</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="n">option</span><span class="o">.</span><span class="n">_render</span><span class="p">(</span><span class="n">player_index</span><span class="p">,</span> <span class="n">index</span><span class="p">))</span>
+                <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span>
+                    <span class="s1">&#39;command&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ESC_SELECTION_CMD</span><span class="p">,</span> <span class="n">index</span><span class="p">))</span>
+
+        <span class="c1"># Fill the rest of the menu with empty options</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">fill</span><span class="p">:</span>
+            <span class="n">option_num</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">page</span><span class="o">.</span><span class="n">options</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_max_item_count</span><span class="p">()</span> <span class="o">-</span> <span class="n">option_num</span><span class="p">):</span>
+                <span class="n">index</span> <span class="o">+=</span> <span class="n">option_num</span> <span class="o">+</span> <span class="mi">1</span>
+                <span class="n">button</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">find_key</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">index</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_format_footer</span><span class="p">(</span><span class="n">player_index</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Prepare the footer for the menu.</span>
+
+<span class="sd">        :param int player_index: A player index.</span>
+<span class="sd">        :param _PlayerPage page: The player&#39;s current page.</span>
+<span class="sd">        :param KeyValues data: The current menu data.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># TODO: Add translations</span>
+        <span class="c1"># Add &quot;Back&quot; option</span>
+        <span class="n">button</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">find_key</span><span class="p">(</span><span class="s1">&#39;6&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="s1">&#39;6. Back&#39;</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;command&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> 6&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ESC_SELECTION_CMD</span><span class="p">))</span>
+
+        <span class="c1"># Add &quot;Next&quot; option</span>
+        <span class="n">button</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">find_key</span><span class="p">(</span><span class="s1">&#39;7&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="s1">&#39;7. Next&#39;</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;command&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> 7&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ESC_SELECTION_CMD</span><span class="p">))</span>
+
+        <span class="c1"># Add &quot;Close&quot; option</span>
+        <span class="n">button</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">find_key</span><span class="p">(</span><span class="s1">&#39;0&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="s1">&#39;0. Close&#39;</span><span class="p">)</span>
+        <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;command&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> 0&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ESC_SELECTION_CMD</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_menu_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See :meth:`menus.base._BaseMenu._get_menu_data`.&quot;&quot;&quot;</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">KeyValues</span><span class="p">(</span><span class="s1">&#39;menu&#39;</span><span class="p">)</span>
+        <span class="n">data</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span>
+            <span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="n">_translate_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="ow">or</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">player_index</span><span class="p">))</span>
+
+        <span class="c1"># Get the player&#39;s current page</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_player_pages</span><span class="p">[</span><span class="n">player_index</span><span class="p">]</span>
+        <span class="n">page</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Format the menu</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_format_header</span><span class="p">(</span><span class="n">player_index</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_format_body</span><span class="p">(</span><span class="n">player_index</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_format_footer</span><span class="p">(</span><span class="n">player_index</span><span class="p">,</span> <span class="n">page</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Return the menu data</span>
+        <span class="k">return</span> <span class="n">data</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">,</span> <span class="n">choice_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See :meth:`menus.base._BaseMenu._select`.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">choice_index</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_player_pages</span><span class="p">[</span><span class="n">player_index</span><span class="p">]</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_select_close</span><span class="p">(</span><span class="n">player_index</span><span class="p">)</span>
+
+        <span class="c1"># Get the player&#39;s current page</span>
+        <span class="n">page_index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_player_page</span><span class="p">(</span><span class="n">player_index</span><span class="p">)</span>
+
+        <span class="c1"># Display previous page?</span>
+        <span class="k">if</span> <span class="n">choice_index</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="c1"># Is the player on the first page, and do we have a parent menu?</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">page_index</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_menu</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_menu</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_player_page</span><span class="p">(</span><span class="n">player_index</span><span class="p">,</span> <span class="n">page_index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="c1"># Display next page?</span>
+        <span class="k">if</span> <span class="n">choice_index</span> <span class="o">==</span> <span class="mi">7</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">set_player_page</span><span class="p">(</span><span class="n">player_index</span><span class="p">,</span> <span class="n">page_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_select</span><span class="p">(</span><span class="n">player_index</span><span class="p">,</span> <span class="n">choice_index</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="ListESCMenu">
+<a class="viewcode-back" href="../../developing/modules/menus.esc.html#menus.esc.ListESCMenu">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ListESCMenu</span><span class="p">(</span><span class="n">PagedESCMenu</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a list-like ESC menu.</span>
+
+<span class="sd">    Navigation options are added automatically.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ListESCMenu.__init__">
+<a class="viewcode-back" href="../../developing/modules/menus.esc.html#menus.esc.ListESCMenu.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">select_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">build_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">close_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">title_color</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">parent_menu</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">items_per_page</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">show_pages</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the object.</span>
+
+<span class="sd">        :param iterable|None data: See :meth:`menus.base._BaseMenu.__init__`.</span>
+<span class="sd">        :param callable|None select_callback: See</span>
+<span class="sd">            :meth:`menus.base._BaseMenu.__init__`.</span>
+<span class="sd">        :param callable|None build_callback: See</span>
+<span class="sd">            :meth:`menus.base._BaseMenu.__init__`.</span>
+<span class="sd">        :param callable|None close_callback: See</span>
+<span class="sd">            :meth:`menus.base._BaseMenu.__init__`.</span>
+<span class="sd">        :param str|None description: See :meth:`SimpleESCMenu.__init__`.</span>
+<span class="sd">        :param str|None title: See :meth:`SimpleESCMenu.__init__`.</span>
+<span class="sd">        :param Color title_color: See :meth:`SimpleESCMenu.__init__`.</span>
+<span class="sd">        :param bool fill: See :meth:`PagedESCMenu.__init__`.</span>
+<span class="sd">        :param _BaseMenu parent_menu: See :meth:`PagedESCMenu.__init__`.</span>
+<span class="sd">        :param int items_per_page: Number of options that should be displayed</span>
+<span class="sd">            on a single page (5 is the maximum).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">select_callback</span><span class="p">,</span> <span class="n">build_callback</span><span class="p">,</span> <span class="n">close_callback</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span>
+            <span class="n">title</span><span class="p">,</span> <span class="n">title_color</span><span class="p">,</span> <span class="n">fill</span><span class="p">,</span> <span class="n">parent_menu</span><span class="p">,</span> <span class="n">show_pages</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">items_per_page</span> <span class="o">=</span> <span class="n">items_per_page</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_max_item_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">items_per_page</span></div>
+
+
+
+<div class="viewcode-block" id="SimpleESCOption">
+<a class="viewcode-back" href="../../developing/modules/menus.esc.html#menus.esc.SimpleESCOption">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SimpleESCOption</span><span class="p">(</span><span class="n">_BaseOption</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provides options for :class:`SimpleESCMenu` objects.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SimpleESCOption.__init__">
+<a class="viewcode-back" href="../../developing/modules/menus.esc.html#menus.esc.SimpleESCOption.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">choice_index</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">highlight</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">selectable</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the option.</span>
+
+<span class="sd">        :param int choice_index: The number that is required to select the</span>
+<span class="sd">            option.</span>
+<span class="sd">        :param str text: See :meth:`menus.base._BaseOption.__init__`.</span>
+<span class="sd">        :param value: See :meth:`menus.base._BaseOption.__init__`.</span>
+<span class="sd">        :param bool hightlight: Does not work with ESC menus.</span>
+<span class="sd">        :param bool selectable: Does not work with ESC menus.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">highlight</span><span class="p">,</span> <span class="n">selectable</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">choice_index</span> <span class="o">=</span> <span class="n">choice_index</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">,</span> <span class="n">choice_index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See :meth:`menus.base._MenuData._render`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">. </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">choice_index</span><span class="p">,</span> <span class="n">_translate_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">player_index</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="PagedESCOption">
+<a class="viewcode-back" href="../../developing/modules/menus.esc.html#menus.esc.PagedESCOption">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PagedESCOption</span><span class="p">(</span><span class="n">_BaseOption</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Display an enumerated option.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">,</span> <span class="n">choice_index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See :meth:`menus.base._MenuData._render`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">. </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">choice_index</span><span class="p">,</span> <span class="n">_translate_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">player_index</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="ListESCOption">
+<a class="viewcode-back" href="../../developing/modules/menus.esc.html#menus.esc.ListESCOption">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ListESCOption</span><span class="p">(</span><span class="n">PagedESCOption</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provides options for :class:`ListESCMenu` objects.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ListESCOption.__init__">
+<a class="viewcode-back" href="../../developing/modules/menus.esc.html#menus.esc.ListESCOption.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">highlight</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">enumerated</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the option.</span>
+
+<span class="sd">        :param str text: See :meth:`menus.base._BaseOption.__init__`.</span>
+<span class="sd">        :param bool hightlight: See :meth:`SimpleESCMenu.__init__`.</span>
+<span class="sd">        :param bool enumerated: If True the number of the option will be added</span>
+<span class="sd">            in front of the text.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">highlight</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">enumerated</span> <span class="o">=</span> <span class="n">enumerated</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">,</span> <span class="n">choice_index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See :meth:`menus.base._MenuData._render`.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">enumerated</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_render</span><span class="p">(</span><span class="n">player_index</span><span class="p">,</span> <span class="n">choice_index</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">_translate_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">player_index</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">menus.esc</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

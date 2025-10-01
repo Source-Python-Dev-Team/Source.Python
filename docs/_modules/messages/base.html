@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>messages.base &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">messages.base</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for messages.base</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../messages/base.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides user messages.&quot;&quot;&quot;</span>
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">collections</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Colors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">colors</span><span class="w"> </span><span class="kn">import</span> <span class="n">WHITE</span>
+<span class="c1">#   Filters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.recipients</span><span class="w"> </span><span class="kn">import</span> <span class="n">RecipientFilter</span>
+<span class="c1">#   Players</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_client_language</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">playerinfo_from_index</span>
+<span class="c1">#   Translations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">translations.strings</span><span class="w"> </span><span class="kn">import</span> <span class="n">TranslationStrings</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># &gt;&gt; FORWARD IMPORTS</span>
+<span class="c1"># ============================================================================</span>
+<span class="c1">#   Messages</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SCREENFADE_FRACBITS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">ShakeCommand</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">HudDestination</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">FadeFlags</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="AttrDict">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.AttrDict">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">AttrDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A dictionary that redirects __getattr__ and __setattr__.&quot;&quot;&quot;</span>
+
+    <span class="fm">__getattr__</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__getitem__</span>
+    <span class="fm">__setattr__</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__setitem__</span></div>
+
+
+
+<div class="viewcode-block" id="UserMessageCreator">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.UserMessageCreator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">UserMessageCreator</span><span class="p">(</span><span class="n">AttrDict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Provide an easy interface to create user messages.</span>
+
+<span class="sd">    :attr bool reliable: Whether to send message using reliable channel.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">reliable</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="UserMessageCreator.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.UserMessageCreator.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the usermessage creator.</span>
+
+<span class="sd">        :param dict kwargs: All valid fields.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="s1">&#39;valid_fields&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a field value.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">valid_fields</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;Invalid field name &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">item</span><span class="p">))</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set a field value.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="UserMessageCreator.send">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.UserMessageCreator.send">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">player_indexes</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the user message.&quot;&quot;&quot;</span>
+        <span class="n">player_indexes</span> <span class="o">=</span> <span class="n">RecipientFilter</span><span class="p">(</span><span class="o">*</span><span class="n">player_indexes</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">language</span><span class="p">,</span> <span class="n">indexes</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_categorize_players_by_language</span><span class="p">(</span>
+                <span class="n">player_indexes</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">translated_kwargs</span> <span class="o">=</span> <span class="n">AttrDict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">translated_kwargs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_get_translated_kwargs</span><span class="p">(</span><span class="n">language</span><span class="p">,</span> <span class="n">tokens</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_send</span><span class="p">(</span><span class="n">indexes</span><span class="p">,</span> <span class="n">translated_kwargs</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_indexes</span><span class="p">,</span> <span class="n">translated_kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the user message to the given players.</span>
+
+<span class="sd">        :param iterable player_indexes: All players with the same language</span>
+<span class="sd">            setting.</span>
+<span class="sd">        :param AttrDict translated_kwargs: The translated arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">recipients</span> <span class="o">=</span> <span class="n">RecipientFilter</span><span class="p">(</span><span class="o">*</span><span class="n">player_indexes</span><span class="p">)</span>
+        <span class="n">recipients</span><span class="o">.</span><span class="n">reliable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reliable</span>
+        <span class="n">user_message</span> <span class="o">=</span> <span class="n">UserMessage</span><span class="p">(</span><span class="n">recipients</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_name</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">user_message</span><span class="o">.</span><span class="n">is_protobuf</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">protobuf</span><span class="p">(</span><span class="n">user_message</span><span class="o">.</span><span class="n">buffer</span><span class="p">,</span> <span class="n">translated_kwargs</span><span class="p">)</span>
+            <span class="n">user_message</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">bitbuf</span><span class="p">(</span><span class="n">user_message</span><span class="o">.</span><span class="n">buffer</span><span class="p">,</span> <span class="n">translated_kwargs</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="c1"># In case of an error during writing to the buffer (e. g. by using</span>
+                <span class="c1"># the wrong data type for the write_* methods) reset the buffer</span>
+                <span class="c1"># and send the message. This causes the engine to silently ignore</span>
+                <span class="c1"># the user message and the server doesn&#39;t crash upon creating</span>
+                <span class="c1"># another user message.</span>
+                <span class="c1"># See also:</span>
+                <span class="c1"># https://github.com/Source-Python-Dev-Team/Source.Python/issues/315</span>
+                <span class="n">user_message</span><span class="o">.</span><span class="n">buffer</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+                <span class="c1"># Re-raise the exception to make the user aware of the problem</span>
+                <span class="k">raise</span>
+            <span class="k">finally</span><span class="p">:</span>
+                <span class="n">user_message</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_categorize_players_by_language</span><span class="p">(</span><span class="n">player_indexes</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Categorize players by their language.</span>
+
+<span class="sd">        Return a dict in the following format:</span>
+<span class="sd">        {&lt;language&gt;: set([&lt;player index&gt;, ...])}</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">languages</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">player_indexes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">playerinfo_from_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">is_fake_client</span><span class="p">():</span>
+                <span class="c1"># No need to send a user message to bots</span>
+                <span class="k">continue</span>
+
+            <span class="n">languages</span><span class="p">[</span><span class="n">get_client_language</span><span class="p">(</span><span class="n">index</span><span class="p">)]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">languages</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_translated_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return translated and tokenized arguments.&quot;&quot;&quot;</span>
+        <span class="n">translated_kwargs</span> <span class="o">=</span> <span class="n">AttrDict</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">translatable_fields</span><span class="p">:</span>
+            <span class="n">translated_kwargs</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_translate</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">],</span> <span class="n">language</span><span class="p">,</span> <span class="n">tokens</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">translated_kwargs</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_translate</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">language</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Translate the value if it&#39;s a :class:`TranslationStrings` object.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">TranslationStrings</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">language</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">value</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">**</span><span class="n">tokens</span><span class="p">)</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">value</span>
+
+<div class="viewcode-block" id="UserMessageCreator.protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.UserMessageCreator.protobuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">protobuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">translated_kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Protobuf implementation of this user message.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Must be implemented by a subclass.&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="UserMessageCreator.bitbuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.UserMessageCreator.bitbuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bitbuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">translated_kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Bitbuf implementation of this user message.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Must be implemented by a subclass.&#39;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">message_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the user message name.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Must be implemented by a subclass.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">translatable_fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a list of translatable fields.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Must be implemented by a subclass.&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="VGUIMenu">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.VGUIMenu">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">VGUIMenu</span><span class="p">(</span><span class="n">UserMessageCreator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a VGUIMenu.&quot;&quot;&quot;</span>
+
+    <span class="n">message_name</span> <span class="o">=</span> <span class="s1">&#39;VGUIMenu&#39;</span>
+    <span class="n">translatable_fields</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="VGUIMenu.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.VGUIMenu.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">subkeys</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the VGUI menu.</span>
+
+<span class="sd">        :param str name: Name of the menu.</span>
+<span class="sd">        :param dict subkeys: Additional menu data.</span>
+<span class="sd">        :param bool show: If True the menu will be shown, else it will be</span>
+<span class="sd">            hidden.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">subkeys</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">subkeys</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># TODO: Which names and subkeys are available?</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">subkeys</span><span class="o">=</span><span class="n">subkeys</span><span class="p">,</span> <span class="n">show</span><span class="o">=</span><span class="n">show</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VGUIMenu.protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.VGUIMenu.protobuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">protobuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the VGUIMenu with protobuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_bool</span><span class="p">(</span><span class="s1">&#39;show&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">show</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">subkeys</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">temp_buffer</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">add_message</span><span class="p">(</span><span class="s1">&#39;subkeys&#39;</span><span class="p">)</span>
+            <span class="n">temp_buffer</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="n">temp_buffer</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;str&#39;</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="VGUIMenu.bitbuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.VGUIMenu.bitbuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bitbuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the VGUIMenu with bitbuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">show</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">subkeys</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">subkeys</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">value</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ShowMenu">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.ShowMenu">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ShowMenu</span><span class="p">(</span><span class="n">UserMessageCreator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a radio menu.&quot;&quot;&quot;</span>
+
+    <span class="n">message_name</span> <span class="o">=</span> <span class="s1">&#39;ShowMenu&#39;</span>
+    <span class="n">chunk_size</span> <span class="o">=</span> <span class="mi">62</span>
+    <span class="n">translatable_fields</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="ShowMenu.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.ShowMenu.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">menu_string</span><span class="p">,</span> <span class="n">valid_slots</span><span class="o">=</span><span class="mi">1023</span><span class="p">,</span> <span class="n">display_time</span><span class="o">=</span><span class="mi">4</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the radio menu.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">menu_string</span><span class="o">=</span><span class="n">menu_string</span><span class="p">,</span>
+            <span class="n">valid_slots</span><span class="o">=</span><span class="n">valid_slots</span><span class="p">,</span>
+            <span class="n">display_time</span><span class="o">=</span><span class="n">display_time</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ShowMenu.send">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.ShowMenu.send">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">player_indexes</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the user message.&quot;&quot;&quot;</span>
+        <span class="c1"># We need to handle the ShowMenu user message with bitbuffers</span>
+        <span class="c1"># differently, because the maximum size is 255. If the message exceeds</span>
+        <span class="c1"># this length, we need to sent it in several parts.</span>
+        <span class="k">if</span> <span class="n">UserMessage</span><span class="o">.</span><span class="n">is_protobuf</span><span class="p">():</span>
+            <span class="n">recipients</span> <span class="o">=</span> <span class="n">RecipientFilter</span><span class="p">(</span><span class="o">*</span><span class="n">player_indexes</span><span class="p">)</span>
+            <span class="n">recipients</span><span class="o">.</span><span class="n">reliable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reliable</span>
+            <span class="n">user_message</span> <span class="o">=</span> <span class="n">UserMessage</span><span class="p">(</span><span class="n">recipients</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_name</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">protobuf</span><span class="p">(</span><span class="n">user_message</span><span class="o">.</span><span class="n">buffer</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+            <span class="n">user_message</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">bitbuf</span><span class="p">(</span><span class="n">player_indexes</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ShowMenu.protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.ShowMenu.protobuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">protobuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the ShowMenu with protobuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;bits_valid_slots&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">valid_slots</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;display_time&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">display_time</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;menu_string&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">menu_string</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ShowMenu.bitbuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.ShowMenu.bitbuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bitbuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_indexes</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the ShowMenu with bitbuf.&quot;&quot;&quot;</span>
+        <span class="n">menu_string</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">menu_string</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">menu_string</span><span class="p">)</span>
+        <span class="n">recipients</span> <span class="o">=</span> <span class="n">RecipientFilter</span><span class="p">(</span><span class="o">*</span><span class="n">player_indexes</span><span class="p">)</span>
+        <span class="n">recipients</span><span class="o">.</span><span class="n">reliable</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reliable</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="n">user_message</span> <span class="o">=</span> <span class="n">UserMessage</span><span class="p">(</span><span class="n">recipients</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_name</span><span class="p">)</span>
+
+            <span class="n">buffer</span> <span class="o">=</span> <span class="n">user_message</span><span class="o">.</span><span class="n">buffer</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="n">write_word</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">valid_slots</span><span class="p">)</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="n">write_char</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">display_time</span><span class="p">)</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">length</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunk_size</span><span class="p">)</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">menu_string</span><span class="p">[:</span><span class="bp">self</span><span class="o">.</span><span class="n">chunk_size</span><span class="p">])</span>
+
+            <span class="n">user_message</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">length</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunk_size</span><span class="p">:</span>
+                <span class="n">menu_string</span> <span class="o">=</span> <span class="n">menu_string</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">chunk_size</span><span class="p">:]</span>
+                <span class="n">length</span> <span class="o">-=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chunk_size</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">break</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SayText2">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.SayText2">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SayText2</span><span class="p">(</span><span class="n">UserMessageCreator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a SayText2.&quot;&quot;&quot;</span>
+
+    <span class="n">message_name</span> <span class="o">=</span> <span class="s1">&#39;SayText2&#39;</span>
+    <span class="n">translatable_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="s1">&#39;param1&#39;</span><span class="p">,</span> <span class="s1">&#39;param2&#39;</span><span class="p">,</span> <span class="s1">&#39;param3&#39;</span><span class="p">,</span> <span class="s1">&#39;param4&#39;</span><span class="p">]</span>
+    <span class="n">reliable</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="SayText2.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.SayText2.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">chat</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">param1</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">param2</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">param3</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">param4</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39; </span><span class="se">\x01</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">UserMessage</span><span class="o">.</span><span class="n">is_protobuf</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;</span><span class="se">\x01</span><span class="s1">&#39;</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the SayText2 instance.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">chat</span><span class="o">=</span><span class="n">chat</span><span class="p">,</span>
+            <span class="n">param1</span><span class="o">=</span><span class="n">param1</span><span class="p">,</span> <span class="n">param2</span><span class="o">=</span><span class="n">param2</span><span class="p">,</span> <span class="n">param3</span><span class="o">=</span><span class="n">param3</span><span class="p">,</span> <span class="n">param4</span><span class="o">=</span><span class="n">param4</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">AttrDict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SayText2.protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.SayText2.protobuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">protobuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the SayText2 with protobuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;msg_name&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">+</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_bool</span><span class="p">(</span><span class="s1">&#39;chat&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">chat</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;ent_idx&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">add_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">param1</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">add_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">param2</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">add_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">param3</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">add_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">param4</span><span class="p">)</span></div>
+
+        <span class="c1"># TODO: Handle textchatall</span>
+
+<div class="viewcode-block" id="SayText2.bitbuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.SayText2.bitbuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bitbuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the SayText2 with bitbuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">chat</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">+</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">param1</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">param2</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">param3</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">param4</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="HintText">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.HintText">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HintText</span><span class="p">(</span><span class="n">UserMessageCreator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a HintText.&quot;&quot;&quot;</span>
+
+    <span class="n">message_name</span> <span class="o">=</span> <span class="s1">&#39;HintText&#39;</span>
+    <span class="n">translatable_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span>
+
+<div class="viewcode-block" id="HintText.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.HintText.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the HintText instance.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HintText.protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.HintText.protobuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">protobuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the HintText with protobuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HintText.bitbuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.HintText.bitbuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bitbuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the HintText with bitbuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="SayText">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.SayText">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SayText</span><span class="p">(</span><span class="n">UserMessageCreator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a SayText.&quot;&quot;&quot;</span>
+
+    <span class="n">message_name</span> <span class="o">=</span> <span class="s1">&#39;SayText&#39;</span>
+    <span class="n">translatable_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span>
+    <span class="n">reliable</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="SayText.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.SayText.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">chat</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">color</span><span class="o">=</span><span class="p">(</span><span class="s1">&#39; </span><span class="se">\x01</span><span class="s1">&#39;</span> <span class="k">if</span> <span class="n">UserMessage</span><span class="o">.</span><span class="n">is_protobuf</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;</span><span class="se">\x01</span><span class="s1">&#39;</span><span class="p">)):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the SayText instance.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">index</span><span class="p">,</span> <span class="n">chat</span><span class="o">=</span><span class="n">chat</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">(</span><span class="n">AttrDict</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="s2">&quot;color&quot;</span><span class="p">,</span> <span class="n">color</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SayText.protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.SayText.protobuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">protobuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the SayText with protobuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;ent_idx&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_bool</span><span class="p">(</span><span class="s1">&#39;chat&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">chat</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">+</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SayText.bitbuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.SayText.bitbuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bitbuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the SayText with bitbuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">+</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">chat</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="Shake">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.Shake">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Shake</span><span class="p">(</span><span class="n">UserMessageCreator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a Shake.&quot;&quot;&quot;</span>
+
+    <span class="n">message_name</span> <span class="o">=</span> <span class="s1">&#39;Shake&#39;</span>
+    <span class="n">translatable_fields</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="Shake.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.Shake.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">amplitude</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">frequency</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+            <span class="n">shake_command</span><span class="o">=</span><span class="n">ShakeCommand</span><span class="o">.</span><span class="n">START</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the Shake instance.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">amplitude</span><span class="o">=</span><span class="n">amplitude</span><span class="p">,</span> <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span>
+            <span class="n">frequency</span><span class="o">=</span><span class="n">frequency</span><span class="p">,</span> <span class="n">shake_command</span><span class="o">=</span><span class="n">shake_command</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Shake.protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.Shake.protobuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">protobuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the Shake with protobuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;command&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">shake_command</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_float</span><span class="p">(</span><span class="s1">&#39;local_amplitude&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">amplitude</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_float</span><span class="p">(</span><span class="s1">&#39;frequency&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">frequency</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_float</span><span class="p">(</span><span class="s1">&#39;duration&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">duration</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Shake.bitbuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.Shake.bitbuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bitbuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the Shake with bitbuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">shake_command</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_float</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">amplitude</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_float</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">frequency</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_float</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">duration</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ResetHUD">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.ResetHUD">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ResetHUD</span><span class="p">(</span><span class="n">UserMessageCreator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a ResetHUD.&quot;&quot;&quot;</span>
+
+    <span class="n">message_name</span> <span class="o">=</span> <span class="s1">&#39;ResetHud&#39;</span>
+    <span class="n">translatable_fields</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="ResetHUD.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.ResetHUD.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reset</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the ResetHUD instance.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">reset</span><span class="o">=</span><span class="n">reset</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResetHUD.protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.ResetHUD.protobuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">protobuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the ResetHUD with protobuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_bool</span><span class="p">(</span><span class="s1">&#39;reset&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">reset</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResetHUD.bitbuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.ResetHUD.bitbuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bitbuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the ResetHUD with bitbuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">reset</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TextMsg">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.TextMsg">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TextMsg</span><span class="p">(</span><span class="n">UserMessageCreator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a TextMsg.&quot;&quot;&quot;</span>
+
+    <span class="n">message_name</span> <span class="o">=</span> <span class="s1">&#39;TextMsg&#39;</span>
+    <span class="n">translatable_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">,</span> <span class="s1">&#39;param1&#39;</span><span class="p">,</span> <span class="s1">&#39;param2&#39;</span><span class="p">,</span> <span class="s1">&#39;param3&#39;</span><span class="p">,</span> <span class="s1">&#39;param4&#39;</span><span class="p">]</span>
+    <span class="n">reliable</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="TextMsg.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.TextMsg.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="n">HudDestination</span><span class="o">.</span><span class="n">CENTER</span><span class="p">,</span>
+            <span class="n">param1</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">param2</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">param3</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">param4</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the TextMsg instance.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">destination</span><span class="o">=</span><span class="n">destination</span><span class="p">,</span> <span class="n">param1</span><span class="o">=</span><span class="n">param1</span><span class="p">,</span>
+            <span class="n">param2</span><span class="o">=</span><span class="n">param2</span><span class="p">,</span> <span class="n">param3</span><span class="o">=</span><span class="n">param3</span><span class="p">,</span> <span class="n">param4</span><span class="o">=</span><span class="n">param4</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TextMsg.protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.TextMsg.protobuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">protobuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the TextMsg with protobuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;msg_dst&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">destination</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">add_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">add_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">param1</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">add_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">param2</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">add_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">param3</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">add_string</span><span class="p">(</span><span class="s1">&#39;params&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">param4</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TextMsg.bitbuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.TextMsg.bitbuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bitbuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the TextMsg with bitbuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">destination</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">param1</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">param2</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">param3</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">param4</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="KeyHintText">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.KeyHintText">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">KeyHintText</span><span class="p">(</span><span class="n">UserMessageCreator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a KeyHintText.&quot;&quot;&quot;</span>
+
+    <span class="n">message_name</span> <span class="o">=</span> <span class="s1">&#39;KeyHintText&#39;</span>
+
+<div class="viewcode-block" id="KeyHintText.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.KeyHintText.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">hints</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the KeyHintText instance.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">hints</span><span class="o">=</span><span class="n">hints</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="KeyHintText.protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.KeyHintText.protobuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">protobuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the KeyHintText with protobuf.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">hint</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">hints</span><span class="p">:</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="n">add_string</span><span class="p">(</span><span class="s1">&#39;hints&#39;</span><span class="p">,</span> <span class="n">hint</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="KeyHintText.bitbuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.KeyHintText.bitbuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bitbuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the KeyHintText with bitbuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">hints</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">hint</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">hints</span><span class="p">:</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">hint</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_translated_kwargs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">language</span><span class="p">,</span> <span class="n">tokens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return translated and tokenized arguments.&quot;&quot;&quot;</span>
+        <span class="n">hints</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">hint</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hints</span><span class="p">:</span>
+            <span class="n">hints</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_translate</span><span class="p">(</span><span class="n">hint</span><span class="p">,</span> <span class="n">language</span><span class="p">,</span> <span class="n">tokens</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="nb">dict</span><span class="p">(</span><span class="n">hints</span><span class="o">=</span><span class="n">hints</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Fade">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.Fade">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Fade</span><span class="p">(</span><span class="n">UserMessageCreator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a Fade.&quot;&quot;&quot;</span>
+
+    <span class="n">message_name</span> <span class="o">=</span> <span class="s1">&#39;Fade&#39;</span>
+    <span class="n">translatable_fields</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">moved_frac_bits</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">SCREENFADE_FRACBITS</span>
+
+<div class="viewcode-block" id="Fade.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.Fade.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">duration</span><span class="p">,</span> <span class="n">hold_time</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">FadeFlags</span><span class="o">.</span><span class="n">IN</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the Fade instance.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">duration</span><span class="o">=</span><span class="n">duration</span><span class="p">,</span> <span class="n">hold_time</span><span class="o">=</span><span class="n">hold_time</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="n">flags</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Fade.protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.Fade.protobuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">protobuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the Fade with protobuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;duration&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">duration</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">moved_frac_bits</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;hold_time&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">hold_time</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">moved_frac_bits</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;flags&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">flags</span><span class="p">)</span>
+        <span class="n">color_buffer</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">mutable_message</span><span class="p">(</span><span class="s1">&#39;clr&#39;</span><span class="p">)</span>
+        <span class="n">color_buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">color_buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
+        <span class="n">color_buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">color_buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">a</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Fade.bitbuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.Fade.bitbuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bitbuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the Fade with bitbuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_short</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">duration</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">moved_frac_bits</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_short</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">hold_time</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">moved_frac_bits</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_short</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">flags</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">color</span><span class="o">.</span><span class="n">a</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="HudMsg">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.HudMsg">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HudMsg</span><span class="p">(</span><span class="n">UserMessageCreator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a HudMsg.&quot;&quot;&quot;</span>
+
+    <span class="n">message_name</span> <span class="o">=</span> <span class="s1">&#39;HudMsg&#39;</span>
+    <span class="n">translatable_fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;message&#39;</span><span class="p">]</span>
+
+    <span class="c1"># TODO: Use Vector2D for x and y?</span>
+<div class="viewcode-block" id="HudMsg.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.HudMsg.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">x</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">y</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">color1</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span> <span class="n">color2</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span> <span class="n">effect</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">fade_in</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">fade_out</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">hold_time</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">fx_time</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the HudMsg instance.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="n">message</span><span class="o">=</span><span class="n">message</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y</span><span class="p">,</span> <span class="n">color1</span><span class="o">=</span><span class="n">color1</span><span class="p">,</span>
+            <span class="n">color2</span><span class="o">=</span><span class="n">color2</span><span class="p">,</span> <span class="n">effect</span><span class="o">=</span><span class="n">effect</span><span class="p">,</span> <span class="n">fade_in</span><span class="o">=</span><span class="n">fade_in</span><span class="p">,</span> <span class="n">fade_out</span><span class="o">=</span><span class="n">fade_out</span><span class="p">,</span>
+            <span class="n">hold_time</span><span class="o">=</span><span class="n">hold_time</span><span class="p">,</span> <span class="n">fx_time</span><span class="o">=</span><span class="n">fx_time</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="n">channel</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HudMsg.protobuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.HudMsg.protobuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">protobuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the HudMsg with protobuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;channel&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
+
+        <span class="n">pos_buffer</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">mutable_message</span><span class="p">(</span><span class="s1">&#39;pos&#39;</span><span class="p">)</span>
+        <span class="n">pos_buffer</span><span class="o">.</span><span class="n">set_float</span><span class="p">(</span><span class="s1">&#39;x&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">pos_buffer</span><span class="o">.</span><span class="n">set_float</span><span class="p">(</span><span class="s1">&#39;y&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+
+        <span class="n">color1_buffer</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">mutable_message</span><span class="p">(</span><span class="s1">&#39;clr1&#39;</span><span class="p">)</span>
+        <span class="n">color1_buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">color1</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">color1_buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">color1</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
+        <span class="n">color1_buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">color1</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">color1_buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">color1</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+
+        <span class="n">color2_buffer</span> <span class="o">=</span> <span class="n">buffer</span><span class="o">.</span><span class="n">mutable_message</span><span class="p">(</span><span class="s1">&#39;clr2&#39;</span><span class="p">)</span>
+        <span class="n">color2_buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">color2</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">color2_buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">color2</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
+        <span class="n">color2_buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">color2</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">color2_buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">color2</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_int32</span><span class="p">(</span><span class="s1">&#39;effect&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">effect</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_float</span><span class="p">(</span><span class="s1">&#39;fade_in_time&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">fade_in</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_float</span><span class="p">(</span><span class="s1">&#39;fade_out_time&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">fade_out</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_float</span><span class="p">(</span><span class="s1">&#39;hold_time&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">hold_time</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_float</span><span class="p">(</span><span class="s1">&#39;fx_time&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">fx_time</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;text&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="HudMsg.bitbuf">
+<a class="viewcode-back" href="../../developing/modules/messages.base.html#messages.HudMsg.bitbuf">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">bitbuf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">buffer</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the HudMsg with bitbuf.&quot;&quot;&quot;</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">channel</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_float</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_float</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">color1</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">color1</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">color1</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">color1</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">color2</span><span class="o">.</span><span class="n">r</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">color2</span><span class="o">.</span><span class="n">g</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">color2</span><span class="o">.</span><span class="n">b</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">color2</span><span class="o">.</span><span class="n">a</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_byte</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">effect</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_float</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">fade_in</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_float</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">fade_out</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_float</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">hold_time</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_float</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">fx_time</span><span class="p">)</span>
+        <span class="n">buffer</span><span class="o">.</span><span class="n">write_string</span><span class="p">(</span><span class="n">kwargs</span><span class="o">.</span><span class="n">message</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">messages.base</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

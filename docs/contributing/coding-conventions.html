@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Coding conventions &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=2780edc4" />
+    
+    <script src="../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="TODOs" href="todos.html" />
+    <link rel="prev" title="Contributing" href="contributing.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="todos.html" title="TODOs"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="contributing.html" title="Contributing"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Coding conventions</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="coding-conventions">
+<h1>Coding conventions<a class="headerlink" href="#coding-conventions" title="Link to this heading">¶</a></h1>
+<p>It’s very important that everyone who works in a project follows the same
+coding conventions. Thus, this is an outline of the coding style that is used
+in Source.Python. We are trying to follow <a class="reference external" href="https://www.python.org/dev/peps/pep-0008/">PEP8</a>
+and <a class="reference external" href="https://www.python.org/dev/peps/pep-0257/">PEP257</a> as close as possible.</p>
+<section id="naming-conventions">
+<h2>Naming conventions<a class="headerlink" href="#naming-conventions" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Class names should use CamelCase.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TestClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>No underscores in class names except for a leading underscore to as “private”.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">_PrivateTestClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Constants must be ALL_CAPS with an underscore separating the words.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">CONSTANT_VALUE</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>Class attributes/properties/methods should be lower_case_with_underscores.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TestClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value1</span><span class="p">,</span> <span class="n">value2</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value1</span> <span class="o">=</span> <span class="n">value1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_value2</span> <span class="o">=</span> <span class="n">value2</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">value2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_value2</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">some_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">value1</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">value2</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p>Singleton objects or “the instance” objects (objects that should be the one and only instance of a class) should also use lower_case_with_underscores.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TestClass</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="n">test_class</span> <span class="o">=</span> <span class="n">TestClass</span><span class="p">()</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="6">
+<li><p>All global variable objects (which are not constants) should also use lower_case_with_underscores.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">start_value</span> <span class="o">=</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="7">
+<li><p>Any global variables created in the scope which are not to be imported by other modules should use a leading underscore.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">_private_variable</span> <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="8">
+<li><p>Never use two leading and/or two trailing underscores.</p></li>
+<li><p><strong>All</strong> names should be very descriptive as to what the object does or is.</p></li>
+</ol>
+</section>
+<section id="formatting">
+<h2>Formatting<a class="headerlink" href="#formatting" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Lines must be no longer than 80 characters (that includes the built-in \n, making it 79 characters of code).</p></li>
+<li><p><strong>Must</strong> use 4 space indentation, no TABs.</p></li>
+<li><p><strong>Must</strong> have 2 blank lines prior to functions and classes.</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>If the function/class is starting a new &lt;Section&gt; (explained below), the blank lines need to be prior to the section separator.</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>All other lines should only have 1 blank line between.</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>An exception that is sometimes used is 2 blank lines prior to a &lt;Section&gt; change (explained below)</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="5">
+<li><p>No extra whitespace at the end of a line.</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>This also means that any “blank” lines should have absolutely nothing, not even spaces, in them.</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="6">
+<li><p>Exactly 1 space between arguments (after the comma) for all functions/classes/methods, including when calling them.</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>No leading space before first argument or trailing space after last argument.</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="7">
+<li><p>Exactly one space after a colon (:) when setting an item in a dictionary.</p></li>
+<li><p>There must be exactly one blank line at the end of the file.</p></li>
+</ol>
+</section>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>All classes/methods/properties/functions must be followed by a comment using a triple quote docstring (using quotes and not apostrophes).</p></li>
+<li><p>Most lines of code should follow a one line comment (using the # character).</p></li>
+</ol>
+<blockquote>
+<div><ul class="simple">
+<li><p>Some exceptions apply, like comments that suffice for multiple lines.</p></li>
+</ul>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Files should always start with this line.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># ../&lt;path from source-python directory&gt;</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>Different sections of code should be separated by the following lines (where &lt;Section&gt; should describe what is in the following section).</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; &lt;Section&gt;</span>
+<span class="c1"># =============================================================================</span>
+</pre></div>
+</div>
+<ul class="simple">
+<li><p>Some examples of what &lt;Section&gt; types there are to be used:</p>
+<ul>
+<li><p>IMPORTS</p></li>
+<li><p>GLOBAL VARIABLES</p></li>
+<li><p>CLASSES</p></li>
+<li><p>FUNCTIONS</p></li>
+</ul>
+</li>
+</ul>
+</div></blockquote>
+</section>
+<section id="import-comments">
+<h2>Import comments<a class="headerlink" href="#import-comments" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Separate base Python imports (including site-packages) from Source.Python imports with 1 blank line.</p></li>
+<li><p>Use a comment line with 1 space after the # showing whether the current section is from Python or Source.Python.</p></li>
+<li><p>Python imports should always go first, then Source.Python imports.</p></li>
+<li><p>Separate each module by using a comment about which module is being imported (with 3 spaces after the # before the modules name).</p></li>
+<li><p>Modules should be listed in alphabetic order.</p></li>
+</ol>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Configobj</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">configobj</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigObj</span>
+<span class="c1">#   OS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">os.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">dirname</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">os.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">join</span>
+<span class="c1">#   Traceback</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traceback</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_exception</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_newer_version_available</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">VERSION</span>
+<span class="c1">#   Events</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">GAME_PATH</span>
+</pre></div>
+</div>
+</section>
+<section id="do-s-and-don-ts-of-importing">
+<h2>Do’s and don’ts of importing<a class="headerlink" href="#do-s-and-don-ts-of-importing" title="Link to this heading">¶</a></h2>
+<ol class="arabic simple">
+<li><p>Never import “all” from a module.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Bad</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">something</span><span class="w"> </span><span class="kn">import</span> <span class="o">*</span>
+
+<span class="c1"># Good</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">something</span><span class="w"> </span><span class="kn">import</span> <span class="n">one_object</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">something</span><span class="w"> </span><span class="kn">import</span> <span class="n">second_object</span>
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="2">
+<li><p>For “most” imports, import each object individually, and on a separate line.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Bad</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">os.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">dirname</span><span class="p">,</span> <span class="n">join</span><span class="p">,</span> <span class="n">curdir</span>
+
+<span class="c1"># Good</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">os.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">dirname</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">os.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">join</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">os.path</span><span class="w"> </span><span class="kn">import</span> <span class="n">curdir</span>
+
+<span class="c1"># &quot;Ok&quot;, but use only when necessary</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os.path</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+</pre></div>
+</div>
+</div></blockquote>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Coding conventions</a><ul>
+<li><a class="reference internal" href="#naming-conventions">Naming conventions</a></li>
+<li><a class="reference internal" href="#formatting">Formatting</a></li>
+<li><a class="reference internal" href="#documentation">Documentation</a></li>
+<li><a class="reference internal" href="#import-comments">Import comments</a></li>
+<li><a class="reference internal" href="#do-s-and-don-ts-of-importing">Do’s and don’ts of importing</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="contributing.html"
+                          title="previous chapter">Contributing</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="todos.html"
+                          title="next chapter">TODOs</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/contributing/coding-conventions.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="todos.html" title="TODOs"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="contributing.html" title="Contributing"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Coding conventions</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

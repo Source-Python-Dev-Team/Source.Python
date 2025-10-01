@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>entities.transmit module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.transmit module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-entities.transmit">
+<span id="entities-transmit-module"></span><h1>entities.transmit module<a class="headerlink" href="#module-entities.transmit" title="Link to this heading">¶</a></h1>
+<p>Provides entity transmission functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.transmit.BaseTransmitRules">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.transmit.</span></span><span class="sig-name descname"><span class="pre">BaseTransmitRules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#entities.transmit.BaseTransmitRules" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#core.WeakAutoUnload" title="core.WeakAutoUnload"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeakAutoUnload</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.BaseTransmitRules.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#entities.transmit.BaseTransmitRules.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.BaseTransmitRules.should_transmit">
+<span class="sig-name descname"><span class="pre">should_transmit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(BaseTransmitRules)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)player</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.BaseTransmitRules.should_transmit" title="Link to this definition">¶</a></dt>
+<dd><p>Returns whether the given entity should be transmitted to the given player.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.transmit.BaseTransmitRules.mode">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#entities.transmit.BaseTransmitRules.mode" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the transmit mode for these rules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#entities.transmit.TransmitMode" title="entities.transmit.TransmitMode">TransmitMode</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.transmit.TransmitHash">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.transmit.</span></span><span class="sig-name descname"><span class="pre">TransmitHash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#entities.transmit.TransmitHash" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#entities.transmit.BaseTransmitRules" title="_entities._transmit.BaseTransmitRules"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransmitRules</span></code></a></p>
+<p>Transmissions rules where contained pairs are never transmitted to each other.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">entities.transmit</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransmitHash</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+
+<span class="n">h</span> <span class="o">=</span> <span class="n">TransmitHash</span><span class="p">()</span>
+
+<span class="nd">@Event</span><span class="p">(</span><span class="s1">&#39;player_say&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">player_say</span><span class="p">(</span><span class="n">game_event</span><span class="p">):</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="o">.</span><span class="n">from_userid</span><span class="p">(</span><span class="n">game_event</span><span class="p">[</span><span class="s1">&#39;userid&#39;</span><span class="p">])</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">view_entity</span>
+    <span class="k">if</span> <span class="n">entity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="c1"># Toggle transmissions with aimed entity</span>
+    <span class="k">if</span> <span class="n">h</span><span class="o">.</span><span class="n">has_pair</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+        <span class="n">h</span><span class="o">.</span><span class="n">remove_pair</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">entity</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">h</span><span class="o">.</span><span class="n">add_pair</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">entity</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitHash.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(TransmitMode)mode=_entities._transmit.TransmitMode.PREVENT</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.TransmitHash.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Constructs and initializes the transmit hash.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mode</strong> (<a class="reference internal" href="#entities.transmit.TransmitMode" title="entities.transmit.TransmitMode"><em>TransmitMode</em></a>) – The transmit mode for these rules.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitHash.add_pair">
+<span class="sig-name descname"><span class="pre">add_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(TransmitHash)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.TransmitHash.add_pair" title="Link to this definition">¶</a></dt>
+<dd><p>Adds the given entity pair to the hash.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If none of the given entities is a player.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitHash.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(TransmitHash)self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.TransmitHash.clear" title="Link to this definition">¶</a></dt>
+<dd><p>Removes all entities from the hash.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitHash.get_count">
+<span class="sig-name descname"><span class="pre">get_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(TransmitHash)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.TransmitHash.get_count" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the amount of pairs associated with the given entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitHash.get_pairs">
+<span class="sig-name descname"><span class="pre">get_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(TransmitHash)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.TransmitHash.get_pairs" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a list of all entities associated with the given entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitHash.has_pair">
+<span class="sig-name descname"><span class="pre">has_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(TransmitHash)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.TransmitHash.has_pair" title="Link to this definition">¶</a></dt>
+<dd><p>Returns whether the given pair is in the hash.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitHash.remove_pair">
+<span class="sig-name descname"><span class="pre">remove_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(TransmitHash)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.TransmitHash.remove_pair" title="Link to this definition">¶</a></dt>
+<dd><p>Removes the given pair from the hash.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitHash.remove_pairs">
+<span class="sig-name descname"><span class="pre">remove_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(TransmitHash)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.TransmitHash.remove_pairs" title="Link to this definition">¶</a></dt>
+<dd><p>Removes all pairs associated with the given entity.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.transmit.TransmitHook">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.transmit.</span></span><span class="sig-name descname"><span class="pre">TransmitHook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/transmit.html#TransmitHook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.transmit.TransmitHook" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#core.AutoUnload" title="core.AutoUnload"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoUnload</span></code></a></p>
+<p>Decorator used to create transmit hooks that auto unload.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">entities.transmit</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransmitHook</span>
+
+<span class="nd">@TransmitHook</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">transmit_hook</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">indexes</span><span class="p">,</span> <span class="n">states</span><span class="p">):</span>
+    <span class="c1"># Don&#39;t transmit anything to this player except himself</span>
+    <span class="n">player_index</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">index</span>
+    <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">indexes</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">==</span> <span class="n">player_index</span><span class="p">:</span>
+            <span class="k">continue</span>
+        <span class="n">states</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitHook.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/transmit.html#TransmitHook.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.transmit.TransmitHook.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Registers the transmit hook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>callback</strong> (<em>function</em>) – Function to register as a transmit hook callback.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.transmit.TransmitManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.transmit.</span></span><span class="sig-name descname"><span class="pre">TransmitManager</span></span><a class="headerlink" href="#entities.transmit.TransmitManager" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitManager.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#entities.transmit.TransmitManager.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitManager.register_hook">
+<span class="sig-name descname"><span class="pre">register_hook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(TransmitManager)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)callback</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.TransmitManager.register_hook" title="Link to this definition">¶</a></dt>
+<dd><p>Registers a transmit hook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>callback</strong> (<em>function</em>) – Function to register as a transmit hook callback.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the given callback is already registered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitManager.unregister_hook">
+<span class="sig-name descname"><span class="pre">unregister_hook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(TransmitManager)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)callback</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.TransmitManager.unregister_hook" title="Link to this definition">¶</a></dt>
+<dd><p>Unregisters a transmit hook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>callback</strong> (<em>function</em>) – Function to unregister as a transmit hook callback.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the given callback was not registered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.transmit.TransmitMap">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.transmit.</span></span><span class="sig-name descname"><span class="pre">TransmitMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#entities.transmit.TransmitMap" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#entities.transmit.BaseTransmitRules" title="_entities._transmit.BaseTransmitRules"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransmitRules</span></code></a></p>
+<p>Transmission rules that overrides per-player transmission.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">entities.transmit</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransmitMap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="n">TransmitMap</span><span class="p">()</span>
+
+<span class="nd">@Event</span><span class="p">(</span><span class="s1">&#39;player_say&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">player_say</span><span class="p">(</span><span class="n">game_event</span><span class="p">):</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="o">.</span><span class="n">from_userid</span><span class="p">(</span><span class="n">game_event</span><span class="p">[</span><span class="s1">&#39;userid&#39;</span><span class="p">])</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">view_entity</span>
+    <span class="k">if</span> <span class="n">entity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="c1"># Toggle one-way transmissions with aimed entity</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="n">entity</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">player</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitMap.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(TransmitMode)mode=_entities._transmit.TransmitMode.PREVENT</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.TransmitMap.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Constructs and initializes the transmit map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mode</strong> (<a class="reference internal" href="#entities.transmit.TransmitMode" title="entities.transmit.TransmitMode"><em>TransmitMode</em></a>) – The transmit mode for these rules.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitMap.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(TransmitMap)self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.TransmitMap.clear" title="Link to this definition">¶</a></dt>
+<dd><p>Removes all players from the map.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.transmit.TransmitMode">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.transmit.</span></span><span class="sig-name descname"><span class="pre">TransmitMode</span></span><a class="headerlink" href="#entities.transmit.TransmitMode" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.transmit.TransmitMode.ALLOW">
+<span class="sig-name descname"><span class="pre">ALLOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._transmit.TransmitMode.ALLOW</span></em><a class="headerlink" href="#entities.transmit.TransmitMode.ALLOW" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.transmit.TransmitMode.PREVENT">
+<span class="sig-name descname"><span class="pre">PREVENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._transmit.TransmitMode.PREVENT</span></em><a class="headerlink" href="#entities.transmit.TransmitMode.PREVENT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.transmit.TransmitMode.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'ALLOW':</span> <span class="pre">_entities._transmit.TransmitMode.ALLOW,</span> <span class="pre">'PREVENT':</span> <span class="pre">_entities._transmit.TransmitMode.PREVENT}</span></em><a class="headerlink" href="#entities.transmit.TransmitMode.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.transmit.TransmitMode.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">_entities._transmit.TransmitMode.ALLOW,</span> <span class="pre">1:</span> <span class="pre">_entities._transmit.TransmitMode.PREVENT}</span></em><a class="headerlink" href="#entities.transmit.TransmitMode.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.transmit.TransmitSet">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.transmit.</span></span><span class="sig-name descname"><span class="pre">TransmitSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#entities.transmit.TransmitSet" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#entities.transmit.BaseTransmitRules" title="_entities._transmit.BaseTransmitRules"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTransmitRules</span></code></a></p>
+<p>Transmission rules where contained entities are never transmitted to any player.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">entities.transmit</span><span class="w"> </span><span class="kn">import</span> <span class="n">TransmitSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">TransmitSet</span><span class="p">()</span>
+
+<span class="nd">@Event</span><span class="p">(</span><span class="s1">&#39;player_say&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">player_say</span><span class="p">(</span><span class="n">game_event</span><span class="p">):</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="o">.</span><span class="n">from_userid</span><span class="p">(</span><span class="n">game_event</span><span class="p">[</span><span class="s1">&#39;userid&#39;</span><span class="p">])</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">view_entity</span>
+    <span class="k">if</span> <span class="n">entity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="c1"># Toggle transmissions with everything</span>
+    <span class="k">if</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitSet.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(TransmitMode)mode=_entities._transmit.TransmitMode.PREVENT</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.TransmitSet.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Constructs and initializes the transmit set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>mode</strong> (<a class="reference internal" href="#entities.transmit.TransmitMode" title="entities.transmit.TransmitMode"><em>TransmitMode</em></a>) – The transmit mode for these rules.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitSet.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(TransmitSet)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.TransmitSet.add" title="Link to this definition">¶</a></dt>
+<dd><p>Adds the given entity to the set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the given entity is not networked.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitSet.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(TransmitSet)self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.TransmitSet.clear" title="Link to this definition">¶</a></dt>
+<dd><p>Removes all entities from the set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitSet.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(TransmitSet)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.transmit.TransmitSet.remove" title="Link to this definition">¶</a></dt>
+<dd><p>Removes the given entity from the set.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.transmit.TransmitStates">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.transmit.</span></span><span class="sig-name descname"><span class="pre">TransmitStates</span></span><a class="headerlink" href="#entities.transmit.TransmitStates" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.transmit.TransmitStates.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.transmit.TransmitStates.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">entities.transmit module</a><ul>
+<li><a class="reference internal" href="#entities.transmit.BaseTransmitRules"><code class="docutils literal notranslate"><span class="pre">BaseTransmitRules</span></code></a><ul>
+<li><a class="reference internal" href="#entities.transmit.BaseTransmitRules.__init__"><code class="docutils literal notranslate"><span class="pre">BaseTransmitRules.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.BaseTransmitRules.should_transmit"><code class="docutils literal notranslate"><span class="pre">BaseTransmitRules.should_transmit()</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.BaseTransmitRules.mode"><code class="docutils literal notranslate"><span class="pre">BaseTransmitRules.mode</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.transmit.TransmitHash"><code class="docutils literal notranslate"><span class="pre">TransmitHash</span></code></a><ul>
+<li><a class="reference internal" href="#entities.transmit.TransmitHash.__init__"><code class="docutils literal notranslate"><span class="pre">TransmitHash.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.TransmitHash.add_pair"><code class="docutils literal notranslate"><span class="pre">TransmitHash.add_pair()</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.TransmitHash.clear"><code class="docutils literal notranslate"><span class="pre">TransmitHash.clear()</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.TransmitHash.get_count"><code class="docutils literal notranslate"><span class="pre">TransmitHash.get_count()</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.TransmitHash.get_pairs"><code class="docutils literal notranslate"><span class="pre">TransmitHash.get_pairs()</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.TransmitHash.has_pair"><code class="docutils literal notranslate"><span class="pre">TransmitHash.has_pair()</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.TransmitHash.remove_pair"><code class="docutils literal notranslate"><span class="pre">TransmitHash.remove_pair()</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.TransmitHash.remove_pairs"><code class="docutils literal notranslate"><span class="pre">TransmitHash.remove_pairs()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.transmit.TransmitHook"><code class="docutils literal notranslate"><span class="pre">TransmitHook</span></code></a><ul>
+<li><a class="reference internal" href="#entities.transmit.TransmitHook.__init__"><code class="docutils literal notranslate"><span class="pre">TransmitHook.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.transmit.TransmitManager"><code class="docutils literal notranslate"><span class="pre">TransmitManager</span></code></a><ul>
+<li><a class="reference internal" href="#entities.transmit.TransmitManager.__init__"><code class="docutils literal notranslate"><span class="pre">TransmitManager.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.TransmitManager.register_hook"><code class="docutils literal notranslate"><span class="pre">TransmitManager.register_hook()</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.TransmitManager.unregister_hook"><code class="docutils literal notranslate"><span class="pre">TransmitManager.unregister_hook()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.transmit.TransmitMap"><code class="docutils literal notranslate"><span class="pre">TransmitMap</span></code></a><ul>
+<li><a class="reference internal" href="#entities.transmit.TransmitMap.__init__"><code class="docutils literal notranslate"><span class="pre">TransmitMap.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.TransmitMap.clear"><code class="docutils literal notranslate"><span class="pre">TransmitMap.clear()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.transmit.TransmitMode"><code class="docutils literal notranslate"><span class="pre">TransmitMode</span></code></a><ul>
+<li><a class="reference internal" href="#entities.transmit.TransmitMode.ALLOW"><code class="docutils literal notranslate"><span class="pre">TransmitMode.ALLOW</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.TransmitMode.PREVENT"><code class="docutils literal notranslate"><span class="pre">TransmitMode.PREVENT</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.TransmitMode.names"><code class="docutils literal notranslate"><span class="pre">TransmitMode.names</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.TransmitMode.values"><code class="docutils literal notranslate"><span class="pre">TransmitMode.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.transmit.TransmitSet"><code class="docutils literal notranslate"><span class="pre">TransmitSet</span></code></a><ul>
+<li><a class="reference internal" href="#entities.transmit.TransmitSet.__init__"><code class="docutils literal notranslate"><span class="pre">TransmitSet.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.TransmitSet.add"><code class="docutils literal notranslate"><span class="pre">TransmitSet.add()</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.TransmitSet.clear"><code class="docutils literal notranslate"><span class="pre">TransmitSet.clear()</span></code></a></li>
+<li><a class="reference internal" href="#entities.transmit.TransmitSet.remove"><code class="docutils literal notranslate"><span class="pre">TransmitSet.remove()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.transmit.TransmitStates"><code class="docutils literal notranslate"><span class="pre">TransmitStates</span></code></a><ul>
+<li><a class="reference internal" href="#entities.transmit.TransmitStates.__init__"><code class="docutils literal notranslate"><span class="pre">TransmitStates.__init__()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/entities.transmit.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.transmit module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

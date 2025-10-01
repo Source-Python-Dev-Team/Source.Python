@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>core package &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">core package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="core-package">
+<h1>core package<a class="headerlink" href="#core-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="core.command.html">core.command package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="core.command.auth.html">core.command.auth module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.command.docs.html">core.command.docs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.command.dump.html">core.command.dump module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="core.command.plugin.html">core.command.plugin module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="core.dumps.html">core.dumps module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.settings.html">core.settings module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.table.html">core.table module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.version.html">core.version module</a></li>
+</ul>
+</div>
+</section>
+<section id="module-core">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-core" title="Link to this heading">¶</a></h2>
+<p>Provides core functionality that doesn’t fit into any other package.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="core.AutoUnload">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">AutoUnload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core.html#AutoUnload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.AutoUnload" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class used to auto unload specific instances.</p>
+<p>Each inheriting class must implement an _unload_instance method.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="core.BoostPythonClass">
+<span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">BoostPythonClass</span></span><a class="headerlink" href="#core.BoostPythonClass" title="Link to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">class</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="core.ConfigFile">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">ConfigFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'//'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_strings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core.html#ConfigFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.ConfigFile" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a></p>
+<p>Class used to parse a configuration file.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="core.ConfigFile.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'//'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_strings</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core.html#ConfigFile.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.ConfigFile.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Parses the given configuation file path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<em>Path</em>) – The path of the file to parse.</p></li>
+<li><p><strong>encoding</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The encoding to use when opening the file.</p></li>
+<li><p><strong>comment_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The prefix of end line comments.</p></li>
+<li><p><strong>as_strings</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether the parsed lines should be stored as strings rather than
+argument lists.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="core.GameConfigObj">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">GameConfigObj</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">infile</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core.html#GameConfigObj"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.GameConfigObj" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ConfigObj</span></code></p>
+<p>Class used to parse specific game data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="core.GameConfigObj.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">infile</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core.html#GameConfigObj.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.GameConfigObj.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Helper class that merges the given file with engine/game files.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="core.OutputReturn">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">OutputReturn</span></span><a class="headerlink" href="#core.OutputReturn" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="core.OutputReturn.BLOCK">
+<span class="sig-name descname"><span class="pre">BLOCK</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_core.OutputReturn.BLOCK</span></em><a class="headerlink" href="#core.OutputReturn.BLOCK" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="core.OutputReturn.CONTINUE">
+<span class="sig-name descname"><span class="pre">CONTINUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_core.OutputReturn.CONTINUE</span></em><a class="headerlink" href="#core.OutputReturn.CONTINUE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="core.OutputReturn.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'BLOCK':</span> <span class="pre">_core.OutputReturn.BLOCK,</span> <span class="pre">'CONTINUE':</span> <span class="pre">_core.OutputReturn.CONTINUE}</span></em><a class="headerlink" href="#core.OutputReturn.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="core.OutputReturn.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">_core.OutputReturn.BLOCK,</span> <span class="pre">1:</span> <span class="pre">_core.OutputReturn.CONTINUE}</span></em><a class="headerlink" href="#core.OutputReturn.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="core.Tokenize">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">Tokenize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core.html#Tokenize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.Tokenize" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a></p>
+<p>Parses the arguments from the given string.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="core.Tokenize.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment_prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core.html#Tokenize.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.Tokenize.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Splits the arguments from the given string.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="core.WeakAutoUnload">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">WeakAutoUnload</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core.html#WeakAutoUnload"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.WeakAutoUnload" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#core.AutoUnload" title="core.AutoUnload"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoUnload</span></code></a></p>
+<p>Subclass of AutoUnload used to store weak references to instances.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="core.check_info_output">
+<span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">check_info_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">output</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core.html#check_info_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.check_info_output" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether the output of <code class="docutils literal notranslate"><span class="pre">sp</span> <span class="pre">info</span></code> has been modified.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>output</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The output of <code class="docutils literal notranslate"><span class="pre">sp</span> <span class="pre">info</span></code>.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Raised if the checksum was not found in the output.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">True</span></code> if the output has been modified.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="core.console_message">
+<span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">console_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(str)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core.console_message" title="Link to this definition">¶</a></dt>
+<dd><p>Output a message to the server console.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="core.create_checksum">
+<span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">create_checksum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ignore_wchars</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core.html#create_checksum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.create_checksum" title="Link to this definition">¶</a></dt>
+<dd><p>Create an MD5 checksum for the given string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The string for which a checksum should be created.</p></li>
+<li><p><strong>ignore_wchars</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> whitespace characters are ignored.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="core.echo_console">
+<span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">echo_console</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">text</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core.html#echo_console"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.echo_console" title="Link to this definition">¶</a></dt>
+<dd><p>Echo a message to the server’s console.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Unlike <code class="docutils literal notranslate"><span class="pre">console_message</span></code>, this function automatically adds a newline
+at the end of the message.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>text</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Message to print to the console.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="core.get_core_modules">
+<span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">get_core_modules</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core.get_core_modules" title="Link to this definition">¶</a></dt>
+<dd><p>Return a list of all modules exposed by Source.Python’s core.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="core.get_interface">
+<span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">get_interface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(str)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#core.get_interface" title="Link to this definition">¶</a></dt>
+<dd><p>Retrieve an interface from a library.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="core.get_public_ip">
+<span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">get_public_ip</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core.html#get_public_ip"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.get_public_ip" title="Link to this definition">¶</a></dt>
+<dd><p>Return the server’s public IPv4.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This functions makes a call to <code class="docutils literal notranslate"><span class="pre">http://api.ipify.org</span></code> to retrieve the public IP.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="core.ignore_unicode_errors">
+<span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">ignore_unicode_errors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">errors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'ignore'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core.html#ignore_unicode_errors"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.ignore_unicode_errors" title="Link to this definition">¶</a></dt>
+<dd><p>Overwrite the <code class="docutils literal notranslate"><span class="pre">strict</span></code> codecs error handler temporarily.</p>
+<p>This is useful e.g. if the engine truncates a string, which results in a
+string that contains a splitted multi-byte character at the end of the
+string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>errors</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Error handler that will be looked up via <a class="reference external" href="https://docs.python.org/3.13/library/codecs.html#codecs.lookup_error" title="(in Python v3.13)"><code class="xref py py-func docutils literal notranslate"><span class="pre">codecs.lookup_error()</span></code></a>.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#LookupError" title="(in Python v3.13)"><strong>LookupError</strong></a> – Raised if the error handler was not found.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">memory</span>
+
+<span class="c1"># Allocate four bytes to create an erroneous string</span>
+<span class="n">ptr</span> <span class="o">=</span> <span class="n">memory</span><span class="o">.</span><span class="n">alloc</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+<span class="c1"># Write data to the memory that will usually result in a</span>
+<span class="c1"># UnicodeDecodeError</span>
+<span class="n">ptr</span><span class="o">.</span><span class="n">set_uchar</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">),</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">ptr</span><span class="o">.</span><span class="n">set_uchar</span><span class="p">(</span><span class="nb">ord</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">ptr</span><span class="o">.</span><span class="n">set_uchar</span><span class="p">(</span><span class="mi">226</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># Add the invalid byte</span>
+<span class="n">ptr</span><span class="o">.</span><span class="n">set_uchar</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="c1"># Indicate the end of the string</span>
+
+<span class="k">with</span> <span class="n">ignore_unicode_errors</span><span class="p">():</span>
+    <span class="c1"># Read the data as a string. Now, it will only print &#39;ab&#39;, because</span>
+    <span class="c1"># the invalid byte has been removed/ignored.</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">ptr</span><span class="o">.</span><span class="n">get_string_array</span><span class="p">())</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="core.server_output">
+<span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">server_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">action</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_core.OutputReturn.CONTINUE</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/core.html#server_output"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#core.server_output" title="Link to this definition">¶</a></dt>
+<dd><p>Gather all server output sent during the execution of the with-statement.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>action</strong> (<a class="reference internal" href="#core.OutputReturn" title="core.OutputReturn"><em>OutputReturn</em></a>) – Determines what happens with the output.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>A list that will be filled with a tuple for every line that is being
+logged. The tuple contains the severity and the message.</p>
+</dd>
+</dl>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">cvars</span><span class="w"> </span><span class="kn">import</span> <span class="n">cvar</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">server_output</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">OutputReturn</span>
+
+<span class="n">status</span> <span class="o">=</span> <span class="n">cvar</span><span class="o">.</span><span class="n">find_command</span><span class="p">(</span><span class="s1">&#39;status&#39;</span><span class="p">)</span>
+
+<span class="k">with</span> <span class="n">server_output</span><span class="p">(</span><span class="n">OutputReturn</span><span class="o">.</span><span class="n">BLOCK</span><span class="p">)</span> <span class="k">as</span> <span class="n">output</span><span class="p">:</span>
+    <span class="n">status</span><span class="p">()</span>
+
+<span class="c1"># Print everything that was logged by the &#39;status&#39; command</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="p">[(</span><span class="n">_core</span><span class="o">.</span><span class="n">MessageSeverity</span><span class="o">.</span><span class="n">MESSAGE</span><span class="p">,</span> <span class="s1">&#39;hostname: Counter-Strike: Global Offensive</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="n">_core</span><span class="o">.</span><span class="n">MessageSeverity</span><span class="o">.</span><span class="n">MESSAGE</span><span class="p">,</span> <span class="s1">&#39;version : 1.35.8.4/13584 513/6771 secure  [A:1:2435270659:8640] </span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="n">_core</span><span class="o">.</span><span class="n">MessageSeverity</span><span class="o">.</span><span class="n">MESSAGE</span><span class="p">,</span> <span class="s1">&#39;udp/ip  : 192.168.178.60:27015  (public ip: 46.83.158.27)</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="n">_core</span><span class="o">.</span><span class="n">MessageSeverity</span><span class="o">.</span><span class="n">MESSAGE</span><span class="p">,</span> <span class="s1">&#39;os      :  Windows</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="n">_core</span><span class="o">.</span><span class="n">MessageSeverity</span><span class="o">.</span><span class="n">MESSAGE</span><span class="p">,</span> <span class="s1">&#39;type    :  community dedicated</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="n">_core</span><span class="o">.</span><span class="n">MessageSeverity</span><span class="o">.</span><span class="n">MESSAGE</span><span class="p">,</span> <span class="s1">&#39;players : 0 humans, 0 bots (20/0 max) (hibernating)</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="n">_core</span><span class="o">.</span><span class="n">MessageSeverity</span><span class="o">.</span><span class="n">MESSAGE</span><span class="p">,</span> <span class="s1">&#39;# userid name uniqueid connected ping loss state rate&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="n">_core</span><span class="o">.</span><span class="n">MessageSeverity</span><span class="o">.</span><span class="n">MESSAGE</span><span class="p">,</span> <span class="s1">&#39; adr&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="n">_core</span><span class="o">.</span><span class="n">MessageSeverity</span><span class="o">.</span><span class="n">MESSAGE</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">),</span>
+ <span class="p">(</span><span class="n">_core</span><span class="o">.</span><span class="n">MessageSeverity</span><span class="o">.</span><span class="n">MESSAGE</span><span class="p">,</span> <span class="s1">&#39;#end</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="core.core_plugin_manager">
+<span class="sig-prename descclassname"><span class="pre">core.</span></span><span class="sig-name descname"><span class="pre">core_plugin_manager</span></span><a class="headerlink" href="#core.core_plugin_manager" title="Link to this definition">¶</a></dt>
+<dd><p>The singleton object of the <code class="xref py py-class docutils literal notranslate"><span class="pre">_CorePluginManager</span></code> class.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">core package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-core">Module contents</a><ul>
+<li><a class="reference internal" href="#core.AutoUnload"><code class="docutils literal notranslate"><span class="pre">AutoUnload</span></code></a></li>
+<li><a class="reference internal" href="#core.BoostPythonClass"><code class="docutils literal notranslate"><span class="pre">BoostPythonClass</span></code></a></li>
+<li><a class="reference internal" href="#core.ConfigFile"><code class="docutils literal notranslate"><span class="pre">ConfigFile</span></code></a><ul>
+<li><a class="reference internal" href="#core.ConfigFile.__init__"><code class="docutils literal notranslate"><span class="pre">ConfigFile.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#core.GameConfigObj"><code class="docutils literal notranslate"><span class="pre">GameConfigObj</span></code></a><ul>
+<li><a class="reference internal" href="#core.GameConfigObj.__init__"><code class="docutils literal notranslate"><span class="pre">GameConfigObj.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#core.OutputReturn"><code class="docutils literal notranslate"><span class="pre">OutputReturn</span></code></a><ul>
+<li><a class="reference internal" href="#core.OutputReturn.BLOCK"><code class="docutils literal notranslate"><span class="pre">OutputReturn.BLOCK</span></code></a></li>
+<li><a class="reference internal" href="#core.OutputReturn.CONTINUE"><code class="docutils literal notranslate"><span class="pre">OutputReturn.CONTINUE</span></code></a></li>
+<li><a class="reference internal" href="#core.OutputReturn.names"><code class="docutils literal notranslate"><span class="pre">OutputReturn.names</span></code></a></li>
+<li><a class="reference internal" href="#core.OutputReturn.values"><code class="docutils literal notranslate"><span class="pre">OutputReturn.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#core.Tokenize"><code class="docutils literal notranslate"><span class="pre">Tokenize</span></code></a><ul>
+<li><a class="reference internal" href="#core.Tokenize.__init__"><code class="docutils literal notranslate"><span class="pre">Tokenize.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#core.WeakAutoUnload"><code class="docutils literal notranslate"><span class="pre">WeakAutoUnload</span></code></a></li>
+<li><a class="reference internal" href="#core.check_info_output"><code class="docutils literal notranslate"><span class="pre">check_info_output()</span></code></a></li>
+<li><a class="reference internal" href="#core.console_message"><code class="docutils literal notranslate"><span class="pre">console_message()</span></code></a></li>
+<li><a class="reference internal" href="#core.create_checksum"><code class="docutils literal notranslate"><span class="pre">create_checksum()</span></code></a></li>
+<li><a class="reference internal" href="#core.echo_console"><code class="docutils literal notranslate"><span class="pre">echo_console()</span></code></a></li>
+<li><a class="reference internal" href="#core.get_core_modules"><code class="docutils literal notranslate"><span class="pre">get_core_modules()</span></code></a></li>
+<li><a class="reference internal" href="#core.get_interface"><code class="docutils literal notranslate"><span class="pre">get_interface()</span></code></a></li>
+<li><a class="reference internal" href="#core.get_public_ip"><code class="docutils literal notranslate"><span class="pre">get_public_ip()</span></code></a></li>
+<li><a class="reference internal" href="#core.ignore_unicode_errors"><code class="docutils literal notranslate"><span class="pre">ignore_unicode_errors()</span></code></a></li>
+<li><a class="reference internal" href="#core.server_output"><code class="docutils literal notranslate"><span class="pre">server_output()</span></code></a></li>
+<li><a class="reference internal" href="#core.core_plugin_manager"><code class="docutils literal notranslate"><span class="pre">core_plugin_manager</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/core.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">core package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

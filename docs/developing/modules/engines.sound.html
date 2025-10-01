@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>engines.sound module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">engines.sound module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-engines.sound">
+<span id="engines-sound-module"></span><h1>engines.sound module<a class="headerlink" href="#module-engines.sound" title="Link to this heading">¶</a></h1>
+<p>Provides access to the Sound and StreamSound interfaces.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.sound.Attenuation">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.sound.</span></span><span class="sig-name descname"><span class="pre">Attenuation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/engines/sound.html#Attenuation"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#engines.sound.Attenuation" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>, <a class="reference external" href="https://docs.python.org/3.13/library/enum.html#enum.Enum" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Enum</span></code></a></p>
+<p>Attenuation values wrapper enumerator.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Attenuation.GUNFIRE">
+<span class="sig-name descname"><span class="pre">GUNFIRE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.27000001072883606</span></em><a class="headerlink" href="#engines.sound.Attenuation.GUNFIRE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Attenuation.IDLE">
+<span class="sig-name descname"><span class="pre">IDLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2.0</span></em><a class="headerlink" href="#engines.sound.Attenuation.IDLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Attenuation.MAXIMUM">
+<span class="sig-name descname"><span class="pre">MAXIMUM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3.9800000190734863</span></em><a class="headerlink" href="#engines.sound.Attenuation.MAXIMUM" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Attenuation.NONE">
+<span class="sig-name descname"><span class="pre">NONE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.0</span></em><a class="headerlink" href="#engines.sound.Attenuation.NONE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Attenuation.NORMAL">
+<span class="sig-name descname"><span class="pre">NORMAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0.800000011920929</span></em><a class="headerlink" href="#engines.sound.Attenuation.NORMAL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Attenuation.RICOCHET">
+<span class="sig-name descname"><span class="pre">RICOCHET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.5</span></em><a class="headerlink" href="#engines.sound.Attenuation.RICOCHET" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Attenuation.STATIC">
+<span class="sig-name descname"><span class="pre">STATIC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.25</span></em><a class="headerlink" href="#engines.sound.Attenuation.STATIC" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.sound.Channel">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.sound.</span></span><span class="sig-name descname"><span class="pre">Channel</span></span><a class="headerlink" href="#engines.sound.Channel" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Channel.AUTO">
+<span class="sig-name descname"><span class="pre">AUTO</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.Channel.AUTO</span></em><a class="headerlink" href="#engines.sound.Channel.AUTO" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Channel.BODY">
+<span class="sig-name descname"><span class="pre">BODY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.Channel.BODY</span></em><a class="headerlink" href="#engines.sound.Channel.BODY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Channel.ITEM">
+<span class="sig-name descname"><span class="pre">ITEM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.Channel.ITEM</span></em><a class="headerlink" href="#engines.sound.Channel.ITEM" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Channel.REPLACE">
+<span class="sig-name descname"><span class="pre">REPLACE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.Channel.REPLACE</span></em><a class="headerlink" href="#engines.sound.Channel.REPLACE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Channel.STATIC">
+<span class="sig-name descname"><span class="pre">STATIC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.Channel.STATIC</span></em><a class="headerlink" href="#engines.sound.Channel.STATIC" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Channel.STREAM">
+<span class="sig-name descname"><span class="pre">STREAM</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.Channel.STREAM</span></em><a class="headerlink" href="#engines.sound.Channel.STREAM" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Channel.USER_BASE">
+<span class="sig-name descname"><span class="pre">USER_BASE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.Channel.USER_BASE</span></em><a class="headerlink" href="#engines.sound.Channel.USER_BASE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Channel.VOICE">
+<span class="sig-name descname"><span class="pre">VOICE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.Channel.VOICE</span></em><a class="headerlink" href="#engines.sound.Channel.VOICE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Channel.VOICE_BASE">
+<span class="sig-name descname"><span class="pre">VOICE_BASE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.Channel.VOICE_BASE</span></em><a class="headerlink" href="#engines.sound.Channel.VOICE_BASE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Channel.WEAPON">
+<span class="sig-name descname"><span class="pre">WEAPON</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.Channel.WEAPON</span></em><a class="headerlink" href="#engines.sound.Channel.WEAPON" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Channel.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'AUTO':</span> <span class="pre">_engines._sound.Channel.AUTO,</span> <span class="pre">'BODY':</span> <span class="pre">_engines._sound.Channel.BODY,</span> <span class="pre">'ITEM':</span> <span class="pre">_engines._sound.Channel.ITEM,</span> <span class="pre">'REPLACE':</span> <span class="pre">_engines._sound.Channel.REPLACE,</span> <span class="pre">'STATIC':</span> <span class="pre">_engines._sound.Channel.STATIC,</span> <span class="pre">'STREAM':</span> <span class="pre">_engines._sound.Channel.STREAM,</span> <span class="pre">'USER_BASE':</span> <span class="pre">_engines._sound.Channel.USER_BASE,</span> <span class="pre">'VOICE':</span> <span class="pre">_engines._sound.Channel.VOICE,</span> <span class="pre">'VOICE_BASE':</span> <span class="pre">_engines._sound.Channel.VOICE_BASE,</span> <span class="pre">'WEAPON':</span> <span class="pre">_engines._sound.Channel.WEAPON}</span></em><a class="headerlink" href="#engines.sound.Channel.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Channel.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{-1:</span> <span class="pre">_engines._sound.Channel.REPLACE,</span> <span class="pre">0:</span> <span class="pre">_engines._sound.Channel.AUTO,</span> <span class="pre">1:</span> <span class="pre">_engines._sound.Channel.WEAPON,</span> <span class="pre">2:</span> <span class="pre">_engines._sound.Channel.VOICE,</span> <span class="pre">3:</span> <span class="pre">_engines._sound.Channel.ITEM,</span> <span class="pre">4:</span> <span class="pre">_engines._sound.Channel.BODY,</span> <span class="pre">5:</span> <span class="pre">_engines._sound.Channel.STREAM,</span> <span class="pre">6:</span> <span class="pre">_engines._sound.Channel.STATIC,</span> <span class="pre">8:</span> <span class="pre">_engines._sound.Channel.VOICE_BASE,</span> <span class="pre">136:</span> <span class="pre">_engines._sound.Channel.USER_BASE}</span></em><a class="headerlink" href="#engines.sound.Channel.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.sound.Pitch">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.sound.</span></span><span class="sig-name descname"><span class="pre">Pitch</span></span><a class="headerlink" href="#engines.sound.Pitch" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Pitch.HIGH">
+<span class="sig-name descname"><span class="pre">HIGH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.Pitch.HIGH</span></em><a class="headerlink" href="#engines.sound.Pitch.HIGH" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Pitch.LOW">
+<span class="sig-name descname"><span class="pre">LOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.Pitch.LOW</span></em><a class="headerlink" href="#engines.sound.Pitch.LOW" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Pitch.NORMAL">
+<span class="sig-name descname"><span class="pre">NORMAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.Pitch.NORMAL</span></em><a class="headerlink" href="#engines.sound.Pitch.NORMAL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Pitch.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'HIGH':</span> <span class="pre">_engines._sound.Pitch.HIGH,</span> <span class="pre">'LOW':</span> <span class="pre">_engines._sound.Pitch.LOW,</span> <span class="pre">'NORMAL':</span> <span class="pre">_engines._sound.Pitch.NORMAL}</span></em><a class="headerlink" href="#engines.sound.Pitch.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.Pitch.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{95:</span> <span class="pre">_engines._sound.Pitch.LOW,</span> <span class="pre">100:</span> <span class="pre">_engines._sound.Pitch.NORMAL,</span> <span class="pre">120:</span> <span class="pre">_engines._sound.Pitch.HIGH}</span></em><a class="headerlink" href="#engines.sound.Pitch.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.sound.Sound">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.sound.</span></span><span class="sig-name descname"><span class="pre">Sound</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attenuation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Attenuation.NONE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_engines._sound.Channel.AUTO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_engines._sound.SoundFlags.NO_FLAGS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pitch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_engines._sound.Pitch.NORMAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Vector(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Vector(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_positions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sound_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speaker_entity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">download</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/engines/sound.html#Sound"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#engines.sound.Sound" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseSound</span></code></p>
+<p>Class used to interact with precached sounds.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On some engines (e.g. CS:GO) server is unable to precache the sound,
+thus the sound won’t be played. StreamSound is recommended in that case.
+However, sounds located in sound/music/ directory are always streamed
+on those engines, and this class will be able to play them.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.sound.Sound.precache">
+<span class="sig-name descname"><span class="pre">precache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/engines/sound.html#Sound.precache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#engines.sound.Sound.precache" title="Link to this definition">¶</a></dt>
+<dd><p>Precache the sample.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.sound.Sound.is_precached">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_precached</span></span><a class="headerlink" href="#engines.sound.Sound.is_precached" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether or not the sample is precached.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.sound.SoundFlags">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.sound.</span></span><span class="sig-name descname"><span class="pre">SoundFlags</span></span><a class="headerlink" href="#engines.sound.SoundFlags" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.SoundFlags.CHANGE_PITCH">
+<span class="sig-name descname"><span class="pre">CHANGE_PITCH</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.SoundFlags.CHANGE_PITCH</span></em><a class="headerlink" href="#engines.sound.SoundFlags.CHANGE_PITCH" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.SoundFlags.CHANGE_VOL">
+<span class="sig-name descname"><span class="pre">CHANGE_VOL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.SoundFlags.CHANGE_VOL</span></em><a class="headerlink" href="#engines.sound.SoundFlags.CHANGE_VOL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.SoundFlags.DELAY">
+<span class="sig-name descname"><span class="pre">DELAY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.SoundFlags.DELAY</span></em><a class="headerlink" href="#engines.sound.SoundFlags.DELAY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.SoundFlags.IGNORE_NAME">
+<span class="sig-name descname"><span class="pre">IGNORE_NAME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.SoundFlags.IGNORE_NAME</span></em><a class="headerlink" href="#engines.sound.SoundFlags.IGNORE_NAME" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.SoundFlags.IGNORE_PHONEMES">
+<span class="sig-name descname"><span class="pre">IGNORE_PHONEMES</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.SoundFlags.IGNORE_PHONEMES</span></em><a class="headerlink" href="#engines.sound.SoundFlags.IGNORE_PHONEMES" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.SoundFlags.NO_FLAGS">
+<span class="sig-name descname"><span class="pre">NO_FLAGS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.SoundFlags.NO_FLAGS</span></em><a class="headerlink" href="#engines.sound.SoundFlags.NO_FLAGS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.SoundFlags.SHOULD_PAUSE">
+<span class="sig-name descname"><span class="pre">SHOULD_PAUSE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.SoundFlags.SHOULD_PAUSE</span></em><a class="headerlink" href="#engines.sound.SoundFlags.SHOULD_PAUSE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.SoundFlags.SPAWNING">
+<span class="sig-name descname"><span class="pre">SPAWNING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.SoundFlags.SPAWNING</span></em><a class="headerlink" href="#engines.sound.SoundFlags.SPAWNING" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.SoundFlags.SPEAKER">
+<span class="sig-name descname"><span class="pre">SPEAKER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.SoundFlags.SPEAKER</span></em><a class="headerlink" href="#engines.sound.SoundFlags.SPEAKER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.SoundFlags.STOP">
+<span class="sig-name descname"><span class="pre">STOP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.SoundFlags.STOP</span></em><a class="headerlink" href="#engines.sound.SoundFlags.STOP" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.SoundFlags.STOP_LOOPING">
+<span class="sig-name descname"><span class="pre">STOP_LOOPING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._sound.SoundFlags.STOP_LOOPING</span></em><a class="headerlink" href="#engines.sound.SoundFlags.STOP_LOOPING" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.SoundFlags.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'CHANGE_PITCH':</span> <span class="pre">_engines._sound.SoundFlags.CHANGE_PITCH,</span> <span class="pre">'CHANGE_VOL':</span> <span class="pre">_engines._sound.SoundFlags.CHANGE_VOL,</span> <span class="pre">'DELAY':</span> <span class="pre">_engines._sound.SoundFlags.DELAY,</span> <span class="pre">'IGNORE_NAME':</span> <span class="pre">_engines._sound.SoundFlags.IGNORE_NAME,</span> <span class="pre">'IGNORE_PHONEMES':</span> <span class="pre">_engines._sound.SoundFlags.IGNORE_PHONEMES,</span> <span class="pre">'NO_FLAGS':</span> <span class="pre">_engines._sound.SoundFlags.NO_FLAGS,</span> <span class="pre">'SHOULD_PAUSE':</span> <span class="pre">_engines._sound.SoundFlags.SHOULD_PAUSE,</span> <span class="pre">'SPAWNING':</span> <span class="pre">_engines._sound.SoundFlags.SPAWNING,</span> <span class="pre">'SPEAKER':</span> <span class="pre">_engines._sound.SoundFlags.SPEAKER,</span> <span class="pre">'STOP':</span> <span class="pre">_engines._sound.SoundFlags.STOP,</span> <span class="pre">'STOP_LOOPING':</span> <span class="pre">_engines._sound.SoundFlags.STOP_LOOPING}</span></em><a class="headerlink" href="#engines.sound.SoundFlags.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.sound.SoundFlags.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">_engines._sound.SoundFlags.NO_FLAGS,</span> <span class="pre">1:</span> <span class="pre">_engines._sound.SoundFlags.CHANGE_VOL,</span> <span class="pre">2:</span> <span class="pre">_engines._sound.SoundFlags.CHANGE_PITCH,</span> <span class="pre">4:</span> <span class="pre">_engines._sound.SoundFlags.STOP,</span> <span class="pre">8:</span> <span class="pre">_engines._sound.SoundFlags.SPAWNING,</span> <span class="pre">16:</span> <span class="pre">_engines._sound.SoundFlags.DELAY,</span> <span class="pre">32:</span> <span class="pre">_engines._sound.SoundFlags.STOP_LOOPING,</span> <span class="pre">64:</span> <span class="pre">_engines._sound.SoundFlags.SPEAKER,</span> <span class="pre">128:</span> <span class="pre">_engines._sound.SoundFlags.SHOULD_PAUSE,</span> <span class="pre">256:</span> <span class="pre">_engines._sound.SoundFlags.IGNORE_PHONEMES,</span> <span class="pre">512:</span> <span class="pre">_engines._sound.SoundFlags.IGNORE_NAME}</span></em><a class="headerlink" href="#engines.sound.SoundFlags.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.sound.StreamSound">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.sound.</span></span><span class="sig-name descname"><span class="pre">StreamSound</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">volume</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">attenuation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Attenuation.NONE</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">channel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_engines._sound.Channel.AUTO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flags</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_engines._sound.SoundFlags.NO_FLAGS</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pitch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_engines._sound.Pitch.NORMAL</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Vector(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">direction</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Vector(0.0,</span> <span class="pre">0.0,</span> <span class="pre">0.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">origins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_positions</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sound_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">speaker_entity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">download</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/engines/sound.html#StreamSound"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#engines.sound.StreamSound" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseSound</span></code></p>
+<p>Class used to interact with streamed sounds.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This class is a recommended choice on some engines (e.g. CS:GO),
+however, it’s unable to play <a href="#id1"><span class="problematic" id="id2">*</span></a>.wav-files.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>On some engines (e.g. CS:GO) files that are located in sound/music/
+directory are already streamed, so simple Sound class can be used
+instead.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.sound.StreamSound.precache">
+<span class="sig-name descname"><span class="pre">precache</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/engines/sound.html#StreamSound.precache"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#engines.sound.StreamSound.precache" title="Link to this definition">¶</a></dt>
+<dd><p>Precache the sample.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.sound.StreamSound.is_precached">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_precached</span></span><a class="headerlink" href="#engines.sound.StreamSound.is_precached" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether or not the sample is precached.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">engines.sound module</a><ul>
+<li><a class="reference internal" href="#engines.sound.Attenuation"><code class="docutils literal notranslate"><span class="pre">Attenuation</span></code></a><ul>
+<li><a class="reference internal" href="#engines.sound.Attenuation.GUNFIRE"><code class="docutils literal notranslate"><span class="pre">Attenuation.GUNFIRE</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Attenuation.IDLE"><code class="docutils literal notranslate"><span class="pre">Attenuation.IDLE</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Attenuation.MAXIMUM"><code class="docutils literal notranslate"><span class="pre">Attenuation.MAXIMUM</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Attenuation.NONE"><code class="docutils literal notranslate"><span class="pre">Attenuation.NONE</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Attenuation.NORMAL"><code class="docutils literal notranslate"><span class="pre">Attenuation.NORMAL</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Attenuation.RICOCHET"><code class="docutils literal notranslate"><span class="pre">Attenuation.RICOCHET</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Attenuation.STATIC"><code class="docutils literal notranslate"><span class="pre">Attenuation.STATIC</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.sound.Channel"><code class="docutils literal notranslate"><span class="pre">Channel</span></code></a><ul>
+<li><a class="reference internal" href="#engines.sound.Channel.AUTO"><code class="docutils literal notranslate"><span class="pre">Channel.AUTO</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Channel.BODY"><code class="docutils literal notranslate"><span class="pre">Channel.BODY</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Channel.ITEM"><code class="docutils literal notranslate"><span class="pre">Channel.ITEM</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Channel.REPLACE"><code class="docutils literal notranslate"><span class="pre">Channel.REPLACE</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Channel.STATIC"><code class="docutils literal notranslate"><span class="pre">Channel.STATIC</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Channel.STREAM"><code class="docutils literal notranslate"><span class="pre">Channel.STREAM</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Channel.USER_BASE"><code class="docutils literal notranslate"><span class="pre">Channel.USER_BASE</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Channel.VOICE"><code class="docutils literal notranslate"><span class="pre">Channel.VOICE</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Channel.VOICE_BASE"><code class="docutils literal notranslate"><span class="pre">Channel.VOICE_BASE</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Channel.WEAPON"><code class="docutils literal notranslate"><span class="pre">Channel.WEAPON</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Channel.names"><code class="docutils literal notranslate"><span class="pre">Channel.names</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Channel.values"><code class="docutils literal notranslate"><span class="pre">Channel.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.sound.Pitch"><code class="docutils literal notranslate"><span class="pre">Pitch</span></code></a><ul>
+<li><a class="reference internal" href="#engines.sound.Pitch.HIGH"><code class="docutils literal notranslate"><span class="pre">Pitch.HIGH</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Pitch.LOW"><code class="docutils literal notranslate"><span class="pre">Pitch.LOW</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Pitch.NORMAL"><code class="docutils literal notranslate"><span class="pre">Pitch.NORMAL</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Pitch.names"><code class="docutils literal notranslate"><span class="pre">Pitch.names</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Pitch.values"><code class="docutils literal notranslate"><span class="pre">Pitch.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.sound.Sound"><code class="docutils literal notranslate"><span class="pre">Sound</span></code></a><ul>
+<li><a class="reference internal" href="#engines.sound.Sound.precache"><code class="docutils literal notranslate"><span class="pre">Sound.precache()</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.Sound.is_precached"><code class="docutils literal notranslate"><span class="pre">Sound.is_precached</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.sound.SoundFlags"><code class="docutils literal notranslate"><span class="pre">SoundFlags</span></code></a><ul>
+<li><a class="reference internal" href="#engines.sound.SoundFlags.CHANGE_PITCH"><code class="docutils literal notranslate"><span class="pre">SoundFlags.CHANGE_PITCH</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.SoundFlags.CHANGE_VOL"><code class="docutils literal notranslate"><span class="pre">SoundFlags.CHANGE_VOL</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.SoundFlags.DELAY"><code class="docutils literal notranslate"><span class="pre">SoundFlags.DELAY</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.SoundFlags.IGNORE_NAME"><code class="docutils literal notranslate"><span class="pre">SoundFlags.IGNORE_NAME</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.SoundFlags.IGNORE_PHONEMES"><code class="docutils literal notranslate"><span class="pre">SoundFlags.IGNORE_PHONEMES</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.SoundFlags.NO_FLAGS"><code class="docutils literal notranslate"><span class="pre">SoundFlags.NO_FLAGS</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.SoundFlags.SHOULD_PAUSE"><code class="docutils literal notranslate"><span class="pre">SoundFlags.SHOULD_PAUSE</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.SoundFlags.SPAWNING"><code class="docutils literal notranslate"><span class="pre">SoundFlags.SPAWNING</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.SoundFlags.SPEAKER"><code class="docutils literal notranslate"><span class="pre">SoundFlags.SPEAKER</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.SoundFlags.STOP"><code class="docutils literal notranslate"><span class="pre">SoundFlags.STOP</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.SoundFlags.STOP_LOOPING"><code class="docutils literal notranslate"><span class="pre">SoundFlags.STOP_LOOPING</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.SoundFlags.names"><code class="docutils literal notranslate"><span class="pre">SoundFlags.names</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.SoundFlags.values"><code class="docutils literal notranslate"><span class="pre">SoundFlags.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.sound.StreamSound"><code class="docutils literal notranslate"><span class="pre">StreamSound</span></code></a><ul>
+<li><a class="reference internal" href="#engines.sound.StreamSound.precache"><code class="docutils literal notranslate"><span class="pre">StreamSound.precache()</span></code></a></li>
+<li><a class="reference internal" href="#engines.sound.StreamSound.is_precached"><code class="docutils literal notranslate"><span class="pre">StreamSound.is_precached</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/engines.sound.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">engines.sound module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

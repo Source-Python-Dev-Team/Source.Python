@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>players.engines.orangebox.cstrike &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../orangebox.html" accesskey="U">players.engines.orangebox</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">players.engines.orangebox.cstrike</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for players.engines.orangebox.cstrike</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../players/engines/orangebox/cstrike.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides CS:S specific Player based functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Engines</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">engine_server</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEntity</span>
+<span class="c1">#   Filters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">EntityIter</span>
+<span class="c1">#   Memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_virtual_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">PreHook</span>
+<span class="c1">#   Players</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span> <span class="k">as</span> <span class="n">_Player</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">LifeState</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="Player">
+<a class="viewcode-back" href="../../../../developing/modules/players.entity.html#players.engines.orangebox.cstrike.Player">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Player</span><span class="p">(</span><span class="n">_Player</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to interact directly with players.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Instances of this class will be cached by default</span>
+    <span class="n">caching</span> <span class="o">=</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="Player.has_c4">
+<a class="viewcode-back" href="../../../../developing/modules/players.entity.html#players.engines.orangebox.cstrike.Player.has_c4">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">has_c4</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether or not the player is carrying C4.&quot;&quot;&quot;</span>
+        <span class="c1"># Loop through all c4 entities on the server</span>
+        <span class="k">for</span> <span class="n">weapon</span> <span class="ow">in</span> <span class="n">EntityIter</span><span class="p">(</span><span class="s1">&#39;weapon_c4&#39;</span><span class="p">):</span>
+
+            <span class="c1"># Is the entity&#39;s &quot;owner&quot; the player?</span>
+            <span class="k">if</span> <span class="n">weapon</span><span class="o">.</span><span class="n">owner_handle</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">inthandle</span><span class="p">:</span>
+
+                <span class="c1"># Return True</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="c1"># If no c4 is owned by the player, return False</span>
+        <span class="k">return</span> <span class="kc">False</span></div>
+
+
+<div class="viewcode-block" id="Player.spawn">
+<a class="viewcode-back" href="../../../../developing/modules/players.entity.html#players.engines.orangebox.cstrike.Player.spawn">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">spawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Spawn the player.</span>
+
+<span class="sd">        :param bool force: Whether or not the spawn should be forced.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Is the player spawnable?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">force</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">team</span> <span class="o">&lt;=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">dead</span><span class="p">):</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Spawn the player...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">player_state</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">life_state</span> <span class="o">=</span> <span class="n">LifeState</span><span class="o">.</span><span class="n">ALIVE</span>
+        <span class="n">BaseEntity</span><span class="o">.</span><span class="n">spawn</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CALLBACKS</span>
+<span class="c1"># =============================================================================</span>
+<span class="nd">@PreHook</span><span class="p">(</span><span class="n">get_virtual_function</span><span class="p">(</span><span class="n">engine_server</span><span class="p">,</span> <span class="s1">&#39;ClientCommand&#39;</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_pre_client_command</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Block name changes started by the server.</span>
+
+<span class="sd">    Pre-hook on IVEngineServer::ClientCommand to block the name changes.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;name &quot;</span><span class="si">%s</span><span class="s1">&quot;&#39;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../../index.html">
+              <img class="logo" src="../../../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../orangebox.html" >players.engines.orangebox</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">players.engines.orangebox.cstrike</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

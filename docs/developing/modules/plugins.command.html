@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>plugins.command module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins.command module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-plugins.command">
+<span id="plugins-command-module"></span><h1>plugins.command module<a class="headerlink" href="#module-plugins.command" title="Link to this heading">¶</a></h1>
+<p>Provides a way to utilize sub-commands for a server command.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="plugins.command.SubCommandManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">plugins.command.</span></span><span class="sig-name descname"><span class="pre">SubCommandManager</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/command.html#SubCommandManager"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.command.SubCommandManager" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#core.AutoUnload" title="core.AutoUnload"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoUnload</span></code></a>, <a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a></p>
+<p>Class used for executing sub-commands for the given console command.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.command.SubCommandManager.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">manager</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">command</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">logger</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'__sphinx_mock__':</span> <span class="pre">{}}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">translations</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">{'Already</span> <span class="pre">Loaded':</span> <span class="pre">{'de':</span> <span class="pre">&quot;Das</span> <span class="pre">Plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">konnte</span> <span class="pre">nicht</span> <span class="pre">geladen</span> <span class="pre">werden,</span> <span class="pre">da</span> <span class="pre">es</span> <span class="pre">bereits</span> <span class="pre">geladen</span> <span class="pre">ist.&quot;,</span> <span class="pre">'en':</span> <span class="pre">&quot;Unable</span> <span class="pre">to</span> <span class="pre">load</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">as</span> <span class="pre">it</span> <span class="pre">is</span> <span class="pre">already</span> <span class="pre">loaded.&quot;,</span> <span class="pre">'es':</span> <span class="pre">&quot;No</span> <span class="pre">se</span> <span class="pre">pudo</span> <span class="pre">cargar</span> <span class="pre">el</span> <span class="pre">plugin</span> <span class="pre">'{plugin}',</span> <span class="pre">ya</span> <span class="pre">está</span> <span class="pre">cargado.&quot;,</span> <span class="pre">'fr':</span> <span class="pre">&quot;Impossible</span> <span class="pre">de</span> <span class="pre">charger</span> <span class="pre">le</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">puisqu'il</span> <span class="pre">est</span> <span class="pre">déjà</span> <span class="pre">chargé.&quot;,</span> <span class="pre">'nl':</span> <span class="pre">&quot;Kan</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">niet</span> <span class="pre">laden</span> <span class="pre">omdat</span> <span class="pre">het</span> <span class="pre">is</span> <span class="pre">al</span> <span class="pre">geladen</span> <span class="pre">is.&quot;,</span> <span class="pre">'ru':</span> <span class="pre">&quot;Невозможно</span> <span class="pre">загрузить</span> <span class="pre">плагин</span> <span class="pre">'{plugin}',</span> <span class="pre">так</span> <span class="pre">как</span> <span class="pre">он</span> <span class="pre">уже</span> <span class="pre">загружен.&quot;,</span> <span class="pre">'zh-cn':</span> <span class="pre">&quot;无法加载插件</span> <span class="pre">'{plugin}'</span> <span class="pre">因为它已经加载过了.&quot;},</span> <span class="pre">'Built-in':</span> <span class="pre">{'de':</span> <span class="pre">&quot;Plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">konnte</span> <span class="pre">nicht</span> <span class="pre">geladen</span> <span class="pre">werden.</span> <span class="pre">Das</span> <span class="pre">Plugin</span> <span class="pre">darf</span> <span class="pre">nicht</span> <span class="pre">nach</span> <span class="pre">einem</span> <span class="pre">built-in</span> <span class="pre">Modul</span> <span class="pre">benannt</span> <span class="pre">sein.&quot;,</span> <span class="pre">'en':</span> <span class="pre">&quot;Cannot</span> <span class="pre">load</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'.</span> <span class="pre">Plugin</span> <span class="pre">name</span> <span class="pre">cannot</span> <span class="pre">be</span> <span class="pre">name</span> <span class="pre">of</span> <span class="pre">a</span> <span class="pre">built-in</span> <span class="pre">module&quot;,</span> <span class="pre">'es':</span> <span class="pre">&quot;No</span> <span class="pre">se</span> <span class="pre">pudo</span> <span class="pre">cargar</span> <span class="pre">el</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'.</span> <span class="pre">El</span> <span class="pre">nombre</span> <span class="pre">del</span> <span class="pre">plugin</span> <span class="pre">debe</span> <span class="pre">ser</span> <span class="pre">un</span> <span class="pre">módulo</span> <span class="pre">incorporado.&quot;,</span> <span class="pre">'fr':</span> <span class="pre">&quot;Impossible</span> <span class="pre">de</span> <span class="pre">charger</span> <span class="pre">le</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">puisqu'un</span> <span class="pre">module</span> <span class="pre">porte</span> <span class="pre">déjà</span> <span class="pre">ce</span> <span class="pre">nom.&quot;,</span> <span class="pre">'nl':</span> <span class="pre">&quot;Kan</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">niet</span> <span class="pre">laden.</span> <span class="pre">Plugin</span> <span class="pre">naam</span> <span class="pre">kan</span> <span class="pre">niet</span> <span class="pre">dezelfde</span> <span class="pre">naam</span> <span class="pre">als</span> <span class="pre">een</span> <span class="pre">build-in</span> <span class="pre">mudule</span> <span class="pre">hebben.&quot;,</span> <span class="pre">'ru':</span> <span class="pre">&quot;Невозможно</span> <span class="pre">загрузить</span> <span class="pre">плагин</span> <span class="pre">'{plugin}'.</span> <span class="pre">Название</span> <span class="pre">модуля</span> <span class="pre">не</span> <span class="pre">может</span> <span class="pre">быть</span> <span class="pre">названием</span> <span class="pre">внутреннего</span> <span class="pre">модуля.&quot;,</span> <span class="pre">'zh-cn':</span> <span class="pre">&quot;无法加载插件</span> <span class="pre">'{plugin}'.</span> <span class="pre">插件名不能是内置模块的名称&quot;},</span> <span class="pre">'Credits':</span> <span class="pre">{'de':</span> <span class="pre">'Credits:',</span> <span class="pre">'en':</span> <span class="pre">'Credits:',</span> <span class="pre">'es':</span> <span class="pre">'Créditos:',</span> <span class="pre">'fr':</span> <span class="pre">'Crédits:',</span> <span class="pre">'nl':</span> <span class="pre">'Kredieten:',</span> <span class="pre">'ru':</span> <span class="pre">'Авторы:',</span> <span class="pre">'zh-cn':</span> <span class="pre">'学分:'},</span> <span class="pre">'Help':</span> <span class="pre">{'de':</span> <span class="pre">'Hilfe:\nVerwendung:</span> <span class="pre">',</span> <span class="pre">'en':</span> <span class="pre">'Help:\nusage:</span> <span class="pre">',</span> <span class="pre">'es':</span> <span class="pre">'Ayuda:\nuso:</span> <span class="pre">',</span> <span class="pre">'fr':</span> <span class="pre">'Aide:\nUtilisation:</span> <span class="pre">',</span> <span class="pre">'nl':</span> <span class="pre">'Help:\ngebruik:</span> <span class="pre">',</span> <span class="pre">'ru':</span> <span class="pre">'Помощь:\nИспользование:</span> <span class="pre">',</span> <span class="pre">'zh-cn':</span> <span class="pre">'帮助:\n用法:</span> <span class="pre">'},</span> <span class="pre">'Invalid</span> <span class="pre">Arguments':</span> <span class="pre">{'de':</span> <span class="pre">&quot;Ungültige</span> <span class="pre">Argumente</span> <span class="pre">für</span> <span class="pre">den</span> <span class="pre">Unterbefehl</span> <span class="pre">'{subcommand}':</span> <span class="pre">{command}</span> <span class="pre">{subcommand}</span> <span class="pre">&quot;,</span> <span class="pre">'en':</span> <span class="pre">&quot;Invalid</span> <span class="pre">arguments</span> <span class="pre">for</span> <span class="pre">sub-command</span> <span class="pre">'{subcommand}':</span> <span class="pre">{command}</span> <span class="pre">{subcommand}</span> <span class="pre">&quot;,</span> <span class="pre">'es':</span> <span class="pre">&quot;Argumentos</span> <span class="pre">inválidos</span> <span class="pre">para</span> <span class="pre">el</span> <span class="pre">sub-comando</span> <span class="pre">'{subcommand}':</span> <span class="pre">{command}</span> <span class="pre">{subcommand}</span> <span class="pre">&quot;,</span> <span class="pre">'fr':</span> <span class="pre">&quot;Les</span> <span class="pre">arguments</span> <span class="pre">fournis</span> <span class="pre">pour</span> <span class="pre">la</span> <span class="pre">sous-commande</span> <span class="pre">'{subcommand}'</span> <span class="pre">ne</span> <span class="pre">sont</span> <span class="pre">pas</span> <span class="pre">valides:</span> <span class="pre">{command}</span> <span class="pre">{subcommand}&quot;,</span> <span class="pre">'nl':</span> <span class="pre">&quot;Ongeldige</span> <span class="pre">argumenten</span> <span class="pre">voor</span> <span class="pre">sub-commando</span> <span class="pre">'{subcommand}':</span> <span class="pre">{command}</span> <span class="pre">{subcommand}</span> <span class="pre">&quot;,</span> <span class="pre">'ru':</span> <span class="pre">&quot;Некорректные</span> <span class="pre">аргументы</span> <span class="pre">подкоманды</span> <span class="pre">'{subcommand}':</span> <span class="pre">{command}</span> <span class="pre">{subcommand}</span> <span class="pre">&quot;,</span> <span class="pre">'zh-cn':</span> <span class="pre">&quot;子命令的参数无效</span> <span class="pre">'{subcommand}':</span> <span class="pre">{command}</span> <span class="pre">{subcommand}</span> <span class="pre">&quot;},</span> <span class="pre">'Invalid</span> <span class="pre">Command':</span> <span class="pre">{'de':</span> <span class="pre">&quot;'{subcommand}'</span> <span class="pre">ist</span> <span class="pre">kein</span> <span class="pre">gültiger</span> <span class="pre">Unterbefehl.&quot;,</span> <span class="pre">'en':</span> <span class="pre">&quot;'{subcommand}'</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">a</span> <span class="pre">valid</span> <span class="pre">sub-command.&quot;,</span> <span class="pre">'es':</span> <span class="pre">&quot;'{subcommand}'</span> <span class="pre">no</span> <span class="pre">es</span> <span class="pre">un</span> <span class="pre">sub-comando</span> <span class="pre">válido.&quot;,</span> <span class="pre">'fr':</span> <span class="pre">&quot;'{subcommand}'</span> <span class="pre">n'est</span> <span class="pre">pas</span> <span class="pre">une</span> <span class="pre">sous-commande</span> <span class="pre">valide.&quot;,</span> <span class="pre">'nl':</span> <span class="pre">&quot;'{subcommand}'</span> <span class="pre">is</span> <span class="pre">geen</span> <span class="pre">geldig</span> <span class="pre">sub-commando.&quot;,</span> <span class="pre">'ru':</span> <span class="pre">&quot;'{subcommand}'</span> <span class="pre">не</span> <span class="pre">является</span> <span class="pre">корректной</span> <span class="pre">подкомандой&quot;,</span> <span class="pre">'zh-cn':</span> <span class="pre">&quot;'{subcommand}'</span> <span class="pre">不是有效的子命令.&quot;},</span> <span class="pre">'Invalid</span> <span class="pre">Name':</span> <span class="pre">{'de':</span> <span class="pre">&quot;Der</span> <span class="pre">Pluginname</span> <span class="pre">'{plugin}'</span> <span class="pre">ist</span> <span class="pre">ungültig.</span> <span class="pre">Pluginnamen</span> <span class="pre">müssen</span> <span class="pre">alphanumerisch</span> <span class="pre">sein.&quot;,</span> <span class="pre">'en':</span> <span class="pre">&quot;Given</span> <span class="pre">plugin</span> <span class="pre">name</span> <span class="pre">'{plugin}'</span> <span class="pre">is</span> <span class="pre">invalid.</span> <span class="pre">Plugin</span> <span class="pre">names</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">alphanumeric.&quot;,</span> <span class="pre">'es':</span> <span class="pre">&quot;El</span> <span class="pre">nombre</span> <span class="pre">del</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">es</span> <span class="pre">inválido.</span> <span class="pre">El</span> <span class="pre">nombre</span> <span class="pre">del</span> <span class="pre">plugin</span> <span class="pre">debe</span> <span class="pre">ser</span> <span class="pre">alphanumérico.&quot;,</span> <span class="pre">'fr':</span> <span class="pre">&quot;Le</span> <span class="pre">nom</span> <span class="pre">du</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">n'est</span> <span class="pre">pas</span> <span class="pre">valide</span> <span class="pre">puisqu'il</span> <span class="pre">n'est</span> <span class="pre">pas</span> <span class="pre">alphanumérique.&quot;,</span> <span class="pre">'ru':</span> <span class="pre">&quot;Название</span> <span class="pre">плагина</span> <span class="pre">'{plugin}'</span> <span class="pre">некорректно.</span> <span class="pre">Название</span> <span class="pre">плагина</span> <span class="pre">должно</span> <span class="pre">состоять</span> <span class="pre">только</span> <span class="pre">из</span> <span class="pre">букв</span> <span class="pre">и</span> <span class="pre">цифр.&quot;,</span> <span class="pre">'zh-cn':</span> <span class="pre">&quot;给定的插件名称'{plugin}'</span> <span class="pre">是无效的.</span> <span class="pre">插件名称必须是字母数字.&quot;},</span> <span class="pre">'Loading':</span> <span class="pre">{'de':</span> <span class="pre">&quot;Lade</span> <span class="pre">Plugin</span> <span class="pre">'{plugin}'...&quot;,</span> <span class="pre">'en':</span> <span class="pre">&quot;Loading</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'...&quot;,</span> <span class="pre">'es':</span> <span class="pre">&quot;Cargando</span> <span class="pre">el</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'...&quot;,</span> <span class="pre">'fr':</span> <span class="pre">&quot;Chargement</span> <span class="pre">du</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'...&quot;,</span> <span class="pre">'nl':</span> <span class="pre">&quot;Plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">aan</span> <span class="pre">het</span> <span class="pre">laden...&quot;,</span> <span class="pre">'ru':</span> <span class="pre">&quot;Загрузка</span> <span class="pre">плагина</span> <span class="pre">'{plugin}'...&quot;,</span> <span class="pre">'zh-cn':</span> <span class="pre">&quot;加载插件</span> <span class="pre">'{plugin}'...&quot;},</span> <span class="pre">'No</span> <span class="pre">Command':</span> <span class="pre">{'de':</span> <span class="pre">&quot;Der</span> <span class="pre">Befehl</span> <span class="pre">'sp'</span> <span class="pre">muss</span> <span class="pre">von</span> <span class="pre">einem</span> <span class="pre">Unterbefehl</span> <span class="pre">gefolgt</span> <span class="pre">werden.&quot;,</span> <span class="pre">'en':</span> <span class="pre">&quot;The</span> <span class="pre">'sp'</span> <span class="pre">command</span> <span class="pre">must</span> <span class="pre">be</span> <span class="pre">followed</span> <span class="pre">by</span> <span class="pre">a</span> <span class="pre">sub-command.&quot;,</span> <span class="pre">'es':</span> <span class="pre">&quot;El</span> <span class="pre">comando</span> <span class="pre">'sp'</span> <span class="pre">debe</span> <span class="pre">ser</span> <span class="pre">seguido</span> <span class="pre">por</span> <span class="pre">un</span> <span class="pre">sub-comando.&quot;,</span> <span class="pre">'fr':</span> <span class="pre">&quot;Vous</span> <span class="pre">devez</span> <span class="pre">fournir</span> <span class="pre">une</span> <span class="pre">sous-commande</span> <span class="pre">lors</span> <span class="pre">de</span> <span class="pre">l'utilisation</span> <span class="pre">de</span> <span class="pre">la</span> <span class="pre">commande</span> <span class="pre">'sp'.&quot;,</span> <span class="pre">'nl':</span> <span class="pre">&quot;Het</span> <span class="pre">'sp'</span> <span class="pre">commando</span> <span class="pre">moet</span> <span class="pre">opgevolgd</span> <span class="pre">worden</span> <span class="pre">door</span> <span class="pre">een</span> <span class="pre">sub-commando.&quot;,</span> <span class="pre">'ru':</span> <span class="pre">&quot;Команда</span> <span class="pre">'sp'</span> <span class="pre">требует</span> <span class="pre">после</span> <span class="pre">себя</span> <span class="pre">подкоманду.&quot;,</span> <span class="pre">'zh-cn':</span> <span class="pre">&quot;'sp'</span> <span class="pre">命令后面必须有一个子命令.&quot;},</span> <span class="pre">'No</span> <span class="pre">Module':</span> <span class="pre">{'de':</span> <span class="pre">&quot;Plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">konnte</span> <span class="pre">nicht</span> <span class="pre">geladen</span> <span class="pre">werden.</span> <span class="pre">Die</span> <span class="pre">Datei</span> <span class="pre">../{file}</span> <span class="pre">existiert</span> <span class="pre">nicht.&quot;,</span> <span class="pre">'en':</span> <span class="pre">&quot;Unable</span> <span class="pre">to</span> <span class="pre">load</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'.</span> <span class="pre">Missing</span> <span class="pre">file</span> <span class="pre">../{file}&quot;,</span> <span class="pre">'es':</span> <span class="pre">&quot;No</span> <span class="pre">se</span> <span class="pre">pudo</span> <span class="pre">cargar</span> <span class="pre">el</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'.</span> <span class="pre">Archivo</span> <span class="pre">no</span> <span class="pre">encontrado</span> <span class="pre">../{file}&quot;,</span> <span class="pre">'fr':</span> <span class="pre">&quot;Impossible</span> <span class="pre">de</span> <span class="pre">charger</span> <span class="pre">le</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">puisque</span> <span class="pre">le</span> <span class="pre">fichier</span> <span class="pre">'../{file}'</span> <span class="pre">n'existe</span> <span class="pre">pas.&quot;,</span> <span class="pre">'nl':</span> <span class="pre">&quot;Kan</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">niet</span> <span class="pre">laden.</span> <span class="pre">Bestand</span> <span class="pre">../{file}</span> <span class="pre">ontbreekt.&quot;,</span> <span class="pre">'ru':</span> <span class="pre">&quot;Невозможно</span> <span class="pre">загрузить</span> <span class="pre">плагин</span> <span class="pre">'{plugin}'.</span> <span class="pre">Отсутствует</span> <span class="pre">файл</span> <span class="pre">../{file}&quot;,</span> <span class="pre">'zh-cn':</span> <span class="pre">&quot;无法加载插件</span> <span class="pre">'{plugin}'.</span> <span class="pre">丢失文件</span> <span class="pre">../{file}&quot;},</span> <span class="pre">'Not</span> <span class="pre">Loaded':</span> <span class="pre">{'de':</span> <span class="pre">&quot;Das</span> <span class="pre">Plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">konnte</span> <span class="pre">nicht</span> <span class="pre">entladen</span> <span class="pre">werden,</span> <span class="pre">da</span> <span class="pre">es</span> <span class="pre">momentan</span> <span class="pre">nicht</span> <span class="pre">geladen</span> <span class="pre">ist.&quot;,</span> <span class="pre">'en':</span> <span class="pre">&quot;Unable</span> <span class="pre">to</span> <span class="pre">unload</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">as</span> <span class="pre">it</span> <span class="pre">is</span> <span class="pre">not</span> <span class="pre">currently</span> <span class="pre">loaded.&quot;,</span> <span class="pre">'es':</span> <span class="pre">&quot;No</span> <span class="pre">se</span> <span class="pre">pudo</span> <span class="pre">descargar</span> <span class="pre">el</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">porque</span> <span class="pre">no</span> <span class="pre">está</span> <span class="pre">cargado</span> <span class="pre">actualmente.&quot;,</span> <span class="pre">'fr':</span> <span class="pre">&quot;Impossible</span> <span class="pre">de</span> <span class="pre">décharger</span> <span class="pre">le</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">puisqu'il</span> <span class="pre">n'est</span> <span class="pre">pas</span> <span class="pre">présentement</span> <span class="pre">chargé.&quot;,</span> <span class="pre">'nl':</span> <span class="pre">&quot;Kan</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">niet</span> <span class="pre">uitladen</span> <span class="pre">omdat</span> <span class="pre">het</span> <span class="pre">momenteel</span> <span class="pre">niet</span> <span class="pre">geladen</span> <span class="pre">is.&quot;,</span> <span class="pre">'ru':</span> <span class="pre">&quot;Невозможно</span> <span class="pre">отключить</span> <span class="pre">плагин</span> <span class="pre">'{plugin}',</span> <span class="pre">так</span> <span class="pre">как</span> <span class="pre">он</span> <span class="pre">не</span> <span class="pre">был</span> <span class="pre">загружен.&quot;,</span> <span class="pre">'zh-cn':</span> <span class="pre">&quot;无法卸载插件</span> <span class="pre">'{plugin}'</span> <span class="pre">因为它当前没有被加载.&quot;},</span> <span class="pre">'Plugins':</span> <span class="pre">{'de':</span> <span class="pre">'Geladene</span> <span class="pre">Plugins:',</span> <span class="pre">'en':</span> <span class="pre">'Loaded</span> <span class="pre">Plugins:',</span> <span class="pre">'es':</span> <span class="pre">'Plugins</span> <span class="pre">cargados:',</span> <span class="pre">'fr':</span> <span class="pre">'Plugins</span> <span class="pre">présentement</span> <span class="pre">chargés:',</span> <span class="pre">'nl':</span> <span class="pre">'Ingeladen</span> <span class="pre">plugins:',</span> <span class="pre">'ru':</span> <span class="pre">'Загруженные</span> <span class="pre">плагины:',</span> <span class="pre">'zh-cn':</span> <span class="pre">'加载插件:'},</span> <span class="pre">'Successful</span> <span class="pre">Load':</span> <span class="pre">{'de':</span> <span class="pre">&quot;Das</span> <span class="pre">Plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">wurde</span> <span class="pre">erfolgreich</span> <span class="pre">geladen.&quot;,</span> <span class="pre">'en':</span> <span class="pre">&quot;Successfully</span> <span class="pre">loaded</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'.&quot;,</span> <span class="pre">'es':</span> <span class="pre">&quot;El</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">cargado</span> <span class="pre">con</span> <span class="pre">éxito.&quot;,</span> <span class="pre">'fr':</span> <span class="pre">&quot;Le</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">a</span> <span class="pre">été</span> <span class="pre">chargé</span> <span class="pre">avec</span> <span class="pre">succès.&quot;,</span> <span class="pre">'nl':</span> <span class="pre">&quot;Plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">werd</span> <span class="pre">met</span> <span class="pre">success</span> <span class="pre">ingeladen.&quot;,</span> <span class="pre">'ru':</span> <span class="pre">&quot;Успешная</span> <span class="pre">загрузка</span> <span class="pre">плагина</span> <span class="pre">'{plugin}'.&quot;,</span> <span class="pre">'zh-cn':</span> <span class="pre">&quot;成功加载插件</span> <span class="pre">'{plugin}'.&quot;},</span> <span class="pre">'Successful</span> <span class="pre">Unload':</span> <span class="pre">{'de':</span> <span class="pre">&quot;Das</span> <span class="pre">Plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">wurde</span> <span class="pre">erfolgreich</span> <span class="pre">entladen.&quot;,</span> <span class="pre">'en':</span> <span class="pre">&quot;Successfully</span> <span class="pre">unloaded</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'.&quot;,</span> <span class="pre">'es':</span> <span class="pre">&quot;El</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">fue</span> <span class="pre">descargado</span> <span class="pre">con</span> <span class="pre">éxito.&quot;,</span> <span class="pre">'fr':</span> <span class="pre">&quot;Le</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">a</span> <span class="pre">été</span> <span class="pre">déchargé</span> <span class="pre">avec</span> <span class="pre">succès.&quot;,</span> <span class="pre">'nl':</span> <span class="pre">&quot;Plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">werd</span> <span class="pre">met</span> <span class="pre">success</span> <span class="pre">uitgeladen.&quot;,</span> <span class="pre">'ru':</span> <span class="pre">&quot;Успешное</span> <span class="pre">отключение</span> <span class="pre">плагина</span> <span class="pre">'{plugin}'.&quot;,</span> <span class="pre">'zh-cn':</span> <span class="pre">&quot;成功卸载插件</span> <span class="pre">'{plugin}'.&quot;},</span> <span class="pre">'Unable</span> <span class="pre">to</span> <span class="pre">Load':</span> <span class="pre">{'de':</span> <span class="pre">&quot;Das</span> <span class="pre">Plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">konnte</span> <span class="pre">nicht</span> <span class="pre">geladen</span> <span class="pre">werden.&quot;,</span> <span class="pre">'en':</span> <span class="pre">&quot;Plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">was</span> <span class="pre">unable</span> <span class="pre">to</span> <span class="pre">be</span> <span class="pre">loaded.&quot;,</span> <span class="pre">'es':</span> <span class="pre">&quot;No</span> <span class="pre">se</span> <span class="pre">pudo</span> <span class="pre">cargar</span> <span class="pre">el</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'.&quot;,</span> <span class="pre">'fr':</span> <span class="pre">&quot;Impossible</span> <span class="pre">de</span> <span class="pre">charger</span> <span class="pre">le</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'.&quot;,</span> <span class="pre">'nl':</span> <span class="pre">&quot;Kon</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">niet</span> <span class="pre">laden.&quot;,</span> <span class="pre">'ru':</span> <span class="pre">&quot;Плагин</span> <span class="pre">'{plugin}'</span> <span class="pre">не</span> <span class="pre">может</span> <span class="pre">быть</span> <span class="pre">загружен.&quot;,</span> <span class="pre">'zh-cn':</span> <span class="pre">&quot;插件</span> <span class="pre">'{plugin}'</span> <span class="pre">无法加载.&quot;},</span> <span class="pre">'Unloading':</span> <span class="pre">{'de':</span> <span class="pre">&quot;Entlade</span> <span class="pre">Plugin</span> <span class="pre">'{plugin}'...&quot;,</span> <span class="pre">'en':</span> <span class="pre">&quot;Unloading</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'...&quot;,</span> <span class="pre">'es':</span> <span class="pre">&quot;Descargando</span> <span class="pre">el</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'...&quot;,</span> <span class="pre">'fr':</span> <span class="pre">&quot;Déchargement</span> <span class="pre">du</span> <span class="pre">plugin</span> <span class="pre">'{plugin}'...&quot;,</span> <span class="pre">'nl':</span> <span class="pre">&quot;Plugin</span> <span class="pre">'{plugin}'</span> <span class="pre">aan</span> <span class="pre">het</span> <span class="pre">uitladen...&quot;,</span> <span class="pre">'ru':</span> <span class="pre">&quot;Отключение</span> <span class="pre">плагина</span> <span class="pre">'{plugin}'...&quot;,</span> <span class="pre">'zh-cn':</span> <span class="pre">&quot;卸载插件</span> <span class="pre">'{plugin}'...&quot;}}</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/command.html#SubCommandManager.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.command.SubCommandManager.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initializes the sub-command manager.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>manager</strong> (<a class="reference internal" href="plugins.manager.html#plugins.manager.PluginManager" title="plugins.manager.PluginManager"><em>PluginManager</em></a>) – A plugin manager.</p></li>
+<li><p><strong>command</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Command to register.</p></li>
+<li><p><strong>prefix</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Prefix used for printing messages to the console.</p></li>
+<li><p><strong>logger</strong> (<em>Logger</em>) – A logger that is used for printing messages to the console.</p></li>
+<li><p><strong>translations</strong> (<a class="reference internal" href="translations.strings.html#translations.strings.LangStrings" title="translations.strings.LangStrings"><em>LangStrings</em></a>) – <p>Translations used for printing messages to the console. The
+translations have to define the following messages:</p>
+<ul>
+<li><p>Loading</p></li>
+<li><p>Invalid Name</p></li>
+<li><p>Already Loaded</p></li>
+<li><p>No Module</p></li>
+<li><p>Built-in</p></li>
+<li><p>Unable to Load</p></li>
+<li><p>Successful Load</p></li>
+<li><p>Unloading</p></li>
+<li><p>Not Loaded</p></li>
+<li><p>Successful Unload</p></li>
+<li><p>Plugins</p></li>
+</ul>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.command.SubCommandManager.client_sub_command">
+<span class="sig-name descname"><span class="pre">client_sub_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/command.html#SubCommandManager.client_sub_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.command.SubCommandManager.client_sub_command" title="Link to this definition">¶</a></dt>
+<dd><p>Add a client sub-command.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="commands.typed.html#commands.typed.TypedClientCommand" title="commands.typed.TypedClientCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">commands.typed.TypedClientCommand</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.command.SubCommandManager.load_plugin">
+<span class="sig-name descname"><span class="pre">load_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/command.html#SubCommandManager.load_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.command.SubCommandManager.load_plugin" title="Link to this definition">¶</a></dt>
+<dd><p>Load a plugin by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the plugin to load.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Return the loaded plugin. Return <code class="docutils literal notranslate"><span class="pre">None</span></code> on failure.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="plugins.instance.html#plugins.instance.Plugin" title="plugins.instance.Plugin">Plugin</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.command.SubCommandManager.log_message">
+<span class="sig-name descname"><span class="pre">log_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">message</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/command.html#SubCommandManager.log_message"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.command.SubCommandManager.log_message" title="Link to this definition">¶</a></dt>
+<dd><p>Log a message. The prefix will be added automatically.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>message</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Message to log.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.command.SubCommandManager.print_plugins">
+<span class="sig-name descname"><span class="pre">print_plugins</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/command.html#SubCommandManager.print_plugins"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.command.SubCommandManager.print_plugins" title="Link to this definition">¶</a></dt>
+<dd><p>List all currently loaded plugins.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.command.SubCommandManager.reload_plugin">
+<span class="sig-name descname"><span class="pre">reload_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/command.html#SubCommandManager.reload_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.command.SubCommandManager.reload_plugin" title="Link to this definition">¶</a></dt>
+<dd><p>Reload a plugin by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the plugin to reload.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Return the loaded plugin. Return <code class="docutils literal notranslate"><span class="pre">None</span></code> on failure.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="plugins.instance.html#plugins.instance.Plugin" title="plugins.instance.Plugin">Plugin</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.command.SubCommandManager.say_sub_command">
+<span class="sig-name descname"><span class="pre">say_sub_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permission</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/command.html#SubCommandManager.say_sub_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.command.SubCommandManager.say_sub_command" title="Link to this definition">¶</a></dt>
+<dd><p>Add a say sub-command.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="commands.typed.html#commands.typed.TypedSayCommand" title="commands.typed.TypedSayCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">commands.typed.TypedSayCommand</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.command.SubCommandManager.server_sub_command">
+<span class="sig-name descname"><span class="pre">server_sub_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">commands</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/command.html#SubCommandManager.server_sub_command"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.command.SubCommandManager.server_sub_command" title="Link to this definition">¶</a></dt>
+<dd><p>Add a server sub-command.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="commands.typed.html#commands.typed.TypedServerCommand" title="commands.typed.TypedServerCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">commands.typed.TypedServerCommand</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="plugins.command.SubCommandManager.unload_plugin">
+<span class="sig-name descname"><span class="pre">unload_plugin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">plugin_name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/plugins/command.html#SubCommandManager.unload_plugin"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#plugins.command.SubCommandManager.unload_plugin" title="Link to this definition">¶</a></dt>
+<dd><p>Unload a plugin by name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>plugin_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the plugin to unload.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.command.SubCommandManager.command">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">command</span></span><a class="headerlink" href="#plugins.command.SubCommandManager.command" title="Link to this definition">¶</a></dt>
+<dd><p>Return the server command registered to the class.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="plugins.command.SubCommandManager.prefix">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">prefix</span></span><a class="headerlink" href="#plugins.command.SubCommandManager.prefix" title="Link to this definition">¶</a></dt>
+<dd><p>Return the prefix to use in log messages.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">plugins.command module</a><ul>
+<li><a class="reference internal" href="#plugins.command.SubCommandManager"><code class="docutils literal notranslate"><span class="pre">SubCommandManager</span></code></a><ul>
+<li><a class="reference internal" href="#plugins.command.SubCommandManager.__init__"><code class="docutils literal notranslate"><span class="pre">SubCommandManager.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.command.SubCommandManager.client_sub_command"><code class="docutils literal notranslate"><span class="pre">SubCommandManager.client_sub_command()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.command.SubCommandManager.load_plugin"><code class="docutils literal notranslate"><span class="pre">SubCommandManager.load_plugin()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.command.SubCommandManager.log_message"><code class="docutils literal notranslate"><span class="pre">SubCommandManager.log_message()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.command.SubCommandManager.print_plugins"><code class="docutils literal notranslate"><span class="pre">SubCommandManager.print_plugins()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.command.SubCommandManager.reload_plugin"><code class="docutils literal notranslate"><span class="pre">SubCommandManager.reload_plugin()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.command.SubCommandManager.say_sub_command"><code class="docutils literal notranslate"><span class="pre">SubCommandManager.say_sub_command()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.command.SubCommandManager.server_sub_command"><code class="docutils literal notranslate"><span class="pre">SubCommandManager.server_sub_command()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.command.SubCommandManager.unload_plugin"><code class="docutils literal notranslate"><span class="pre">SubCommandManager.unload_plugin()</span></code></a></li>
+<li><a class="reference internal" href="#plugins.command.SubCommandManager.command"><code class="docutils literal notranslate"><span class="pre">SubCommandManager.command</span></code></a></li>
+<li><a class="reference internal" href="#plugins.command.SubCommandManager.prefix"><code class="docutils literal notranslate"><span class="pre">SubCommandManager.prefix</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/plugins.command.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins.command module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

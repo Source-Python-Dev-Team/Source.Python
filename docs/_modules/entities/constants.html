@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>entities.constants &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.constants</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for entities.constants</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../entities/constants.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides constant values that are entity based.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntEnum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntFlag</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FORWARD IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">BASEDAMAGE_NOT_SPECIFIED</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">INVALID_ENTITY_INDEX</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">INVALID_ENTITY_INTHANDLE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollisionGroup</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DAMAGE_NO</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DAMAGE_EVENTS_ONLY</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DAMAGE_YES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DAMAGE_AIM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_GENERIC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_CRUSH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_BULLET</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_SLASH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_BURN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_VEHICLE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_FALL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_BLAST</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_CLUB</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_SHOCK</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_SONIC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_ENERGYBEAM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_PREVENT_PHYSICS_FORCE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_NEVERGIB</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_ALWAYSGIB</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_DROWN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_PARALYZE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_NERVEGAS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_POISON</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_RADIATION</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_DROWNRECOVER</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_ACID</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_SLOWBURN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_REMOVENORAGDOLL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_PHYSGUN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_PLASMA</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_AIRBOAT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_DISSOLVE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_BLAST_SURFACE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_DIRECT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_BUCKSHOT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_LASTGENERICFLAG</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DMG_HEADSHOT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EF_BONEMERGE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EF_BRIGHTLIGHT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EF_DIMLIGHT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EF_NOINTERP</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EF_NOSHADOW</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EF_NODRAW</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EF_NORECEIVESHADOW</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EF_BONEMERGE_FASTCULL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EF_ITEM_BLINK</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EF_PARENT_ANIMATES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EF_MARKED_FOR_FAST_REFLECTION</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EF_NOSHADOWDEPTH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EF_NOFLASHLIGHT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_KILLME</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_DORMANT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_NOCLIP_ACTIVE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_SETTING_UP_BONES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_KEEP_ON_RECREATE_ENTITIES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_DIRTY_SHADOWUPDATE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_NOTIFY</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_FORCE_CHECK_TRANSMIT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_BOT_FROZEN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_SERVER_ONLY</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_NO_AUTO_EDICT_ATTACH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_DIRTY_ABSTRANSFORM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_DIRTY_ABSVELOCITY</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_DIRTY_ABSANGVELOCITY</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_DIRTY_SURROUNDING_COLLISION_BOUNDS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_DIRTY_SPATIAL_PARTITION</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_HAS_PLAYER_CHILD</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_IN_SKYBOX</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_USE_PARTITION_WHEN_NOT_SOLID</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_TOUCHING_FLUID</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_IS_BEING_LIFTED_BY_BARNACLE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_NO_ROTORWASH_PUSH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_NO_THINK_FUNCTION</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_NO_GAME_PHYSICS_SIMULATION</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_CHECK_UNTOUCH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_DONTBLOCKLOS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_DONTWALKON</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_NO_DISSOLVE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_NO_MEGAPHYSCANNON_RAGDOLL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_NO_WATER_VELOCITY_CHANGE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_NO_PHYSCANNON_INTERACTION</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">EFL_NO_DAMAGE_FORCES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ENTITY_DISSOLVE_NORMAL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ENTITY_DISSOLVE_ELECTRICAL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ENTITY_DISSOLVE_ELECTRICAL_LIGHT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">ENTITY_DISSOLVE_CORE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_FLY</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_SWIM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_CONVEYOR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_NPC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_GODMODE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_NOTARGET</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_AIMTARGET</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_PARTIALGROUND</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_STATICPROP</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_GRAPHED</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_GRENADE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_STEPMOVEMENT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_DONTTOUCH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_BASEVELOCITY</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_WORLDBRUSH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_OBJECT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_KILLME</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_ONFIRE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_DISSOLVING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_TRANSRAGDOLL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_UNBLOCKABLE_BY_PLAYER</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">MoveCollide</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">MoveType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">RenderEffects</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">RenderMode</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolidFlags</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">SolidType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">WORLD_ENTITY_INDEX</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;BASEDAMAGE_NOT_SPECIFIED&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;CollisionGroup&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;DamageTypes&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;DissolveType&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;EntityEffects&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;EntityFlags&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;EntityStates&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;INVALID_ENTITY_INDEX&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;INVALID_ENTITY_INTHANDLE&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;MoveCollide&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;MoveType&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;RenderEffects&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;RenderMode&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SolidFlags&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SolidType&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TakeDamage&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;WORLD_ENTITY_INDEX&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ENUMERATORS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="DamageTypes">
+<a class="viewcode-back" href="../../developing/modules/entities.constants.html#entities.constants.DamageTypes">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DamageTypes</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Damage types wrapper enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">GENERIC</span> <span class="o">=</span> <span class="n">DMG_GENERIC</span>
+    <span class="n">CRUSH</span> <span class="o">=</span> <span class="n">DMG_CRUSH</span>
+    <span class="n">BULLET</span> <span class="o">=</span> <span class="n">DMG_BULLET</span>
+    <span class="n">SLASH</span> <span class="o">=</span> <span class="n">DMG_SLASH</span>
+    <span class="n">BURN</span> <span class="o">=</span> <span class="n">DMG_BURN</span>
+    <span class="n">VEHICLE</span> <span class="o">=</span> <span class="n">DMG_VEHICLE</span>
+    <span class="n">FALL</span> <span class="o">=</span> <span class="n">DMG_FALL</span>
+    <span class="n">BLAST</span> <span class="o">=</span> <span class="n">DMG_BLAST</span>
+    <span class="n">CLUB</span> <span class="o">=</span> <span class="n">DMG_CLUB</span>
+    <span class="n">SHOCK</span> <span class="o">=</span> <span class="n">DMG_SHOCK</span>
+    <span class="n">SONIC</span> <span class="o">=</span> <span class="n">DMG_SONIC</span>
+    <span class="n">ENERGYBEAM</span> <span class="o">=</span> <span class="n">DMG_ENERGYBEAM</span>
+    <span class="n">PREVENT_PHYSICS_FORCE</span> <span class="o">=</span> <span class="n">DMG_PREVENT_PHYSICS_FORCE</span>
+    <span class="n">NEVERGIB</span> <span class="o">=</span> <span class="n">DMG_NEVERGIB</span>
+    <span class="n">ALWAYSGIB</span> <span class="o">=</span> <span class="n">DMG_ALWAYSGIB</span>
+    <span class="n">DROWN</span> <span class="o">=</span> <span class="n">DMG_DROWN</span>
+    <span class="n">PARALYZE</span> <span class="o">=</span> <span class="n">DMG_PARALYZE</span>
+    <span class="n">NERVEGAS</span> <span class="o">=</span> <span class="n">DMG_NERVEGAS</span>
+    <span class="n">POISON</span> <span class="o">=</span> <span class="n">DMG_POISON</span>
+    <span class="n">RADIATION</span> <span class="o">=</span> <span class="n">DMG_RADIATION</span>
+    <span class="n">DROWNRECOVER</span> <span class="o">=</span> <span class="n">DMG_DROWNRECOVER</span>
+    <span class="n">ACID</span> <span class="o">=</span> <span class="n">DMG_ACID</span>
+    <span class="n">SLOWBURN</span> <span class="o">=</span> <span class="n">DMG_SLOWBURN</span>
+    <span class="n">REMOVENORAGDOLL</span> <span class="o">=</span> <span class="n">DMG_REMOVENORAGDOLL</span>
+    <span class="n">PHYSGUN</span> <span class="o">=</span> <span class="n">DMG_PHYSGUN</span>
+    <span class="n">PLASMA</span> <span class="o">=</span> <span class="n">DMG_PLASMA</span>
+    <span class="n">AIRBOAT</span> <span class="o">=</span> <span class="n">DMG_AIRBOAT</span>
+    <span class="n">DISSOLVE</span> <span class="o">=</span> <span class="n">DMG_DISSOLVE</span>
+    <span class="n">BLAST_SURFACE</span> <span class="o">=</span> <span class="n">DMG_BLAST_SURFACE</span>
+    <span class="n">DIRECT</span> <span class="o">=</span> <span class="n">DMG_DIRECT</span>
+    <span class="n">BUCKSHOT</span> <span class="o">=</span> <span class="n">DMG_BUCKSHOT</span>
+    <span class="n">LASTGENERICFLAG</span> <span class="o">=</span> <span class="n">DMG_LASTGENERICFLAG</span>
+    <span class="n">HEADSHOT</span> <span class="o">=</span> <span class="n">DMG_HEADSHOT</span></div>
+
+
+
+<div class="viewcode-block" id="EntityStates">
+<a class="viewcode-back" href="../../developing/modules/entities.constants.html#entities.constants.EntityStates">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EntityStates</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Entity state flags wrapper enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">FLY</span> <span class="o">=</span> <span class="n">FL_FLY</span>
+    <span class="n">SWIM</span> <span class="o">=</span> <span class="n">FL_SWIM</span>
+    <span class="n">CONVEYOR</span> <span class="o">=</span> <span class="n">FL_CONVEYOR</span>
+    <span class="n">NPC</span> <span class="o">=</span> <span class="n">FL_NPC</span>
+    <span class="n">GODMODE</span> <span class="o">=</span> <span class="n">FL_GODMODE</span>
+    <span class="n">NOTARGET</span> <span class="o">=</span> <span class="n">FL_NOTARGET</span>
+    <span class="n">AIMTARGET</span> <span class="o">=</span> <span class="n">FL_AIMTARGET</span>
+    <span class="n">PARTIALGROUND</span> <span class="o">=</span> <span class="n">FL_PARTIALGROUND</span>
+    <span class="n">STATICPROP</span> <span class="o">=</span> <span class="n">FL_STATICPROP</span>
+    <span class="n">GRAPHED</span> <span class="o">=</span> <span class="n">FL_GRAPHED</span>
+    <span class="n">GRENADE</span> <span class="o">=</span> <span class="n">FL_GRENADE</span>
+    <span class="n">STEPMOVEMENT</span> <span class="o">=</span> <span class="n">FL_STEPMOVEMENT</span>
+    <span class="n">DONTTOUCH</span> <span class="o">=</span> <span class="n">FL_DONTTOUCH</span>
+    <span class="n">BASEVELOCITY</span> <span class="o">=</span> <span class="n">FL_BASEVELOCITY</span>
+    <span class="n">WORLDBRUSH</span> <span class="o">=</span> <span class="n">FL_WORLDBRUSH</span>
+    <span class="n">OBJECT</span> <span class="o">=</span> <span class="n">FL_OBJECT</span>
+    <span class="n">KILLME</span> <span class="o">=</span> <span class="n">FL_KILLME</span>
+    <span class="n">ONFIRE</span> <span class="o">=</span> <span class="n">FL_ONFIRE</span>
+    <span class="n">DISSOLVING</span> <span class="o">=</span> <span class="n">FL_DISSOLVING</span>
+    <span class="n">TRANSRAGDOLL</span> <span class="o">=</span> <span class="n">FL_TRANSRAGDOLL</span>
+    <span class="n">UNBLOCKABLE_BY_PLAYER</span> <span class="o">=</span> <span class="n">FL_UNBLOCKABLE_BY_PLAYER</span></div>
+
+
+
+<div class="viewcode-block" id="EntityEffects">
+<a class="viewcode-back" href="../../developing/modules/entities.constants.html#entities.constants.EntityEffects">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EntityEffects</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Entity effects wrapper enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">BONEMERGE</span> <span class="o">=</span> <span class="n">EF_BONEMERGE</span>
+    <span class="n">BRIGHTLIGHT</span> <span class="o">=</span> <span class="n">EF_BRIGHTLIGHT</span>
+    <span class="n">DIMLIGHT</span> <span class="o">=</span> <span class="n">EF_DIMLIGHT</span>
+    <span class="n">NOINTERP</span> <span class="o">=</span> <span class="n">EF_NOINTERP</span>
+    <span class="n">NOSHADOW</span> <span class="o">=</span> <span class="n">EF_NOSHADOW</span>
+    <span class="n">NODRAW</span> <span class="o">=</span> <span class="n">EF_NODRAW</span>
+    <span class="n">NORECEIVESHADOW</span> <span class="o">=</span> <span class="n">EF_NORECEIVESHADOW</span>
+    <span class="n">BONEMERGE_FASTCULL</span> <span class="o">=</span> <span class="n">EF_BONEMERGE_FASTCULL</span>
+    <span class="n">ITEM_BLINK</span> <span class="o">=</span> <span class="n">EF_ITEM_BLINK</span>
+    <span class="n">PARENT_ANIMATES</span> <span class="o">=</span> <span class="n">EF_PARENT_ANIMATES</span>
+    <span class="n">MARKED_FOR_FAST_REFLECTION</span> <span class="o">=</span> <span class="n">EF_MARKED_FOR_FAST_REFLECTION</span>
+    <span class="n">NOSHADOWDEPTH</span> <span class="o">=</span> <span class="n">EF_NOSHADOWDEPTH</span>
+    <span class="n">NOFLASHLIGHT</span> <span class="o">=</span> <span class="n">EF_NOFLASHLIGHT</span></div>
+
+
+
+<div class="viewcode-block" id="DissolveType">
+<a class="viewcode-back" href="../../developing/modules/entities.constants.html#entities.constants.DissolveType">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DissolveType</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dissolve type wrapper enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">NORMAL</span> <span class="o">=</span> <span class="n">ENTITY_DISSOLVE_NORMAL</span>
+    <span class="n">ELECTRICAL</span> <span class="o">=</span> <span class="n">ENTITY_DISSOLVE_ELECTRICAL</span>
+    <span class="n">ELECTRICAL_LIGHT</span> <span class="o">=</span> <span class="n">ENTITY_DISSOLVE_ELECTRICAL_LIGHT</span>
+    <span class="n">CORE</span> <span class="o">=</span> <span class="n">ENTITY_DISSOLVE_CORE</span></div>
+
+
+
+<div class="viewcode-block" id="TakeDamage">
+<a class="viewcode-back" href="../../developing/modules/entities.constants.html#entities.constants.TakeDamage">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TakeDamage</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Take damage constants wrapper enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">NO</span> <span class="o">=</span> <span class="n">DAMAGE_NO</span>
+    <span class="n">EVENTS_ONLY</span> <span class="o">=</span> <span class="n">DAMAGE_EVENTS_ONLY</span>
+    <span class="n">YES</span> <span class="o">=</span> <span class="n">DAMAGE_YES</span>
+    <span class="n">AIM</span> <span class="o">=</span> <span class="n">DAMAGE_AIM</span></div>
+
+
+
+<div class="viewcode-block" id="EntityFlags">
+<a class="viewcode-back" href="../../developing/modules/entities.constants.html#entities.constants.EntityFlags">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EntityFlags</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Entity flags wrapper enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">KILLME</span> <span class="o">=</span> <span class="n">EFL_KILLME</span>
+    <span class="n">DORMANT</span> <span class="o">=</span> <span class="n">EFL_DORMANT</span>
+    <span class="n">NOCLIP_ACTIVE</span> <span class="o">=</span> <span class="n">EFL_NOCLIP_ACTIVE</span>
+    <span class="n">SETTING_UP_BONES</span> <span class="o">=</span> <span class="n">EFL_SETTING_UP_BONES</span>
+    <span class="n">KEEP_ON_RECREATE_ENTITIES</span> <span class="o">=</span> <span class="n">EFL_KEEP_ON_RECREATE_ENTITIES</span>
+    <span class="n">DIRTY_SHADOWUPDATE</span> <span class="o">=</span> <span class="n">EFL_DIRTY_SHADOWUPDATE</span>
+    <span class="n">NOTIFY</span> <span class="o">=</span> <span class="n">EFL_NOTIFY</span>
+    <span class="n">FORCE_CHECK_TRANSMIT</span> <span class="o">=</span> <span class="n">EFL_FORCE_CHECK_TRANSMIT</span>
+    <span class="n">BOT_FROZEN</span> <span class="o">=</span> <span class="n">EFL_BOT_FROZEN</span>
+    <span class="n">SERVER_ONLY</span> <span class="o">=</span> <span class="n">EFL_SERVER_ONLY</span>
+    <span class="n">NO_AUTO_EDICT_ATTACH</span> <span class="o">=</span> <span class="n">EFL_NO_AUTO_EDICT_ATTACH</span>
+    <span class="n">DIRTY_ABSTRANSFORM</span> <span class="o">=</span> <span class="n">EFL_DIRTY_ABSTRANSFORM</span>
+    <span class="n">DIRTY_ABSVELOCITY</span> <span class="o">=</span> <span class="n">EFL_DIRTY_ABSVELOCITY</span>
+    <span class="n">DIRTY_ABSANGVELOCITY</span> <span class="o">=</span> <span class="n">EFL_DIRTY_ABSANGVELOCITY</span>
+    <span class="n">DIRTY_SURROUNDING_COLLISION_BOUNDS</span> <span class="o">=</span> <span class="n">EFL_DIRTY_SURROUNDING_COLLISION_BOUNDS</span>
+    <span class="n">DIRTY_SPATIAL_PARTITION</span> <span class="o">=</span> <span class="n">EFL_DIRTY_SPATIAL_PARTITION</span>
+    <span class="n">HAS_PLAYER_CHILD</span> <span class="o">=</span> <span class="n">EFL_HAS_PLAYER_CHILD</span>
+    <span class="n">IN_SKYBOX</span> <span class="o">=</span> <span class="n">EFL_IN_SKYBOX</span>
+    <span class="n">USE_PARTITION_WHEN_NOT_SOLID</span> <span class="o">=</span> <span class="n">EFL_USE_PARTITION_WHEN_NOT_SOLID</span>
+    <span class="n">TOUCHING_FLUID</span> <span class="o">=</span> <span class="n">EFL_TOUCHING_FLUID</span>
+    <span class="n">IS_BEING_LIFTED_BY_BARNACLE</span> <span class="o">=</span> <span class="n">EFL_IS_BEING_LIFTED_BY_BARNACLE</span>
+    <span class="n">NO_ROTORWASH_PUSH</span> <span class="o">=</span> <span class="n">EFL_NO_ROTORWASH_PUSH</span>
+    <span class="n">NO_THINK_FUNCTION</span> <span class="o">=</span> <span class="n">EFL_NO_THINK_FUNCTION</span>
+    <span class="n">NO_GAME_PHYSICS_SIMULATION</span> <span class="o">=</span> <span class="n">EFL_NO_GAME_PHYSICS_SIMULATION</span>
+    <span class="n">CHECK_UNTOUCH</span> <span class="o">=</span> <span class="n">EFL_CHECK_UNTOUCH</span>
+    <span class="n">DONTBLOCKLOS</span> <span class="o">=</span> <span class="n">EFL_DONTBLOCKLOS</span>
+    <span class="n">DONTWALKON</span> <span class="o">=</span> <span class="n">EFL_DONTWALKON</span>
+    <span class="n">NO_DISSOLVE</span> <span class="o">=</span> <span class="n">EFL_NO_DISSOLVE</span>
+    <span class="n">NO_MEGAPHYSCANNON_RAGDOLL</span> <span class="o">=</span> <span class="n">EFL_NO_MEGAPHYSCANNON_RAGDOLL</span>
+    <span class="n">NO_WATER_VELOCITY_CHANGE</span> <span class="o">=</span> <span class="n">EFL_NO_WATER_VELOCITY_CHANGE</span>
+    <span class="n">NO_PHYSCANNON_INTERACTION</span> <span class="o">=</span> <span class="n">EFL_NO_PHYSCANNON_INTERACTION</span>
+    <span class="n">NO_DAMAGE_FORCES</span> <span class="o">=</span> <span class="n">EFL_NO_DAMAGE_FORCES</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.constants</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

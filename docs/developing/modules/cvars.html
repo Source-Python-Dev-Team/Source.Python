@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>cvars package &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">cvars package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="cvars-package">
+<h1>cvars package<a class="headerlink" href="#cvars-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cvars.flags.html">cvars.flags module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cvars.public.html">cvars.public module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cvars.tags.html">cvars.tags module</a></li>
+</ul>
+</div>
+</section>
+<section id="module-cvars">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-cvars" title="Link to this heading">¶</a></h2>
+<p>Provides access to ConVar instances and the ability to create a ConVar.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="cvars.ConVar">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cvars.</span></span><span class="sig-name descname"><span class="pre">ConVar</span></span><a class="headerlink" href="#cvars.ConVar" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="commands.html#commands.ConCommandBase" title="_commands.ConCommandBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConCommandBase</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">_IConVar</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars.ConVar.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)name</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)value=''</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(str)description=''</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)flags=0</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(object)min_value=None</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(object)max_value=None</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars.ConVar.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Called when a server-var is initilized.</p>
+<p>If the ConVar already exists, all other parameters
+except <code class="docutils literal notranslate"><span class="pre">name</span></code> are inconsequential.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of the ConVar.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The initial value of the
+ConVar if it doesn’t already exist.</p></li>
+<li><p><strong>description</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The description of the ConVar.</p></li>
+<li><p><strong>flags</strong> (<a class="reference internal" href="cvars.flags.html#cvars.flags.ConVarFlags" title="cvars.flags.ConVarFlags"><em>ConVarFlags</em></a>) – The initial flags of the
+ConVar if it doesn’t already exist.</p></li>
+<li><p><strong>min_value</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The minimum value allowed for the ConVar.</p></li>
+<li><p><strong>max_value</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The maximum value allowed for the ConVar.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars.ConVar.get_bool">
+<span class="sig-name descname"><span class="pre">get_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ConVar)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars.ConVar.get_bool" title="Link to this definition">¶</a></dt>
+<dd><p>Return the value as a bool.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars.ConVar.get_float">
+<span class="sig-name descname"><span class="pre">get_float</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ConVar)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars.ConVar.get_float" title="Link to this definition">¶</a></dt>
+<dd><p>Return the value as a float.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars.ConVar.get_int">
+<span class="sig-name descname"><span class="pre">get_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ConVar)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars.ConVar.get_int" title="Link to this definition">¶</a></dt>
+<dd><p>Return the value as an int.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars.ConVar.get_string">
+<span class="sig-name descname"><span class="pre">get_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ConVar)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars.ConVar.get_string" title="Link to this definition">¶</a></dt>
+<dd><p>Return the value as a string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars.ConVar.has_max">
+<span class="sig-name descname"><span class="pre">has_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ConVar)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars.ConVar.has_max" title="Link to this definition">¶</a></dt>
+<dd><p>Returns wether the ConVar has a maximum value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars.ConVar.has_min">
+<span class="sig-name descname"><span class="pre">has_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ConVar)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars.ConVar.has_min" title="Link to this definition">¶</a></dt>
+<dd><p>Return wether the ConVar has a minimum value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars.ConVar.make_public">
+<span class="sig-name descname"><span class="pre">make_public</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ConVar)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars.ConVar.make_public" title="Link to this definition">¶</a></dt>
+<dd><p>Set the notify flag and make the console variable public.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars.ConVar.remove_public">
+<span class="sig-name descname"><span class="pre">remove_public</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ConVar)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars.ConVar.remove_public" title="Link to this definition">¶</a></dt>
+<dd><p>Remove the notify flag and make the console variable no longer public.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars.ConVar.revert">
+<span class="sig-name descname"><span class="pre">revert</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ConVar)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars.ConVar.revert" title="Link to this definition">¶</a></dt>
+<dd><p>Reset the console variable to its default value.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars.ConVar.set_bool">
+<span class="sig-name descname"><span class="pre">set_bool</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ConVar)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(bool)value</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars.ConVar.set_bool" title="Link to this definition">¶</a></dt>
+<dd><p>Set the console variable to a boolean value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cvars.ConVar.default">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default</span></span><a class="headerlink" href="#cvars.ConVar.default" title="Link to this definition">¶</a></dt>
+<dd><p>Return the default value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cvars.ConVar.max">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max</span></span><a class="headerlink" href="#cvars.ConVar.max" title="Link to this definition">¶</a></dt>
+<dd><p>Return the maximum value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cvars.ConVar.min">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">min</span></span><a class="headerlink" href="#cvars.ConVar.min" title="Link to this definition">¶</a></dt>
+<dd><p>Return the minimum value.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="cvars._Cvar">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">cvars.</span></span><span class="sig-name descname"><span class="pre">_Cvar</span></span><a class="headerlink" href="#cvars._Cvar" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars._Cvar.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#cvars._Cvar.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars._Cvar.call_global_change_callbacks">
+<span class="sig-name descname"><span class="pre">call_global_change_callbacks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_Cvar)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(ConVar)cvar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)old_string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)old_float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars._Cvar.call_global_change_callbacks" title="Link to this definition">¶</a></dt>
+<dd><p>Call all global change callbacks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cvar</strong> (<a class="reference internal" href="#cvars.ConVar" title="cvars.ConVar"><em>ConVar</em></a>) – The console variable that has changed.</p></li>
+<li><p><strong>old_string</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The old value of the variable as a string.</p></li>
+<li><p><strong>old_value</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><em>float</em></a>) – The old value of the variable as a float.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars._Cvar.find_base">
+<span class="sig-name descname"><span class="pre">find_base</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_Cvar)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_commands.ConCommandBase</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars._Cvar.find_base" title="Link to this definition">¶</a></dt>
+<dd><p>Find the ConCommandBase instance of a server command or console variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Return <code class="docutils literal notranslate"><span class="pre">None</span></code> if the command or variable was not found.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="commands.html#commands.ConCommandBase" title="commands.ConCommandBase">ConCommandBase</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars._Cvar.find_command">
+<span class="sig-name descname"><span class="pre">find_command</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_Cvar)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_commands.ConCommand</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars._Cvar.find_command" title="Link to this definition">¶</a></dt>
+<dd><p>Find the ConCommand instance of a server command.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Return <code class="docutils literal notranslate"><span class="pre">None</span></code> if the command was not found.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="commands.html#commands.ConCommand" title="commands.ConCommand">ConCommand</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars._Cvar.find_var">
+<span class="sig-name descname"><span class="pre">find_var</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_Cvar)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">ConVar</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars._Cvar.find_var" title="Link to this definition">¶</a></dt>
+<dd><p>Find the ConVar instance of console variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Return <code class="docutils literal notranslate"><span class="pre">None</span></code> if the console variable was not found.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#cvars.ConVar" title="cvars.ConVar">ConVar</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars._Cvar.register_base">
+<span class="sig-name descname"><span class="pre">register_base</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_Cvar)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(_commands.ConCommandBase)con_command=True</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars._Cvar.register_base" title="Link to this definition">¶</a></dt>
+<dd><p>Register a console command.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="cvars._Cvar.unregister_base">
+<span class="sig-name descname"><span class="pre">unregister_base</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_Cvar)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_commands.ConCommandBase)con_command</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#cvars._Cvar.unregister_base" title="Link to this definition">¶</a></dt>
+<dd><p>Unregister a console command.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="cvars._Cvar.commands">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">commands</span></span><a class="headerlink" href="#cvars._Cvar.commands" title="Link to this definition">¶</a></dt>
+<dd><p>Return the first ConCommandBase instance that can be used to iterate through all ConCommandBase instances</p>
+<p>.:rtype: ConCommandBase</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="cvars.cvar">
+<span class="sig-prename descclassname"><span class="pre">cvars.</span></span><span class="sig-name descname"><span class="pre">cvar</span></span><a class="headerlink" href="#cvars.cvar" title="Link to this definition">¶</a></dt>
+<dd><p>The singleton instance for <a class="reference internal" href="#cvars._Cvar" title="cvars._Cvar"><code class="xref py py-class docutils literal notranslate"><span class="pre">cvars._Cvar</span></code></a>.</p>
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">cvars package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-cvars">Module contents</a><ul>
+<li><a class="reference internal" href="#cvars.ConVar"><code class="docutils literal notranslate"><span class="pre">ConVar</span></code></a><ul>
+<li><a class="reference internal" href="#cvars.ConVar.__init__"><code class="docutils literal notranslate"><span class="pre">ConVar.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#cvars.ConVar.get_bool"><code class="docutils literal notranslate"><span class="pre">ConVar.get_bool()</span></code></a></li>
+<li><a class="reference internal" href="#cvars.ConVar.get_float"><code class="docutils literal notranslate"><span class="pre">ConVar.get_float()</span></code></a></li>
+<li><a class="reference internal" href="#cvars.ConVar.get_int"><code class="docutils literal notranslate"><span class="pre">ConVar.get_int()</span></code></a></li>
+<li><a class="reference internal" href="#cvars.ConVar.get_string"><code class="docutils literal notranslate"><span class="pre">ConVar.get_string()</span></code></a></li>
+<li><a class="reference internal" href="#cvars.ConVar.has_max"><code class="docutils literal notranslate"><span class="pre">ConVar.has_max()</span></code></a></li>
+<li><a class="reference internal" href="#cvars.ConVar.has_min"><code class="docutils literal notranslate"><span class="pre">ConVar.has_min()</span></code></a></li>
+<li><a class="reference internal" href="#cvars.ConVar.make_public"><code class="docutils literal notranslate"><span class="pre">ConVar.make_public()</span></code></a></li>
+<li><a class="reference internal" href="#cvars.ConVar.remove_public"><code class="docutils literal notranslate"><span class="pre">ConVar.remove_public()</span></code></a></li>
+<li><a class="reference internal" href="#cvars.ConVar.revert"><code class="docutils literal notranslate"><span class="pre">ConVar.revert()</span></code></a></li>
+<li><a class="reference internal" href="#cvars.ConVar.set_bool"><code class="docutils literal notranslate"><span class="pre">ConVar.set_bool()</span></code></a></li>
+<li><a class="reference internal" href="#cvars.ConVar.default"><code class="docutils literal notranslate"><span class="pre">ConVar.default</span></code></a></li>
+<li><a class="reference internal" href="#cvars.ConVar.max"><code class="docutils literal notranslate"><span class="pre">ConVar.max</span></code></a></li>
+<li><a class="reference internal" href="#cvars.ConVar.min"><code class="docutils literal notranslate"><span class="pre">ConVar.min</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cvars._Cvar"><code class="docutils literal notranslate"><span class="pre">_Cvar</span></code></a><ul>
+<li><a class="reference internal" href="#cvars._Cvar.__init__"><code class="docutils literal notranslate"><span class="pre">_Cvar.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#cvars._Cvar.call_global_change_callbacks"><code class="docutils literal notranslate"><span class="pre">_Cvar.call_global_change_callbacks()</span></code></a></li>
+<li><a class="reference internal" href="#cvars._Cvar.find_base"><code class="docutils literal notranslate"><span class="pre">_Cvar.find_base()</span></code></a></li>
+<li><a class="reference internal" href="#cvars._Cvar.find_command"><code class="docutils literal notranslate"><span class="pre">_Cvar.find_command()</span></code></a></li>
+<li><a class="reference internal" href="#cvars._Cvar.find_var"><code class="docutils literal notranslate"><span class="pre">_Cvar.find_var()</span></code></a></li>
+<li><a class="reference internal" href="#cvars._Cvar.register_base"><code class="docutils literal notranslate"><span class="pre">_Cvar.register_base()</span></code></a></li>
+<li><a class="reference internal" href="#cvars._Cvar.unregister_base"><code class="docutils literal notranslate"><span class="pre">_Cvar.unregister_base()</span></code></a></li>
+<li><a class="reference internal" href="#cvars._Cvar.commands"><code class="docutils literal notranslate"><span class="pre">_Cvar.commands</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cvars.cvar"><code class="docutils literal notranslate"><span class="pre">cvar</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/cvars.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">cvars package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

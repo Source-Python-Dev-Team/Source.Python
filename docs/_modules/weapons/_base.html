@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>weapons._base &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">weapons._base</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for weapons._base</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../weapons/_base.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides simplified weapon functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entity</span>
+<span class="c1">#   Weapons</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_weapons._entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">WeaponMixin</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">weapons.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">weapon_manager</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Add all the global variables to __all__</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Weapon&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="Weapon">
+<a class="viewcode-back" href="../../developing/modules/weapons.entity.html#weapons.entity.Weapon">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Weapon</span><span class="p">(</span><span class="n">WeaponMixin</span><span class="p">,</span> <span class="n">Entity</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Allows easy usage of the weapon&#39;s attributes.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Weapon.__init__">
+<a class="viewcode-back" href="../../developing/modules/weapons.entity.html#weapons.entity.Weapon.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">caching</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the object.</span>
+
+<span class="sd">        :param int index:</span>
+<span class="sd">            A valid weapon index.</span>
+<span class="sd">        :param bool caching:</span>
+<span class="sd">            Whether to lookup the cache for an existing instance or not.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the index is invalid.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">WeaponMixin</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+        <span class="n">Entity</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_clip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if the weapon has a clip.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">classname</span> <span class="ow">in</span> <span class="n">weapon_manager</span> <span class="ow">and</span>
+            <span class="n">weapon_manager</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">classname</span><span class="p">]</span><span class="o">.</span><span class="n">clip</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clip</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Weapon does not have a clip.&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Weapon.get_clip">
+<a class="viewcode-back" href="../../developing/modules/weapons.entity.html#weapons.entity.Weapon.get_clip">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_clip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the amount of ammo in the weapon&#39;s clip.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_clip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_clip</span></div>
+
+
+<div class="viewcode-block" id="Weapon.set_clip">
+<a class="viewcode-back" href="../../developing/modules/weapons.entity.html#weapons.entity.Weapon.set_clip">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_clip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the amount of ammo in the weapon&#39;s clip.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_clip</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_clip</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+    <span class="c1"># Set the &quot;clip&quot; property methods</span>
+    <span class="n">clip</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="n">get_clip</span><span class="p">,</span> <span class="n">set_clip</span><span class="p">,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Property to get/set the weapon&#39;s clip.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_ammo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if the weapon has a valid ammoprop and an owner.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">classname</span> <span class="ow">in</span> <span class="n">weapon_manager</span> <span class="ow">and</span>
+            <span class="n">weapon_manager</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">classname</span><span class="p">]</span><span class="o">.</span><span class="n">ammoprop</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">ammoprop</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Unable to get ammoprop for </span><span class="si">{weapon}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">weapon</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">classname</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="n">player</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
+        <span class="k">if</span> <span class="n">player</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unable to get the owner of the weapon.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">player</span>
+
+<div class="viewcode-block" id="Weapon.get_ammo">
+<a class="viewcode-back" href="../../developing/modules/weapons.entity.html#weapons.entity.Weapon.get_ammo">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_ammo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the amount of ammo the player has for the weapon.&quot;&quot;&quot;</span>
+        <span class="n">player</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_ammo</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">player</span><span class="o">.</span><span class="n">get_property_int</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{base}{prop:03d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">base</span><span class="o">=</span><span class="n">weapon_manager</span><span class="o">.</span><span class="n">ammoprop</span><span class="p">,</span>
+                <span class="n">prop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ammoprop</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Weapon.set_ammo">
+<a class="viewcode-back" href="../../developing/modules/weapons.entity.html#weapons.entity.Weapon.set_ammo">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_ammo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the player&#39;s ammo property for the weapon.&quot;&quot;&quot;</span>
+        <span class="n">player</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_ammo</span><span class="p">()</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">set_property_int</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{base}{prop:03d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">base</span><span class="o">=</span><span class="n">weapon_manager</span><span class="o">.</span><span class="n">ammoprop</span><span class="p">,</span>
+                <span class="n">prop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">ammoprop</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">value</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="c1"># Set the &quot;ammo&quot; property methods</span>
+    <span class="n">ammo</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="n">get_ammo</span><span class="p">,</span> <span class="n">set_ammo</span><span class="p">,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Property to get/set the weapon&#39;s ammo.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_secondary_fire_clip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if the weapon has a secondary fire clip.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_secondary_fire_clip</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Weapon does not have a secondary fire clip.&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Weapon.get_secondary_fire_clip">
+<a class="viewcode-back" href="../../developing/modules/weapons.entity.html#weapons.entity.Weapon.get_secondary_fire_clip">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_secondary_fire_clip</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the amount of ammo in the weapon&#39;s secondary fire clip.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_secondary_fire_clip</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_secondary_fire_clip</span></div>
+
+
+<div class="viewcode-block" id="Weapon.set_secondary_fire_clip">
+<a class="viewcode-back" href="../../developing/modules/weapons.entity.html#weapons.entity.Weapon.set_secondary_fire_clip">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_secondary_fire_clip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the amount of ammo in the weapon&#39;s secondary fire clip.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_validate_secondary_fire_clip</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_secondary_fire_clip</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+    <span class="c1"># Set the &quot;secondary_fire_clip&quot; property methods</span>
+    <span class="n">secondary_fire_clip</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="n">get_secondary_fire_clip</span><span class="p">,</span> <span class="n">set_secondary_fire_clip</span><span class="p">,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Property to get/set the weapon&#39;s secondary fire clip.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_validate_secondary_fire_ammo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Test if the weapon has a valid secondary fire ammoprop and an owner.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">secondary_fire_ammoprop</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Unable to get secondary fire ammoprop for </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">classname</span><span class="p">))</span>
+
+        <span class="n">player</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
+        <span class="k">if</span> <span class="n">player</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unable to get the owner of the weapon.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">player</span>
+
+<div class="viewcode-block" id="Weapon.get_secondary_fire_ammo">
+<a class="viewcode-back" href="../../developing/modules/weapons.entity.html#weapons.entity.Weapon.get_secondary_fire_ammo">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_secondary_fire_ammo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the secondary fire ammo the player has for the weapon.&quot;&quot;&quot;</span>
+        <span class="n">player</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_secondary_fire_ammo</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">player</span><span class="o">.</span><span class="n">get_property_int</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{base}{prop:03d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">base</span><span class="o">=</span><span class="n">weapon_manager</span><span class="o">.</span><span class="n">ammoprop</span><span class="p">,</span>
+                <span class="n">prop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">secondary_fire_ammoprop</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Weapon.set_secondary_fire_ammo">
+<a class="viewcode-back" href="../../developing/modules/weapons.entity.html#weapons.entity.Weapon.set_secondary_fire_ammo">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_secondary_fire_ammo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the player&#39;s secondary fire ammo property for the weapon.&quot;&quot;&quot;</span>
+        <span class="n">player</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_validate_secondary_fire_ammo</span><span class="p">()</span>
+        <span class="n">player</span><span class="o">.</span><span class="n">set_property_int</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{base}{prop:03d}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">base</span><span class="o">=</span><span class="n">weapon_manager</span><span class="o">.</span><span class="n">ammoprop</span><span class="p">,</span>
+                <span class="n">prop</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">secondary_fire_ammoprop</span><span class="p">,</span>
+            <span class="p">),</span>
+            <span class="n">value</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+
+    <span class="c1"># Set the &quot;secondary_fire_ammo&quot; property methods</span>
+    <span class="n">secondary_fire_ammo</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="n">get_secondary_fire_ammo</span><span class="p">,</span> <span class="n">set_secondary_fire_ammo</span><span class="p">,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Property to get/set the weapon&#39;s secondary fire ammo.&quot;&quot;&quot;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">weapon_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the full class name of the weapon.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">classname</span>
+
+<div class="viewcode-block" id="Weapon.remove">
+<a class="viewcode-back" href="../../developing/modules/weapons.entity.html#weapons.entity.Weapon.remove">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the weapon.&quot;&quot;&quot;</span>
+        <span class="c1"># Avoid a cyclic import</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+
+        <span class="n">owner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">owner</span>
+        <span class="k">if</span> <span class="n">owner</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">owner</span><span class="o">.</span><span class="n">is_player</span><span class="p">():</span>
+            <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="n">owner</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+            <span class="n">player</span><span class="o">.</span><span class="n">drop_weapon</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">weapons._base</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>entities.hooks module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.hooks module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-entities.hooks">
+<span id="entities-hooks-module"></span><h1>entities.hooks module<a class="headerlink" href="#module-entities.hooks" title="Link to this heading">¶</a></h1>
+<p>Provides memory hooking functionality for entities.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.hooks.EntityCondition">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.hooks.</span></span><span class="sig-name descname"><span class="pre">EntityCondition</span></span><a class="reference internal" href="../../_modules/entities/hooks.html#EntityCondition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.hooks.EntityCondition" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Store some default entity conditions.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.hooks.EntityCondition.equals_datamap_classname">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">equals_datamap_classname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">classnames</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/hooks.html#EntityCondition.equals_datamap_classname"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.hooks.EntityCondition.equals_datamap_classname" title="Link to this definition">¶</a></dt>
+<dd><p>Return a function that requires an <code class="xref py py-class docutils literal notranslate"><span class="pre">entities.entity.Entity`</span></code>
+instance. The returned function returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if the entity’s
+datamap classname equals one of the passed classnames.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>lambda</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.hooks.EntityCondition.equals_entity_classname">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">equals_entity_classname</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">classnames</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/hooks.html#EntityCondition.equals_entity_classname"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.hooks.EntityCondition.equals_entity_classname" title="Link to this definition">¶</a></dt>
+<dd><p>Return a function that requires an <code class="xref py py-class docutils literal notranslate"><span class="pre">entities.entity.Entity`</span></code>
+instace. The returned function returns <code class="docutils literal notranslate"><span class="pre">True</span></code> if the entity’s
+classname equals one of the passed classnames.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>lambda</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.hooks.EntityCondition.is_bot_player">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_bot_player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/hooks.html#EntityCondition.is_bot_player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.hooks.EntityCondition.is_bot_player" title="Link to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the entity is a bot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.hooks.EntityCondition.is_human_player">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_human_player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/hooks.html#EntityCondition.is_human_player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.hooks.EntityCondition.is_human_player" title="Link to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the entity is a human player.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.hooks.EntityCondition.is_not_player">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_not_player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/hooks.html#EntityCondition.is_not_player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.hooks.EntityCondition.is_not_player" title="Link to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the entity is not a player.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.hooks.EntityCondition.is_player">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_player</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/hooks.html#EntityCondition.is_player"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.hooks.EntityCondition.is_player" title="Link to this definition">¶</a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if the entity is a player.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.hooks.EntityPostHook">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.hooks.</span></span><span class="sig-name descname"><span class="pre">EntityPostHook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/hooks.html#EntityPostHook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.hooks.EntityPostHook" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_EntityHook</span></code></p>
+<p>Decorator class used to create entity post hooks that auto unload.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.hooks.EntityPostHook.hook_type">
+<span class="sig-name descname"><span class="pre">hook_type</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_memory.HookType.POST</span></em><a class="headerlink" href="#entities.hooks.EntityPostHook.hook_type" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.hooks.EntityPreHook">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.hooks.</span></span><span class="sig-name descname"><span class="pre">EntityPreHook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/hooks.html#EntityPreHook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.hooks.EntityPreHook" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_EntityHook</span></code></p>
+<p>Decorator class used to create entity pre hooks that auto unload.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.hooks.EntityPreHook.hook_type">
+<span class="sig-name descname"><span class="pre">hook_type</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_memory.HookType.PRE</span></em><a class="headerlink" href="#entities.hooks.EntityPreHook.hook_type" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">entities.hooks module</a><ul>
+<li><a class="reference internal" href="#entities.hooks.EntityCondition"><code class="docutils literal notranslate"><span class="pre">EntityCondition</span></code></a><ul>
+<li><a class="reference internal" href="#entities.hooks.EntityCondition.equals_datamap_classname"><code class="docutils literal notranslate"><span class="pre">EntityCondition.equals_datamap_classname()</span></code></a></li>
+<li><a class="reference internal" href="#entities.hooks.EntityCondition.equals_entity_classname"><code class="docutils literal notranslate"><span class="pre">EntityCondition.equals_entity_classname()</span></code></a></li>
+<li><a class="reference internal" href="#entities.hooks.EntityCondition.is_bot_player"><code class="docutils literal notranslate"><span class="pre">EntityCondition.is_bot_player()</span></code></a></li>
+<li><a class="reference internal" href="#entities.hooks.EntityCondition.is_human_player"><code class="docutils literal notranslate"><span class="pre">EntityCondition.is_human_player()</span></code></a></li>
+<li><a class="reference internal" href="#entities.hooks.EntityCondition.is_not_player"><code class="docutils literal notranslate"><span class="pre">EntityCondition.is_not_player()</span></code></a></li>
+<li><a class="reference internal" href="#entities.hooks.EntityCondition.is_player"><code class="docutils literal notranslate"><span class="pre">EntityCondition.is_player()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.hooks.EntityPostHook"><code class="docutils literal notranslate"><span class="pre">EntityPostHook</span></code></a><ul>
+<li><a class="reference internal" href="#entities.hooks.EntityPostHook.hook_type"><code class="docutils literal notranslate"><span class="pre">EntityPostHook.hook_type</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.hooks.EntityPreHook"><code class="docutils literal notranslate"><span class="pre">EntityPreHook</span></code></a><ul>
+<li><a class="reference internal" href="#entities.hooks.EntityPreHook.hook_type"><code class="docutils literal notranslate"><span class="pre">EntityPreHook.hook_type</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/entities.hooks.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.hooks module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

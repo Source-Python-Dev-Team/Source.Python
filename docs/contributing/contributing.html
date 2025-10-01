@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Contributing &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=2780edc4" />
+    
+    <script src="../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Coding conventions" href="coding-conventions.html" />
+    <link rel="prev" title="Building" href="building.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="coding-conventions.html" title="Coding conventions"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="building.html" title="Building"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Contributing</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="contributing">
+<h1>Contributing<a class="headerlink" href="#contributing" title="Link to this heading">¶</a></h1>
+<p>There are several topics in Source.Python you can contribute to and we
+appreciate every contribution! To contribute to Source.Python, please use
+<a class="reference external" href="https://github.com/Source-Python-Dev-Team/Source.Python/pulls">Github’s pull request functionality</a>.
+You can read more about pull request on the
+<a class="reference external" href="https://help.github.com/articles/using-pull-requests/">Github help page</a>.</p>
+<p>When creating a pull request, please always provide a reason why you made that
+change. We will then review, discuss and merge or close it.</p>
+<p>If you successfully contributed to Source.Python we will gladly add you to our
+<a class="reference internal" href="../general/credits.html"><span class="doc">credits page</span></a> (if you want).</p>
+<section id="contributing-to-the-source-code">
+<h2>Contributing to the source code<a class="headerlink" href="#contributing-to-the-source-code" title="Link to this heading">¶</a></h2>
+<p>If you want to contribute to the source code you can simply create a pull
+request. But before creating a new pull request, please consider these two
+points.</p>
+<ol class="arabic simple">
+<li><p>Test the changes you have made.</p></li>
+<li><p>Try to roughly meet our <a class="reference internal" href="coding-conventions.html"><span class="doc">coding convention</span></a>.</p></li>
+</ol>
+</section>
+<section id="contributing-to-the-wiki">
+<h2>Contributing to the wiki<a class="headerlink" href="#contributing-to-the-wiki" title="Link to this heading">¶</a></h2>
+<p>Contributing to this wiki will also be done via pull requests. We are using
+<a class="reference external" href="http://sphinx-doc.org/">Sphinx</a> to create the wiki. Therefore, you can find
+rst-files in Source.Python’s documentation directory (<code class="docutils literal notranslate"><span class="pre">../addons/source-python/docs/source-python/source</span></code>).
+rst-files in that directory are usually simple wiki pages like this one.</p>
+<p>The source code is documented in the <code class="docutils literal notranslate"><span class="pre">modules</span></code> sub-directory. It’s mostly
+auto-documented, so these files only contain a few directives. E.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bitbuffers</span> <span class="n">module</span>
+<span class="o">==================</span>
+
+<span class="o">..</span> <span class="n">automodule</span><span class="p">::</span> <span class="n">bitbuffers</span>
+    <span class="p">:</span><span class="n">members</span><span class="p">:</span>
+    <span class="p">:</span><span class="n">undoc</span><span class="o">-</span><span class="n">members</span><span class="p">:</span>
+    <span class="p">:</span><span class="n">show</span><span class="o">-</span><span class="n">inheritance</span><span class="p">:</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">automodule</span></code> directive tells Sphinx to parse the <code class="docutils literal notranslate"><span class="pre">bitbuffers</span></code> module
+and look for Sphinx directives in the doc strings of the Python objects in
+that module (e.g. functions and classes). However, in some cases you have to
+manually document specific things in a module. In that case you can simply
+extend or replace the rst-file of the module you want to edit.</p>
+<p>Before creating a pull request you should also test if the HTML output of your
+change is correct and looks good. To do so you can build an offline copy of
+the wiki. Building an offline copy is very simple.</p>
+<ol class="arabic simple">
+<li><p>Install a game server.</p></li>
+<li><p>Install Source.Python.</p></li>
+<li><p>Run <code class="docutils literal notranslate"><span class="pre">sp</span> <span class="pre">docs</span> <span class="pre">build</span> <span class="pre">source-python</span></code>.</p></li>
+<li><p>Open <code class="docutils literal notranslate"><span class="pre">../addons/source-python/docs/source-python/build/index.html</span></code> and review your changes.</p></li>
+</ol>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>If you have made a change to the source code documentation directly in the
+source code, you have to restart your server.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Always restarting and typing the long build command can get very annoying.
+But luckily you can create server command aliases. Just add
+<code class="docutils literal notranslate"><span class="pre">alias</span> <span class="pre">b</span> <span class="pre">sp</span> <span class="pre">docs</span> <span class="pre">build</span> <span class="pre">source-python</span></code> to your <code class="docutils literal notranslate"><span class="pre">autoexec.cfg</span></code>. Then you
+only need to enter <code class="docutils literal notranslate"><span class="pre">b</span></code> in your server console to build the offline wiki.</p>
+</div>
+<p>If we have merged your pull request our buildbot will be triggered and a new
+build will be created. As soon as the new build has been finished it’s used to
+build a new wiki that gets published automatically. The whole process usually
+takes 20-30 minutes.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Contributing</a><ul>
+<li><a class="reference internal" href="#contributing-to-the-source-code">Contributing to the source code</a></li>
+<li><a class="reference internal" href="#contributing-to-the-wiki">Contributing to the wiki</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="building.html"
+                          title="previous chapter">Building</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="coding-conventions.html"
+                          title="next chapter">Coding conventions</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/contributing/contributing.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="coding-conventions.html" title="Coding conventions"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="building.html" title="Building"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Contributing</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>autodoc &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=2780edc4" />
+    
+    <script src="../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">autodoc</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for autodoc</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../autodoc.py</span>
+
+<span class="sd">&quot;&quot;&quot;This module provides a class to create documentation automatically.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">path</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;SphinxError&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SphinxProject&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="SphinxError">
+<a class="viewcode-back" href="../developing/modules/autodoc.html#autodoc.SphinxError">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SphinxError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Exception raised when creating, building, or generating Sphinx docs.&quot;&quot;&quot;</span></div>
+
+
+
+<div class="viewcode-block" id="SphinxProject">
+<a class="viewcode-back" href="../developing/modules/autodoc.html#autodoc.SphinxProject">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">SphinxProject</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Representation of a Sphinx project.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="SphinxProject.__init__">
+<a class="viewcode-back" href="../developing/modules/autodoc.html#autodoc.SphinxProject.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">package_dir</span><span class="p">,</span> <span class="n">project_dir</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the Sphinx project object.</span>
+
+<span class="sd">        :param str package_dir:</span>
+<span class="sd">            The path to the package to document.</span>
+<span class="sd">        :param str project_dir:</span>
+<span class="sd">            The path to the Sphinx project or where it should be saved.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_package_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">package_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_project_dir</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">project_dir</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_package</span><span class="p">()</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">project_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the project directory.</span>
+
+<span class="sd">        :rtype: Path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_project_dir</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">project_source_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the project source directory.</span>
+
+<span class="sd">        :rtype: Path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dir</span> <span class="o">/</span> <span class="s1">&#39;source&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">project_build_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the project build directory.</span>
+
+<span class="sd">        :rtype: Path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dir</span> <span class="o">/</span> <span class="s1">&#39;build&#39;</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">package_dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the package directory as a Path object.</span>
+
+<span class="sd">        :rtype: Path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_package_dir</span>
+
+<div class="viewcode-block" id="SphinxProject.project_exists">
+<a class="viewcode-back" href="../developing/modules/autodoc.html#autodoc.SphinxProject.project_exists">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">project_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the Sphinx project exists.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SphinxProject.package_exists">
+<a class="viewcode-back" href="../developing/modules/autodoc.html#autodoc.SphinxProject.package_exists">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">package_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the package exists.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_dir</span><span class="o">.</span><span class="n">is_dir</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SphinxProject.create">
+<a class="viewcode-back" href="../developing/modules/autodoc.html#autodoc.SphinxProject.create">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">project_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new Sphinx project.</span>
+
+<span class="sd">        :param str author:</span>
+<span class="sd">            Name of the package author.</span>
+<span class="sd">        :param str project_name:</span>
+<span class="sd">            Name of the project that is displayed in the documentation. If</span>
+<span class="sd">            None, it will be the name of the package.</span>
+<span class="sd">        :param str version:</span>
+<span class="sd">            Project/package version.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the project already exists.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the package does not exist.</span>
+<span class="sd">        :raise SphinxError:</span>
+<span class="sd">            Raised if an error occured during the creation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_exists</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The project already exists.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_package</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">project_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">()</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">sphinx.cmd.quickstart</span><span class="w"> </span><span class="kn">import</span> <span class="n">main</span>
+
+        <span class="k">if</span> <span class="n">project_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">project_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_dir</span><span class="o">.</span><span class="n">name</span>
+
+        <span class="n">argv</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;-q&#39;</span><span class="p">,</span>               <span class="c1"># Don&#39;t start the interactive mode</span>
+            <span class="sa">f</span><span class="s1">&#39;-p </span><span class="si">{</span><span class="n">project_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;-a </span><span class="si">{</span><span class="n">author</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="sa">f</span><span class="s1">&#39;-v </span><span class="si">{</span><span class="n">version</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">project_dir</span><span class="p">,</span>
+            <span class="s1">&#39;--sep&#39;</span><span class="p">,</span>            <span class="c1"># Separate source and build directory</span>
+            <span class="s1">&#39;--ext-autodoc&#39;</span><span class="p">,</span>    <span class="c1"># Enable autodoc</span>
+            <span class="s1">&#39;--no-makefile&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;--no-batchfile&#39;</span>
+        <span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">main</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SphinxError</span></div>
+
+
+<div class="viewcode-block" id="SphinxProject.generate_project_files">
+<a class="viewcode-back" href="../developing/modules/autodoc.html#autodoc.SphinxProject.generate_project_files">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate_project_files</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sub_dir</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate the project files (`*.rst` files).</span>
+
+<span class="sd">        :param str sub_dir:</span>
+<span class="sd">            A sub-directory of the :attr:`project_source_dir` where the module</span>
+<span class="sd">            documentation will be generated in.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the project and/or package does not exist.</span>
+<span class="sd">        :raise SphinxError:</span>
+<span class="sd">            Raised if an error occured during the generation.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_project_and_package</span><span class="p">()</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">sphinx.ext.apidoc._cli</span><span class="w"> </span><span class="kn">import</span> <span class="n">main</span>
+        
+        <span class="n">argv</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s1">&#39;-e&#39;</span><span class="p">,</span>  <span class="c1"># Separate pages/files for every module</span>
+            <span class="s1">&#39;-o&#39;</span><span class="p">,</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_source_dir</span> <span class="o">/</span> <span class="n">sub_dir</span><span class="p">),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package_dir</span><span class="p">),</span>  <span class="c1"># Package to document</span>
+        <span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">main</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SphinxError</span></div>
+
+
+<div class="viewcode-block" id="SphinxProject.build">
+<a class="viewcode-back" href="../developing/modules/autodoc.html#autodoc.SphinxProject.build">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">clean</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Build the Sphinx project.</span>
+
+<span class="sd">        :param bool clean:</span>
+<span class="sd">            If True a clean build will be created.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the project and/or package does not exist.</span>
+<span class="sd">        :raise SphinxError:</span>
+<span class="sd">            Raised if an error occured during the build.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_project_and_package</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">clean</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">project_build_dir</span><span class="o">.</span><span class="n">rmtree_p</span><span class="p">()</span>
+
+        <span class="n">add_to_path</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_dir</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">path</span>
+        <span class="k">if</span> <span class="n">add_to_path</span><span class="p">:</span>
+            <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package_dir</span><span class="o">.</span><span class="n">parent</span><span class="p">))</span>
+
+        <span class="kn">from</span><span class="w"> </span><span class="nn">sphinx.cmd.build</span><span class="w"> </span><span class="kn">import</span> <span class="n">main</span>
+        <span class="n">argv</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_source_dir</span><span class="p">),</span>
+            <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">project_build_dir</span><span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">main</span><span class="p">(</span><span class="n">argv</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">SystemExit</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">e</span><span class="o">.</span><span class="n">code</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">SphinxError</span>
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">add_to_path</span><span class="p">:</span>
+                <span class="n">sys</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">package_dir</span><span class="o">.</span><span class="n">parent</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="SphinxProject.quickstart">
+<a class="viewcode-back" href="../developing/modules/autodoc.html#autodoc.SphinxProject.quickstart">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">quickstart</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">author</span><span class="p">,</span> <span class="n">project_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s1">&#39;1&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;A wrapper for creating, generating, and building documentation.</span>
+
+<span class="sd">        :param str author:</span>
+<span class="sd">            Author of the project.</span>
+<span class="sd">        :param str project_name:</span>
+<span class="sd">            Name of the project.</span>
+<span class="sd">        :param str version:</span>
+<span class="sd">            Version of the project.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_exists</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">author</span><span class="p">,</span> <span class="n">project_name</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">generate_project_files</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SphinxProject.validate_project_and_package">
+<a class="viewcode-back" href="../developing/modules/autodoc.html#autodoc.SphinxProject.validate_project_and_package">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_project_and_package</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate the project and package.</span>
+
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the project or package does not exist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_project</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">validate_package</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="SphinxProject.validate_project">
+<a class="viewcode-back" href="../developing/modules/autodoc.html#autodoc.SphinxProject.validate_project">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_project</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate the project.</span>
+
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the project does not exist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">project_exists</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Create the project before generating project files.&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="SphinxProject.validate_package">
+<a class="viewcode-back" href="../developing/modules/autodoc.html#autodoc.SphinxProject.validate_package">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">validate_package</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Validate the package.</span>
+
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the package does not exist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">package_exists</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The package does not exist.&#39;</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">autodoc</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

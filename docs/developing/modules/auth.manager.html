@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>auth.manager module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">auth.manager module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-auth.manager">
+<span id="auth-manager-module"></span><h1>auth.manager module<a class="headerlink" href="#module-auth.manager" title="Link to this heading">¶</a></h1>
+<p>Provides a singleton class to access player permissions.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="auth.manager.ParentPermissionDict">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">auth.manager.</span></span><span class="sig-name descname"><span class="pre">ParentPermissionDict</span></span><a class="reference internal" href="../../_modules/auth/manager.html#ParentPermissionDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#auth.manager.ParentPermissionDict" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_PermissionDict</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="auth.manager.ParentPermissions">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">auth.manager.</span></span><span class="sig-name descname"><span class="pre">ParentPermissions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/auth/manager.html#ParentPermissions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#auth.manager.ParentPermissions" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#auth.manager.PermissionBase" title="auth.manager.PermissionBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">PermissionBase</span></code></a></p>
+<p>A container for parent permissions.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="auth.manager.ParentPermissions.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/auth/manager.html#ParentPermissions.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#auth.manager.ParentPermissions.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the parent.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="auth.manager.PermissionBase">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">auth.manager.</span></span><span class="sig-name descname"><span class="pre">PermissionBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/auth/manager.html#PermissionBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#auth.manager.PermissionBase" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+<p>Base class for parent and player permissions.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="auth.manager.PermissionBase.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/auth/manager.html#PermissionBase.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#auth.manager.PermissionBase.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="auth.manager.PermissionBase.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permission</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/auth/manager.html#PermissionBase.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#auth.manager.PermissionBase.add" title="Link to this definition">¶</a></dt>
+<dd><p>Add a permission.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>permission</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The permission to add.</p></li>
+<li><p><strong>server_id</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The server ID to which the permission should be added. If no
+server ID is given, it will be only added to this server.</p></li>
+<li><p><strong>update_backend</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, the backend will be updated.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="auth.manager.PermissionBase.add_parent">
+<span class="sig-name descname"><span class="pre">add_parent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/auth/manager.html#PermissionBase.add_parent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#auth.manager.PermissionBase.add_parent" title="Link to this definition">¶</a></dt>
+<dd><p>Add a parent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the parent.</p></li>
+<li><p><strong>update_backend</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, the backend will be updated.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="auth.manager.PermissionBase.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/auth/manager.html#PermissionBase.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#auth.manager.PermissionBase.clear" title="Link to this definition">¶</a></dt>
+<dd><p>Removes all permissions stored in this object and its parents.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="auth.manager.PermissionBase.flatten">
+<span class="sig-name descname"><span class="pre">flatten</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/auth/manager.html#PermissionBase.flatten"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#auth.manager.PermissionBase.flatten" title="Link to this definition">¶</a></dt>
+<dd><p>Return all permissions flattened recursively.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>generator</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="auth.manager.PermissionBase.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">permission</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">server_id</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/auth/manager.html#PermissionBase.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#auth.manager.PermissionBase.remove" title="Link to this definition">¶</a></dt>
+<dd><p>Remove a permission.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>permission</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The permission to remove.</p></li>
+<li><p><strong>server_id</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The server ID from which the permission should be removed. If no
+server ID is given, it will be only removed from this server.</p></li>
+<li><p><strong>update_backend</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, the backend will be updated.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="auth.manager.PermissionBase.remove_parent">
+<span class="sig-name descname"><span class="pre">remove_parent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">parent_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">update_backend</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/auth/manager.html#PermissionBase.remove_parent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#auth.manager.PermissionBase.remove_parent" title="Link to this definition">¶</a></dt>
+<dd><p>Remove a parent.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parent_name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Name of the parent.</p></li>
+<li><p><strong>update_backend</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If True, the backend will be updated.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="auth.manager.PlayerPermissionDict">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">auth.manager.</span></span><span class="sig-name descname"><span class="pre">PlayerPermissionDict</span></span><a class="reference internal" href="../../_modules/auth/manager.html#PlayerPermissionDict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#auth.manager.PlayerPermissionDict" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_PermissionDict</span></code></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="auth.manager.PlayerPermissions">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">auth.manager.</span></span><span class="sig-name descname"><span class="pre">PlayerPermissions</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steamid64</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/auth/manager.html#PlayerPermissions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#auth.manager.PlayerPermissions" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#auth.manager.PermissionBase" title="auth.manager.PermissionBase"><code class="xref py py-class docutils literal notranslate"><span class="pre">PermissionBase</span></code></a></p>
+<p>A container for player permissions.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="auth.manager.PlayerPermissions.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">steamid64</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/auth/manager.html#PlayerPermissions.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#auth.manager.PlayerPermissions.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – A SteamID2, SteamID3 or SteamID64 value.</p></li>
+<li><p><strong>steamid64</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The SteamID64 value that was also used to store the object in the
+:class:PlayerPermissionDict`` object.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="auth.manager.auth_manager">
+<span class="sig-prename descclassname"><span class="pre">auth.manager.</span></span><span class="sig-name descname"><span class="pre">auth_manager</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'flatfile':</span> <span class="pre">&lt;auth.backend.flatfile.FlatfileBackend</span> <span class="pre">object&gt;,</span> <span class="pre">'sql':</span> <span class="pre">&lt;auth.backend.sql.SQLBackend</span> <span class="pre">object&gt;}</span></em><a class="headerlink" href="#auth.manager.auth_manager" title="Link to this definition">¶</a></dt>
+<dd><p>The singleton object of <code class="xref py py-class docutils literal notranslate"><span class="pre">_AuthManager</span></code>.</p>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">auth.manager module</a><ul>
+<li><a class="reference internal" href="#auth.manager.ParentPermissionDict"><code class="docutils literal notranslate"><span class="pre">ParentPermissionDict</span></code></a></li>
+<li><a class="reference internal" href="#auth.manager.ParentPermissions"><code class="docutils literal notranslate"><span class="pre">ParentPermissions</span></code></a><ul>
+<li><a class="reference internal" href="#auth.manager.ParentPermissions.__init__"><code class="docutils literal notranslate"><span class="pre">ParentPermissions.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#auth.manager.PermissionBase"><code class="docutils literal notranslate"><span class="pre">PermissionBase</span></code></a><ul>
+<li><a class="reference internal" href="#auth.manager.PermissionBase.__init__"><code class="docutils literal notranslate"><span class="pre">PermissionBase.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#auth.manager.PermissionBase.add"><code class="docutils literal notranslate"><span class="pre">PermissionBase.add()</span></code></a></li>
+<li><a class="reference internal" href="#auth.manager.PermissionBase.add_parent"><code class="docutils literal notranslate"><span class="pre">PermissionBase.add_parent()</span></code></a></li>
+<li><a class="reference internal" href="#auth.manager.PermissionBase.clear"><code class="docutils literal notranslate"><span class="pre">PermissionBase.clear()</span></code></a></li>
+<li><a class="reference internal" href="#auth.manager.PermissionBase.flatten"><code class="docutils literal notranslate"><span class="pre">PermissionBase.flatten()</span></code></a></li>
+<li><a class="reference internal" href="#auth.manager.PermissionBase.remove"><code class="docutils literal notranslate"><span class="pre">PermissionBase.remove()</span></code></a></li>
+<li><a class="reference internal" href="#auth.manager.PermissionBase.remove_parent"><code class="docutils literal notranslate"><span class="pre">PermissionBase.remove_parent()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#auth.manager.PlayerPermissionDict"><code class="docutils literal notranslate"><span class="pre">PlayerPermissionDict</span></code></a></li>
+<li><a class="reference internal" href="#auth.manager.PlayerPermissions"><code class="docutils literal notranslate"><span class="pre">PlayerPermissions</span></code></a><ul>
+<li><a class="reference internal" href="#auth.manager.PlayerPermissions.__init__"><code class="docutils literal notranslate"><span class="pre">PlayerPermissions.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#auth.manager.auth_manager"><code class="docutils literal notranslate"><span class="pre">auth_manager</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/auth.manager.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">auth.manager module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

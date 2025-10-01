@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>engines.sound &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">engines.sound</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for engines.sound</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../engines/sound.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides access to the Sound and StreamSound interfaces.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Contextlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">contextlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">closing</span>
+<span class="c1">#   Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">Enum</span>
+<span class="c1">#   Os</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+<span class="c1">#   Wave</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">wave</span>
+
+<span class="c1"># Site Package Imports</span>
+<span class="c1">#   Mutagen</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mutagen</span><span class="w"> </span><span class="kn">import</span> <span class="n">mp3</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mutagen</span><span class="w"> </span><span class="kn">import</span> <span class="n">oggvorbis</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Engines</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines</span><span class="w"> </span><span class="kn">import</span> <span class="n">engines_logger</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">INVALID_ENTITY_INDEX</span>
+<span class="c1">#   Filesystem</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filesystem</span><span class="w"> </span><span class="kn">import</span> <span class="n">SourceFile</span>
+<span class="c1">#   Mathlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">NULL_VECTOR</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">GAME_PATH</span>
+<span class="c1">#   Stringtables</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">stringtables</span><span class="w"> </span><span class="kn">import</span> <span class="n">INVALID_STRING_INDEX</span><span class="p">,</span> <span class="n">string_tables</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">stringtables.downloads</span><span class="w"> </span><span class="kn">import</span> <span class="n">Downloadables</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FORWARD IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Engines</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">Channel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">VOL_NORM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">ATTN_NONE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">ATTN_NORM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">ATTN_IDLE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">ATTN_STATIC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">ATTN_RICOCHET</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">ATTN_GUNFIRE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">MAX_ATTENUATION</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">SoundFlags</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pitch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">SOUND_FROM_LOCAL_PLAYER</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">SOUND_FROM_WORLD</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">engine_sound</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Attenuation&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Channel&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Pitch&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SOUND_FROM_LOCAL_PLAYER&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SOUND_FROM_WORLD&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Sound&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SoundFlags&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;StreamSound&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;VOL_NORM&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;engine_sound&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Get the sp.engines.sound logger</span>
+<span class="n">engines_sound_logger</span> <span class="o">=</span> <span class="n">engines_logger</span><span class="o">.</span><span class="n">sound</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ENUMERATORS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="Attenuation">
+<a class="viewcode-back" href="../../developing/modules/engines.sound.html#engines.sound.Attenuation">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Attenuation</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Attenuation values wrapper enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">NONE</span> <span class="o">=</span> <span class="n">ATTN_NONE</span>
+    <span class="n">NORMAL</span> <span class="o">=</span> <span class="n">ATTN_NORM</span>
+    <span class="n">IDLE</span> <span class="o">=</span> <span class="n">ATTN_IDLE</span>
+    <span class="n">STATIC</span> <span class="o">=</span> <span class="n">ATTN_STATIC</span>
+    <span class="n">RICOCHET</span> <span class="o">=</span> <span class="n">ATTN_RICOCHET</span>
+    <span class="n">GUNFIRE</span> <span class="o">=</span> <span class="n">ATTN_GUNFIRE</span>
+    <span class="n">MAXIMUM</span> <span class="o">=</span> <span class="n">MAX_ATTENUATION</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_BaseSound</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for sound classes.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Set the base _downloads attribute to know whether</span>
+    <span class="c1">#   or not the sample was added to the downloadables</span>
+    <span class="n">_downloads</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">SOUND_FROM_WORLD</span><span class="p">,</span> <span class="n">volume</span><span class="o">=</span><span class="n">VOL_NORM</span><span class="p">,</span>
+            <span class="n">attenuation</span><span class="o">=</span><span class="n">Attenuation</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="n">Channel</span><span class="o">.</span><span class="n">AUTO</span><span class="p">,</span>
+            <span class="n">flags</span><span class="o">=</span><span class="n">SoundFlags</span><span class="o">.</span><span class="n">NO_FLAGS</span><span class="p">,</span> <span class="n">pitch</span><span class="o">=</span><span class="n">Pitch</span><span class="o">.</span><span class="n">NORMAL</span><span class="p">,</span>
+            <span class="n">origin</span><span class="o">=</span><span class="n">NULL_VECTOR</span><span class="p">,</span> <span class="n">direction</span><span class="o">=</span><span class="n">NULL_VECTOR</span><span class="p">,</span> <span class="n">origins</span><span class="o">=</span><span class="p">(),</span>
+            <span class="n">update_positions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">sound_time</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span>
+            <span class="n">speaker_entity</span><span class="o">=</span><span class="n">INVALID_ENTITY_INDEX</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store all the given attributes and set the module for unloading.</span>
+
+<span class="sd">        :param str sample:</span>
+<span class="sd">            Path to the sound file.</span>
+<span class="sd">        :param int index:</span>
+<span class="sd">            An entity index to play the sound from. Use</span>
+<span class="sd">            :data:`SOUND_FROM_WORLD` if you want to play the sound from the</span>
+<span class="sd">            world.</span>
+<span class="sd">        :param float volume:</span>
+<span class="sd">            Volume to play the sound with.</span>
+<span class="sd">        :param Attenuation attenuation:</span>
+<span class="sd">            Define how the sound attenuates.</span>
+<span class="sd">        :param Channel channel:</span>
+<span class="sd">            Channel to use when playing the sound.</span>
+<span class="sd">        :param SoundFlags flags:</span>
+<span class="sd">        :param Pitch pitch:</span>
+<span class="sd">            Pitch of the sound.</span>
+<span class="sd">        :param Vector origin:</span>
+<span class="sd">            Location to play the sound from.</span>
+<span class="sd">        :param Vector direction:</span>
+<span class="sd">            Direction to play the sound.</span>
+<span class="sd">        :param tuple origins:</span>
+<span class="sd">            Locations to play the sound from.</span>
+<span class="sd">        :param bool update_positions:</span>
+<span class="sd">        :param float sound_time:</span>
+<span class="sd">        :param int speaker_entity:</span>
+<span class="sd">        :param bool download:</span>
+<span class="sd">            If ``True`` the sound file will be added to the ``downloadables``</span>
+<span class="sd">            list.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Set sample as a private attribute, since it should never change</span>
+        <span class="c1"># Added replacing \ with / in paths for comformity</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_duration</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Set all the base attributes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="n">volume</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">attenuation</span> <span class="o">=</span> <span class="n">attenuation</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">channel</span> <span class="o">=</span> <span class="n">channel</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">flags</span> <span class="o">=</span> <span class="n">flags</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pitch</span> <span class="o">=</span> <span class="n">pitch</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">origin</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">direction</span> <span class="o">=</span> <span class="n">direction</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">origins</span> <span class="o">=</span> <span class="n">origins</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">update_positions</span> <span class="o">=</span> <span class="n">update_positions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sound_time</span> <span class="o">=</span> <span class="n">sound_time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">speaker_entity</span> <span class="o">=</span> <span class="n">speaker_entity</span>
+
+        <span class="c1"># Should the sample be downloaded by clients?</span>
+        <span class="k">if</span> <span class="n">download</span><span class="p">:</span>
+
+            <span class="c1"># Add the sample to Downloadables</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_downloads</span> <span class="o">=</span> <span class="n">Downloadables</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_downloads</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">relative_path</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">play</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">recipients</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Play the sound.</span>
+
+<span class="sd">        :param recipients:</span>
+<span class="sd">            Players who will hear the sound.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Done here to fix a cyclic import...</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">filters.recipients</span><span class="w"> </span><span class="kn">import</span> <span class="n">RecipientFilter</span>
+
+        <span class="c1"># Get the recipients to play the sound to</span>
+        <span class="n">recipients</span> <span class="o">=</span> <span class="n">RecipientFilter</span><span class="p">(</span><span class="o">*</span><span class="n">recipients</span><span class="p">)</span>
+
+        <span class="c1"># Is the sound precached?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_precached</span><span class="p">:</span>
+
+            <span class="c1"># Precache the sound</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">precache</span><span class="p">()</span>
+
+        <span class="c1"># Play the sound</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_play</span><span class="p">(</span><span class="n">recipients</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop a sound from being played.&quot;&quot;&quot;</span>
+        <span class="c1"># Was an index passed in?</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Use the instance&#39;s index</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span>
+
+        <span class="c1"># Was a channel passed in?</span>
+        <span class="k">if</span> <span class="n">channel</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Use the instance&#39;s index</span>
+            <span class="n">channel</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span>
+
+        <span class="c1"># Stop the sound</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_stop</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">channel</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_play</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipients</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Play the sound (internal).&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">channel</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop a sound from being played (internal).&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">precache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Precache the sample.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_precached</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether or not the sample is precached.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the filename of the Sound instance.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sample</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">extension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the type of sound.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">full_path</span><span class="o">.</span><span class="n">suffix</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">full_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the full path to the file.</span>
+
+<span class="sd">        :rtype: path.Path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">GAME_PATH</span> <span class="o">/</span> <span class="s1">&#39;sound&#39;</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">relative_path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the relative path to the file.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s1">&#39;sound&#39;</span> <span class="o">+</span> <span class="n">os</span><span class="o">.</span><span class="n">sep</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">duration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the duration of the sample.</span>
+
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_duration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_duration</span>
+
+        <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">SourceFile</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">relative_path</span><span class="p">,</span> <span class="s1">&#39;rb&#39;</span><span class="p">))</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">==</span> <span class="s1">&#39;ogg&#39;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">oggvorbis</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">length</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">==</span> <span class="s1">&#39;mp3&#39;</span><span class="p">:</span>
+                <span class="n">value</span> <span class="o">=</span> <span class="n">mp3</span><span class="o">.</span><span class="n">Open</span><span class="p">(</span><span class="n">f</span><span class="p">)</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">length</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">extension</span> <span class="o">==</span> <span class="s1">&#39;wav&#39;</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">closing</span><span class="p">(</span><span class="n">wave</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">f</span><span class="p">))</span> <span class="k">as</span> <span class="n">open_file</span><span class="p">:</span>
+                    <span class="n">value</span> <span class="o">=</span> <span class="n">open_file</span><span class="o">.</span><span class="n">getnframes</span><span class="p">()</span> <span class="o">/</span> <span class="n">open_file</span><span class="o">.</span><span class="n">getframerate</span><span class="p">()</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                    <span class="s1">&#39;Sound extension &quot;</span><span class="si">{extension}</span><span class="s1">&quot; is not supported.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">extension</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">extension</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_duration</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+
+<div class="viewcode-block" id="Sound">
+<a class="viewcode-back" href="../../developing/modules/engines.sound.html#engines.sound.Sound">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Sound</span><span class="p">(</span><span class="n">_BaseSound</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to interact with precached sounds.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">       On some engines (e.g. CS:GO) server is unable to precache the sound,</span>
+<span class="sd">       thus the sound won&#39;t be played. StreamSound is recommended in that case.</span>
+<span class="sd">       However, sounds located in sound/music/ directory are always streamed</span>
+<span class="sd">       on those engines, and this class will be able to play them.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_play</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipients</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Play the sound (internal).&quot;&quot;&quot;</span>
+        <span class="n">engine_sound</span><span class="o">.</span><span class="n">emit_sound</span><span class="p">(</span>
+            <span class="n">recipients</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attenuation</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">flags</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">origins</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sound_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">speaker_entity</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">channel</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop a sound from being played (internal).&quot;&quot;&quot;</span>
+        <span class="n">engine_sound</span><span class="o">.</span><span class="n">stop_sound</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Sound.precache">
+<a class="viewcode-back" href="../../developing/modules/engines.sound.html#engines.sound.Sound.precache">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">precache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Precache the sample.&quot;&quot;&quot;</span>
+        <span class="n">engine_sound</span><span class="o">.</span><span class="n">precache_sound</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_precached</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether or not the sample is precached.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># We can&#39;t use engine_sound.is_sound_precached here because it always</span>
+        <span class="c1">#   returns True.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sample</span> <span class="ow">in</span> <span class="n">string_tables</span><span class="o">.</span><span class="n">soundprecache</span></div>
+
+
+
+<div class="viewcode-block" id="StreamSound">
+<a class="viewcode-back" href="../../developing/modules/engines.sound.html#engines.sound.StreamSound">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StreamSound</span><span class="p">(</span><span class="n">_BaseSound</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to interact with streamed sounds.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">       This class is a recommended choice on some engines (e.g. CS:GO),</span>
+<span class="sd">       however, it&#39;s unable to play *.wav-files.</span>
+
+<span class="sd">    .. note::</span>
+
+<span class="sd">        On some engines (e.g. CS:GO) files that are located in sound/music/</span>
+<span class="sd">        directory are already streamed, so simple Sound class can be used</span>
+<span class="sd">        instead.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_stream_sample</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the streamed sample path of the Sound instance.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="s2">&quot;*/</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sample</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_play</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">recipients</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Play the sound (internal).&quot;&quot;&quot;</span>
+        <span class="n">engine_sound</span><span class="o">.</span><span class="n">emit_sound</span><span class="p">(</span>
+            <span class="n">recipients</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">channel</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stream_sample</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">volume</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">attenuation</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">flags</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pitch</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">direction</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">origins</span><span class="p">,</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">update_positions</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sound_time</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">speaker_entity</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_stop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">channel</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Stop a sound from being played (internal).&quot;&quot;&quot;</span>
+        <span class="n">engine_sound</span><span class="o">.</span><span class="n">stop_sound</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stream_sample</span><span class="p">)</span>
+
+<div class="viewcode-block" id="StreamSound.precache">
+<a class="viewcode-back" href="../../developing/modules/engines.sound.html#engines.sound.StreamSound.precache">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">precache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Precache the sample.&quot;&quot;&quot;</span>
+        <span class="n">string_tables</span><span class="o">.</span><span class="n">soundprecache</span><span class="o">.</span><span class="n">add_string</span><span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_stream_sample</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stream_sample</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_precached</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether or not the sample is precached.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># We can&#39;t use engine_sound.is_sound_precached here because it always</span>
+        <span class="c1">#   returns True.</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_stream_sample</span> <span class="ow">in</span> <span class="n">string_tables</span><span class="o">.</span><span class="n">soundprecache</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">engines.sound</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

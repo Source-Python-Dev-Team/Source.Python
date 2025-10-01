@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>entities.helpers &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.helpers</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for entities.helpers</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../entities/helpers.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides helper functions to convert from one type to another.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">CachedProperty</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FORWARD IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">baseentity_from_basehandle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">baseentity_from_edict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">baseentity_from_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">baseentity_from_inthandle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">baseentity_from_pointer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">basehandle_from_baseentity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">basehandle_from_edict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">basehandle_from_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">basehandle_from_inthandle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">basehandle_from_pointer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">edict_from_baseentity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">edict_from_basehandle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">edict_from_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">edict_from_inthandle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">edict_from_pointer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_output_name</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">index_from_baseentity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">index_from_basehandle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">index_from_edict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">index_from_inthandle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">index_from_pointer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">inthandle_from_baseentity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">inthandle_from_basehandle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">inthandle_from_edict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">inthandle_from_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">inthandle_from_pointer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">pointer_from_baseentity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">pointer_from_basehandle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">pointer_from_edict</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">pointer_from_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">pointer_from_inthandle</span>
+<span class="c1">#   Memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemberFunction</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;baseentity_from_basehandle&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;baseentity_from_edict&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;baseentity_from_index&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;baseentity_from_inthandle&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;baseentity_from_pointer&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;basehandle_from_baseentity&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;basehandle_from_edict&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;basehandle_from_index&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;basehandle_from_inthandle&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;basehandle_from_pointer&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;edict_from_baseentity&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;edict_from_basehandle&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;edict_from_index&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;edict_from_inthandle&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;edict_from_pointer&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;find_output_name&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;index_from_baseentity&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;index_from_basehandle&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;index_from_edict&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;index_from_inthandle&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;index_from_pointer&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;inthandle_from_baseentity&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;inthandle_from_basehandle&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;inthandle_from_edict&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;inthandle_from_index&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;inthandle_from_pointer&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;pointer_from_baseentity&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;pointer_from_basehandle&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;pointer_from_edict&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;pointer_from_index&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;pointer_from_inthandle&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;EntityMemFuncWrapper&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;wrap_entity_mem_func&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="EntityMemFuncWrapper">
+<a class="viewcode-back" href="../../developing/modules/entities.helpers.html#entities.helpers.EntityMemFuncWrapper">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EntityMemFuncWrapper</span><span class="p">(</span><span class="n">MemberFunction</span><span class="p">):</span>
+<div class="viewcode-block" id="EntityMemFuncWrapper.__init__">
+<a class="viewcode-back" href="../../developing/modules/entities.helpers.html#entities.helpers.EntityMemFuncWrapper.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapped_self</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">):</span>
+        <span class="n">func</span> <span class="o">=</span> <span class="n">wrapped_self</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="n">wrapper</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">func</span><span class="o">.</span><span class="n">_manager</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="n">_type_name</span><span class="p">,</span> <span class="n">func</span><span class="p">,</span> <span class="n">func</span><span class="o">.</span><span class="n">_this</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span> <span class="o">=</span> <span class="n">wrapper</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">wrapped_self</span> <span class="o">=</span> <span class="n">wrapped_self</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span>
+            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapped_self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+<div class="viewcode-block" id="EntityMemFuncWrapper.call_trampoline">
+<a class="viewcode-back" href="../../developing/modules/entities.helpers.html#entities.helpers.EntityMemFuncWrapper.call_trampoline">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">call_trampoline</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">call_trampoline</span><span class="p">(</span>
+            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapped_self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="EntityMemFuncWrapper.skip_hooks">
+<a class="viewcode-back" href="../../developing/modules/entities.helpers.html#entities.helpers.EntityMemFuncWrapper.skip_hooks">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">skip_hooks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">skip_hooks</span><span class="p">(</span>
+            <span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">wrapped_self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span></div>
+</div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FUNCTIONS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="wrap_entity_mem_func">
+<a class="viewcode-back" href="../../developing/modules/entities.helpers.html#entities.helpers.wrap_entity_mem_func">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">wrap_entity_mem_func</span><span class="p">(</span><span class="n">wrapper</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A decorator to wrap an entity memory function.&quot;&quot;&quot;</span>
+
+    <span class="k">return</span> <span class="n">CachedProperty</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">:</span> <span class="n">EntityMemFuncWrapper</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">wrapper</span><span class="p">),</span>
+        <span class="n">doc</span><span class="o">=</span><span class="n">wrapper</span><span class="o">.</span><span class="vm">__doc__</span>
+    <span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.helpers</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

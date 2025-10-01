@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>messages.hooks &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">messages.hooks</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for messages.hooks</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../messages/hooks.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides user message hooking functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># TODO:</span>
+<span class="c1"># - Implement more user messages</span>
+<span class="c1"># - Use these message implementations for the UserMessageCreator subclasses.</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python</span>
+<span class="c1">#   Collections</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="c1"># Source.Python</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoUnload</span>
+<span class="c1">#   Engines</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">engine_server</span>
+<span class="c1">#   Filters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.recipients</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseRecipientFilter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.recipients</span><span class="w"> </span><span class="kn">import</span> <span class="n">RecipientFilter</span>
+<span class="c1">#   Bitbuffers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bitbuffers</span><span class="w"> </span><span class="kn">import</span> <span class="n">BitBufferWrite</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">bitbuffers</span><span class="w"> </span><span class="kn">import</span> <span class="n">BitBufferRead</span>
+<span class="c1">#   Listeners</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">ListenerManager</span>
+<span class="c1">#   Memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_object</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_object_pointer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_size</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_virtual_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">PreHook</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">PostHook</span>
+<span class="c1">#   Messages</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">UserMessage</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_message_index</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_message_name</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">messages.impl</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_user_message_impl</span>
+
+<span class="k">if</span> <span class="n">UserMessage</span><span class="o">.</span><span class="n">is_protobuf</span><span class="p">():</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">_messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">ProtobufMessage</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="s1">&#39;HookUserMessageBase&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;HookBitBufferUserMessage&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;HookProtobufUserMessage&#39;</span><span class="p">,</span>
+    <span class="s1">&#39;HookUserMessage&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">_user_message_data</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">_recipients</span> <span class="o">=</span> <span class="n">RecipientFilter</span><span class="p">()</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="HookUserMessageBase">
+<a class="viewcode-back" href="../../developing/modules/messages.hooks.html#messages.hooks.HookUserMessageBase">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HookUserMessageBase</span><span class="p">(</span><span class="n">AutoUnload</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base decorator for user message hooks.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="HookUserMessageBase.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.hooks.html#messages.hooks.HookUserMessageBase.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_message</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new user message hook.</span>
+
+<span class="sd">        :param int/str user_message:</span>
+<span class="sd">            The user message index or name to hook.</span>
+<span class="sd">        :raise TypeError:</span>
+<span class="sd">            Raised if ``user_message`` is not and int or str.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the user message does not exist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user_message</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">user_message</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">user_message</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">index</span> <span class="o">=</span> <span class="n">get_message_index</span><span class="p">(</span><span class="n">user_message</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s1">&#39;Invalid type for &quot;user_message&quot;. int or str required.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">message_index</span> <span class="o">=</span> <span class="n">index</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">message_name</span> <span class="o">=</span> <span class="n">get_message_name</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Verify that it&#39;s a valid index</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Invalid user message: </span><span class="si">{</span><span class="n">user_message</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Finalize the hook registration by registering the callback.</span>
+
+<span class="sd">        :param object callback:</span>
+<span class="sd">            A callable object that will be called when a user message is</span>
+<span class="sd">            created.</span>
+<span class="sd">        :return:</span>
+<span class="sd">            The callback that has been passed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Callback must be callable.&#39;</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hooks</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">message_index</span><span class="p">]</span><span class="o">.</span><span class="n">register_listener</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unregister the user message hook.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">hooks</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">message_index</span><span class="p">]</span><span class="o">.</span><span class="n">unregister_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hooks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return all hooks for a user message.</span>
+
+<span class="sd">        :rtype: ListenerManager</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Must be implemented by a subclass.&#39;</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="HookBitBufferUserMessage">
+<a class="viewcode-back" href="../../developing/modules/messages.hooks.html#messages.hooks.HookBitBufferUserMessage">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HookBitBufferUserMessage</span><span class="p">(</span><span class="n">HookUserMessageBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator to register a raw user message hook for bitbuffer messages.&quot;&quot;&quot;</span>
+
+    <span class="n">hooks</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">ListenerManager</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="HookProtobufUserMessage">
+<a class="viewcode-back" href="../../developing/modules/messages.hooks.html#messages.hooks.HookProtobufUserMessage">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HookProtobufUserMessage</span><span class="p">(</span><span class="n">HookUserMessageBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator to register a raw user message hook for protobuf messages.&quot;&quot;&quot;</span>
+
+    <span class="n">hooks</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">ListenerManager</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="HookUserMessage">
+<a class="viewcode-back" href="../../developing/modules/messages.hooks.html#messages.hooks.HookUserMessage">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HookUserMessage</span><span class="p">(</span><span class="n">HookUserMessageBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator to register a convenient user message hook.&quot;&quot;&quot;</span>
+
+    <span class="n">hooks</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">ListenerManager</span><span class="p">)</span>
+
+<div class="viewcode-block" id="HookUserMessage.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.hooks.html#messages.hooks.HookUserMessage.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">user_message</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new user message hook.</span>
+
+<span class="sd">        :raise NotImplementedError:</span>
+<span class="sd">            Raised if the user message has not been implemented yet in</span>
+<span class="sd">            Source.Python.</span>
+
+<span class="sd">        .. seealso:: :meth:`HookUserMessageBase.__init__`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">user_message</span><span class="p">)</span>
+
+        <span class="c1"># Verify that the user message is supported/implemented. This will</span>
+        <span class="c1"># raise a NotImplementedError if it isn&#39;t.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">impl</span> <span class="o">=</span> <span class="n">get_user_message_impl</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message_index</span><span class="p">)</span></div>
+</div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; HOOKS</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">if</span> <span class="n">UserMessage</span><span class="o">.</span><span class="n">is_protobuf</span><span class="p">():</span>
+    <span class="nd">@PreHook</span><span class="p">(</span><span class="n">get_virtual_function</span><span class="p">(</span><span class="n">engine_server</span><span class="p">,</span> <span class="s1">&#39;SendUserMessage&#39;</span><span class="p">))</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pre_send_user_message</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+        <span class="n">message_index</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="n">user_message_hooks</span> <span class="o">=</span> <span class="n">HookUserMessage</span><span class="o">.</span><span class="n">hooks</span><span class="p">[</span><span class="n">message_index</span><span class="p">]</span>
+        <span class="n">protobuf_user_message_hooks</span> <span class="o">=</span> <span class="n">HookProtobufUserMessage</span><span class="o">.</span><span class="n">hooks</span><span class="p">[</span><span class="n">message_index</span><span class="p">]</span>
+
+        <span class="c1"># No need to do anything behind this if no listener is registered</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user_message_hooks</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">protobuf_user_message_hooks</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Replace original recipients filter</span>
+            <span class="n">tmp_recipients</span> <span class="o">=</span> <span class="n">make_object</span><span class="p">(</span><span class="n">BaseRecipientFilter</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="c1"># Patch for issue #314</span>
+            <span class="n">tmp_recipients</span> <span class="o">=</span> <span class="n">RecipientFilter</span><span class="o">.</span><span class="n">from_abstract_pointer</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">_recipients</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">*</span><span class="nb">tuple</span><span class="p">(</span><span class="n">tmp_recipients</span><span class="p">),</span> <span class="n">clear</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">_recipients</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">buffer</span> <span class="o">=</span> <span class="n">make_object</span><span class="p">(</span><span class="n">ProtobufMessage</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+            <span class="n">wrapped_from_abstract</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="c1"># Patch for issue #390 - UserMessage was created by another plugin.</span>
+            <span class="n">buffer</span> <span class="o">=</span> <span class="n">ProtobufMessage</span><span class="o">.</span><span class="n">from_abstract_pointer</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+            <span class="n">wrapped_from_abstract</span> <span class="o">=</span> <span class="kc">True</span>
+
+        <span class="n">protobuf_user_message_hooks</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">_recipients</span><span class="p">,</span> <span class="n">buffer</span><span class="p">)</span>
+
+        <span class="c1"># No need to do anything behind this if no listener is registered</span>
+        <span class="k">if</span> <span class="n">user_message_hooks</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">impl</span> <span class="o">=</span> <span class="n">get_user_message_impl</span><span class="p">(</span><span class="n">message_index</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+                <span class="n">impl</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="n">impl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">impl</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">buffer</span><span class="p">)</span>
+                <span class="n">user_message_hooks</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">_recipients</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+                <span class="c1"># Update buffer if data has been changed</span>
+                <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">has_been_changed</span><span class="p">():</span>
+                    <span class="n">buffer</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+                    <span class="n">impl</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">buffer</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># If we wrapped the buffer from an abstract pointer, make sure to</span>
+        <span class="c1">#   apply any changes that may have been made back into the original.</span>
+        <span class="k">if</span> <span class="n">wrapped_from_abstract</span><span class="p">:</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="n">parse_to_abstract_pointer</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+
+<span class="k">else</span><span class="p">:</span>
+    <span class="nd">@PreHook</span><span class="p">(</span><span class="n">get_virtual_function</span><span class="p">(</span><span class="n">engine_server</span><span class="p">,</span> <span class="s1">&#39;UserMessageBegin&#39;</span><span class="p">))</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pre_user_message_begin</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Replace original recipients filter</span>
+            <span class="n">tmp_recipients</span> <span class="o">=</span> <span class="n">make_object</span><span class="p">(</span><span class="n">BaseRecipientFilter</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+            <span class="c1"># Patch for issue #314</span>
+            <span class="n">tmp_recipients</span> <span class="o">=</span> <span class="n">RecipientFilter</span><span class="o">.</span><span class="n">from_abstract_pointer</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">_recipients</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">*</span><span class="nb">tuple</span><span class="p">(</span><span class="n">tmp_recipients</span><span class="p">),</span> <span class="n">clear</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">_recipients</span>
+
+    <span class="nd">@PostHook</span><span class="p">(</span><span class="n">get_virtual_function</span><span class="p">(</span><span class="n">engine_server</span><span class="p">,</span> <span class="s1">&#39;UserMessageBegin&#39;</span><span class="p">))</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_post_user_message_begin</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">return_value</span><span class="p">):</span>
+        <span class="k">global</span> <span class="n">_user_message_data</span>
+        <span class="n">_user_message_data</span> <span class="o">=</span> <span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">return_value</span><span class="p">)</span>
+
+    <span class="nd">@PreHook</span><span class="p">(</span><span class="n">get_virtual_function</span><span class="p">(</span><span class="n">engine_server</span><span class="p">,</span> <span class="s1">&#39;MessageEnd&#39;</span><span class="p">))</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_pre_message_end</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+        <span class="c1"># This happens when we initialize our hooks, while a user message is</span>
+        <span class="c1"># currently being created</span>
+        <span class="k">if</span> <span class="n">_user_message_data</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">message_index</span><span class="p">,</span> <span class="n">buffer_write_ptr</span> <span class="o">=</span> <span class="n">_user_message_data</span>
+
+        <span class="c1"># Retrieve the ListenerManager instances</span>
+        <span class="n">user_message_hooks</span> <span class="o">=</span> <span class="n">HookUserMessage</span><span class="o">.</span><span class="n">hooks</span><span class="p">[</span><span class="n">message_index</span><span class="p">]</span>
+        <span class="n">bitbuffer_user_message_hooks</span> <span class="o">=</span> <span class="n">HookBitBufferUserMessage</span><span class="o">.</span><span class="n">hooks</span><span class="p">[</span><span class="n">message_index</span><span class="p">]</span>
+
+        <span class="c1"># No need to do anything behind this if no listener is registered</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user_message_hooks</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">bitbuffer_user_message_hooks</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">buffer_write</span> <span class="o">=</span> <span class="n">make_object</span><span class="p">(</span><span class="n">BitBufferWrite</span><span class="p">,</span> <span class="n">buffer_write_ptr</span><span class="p">)</span>
+        <span class="n">buffer_read</span> <span class="o">=</span> <span class="n">BitBufferRead</span><span class="p">(</span><span class="n">buffer_write</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">org_current_bit</span> <span class="o">=</span> <span class="n">buffer_write</span><span class="o">.</span><span class="n">current_bit</span>
+
+        <span class="c1"># For bitbuffers we need to make sure every callback starts reading and</span>
+        <span class="c1"># writing from the very first bit.</span>
+        <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="n">bitbuffer_user_message_hooks</span><span class="p">:</span>
+            <span class="n">buffer_read</span><span class="o">.</span><span class="n">seek_to_bit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">buffer_write</span><span class="o">.</span><span class="n">seek_to_bit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">callback</span><span class="p">(</span><span class="n">_recipients</span><span class="p">,</span> <span class="n">buffer_read</span><span class="p">,</span> <span class="n">buffer_write</span><span class="p">)</span>
+
+        <span class="c1"># If none of the above callbacks wrote to the buffer, we need to restore</span>
+        <span class="c1"># the current_bit to the original value.</span>
+        <span class="k">if</span> <span class="n">buffer_write</span><span class="o">.</span><span class="n">current_bit</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">buffer_write</span><span class="o">.</span><span class="n">seek_to_bit</span><span class="p">(</span><span class="n">org_current_bit</span><span class="p">)</span>
+
+        <span class="c1"># No need to do anything behind this if no listener is registered</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">user_message_hooks</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">impl</span> <span class="o">=</span> <span class="n">get_user_message_impl</span><span class="p">(</span><span class="n">message_index</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="n">buffer_read</span><span class="o">.</span><span class="n">seek_to_bit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">impl</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">buffer_read</span><span class="p">)</span>
+        <span class="n">user_message_hooks</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">_recipients</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="c1"># Update buffer if data has been changed</span>
+        <span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">has_been_changed</span><span class="p">():</span>
+            <span class="n">buffer_write</span><span class="o">.</span><span class="n">seek_to_bit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">impl</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">buffer_write</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">messages.hooks</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

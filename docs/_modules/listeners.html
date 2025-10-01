@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>listeners &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=2780edc4" />
+    
+    <script src="../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">listeners</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for listeners</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../listeners/__init__.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides listener based functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">socket</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntEnum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">urllib.error</span><span class="w"> </span><span class="kn">import</span> <span class="n">URLError</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoUnload</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">SOURCE_ENGINE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">PLATFORM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">_core_settings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_last_successful_build_number</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_unversioned</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">VERSION</span>
+<span class="c1">#   Cvars</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cvars</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConVar</span>
+<span class="c1">#   Engines</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">server_game_dll</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEntityOutput</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">Variant</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_output_name</span>
+<span class="c1">#   Memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_virtual_function</span>
+<span class="c1">#   Players</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlayerButtons</span>
+<span class="c1">#   Loggers</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">loggers</span><span class="w"> </span><span class="kn">import</span> <span class="n">_sp_logger</span>
+<span class="c1">#   Memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_virtual_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_object</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">PreHook</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FORWARD IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Listeners</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">ListenerManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_client_active_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_client_connect_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_client_disconnect_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_client_fully_connect_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_client_put_in_server_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_client_settings_changed_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_convar_changed_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_level_init_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_level_shutdown_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_network_id_validated_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_edict_allocated_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_edict_freed_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_entity_pre_spawned_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_networked_entity_pre_spawned_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_entity_created_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_networked_entity_created_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_entity_spawned_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_networked_entity_spawned_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_entity_deleted_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_networked_entity_deleted_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_entity_collision_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_entity_transmit_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_data_loaded_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_combiner_pre_cache_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_data_unloaded_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_query_cvar_value_finished_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_server_activate_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_tick_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_server_output_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_player_collision_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_player_transmit_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_player_run_command_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_player_post_run_command_listener_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_button_state_changed_listener_manager</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;ButtonStatus&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ListenerManager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ListenerManagerDecorator&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnClientActive&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnClientConnect&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnClientDisconnect&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnClientFullyConnect&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnClientPutInServer&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnClientSettingsChanged&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnCombinerPreCache&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnConVarChanged&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnDataLoaded&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnDataUnloaded&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnEdictAllocated&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnEdictFreed&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnEntityCreated&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnNetworkedEntityCreated&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnEntityDeleted&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnNetworkedEntityDeleted&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnEntityCollision&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnEntityTransmit&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnEntityOutput&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnEntityOutputListenerManager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnEntityPreSpawned&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnNetworkedEntityPreSpawned&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnEntitySpawned&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnNetworkedEntitySpawned&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnLevelInit&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnLevelShutdown&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnLevelEnd&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnNetworkidValidated&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnButtonStateChanged&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnPlayerCollision&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnPlayerTransmit&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnPlayerRunCommand&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnPlayerPostRunCommand&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnPluginLoaded&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnPluginLoading&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnPluginUnloaded&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnPluginUnloading&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnQueryCvarValueFinished&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnServerActivate&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnTick&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnVersionUpdate&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;OnServerOutput&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;get_button_combination_status&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_client_active_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_client_connect_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_client_disconnect_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_client_fully_connect_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_client_put_in_server_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_client_settings_changed_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_combiner_pre_cache_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_convar_changed_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_data_loaded_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_data_unloaded_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_edict_allocated_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_edict_freed_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_entity_created_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_networked_entity_created_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_entity_deleted_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_networked_entity_deleted_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_entity_collision_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_entity_transmit_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_entity_output_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_entity_pre_spawned_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_networked_entity_pre_spawned_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_entity_spawned_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_networked_entity_spawned_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_level_end_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_level_init_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_level_shutdown_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_network_id_validated_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_plugin_loaded_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_plugin_loading_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_plugin_unloaded_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_plugin_unloading_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_query_cvar_value_finished_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_server_activate_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_tick_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_version_update_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_server_output_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_player_collision_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_player_transmit_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_player_run_command_listener_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;on_button_state_changed_listener_manager&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Get the sp.listeners logger</span>
+<span class="n">listeners_logger</span> <span class="o">=</span> <span class="n">_sp_logger</span><span class="o">.</span><span class="n">listeners</span>
+
+<span class="n">on_version_update_listener_manager</span> <span class="o">=</span> <span class="n">ListenerManager</span><span class="p">()</span>
+<span class="n">on_plugin_loaded_manager</span> <span class="o">=</span> <span class="n">ListenerManager</span><span class="p">()</span>
+<span class="n">on_plugin_unloaded_manager</span> <span class="o">=</span> <span class="n">ListenerManager</span><span class="p">()</span>
+<span class="n">on_plugin_loading_manager</span> <span class="o">=</span> <span class="n">ListenerManager</span><span class="p">()</span>
+<span class="n">on_plugin_unloading_manager</span> <span class="o">=</span> <span class="n">ListenerManager</span><span class="p">()</span>
+<span class="n">on_level_end_listener_manager</span> <span class="o">=</span> <span class="n">ListenerManager</span><span class="p">()</span>
+
+<span class="n">_check_for_update</span> <span class="o">=</span> <span class="n">ConVar</span><span class="p">(</span>
+    <span class="s1">&#39;sp_check_for_update&#39;</span><span class="p">,</span>
+    <span class="n">_core_settings</span><span class="p">[</span><span class="s1">&#39;VERSION_SETTINGS&#39;</span><span class="p">][</span><span class="s1">&#39;check_for_update&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Enable/disable checking for version updates.&#39;</span><span class="p">,</span> <span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">_notify_on_update</span> <span class="o">=</span> <span class="n">ConVar</span><span class="p">(</span>
+    <span class="s1">&#39;sp_notify_on_update&#39;</span><span class="p">,</span>
+    <span class="n">_core_settings</span><span class="p">[</span><span class="s1">&#39;VERSION_SETTINGS&#39;</span><span class="p">][</span><span class="s1">&#39;notify_on_update&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Log a warning when a Source.Python update is available.&#39;</span> <span class="o">+</span>
+    <span class="s1">&#39; Requires sp_check_for_update to be set to 1.&#39;</span><span class="p">,</span>
+    <span class="n">min_value</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">max_value</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="ButtonStatus">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.ButtonStatus">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ButtonStatus</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Indicate whether a button has been pressed or released.&quot;&quot;&quot;</span>
+
+    <span class="n">RELEASED</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">PRESSED</span> <span class="o">=</span> <span class="mi">1</span></div>
+
+
+
+<div class="viewcode-block" id="ListenerManagerDecorator">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.ListenerManagerDecorator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ListenerManagerDecorator</span><span class="p">(</span><span class="n">AutoUnload</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base decorator class used to register/unregister a listener.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ListenerManagerDecorator.__init__">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.ListenerManagerDecorator.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store the callback and register the listener.&quot;&quot;&quot;</span>
+        <span class="c1"># Log the &lt;instance&gt;.__init__ message</span>
+        <span class="n">listeners_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.__init__&lt;</span><span class="si">{1}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">callback</span><span class="p">))</span>
+
+        <span class="c1"># Set the callback to None...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Is the callback callable?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span>
+
+            <span class="c1"># Raise an error</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="nb">type</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;&#39; object is not callable.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Log the registering message</span>
+        <span class="n">listeners_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.__init__ - Registering&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># Store the callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">callback</span>
+
+        <span class="c1"># Register the listener</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">register_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call the listener.&quot;&quot;&quot;</span>
+        <span class="c1"># Log the calling</span>
+        <span class="n">listeners_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">.__call__&lt;</span><span class="si">{1}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">args</span><span class="p">))</span>
+
+        <span class="c1"># Call the listener</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the class name of the instance.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">manager</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a :class:`ListenerManager` object.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Must be implemented by a subclass.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unregister the listener.&quot;&quot;&quot;</span>
+        <span class="c1"># Was the callback registered?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Log the unregistering</span>
+        <span class="n">listeners_logger</span><span class="o">.</span><span class="n">log_debug</span><span class="p">(</span>
+            <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1">._unload_instance - Unregistering &lt;</span><span class="si">{1}</span><span class="s1">&gt;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">))</span>
+
+        <span class="c1"># Unregister the listener</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">unregister_listener</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="OnClientActive">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnClientActive">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnClientActive</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a ClientActive listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_client_active_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnClientConnect">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnClientConnect">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnClientConnect</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a ClientConnect listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_client_connect_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnClientDisconnect">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnClientDisconnect">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnClientDisconnect</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a ClientDisconnect listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_client_disconnect_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnClientFullyConnect">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnClientFullyConnect">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnClientFullyConnect</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a ClientFullyConnect listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_client_fully_connect_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnClientPutInServer">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnClientPutInServer">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnClientPutInServer</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a ClientPutInServer listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_client_put_in_server_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnClientSettingsChanged">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnClientSettingsChanged">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnClientSettingsChanged</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a ClientSettingsChanged listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_client_settings_changed_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnEntityOutputListenerManager">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnEntityOutputListenerManager">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnEntityOutputListenerManager</span><span class="p">(</span><span class="n">ListenerManager</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister an EntityOutput listener.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="OnEntityOutputListenerManager.initialize">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnEntityOutputListenerManager.initialize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">initialize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when the first callback is being registered.&quot;&quot;&quot;</span>
+        <span class="c1"># Get the fire_output method</span>
+        <span class="n">fire_output</span> <span class="o">=</span> <span class="n">BaseEntityOutput</span><span class="o">.</span><span class="n">fire_output</span>
+
+        <span class="c1"># If the fire_output method is not implemented, exit the call</span>
+        <span class="k">if</span> <span class="n">fire_output</span> <span class="ow">is</span> <span class="bp">NotImplemented</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Register the hook on fire_output</span>
+        <span class="n">fire_output</span><span class="o">.</span><span class="n">add_pre_hook</span><span class="p">(</span><span class="n">_pre_fire_output</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OnEntityOutputListenerManager.finalize">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnEntityOutputListenerManager.finalize">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when the last callback is being unregistered.&quot;&quot;&quot;</span>
+        <span class="c1"># Get the fire_output method</span>
+        <span class="n">fire_output</span> <span class="o">=</span> <span class="n">BaseEntityOutput</span><span class="o">.</span><span class="n">fire_output</span>
+
+        <span class="c1"># If the fire_output method is not implemented, exit the call</span>
+        <span class="k">if</span> <span class="n">fire_output</span> <span class="ow">is</span> <span class="bp">NotImplemented</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Unregister the hook on fire_output</span>
+        <span class="n">fire_output</span><span class="o">.</span><span class="n">remove_pre_hook</span><span class="p">(</span><span class="n">_pre_fire_output</span><span class="p">)</span></div>
+</div>
+
+
+<span class="n">on_entity_output_listener_manager</span> <span class="o">=</span> <span class="n">OnEntityOutputListenerManager</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="OnEntityOutput">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnEntityOutput">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnEntityOutput</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister an EntityOutput listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_entity_output_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnLevelInit">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnLevelInit">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnLevelInit</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a LevelInit listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_level_init_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnLevelShutdown">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnLevelShutdown">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnLevelShutdown</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a LevelShutdown listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_level_shutdown_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnNetworkidValidated">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnNetworkidValidated">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnNetworkidValidated</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a NetworkidValidated listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_network_id_validated_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnEdictAllocated">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnEdictAllocated">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnEdictAllocated</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister an OnEdictAllocated listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_edict_allocated_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnEdictFreed">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnEdictFreed">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnEdictFreed</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister an OnEdictFreed listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_edict_freed_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnEntityPreSpawned">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnEntityPreSpawned">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnEntityPreSpawned</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a OnEntityPreSpawned listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_entity_pre_spawned_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnNetworkedEntityPreSpawned">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnNetworkedEntityPreSpawned">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnNetworkedEntityPreSpawned</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a OnNetworkedEntityPreSpawned listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_networked_entity_pre_spawned_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnEntityCreated">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnEntityCreated">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnEntityCreated</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a OnEntityCreated listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_entity_created_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnNetworkedEntityCreated">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnNetworkedEntityCreated">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnNetworkedEntityCreated</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a OnNetworkedEntityCreated listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_networked_entity_created_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnEntitySpawned">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnEntitySpawned">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnEntitySpawned</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a OnEntitySpawned listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_entity_spawned_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnNetworkedEntitySpawned">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnNetworkedEntitySpawned">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnNetworkedEntitySpawned</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a OnNetworkedEntitySpawned listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_networked_entity_spawned_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnEntityDeleted">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnEntityDeleted">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnEntityDeleted</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a OnEntityDeleted listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_entity_deleted_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnNetworkedEntityDeleted">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnNetworkedEntityDeleted">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnNetworkedEntityDeleted</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a OnNetworkedEntityDeleted listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_networked_entity_deleted_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnEntityCollision">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnEntityCollision">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnEntityCollision</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a OnEntityCollision listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_entity_collision_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnEntityTransmit">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnEntityTransmit">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnEntityTransmit</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a OnEntityTransmit listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_entity_transmit_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnDataLoaded">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnDataLoaded">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnDataLoaded</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a OnDataLoaded listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_data_loaded_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnCombinerPreCache">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnCombinerPreCache">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnCombinerPreCache</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a OnCombinerPreCache listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_combiner_pre_cache_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnDataUnloaded">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnDataUnloaded">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnDataUnloaded</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a OnDataUnloaded listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_data_unloaded_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnQueryCvarValueFinished">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnQueryCvarValueFinished">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnQueryCvarValueFinished</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister an OnQueryCvarValueFinished listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_query_cvar_value_finished_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnServerActivate">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnServerActivate">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnServerActivate</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a ServerActivate listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_server_activate_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnTick">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnTick">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnTick</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a Tick listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_tick_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnVersionUpdate">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnVersionUpdate">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnVersionUpdate</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a version update listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_version_update_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnConVarChanged">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnConVarChanged">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnConVarChanged</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a ConVar listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_convar_changed_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnPluginLoaded">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnPluginLoaded">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnPluginLoaded</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a plugin loaded listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_plugin_loaded_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnPluginLoading">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnPluginLoading">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnPluginLoading</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a plugin loading listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_plugin_loading_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnPluginUnloaded">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnPluginUnloaded">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnPluginUnloaded</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a plugin unloaded listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_plugin_unloaded_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnPluginUnloading">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnPluginUnloading">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnPluginUnloading</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a plugin unloading listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_plugin_unloading_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnLevelEnd">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnLevelEnd">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnLevelEnd</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a map end listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_level_end_listener_manager</span>
+
+    <span class="c1"># Guard variable to ensure this listener gets called only once per map.</span>
+    <span class="n">_level_initialized</span> <span class="o">=</span> <span class="kc">False</span></div>
+
+
+
+<div class="viewcode-block" id="OnPlayerCollision">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnPlayerCollision">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnPlayerCollision</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a OnPlayerCollision listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_player_collision_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnPlayerTransmit">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnPlayerTransmit">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnPlayerTransmit</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a OnPlayerTransmit listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_player_transmit_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnPlayerRunCommand">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnPlayerRunCommand">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnPlayerRunCommand</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a run command listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_player_run_command_listener_manager</span></div>
+
+
+<div class="viewcode-block" id="OnPlayerPostRunCommand">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnPlayerPostRunCommand">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnPlayerPostRunCommand</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a post run command listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_player_post_run_command_listener_manager</span></div>
+
+
+<div class="viewcode-block" id="OnButtonStateChanged">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnButtonStateChanged">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnButtonStateChanged</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a button state change listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_button_state_changed_listener_manager</span></div>
+
+
+
+<div class="viewcode-block" id="OnServerOutput">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.OnServerOutput">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OnServerOutput</span><span class="p">(</span><span class="n">ListenerManagerDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a server output listener.&quot;&quot;&quot;</span>
+
+    <span class="n">manager</span> <span class="o">=</span> <span class="n">on_server_output_listener_manager</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FUNCTIONS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="get_button_combination_status">
+<a class="viewcode-back" href="../developing/modules/listeners.html#listeners.get_button_combination_status">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_button_combination_status</span><span class="p">(</span><span class="n">old_buttons</span><span class="p">,</span> <span class="n">new_buttons</span><span class="p">,</span> <span class="n">combination</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the status of a button combination.</span>
+
+<span class="sd">    :param PlayerButtons old_buttons:</span>
+<span class="sd">        Previously pressed buttons.</span>
+<span class="sd">    :param PlayerButtons new_buttons:</span>
+<span class="sd">        Now pressed buttons.</span>
+<span class="sd">    :param PlayerButtons combination:</span>
+<span class="sd">        Button combination to check.</span>
+<span class="sd">    :return:</span>
+<span class="sd">        Return the status of the button combination. If the combination was</span>
+<span class="sd">        neither pressed nor released, None will be returned.</span>
+<span class="sd">    :rtype: ButtonStatus</span>
+
+<span class="sd">    Example:</span>
+
+<span class="sd">    .. code:: python</span>
+
+<span class="sd">        @OnButtonStateChanged</span>
+<span class="sd">        def on_buttons_state_changed(player, old_buttons, new_buttons):</span>
+<span class="sd">            status = get_button_combination_status(old_buttons, new_buttons,</span>
+<span class="sd">                PlayerButtons.ATTACK|PlayerButtons.JUMP)</span>
+
+<span class="sd">            if status == ButtonStatus.PRESSED:</span>
+<span class="sd">                SayText2(</span>
+<span class="sd">                    &#39;{} is jumping and attacking.&#39;.format(player.name)).send()</span>
+
+<span class="sd">            elif status == ButtonStatus.RELEASED:</span>
+<span class="sd">                SayText2(</span>
+<span class="sd">                    &#39;{} stopped jumping and attacking at the same time.&#39;.format(</span>
+<span class="sd">                    player.name)).send()</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">previously_pressed</span> <span class="o">=</span> <span class="n">old_buttons</span> <span class="o">&amp;</span> <span class="n">combination</span> <span class="o">==</span> <span class="n">combination</span>
+    <span class="n">now_pressed</span> <span class="o">=</span> <span class="n">new_buttons</span> <span class="o">&amp;</span> <span class="n">combination</span> <span class="o">==</span> <span class="n">combination</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">previously_pressed</span> <span class="ow">and</span> <span class="n">now_pressed</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ButtonStatus</span><span class="o">.</span><span class="n">PRESSED</span>
+
+    <span class="k">elif</span> <span class="n">previously_pressed</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">now_pressed</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ButtonStatus</span><span class="o">.</span><span class="n">RELEASED</span>
+
+    <span class="k">return</span> <span class="kc">None</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CALLBACKS</span>
+<span class="c1"># =============================================================================</span>
+<span class="nd">@OnLevelInit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_on_level_init</span><span class="p">(</span><span class="n">map_name</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Called when a new map gets initialized.&quot;&quot;&quot;</span>
+    <span class="n">OnLevelEnd</span><span class="o">.</span><span class="n">_level_initialized</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Don&#39;t check if it&#39;s an unversioned build (dev version)</span>
+    <span class="k">if</span> <span class="n">is_unversioned</span><span class="p">():</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_check_for_update</span><span class="o">.</span><span class="n">get_int</span><span class="p">():</span>
+        <span class="k">return</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">latest_version</span> <span class="o">=</span> <span class="n">get_last_successful_build_number</span><span class="p">()</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">URLError</span><span class="p">,</span> <span class="n">socket</span><span class="o">.</span><span class="n">timeout</span><span class="p">):</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">VERSION</span> <span class="o">&gt;=</span> <span class="n">latest_version</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="k">if</span> <span class="n">_notify_on_update</span><span class="o">.</span><span class="n">get_int</span><span class="p">():</span>
+        <span class="c1"># TODO: Add translations</span>
+        <span class="n">listeners_logger</span><span class="o">.</span><span class="n">log_warning</span><span class="p">(</span>
+            <span class="s1">&#39;A new Source.Python version is available!&#39;</span><span class="p">)</span>
+
+    <span class="n">on_version_update_listener_manager</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">VERSION</span><span class="p">,</span> <span class="n">latest_version</span><span class="p">)</span>
+
+
+<span class="nd">@OnLevelShutdown</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_on_level_shutdown</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Called on level end.&quot;&quot;&quot;</span>
+    <span class="c1"># Was no map initialized?</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">OnLevelEnd</span><span class="o">.</span><span class="n">_level_initialized</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Notify all registred callbacks</span>
+    <span class="n">on_level_end_listener_manager</span><span class="o">.</span><span class="n">notify</span><span class="p">()</span>
+
+    <span class="c1"># Make sure we don&#39;t get called more than once per map change</span>
+    <span class="n">OnLevelEnd</span><span class="o">.</span><span class="n">_level_initialized</span> <span class="o">=</span> <span class="kc">False</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_pre_fire_output</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Called when an output is about to be fired.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">on_entity_output_listener_manager</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Windows is a bit weird: the function takes 4 additional arguments...</span>
+    <span class="k">if</span> <span class="n">PLATFORM</span> <span class="o">==</span> <span class="s1">&#39;windows&#39;</span><span class="p">:</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],)</span> <span class="o">+</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">args</span><span class="p">)[</span><span class="mi">5</span><span class="p">:]</span>
+
+    <span class="n">caller_ptr</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">caller_ptr</span><span class="p">:</span>
+        <span class="c1"># If we don&#39;t know the caller, we won&#39;t be able to retrieve the</span>
+        <span class="c1"># output name</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Done here to fix cyclic import...</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">entities.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEntity</span>
+    <span class="n">caller</span> <span class="o">=</span> <span class="n">make_object</span><span class="p">(</span><span class="n">BaseEntity</span><span class="p">,</span> <span class="n">caller_ptr</span><span class="p">)</span>
+    <span class="n">output_name</span> <span class="o">=</span> <span class="n">find_output_name</span><span class="p">(</span><span class="n">caller</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">output_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="c1"># Done here to fix cyclic import...</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">entities.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entity</span>
+    <span class="k">if</span> <span class="n">caller</span><span class="o">.</span><span class="n">is_networked</span><span class="p">():</span>
+        <span class="n">caller</span> <span class="o">=</span> <span class="n">make_object</span><span class="p">(</span><span class="n">Entity</span><span class="p">,</span> <span class="n">caller_ptr</span><span class="p">)</span>
+
+    <span class="n">value_ptr</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">value_ptr</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">make_object</span><span class="p">(</span><span class="n">Variant</span><span class="p">,</span> <span class="n">value_ptr</span><span class="p">)</span>
+
+    <span class="n">activator_ptr</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+    <span class="n">activator</span> <span class="o">=</span> <span class="p">((</span><span class="n">activator_ptr</span> <span class="ow">or</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="n">make_object</span><span class="p">(</span>
+        <span class="n">BaseEntity</span><span class="p">,</span> <span class="n">activator_ptr</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">activator</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">activator</span><span class="o">.</span><span class="n">is_networked</span><span class="p">():</span>
+        <span class="n">activator</span> <span class="o">=</span> <span class="n">make_object</span><span class="p">(</span><span class="n">Entity</span><span class="p">,</span> <span class="n">activator_ptr</span><span class="p">)</span>
+
+    <span class="n">delay</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+    <span class="n">on_entity_output_listener_manager</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span>
+        <span class="n">output_name</span><span class="p">,</span> <span class="n">activator</span><span class="p">,</span> <span class="n">caller</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">delay</span><span class="p">)</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># &gt;&gt; Fix for issue #181.</span>
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Get the function name to hook...</span>
+<span class="k">if</span> <span class="n">SOURCE_ENGINE</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;bms&#39;</span><span class="p">,</span> <span class="s1">&#39;orangebox&#39;</span><span class="p">,</span> <span class="s1">&#39;gmod&#39;</span><span class="p">):</span>
+    <span class="n">_hibernation_function_name</span> <span class="o">=</span> <span class="s1">&#39;SetServerHibernation&#39;</span>
+<span class="k">elif</span> <span class="n">SOURCE_ENGINE</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;blade&#39;</span><span class="p">,</span> <span class="s1">&#39;csgo&#39;</span><span class="p">,</span> <span class="s1">&#39;l4d2&#39;</span><span class="p">):</span>
+    <span class="n">_hibernation_function_name</span> <span class="o">=</span> <span class="s1">&#39;ServerHibernationUpdate&#39;</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="c1"># To remind us to add newly supported engines...</span>
+    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No hibernation function exposed.&#39;</span><span class="p">)</span>
+
+<span class="nd">@PreHook</span><span class="p">(</span><span class="n">get_virtual_function</span><span class="p">(</span><span class="n">server_game_dll</span><span class="p">,</span> <span class="n">_hibernation_function_name</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_pre_hibernation_function</span><span class="p">(</span><span class="n">stack_data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Called when the server is hibernating.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">stack_data</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Disconnect all bots...</span>
+    <span class="n">_disconnect_bots</span><span class="p">()</span>
+
+
+<span class="nd">@OnLevelEnd</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_on_level_end</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Disconnect all bots on level end.&quot;&quot;&quot;</span>
+    <span class="n">_disconnect_bots</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_disconnect_bots</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Disconnect all bots.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Cyclic import...</span>
+    <span class="kn">from</span><span class="w"> </span><span class="nn">filters.players</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlayerIter</span>
+
+    <span class="c1"># Notify OnClientDisconnect listener for all bots...</span>
+    <span class="k">for</span> <span class="n">bot</span> <span class="ow">in</span> <span class="n">PlayerIter</span><span class="p">(</span><span class="s1">&#39;bot&#39;</span><span class="p">):</span>
+        <span class="n">on_client_disconnect_listener_manager</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">bot</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">listeners</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

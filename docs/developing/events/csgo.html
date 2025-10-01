@@ -1,0 +1,6016 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Counter-Strike: Global Offensive &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Counter-Strike: Source" href="cstrike.html" />
+    <link rel="prev" title="Black Mesa: Source" href="bms.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cstrike.html" title="Counter-Strike: Source"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="bms.html" title="Black Mesa: Source"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../events.html" accesskey="U">Events</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Counter-Strike: Global Offensive</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="counter-strike-global-offensive">
+<h1>Counter-Strike: Global Offensive<a class="headerlink" href="#counter-strike-global-offensive" title="Link to this heading">¶</a></h1>
+<p>This is a summary of all known Counter-Strike: Global Offensive events.</p>
+<section id="achievement-earned">
+<h2>achievement_earned<a class="headerlink" href="#achievement-earned" title="Link to this heading">¶</a></h2>
+<p>This event is fired any time a player earns an achievement while on the server.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>achievement</p></td>
+<td><p>The achievement id that the player earned.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>player</p></td>
+<td><p>The player that earned the achievement.</p></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="achievement-earned-local">
+<h2>achievement_earned_local<a class="headerlink" href="#achievement-earned-local" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>achievement</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>splitscreenplayer</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="achievement-event">
+<h2>achievement_event<a class="headerlink" href="#achievement-event" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>achievement_name</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>cur_val</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>max_val</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="achievement-increment">
+<h2>achievement_increment<a class="headerlink" href="#achievement-increment" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>achievement_id</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>cur_val</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>max_val</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="achievement-info-loaded">
+<h2>achievement_info_loaded<a class="headerlink" href="#achievement-info-loaded" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="achievement-write-failed">
+<h2>achievement_write_failed<a class="headerlink" href="#achievement-write-failed" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="add-bullet-hit-marker">
+<h2>add_bullet_hit_marker<a class="headerlink" href="#add-bullet-hit-marker" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ang_x</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>ang_y</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>ang_z</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>bone</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>hit</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>pos_x</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>pos_y</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>pos_z</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>start_x</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>start_y</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>start_z</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="add-player-sonar-icon">
+<h2>add_player_sonar_icon<a class="headerlink" href="#add-player-sonar-icon" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>pos_x</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>pos_y</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>pos_z</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ammo-pickup">
+<h2>ammo_pickup<a class="headerlink" href="#ammo-pickup" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>index</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>item</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="announce-phase-end">
+<h2>announce_phase_end<a class="headerlink" href="#announce-phase-end" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a specific phase is ended.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="assassination-target-killed">
+<h2>assassination_target_killed<a class="headerlink" href="#assassination-target-killed" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>killer</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>target</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="begin-new-match">
+<h2>begin_new_match<a class="headerlink" href="#begin-new-match" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a match is started.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bomb-abortdefuse">
+<h2>bomb_abortdefuse<a class="headerlink" href="#bomb-abortdefuse" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player aborts defusing the bomb.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that aborted defusing the bomb.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bomb-abortplant">
+<h2>bomb_abortplant<a class="headerlink" href="#bomb-abortplant" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player aborts planting the bomb.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>site</p></td>
+<td><p>The index of the site that the abort took place.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that aborted planting the bomb.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bomb-beep">
+<h2>bomb_beep<a class="headerlink" href="#bomb-beep" title="Link to this heading">¶</a></h2>
+<p>This event is fired when the bomb emits a beeping sound.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entindex</p></td>
+<td><p>The index of the c4 entity that is beeping.</p></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bomb-begindefuse">
+<h2>bomb_begindefuse<a class="headerlink" href="#bomb-begindefuse" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player starts to defuse the bomb.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>haskit</p></td>
+<td><p>True if the player has a defusal kit.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that is defusing the bomb.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bomb-beginplant">
+<h2>bomb_beginplant<a class="headerlink" href="#bomb-beginplant" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player starts to plant the bomb.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>site</p></td>
+<td><p>The index of the site that the bomb is being planted at.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that is planting the bomb.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bomb-defused">
+<h2>bomb_defused<a class="headerlink" href="#bomb-defused" title="Link to this heading">¶</a></h2>
+<p>This event is fired when the bomb is successfully defused.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>site</p></td>
+<td><p>The index of the site where the bomb was defused.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that defused the bomb.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bomb-dropped">
+<h2>bomb_dropped<a class="headerlink" href="#bomb-dropped" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player drops the bomb.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entindex</p></td>
+<td><p>The index of the c4 entity that was dropped.</p></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that dropped the bomb.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bomb-exploded">
+<h2>bomb_exploded<a class="headerlink" href="#bomb-exploded" title="Link to this heading">¶</a></h2>
+<p>This event is fired when the bomb is successfully exploded.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>site</p></td>
+<td><p>The index of the site where the bomb was exploded.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that planted the bomb.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bomb-pickup">
+<h2>bomb_pickup<a class="headerlink" href="#bomb-pickup" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player picks up the bomb.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that picked up the bomb.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bomb-planted">
+<h2>bomb_planted<a class="headerlink" href="#bomb-planted" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player plants the bomb.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>site</p></td>
+<td><p>The index of the site where the bomb was planted.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that planted the bomb.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bonus-updated">
+<h2>bonus_updated<a class="headerlink" href="#bonus-updated" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>numadvanced</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>numbronze</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>numgold</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>numsilver</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bot-takeover">
+<h2>bot_takeover<a class="headerlink" href="#bot-takeover" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player takes control of a bot.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>botid</p></td>
+<td><p>The userid of the bot being taken over.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>index</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player taking over a bot.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="break-breakable">
+<h2>break_breakable<a class="headerlink" href="#break-breakable" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player breaks a breakable prop.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entindex</p></td>
+<td><p>The index of the breakable.</p></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>material</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that broke the breakable.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="break-prop">
+<h2>break_prop<a class="headerlink" href="#break-prop" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player breaks a prop that has an entity index.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entindex</p></td>
+<td><p>The index of the prop entity that was broken.</p></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that broke the prop.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="bullet-impact">
+<h2>bullet_impact<a class="headerlink" href="#bullet-impact" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player shoots their weapon and the bullet impacts a surface.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that fired the bullet.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>x</p></td>
+<td><p>The x coordinate on the map where the impact took place.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>y</p></td>
+<td><p>The y coordinate on the map where the impact took place.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>z</p></td>
+<td><p>The z coordinate on the map where the impact took place.</p></td>
+<td><p>float</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="buymenu-close">
+<h2>buymenu_close<a class="headerlink" href="#buymenu-close" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="buymenu-open">
+<h2>buymenu_open<a class="headerlink" href="#buymenu-open" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="buytime-ended">
+<h2>buytime_ended<a class="headerlink" href="#buytime-ended" title="Link to this heading">¶</a></h2>
+<p>This event is fired when players are no longer allowed to purchase weapons during a round.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cart-updated">
+<h2>cart_updated<a class="headerlink" href="#cart-updated" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="client-disconnect">
+<h2>client_disconnect<a class="headerlink" href="#client-disconnect" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="client-loadout-changed">
+<h2>client_loadout_changed<a class="headerlink" href="#client-loadout-changed" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cs-game-disconnected">
+<h2>cs_game_disconnected<a class="headerlink" href="#cs-game-disconnected" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cs-handle-ime-event">
+<h2>cs_handle_ime_event<a class="headerlink" href="#cs-handle-ime-event" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>eventdata</p></td>
+<td></td>
+<td><p>wstring</p></td>
+</tr>
+<tr class="row-odd"><td><p>eventtype</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cs-intermission">
+<h2>cs_intermission<a class="headerlink" href="#cs-intermission" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cs-match-end-restart">
+<h2>cs_match_end_restart<a class="headerlink" href="#cs-match-end-restart" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cs-pre-restart">
+<h2>cs_pre_restart<a class="headerlink" href="#cs-pre-restart" title="Link to this heading">¶</a></h2>
+<p>This event is fired prior to a match restarting.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cs-prev-next-spectator">
+<h2>cs_prev_next_spectator<a class="headerlink" href="#cs-prev-next-spectator" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>next</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cs-round-final-beep">
+<h2>cs_round_final_beep<a class="headerlink" href="#cs-round-final-beep" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cs-round-start-beep">
+<h2>cs_round_start_beep<a class="headerlink" href="#cs-round-start-beep" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cs-win-panel-match">
+<h2>cs_win_panel_match<a class="headerlink" href="#cs-win-panel-match" title="Link to this heading">¶</a></h2>
+<p>This event is fired when the win panel is shown at the end of a match (map).</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="cs-win-panel-round">
+<h2>cs_win_panel_round<a class="headerlink" href="#cs-win-panel-round" title="Link to this heading">¶</a></h2>
+<p>This event is fired when the win panel is shown at the end of each round.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>final_event</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>funfact_data1</p></td>
+<td><p>Data for use by the funfact.</p></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>funfact_data2</p></td>
+<td><p>Data for use by the funfact.</p></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>funfact_data3</p></td>
+<td><p>Data for use by the funfact.</p></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>funfact_player</p></td>
+<td><p>The player whom the funfact is about.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>funfact_token</p></td>
+<td><p>Token used for the funfact.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>show_timer_attack</p></td>
+<td><p>True if the attack time is supposed to be displayed.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>show_timer_defend</p></td>
+<td><p>True if the defend time is supposed to be displayed.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>timer_time</p></td>
+<td><p>The amount of time that the round took.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="decoy-detonate">
+<h2>decoy_detonate<a class="headerlink" href="#decoy-detonate" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a decoy grenade detonates.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entityid</p></td>
+<td><p>The index of the decoy that detonated.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that threw the decoy.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>x</p></td>
+<td><p>The x coordinate on the map where the decoy detonated.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>y</p></td>
+<td><p>The y coordinate on the map where the decoy detonated.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>z</p></td>
+<td><p>The z coordinate on the map where the decoy detonated.</p></td>
+<td><p>float</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="decoy-firing">
+<h2>decoy_firing<a class="headerlink" href="#decoy-firing" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a decoy grenade fires.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entityid</p></td>
+<td><p>The index of the decoy that fired.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that threw the decoy.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>x</p></td>
+<td><p>The x coordinate on the map where the decoy fired.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>y</p></td>
+<td><p>The y coordinate on the map where the decoy fired.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>z</p></td>
+<td><p>The z coordinate on the map where the decoy fired.</p></td>
+<td><p>float</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="decoy-started">
+<h2>decoy_started<a class="headerlink" href="#decoy-started" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a decoy grenade starts to fire.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entityid</p></td>
+<td><p>The index of the decoy that started to fire.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that threw the decoy.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>x</p></td>
+<td><p>The x coordinate on the map where the decoy started firing.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>y</p></td>
+<td><p>The y coordinate on the map where the decoy started firing.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>z</p></td>
+<td><p>The z coordinate on the map where the decoy started firing.</p></td>
+<td><p>float</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="defuser-dropped">
+<h2>defuser_dropped<a class="headerlink" href="#defuser-dropped" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entityid</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="defuser-pickup">
+<h2>defuser_pickup<a class="headerlink" href="#defuser-pickup" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entityid</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="difficulty-changed">
+<h2>difficulty_changed<a class="headerlink" href="#difficulty-changed" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>newDifficulty</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>oldDifficulty</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>strDifficulty</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="dm-bonus-weapon-start">
+<h2>dm_bonus_weapon_start<a class="headerlink" href="#dm-bonus-weapon-start" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Pos</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>time</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>wepID</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="door-moving">
+<h2>door_moving<a class="headerlink" href="#door-moving" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a door is opened or closed.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entindex</p></td>
+<td><p>The index of the door.</p></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that activated the door’s movement.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="enable-restart-voting">
+<h2>enable_restart_voting<a class="headerlink" href="#enable-restart-voting" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>enable</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="endmatch-cmm-start-reveal-items">
+<h2>endmatch_cmm_start_reveal_items<a class="headerlink" href="#endmatch-cmm-start-reveal-items" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="endmatch-mapvote-selecting-map">
+<h2>endmatch_mapvote_selecting_map<a class="headerlink" href="#endmatch-mapvote-selecting-map" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>count</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>slot1</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>slot10</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>slot2</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>slot3</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>slot4</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>slot5</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>slot6</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>slot7</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>slot8</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>slot9</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="enter-bombzone">
+<h2>enter_bombzone<a class="headerlink" href="#enter-bombzone" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player enters a bomb zone.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hasbomb</p></td>
+<td><p>True if the player is carrying a bomb.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>isplanted</p></td>
+<td><p>True if a bomb is planted at any site.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player entering the bomb zone.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="enter-buyzone">
+<h2>enter_buyzone<a class="headerlink" href="#enter-buyzone" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player enters a buy zone.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>canbuy</p></td>
+<td><p>True if buy time has not expired.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player entering the buy zone.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="enter-rescue-zone">
+<h2>enter_rescue_zone<a class="headerlink" href="#enter-rescue-zone" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="entity-killed">
+<h2>entity_killed<a class="headerlink" href="#entity-killed" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>damagebits</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>entindex_attacker</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>entindex_inflictor</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>entindex_killed</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="entity-visible">
+<h2>entity_visible<a class="headerlink" href="#entity-visible" title="Link to this heading">¶</a></h2>
+<p>This event is fired any time a player sees an entity.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>classname</p></td>
+<td><p>The classname of the entity.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>entityname</p></td>
+<td><p>The name of the entity.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>subject</p></td>
+<td><p>The index of the entity that is seen.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that sees the entity.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="exit-bombzone">
+<h2>exit_bombzone<a class="headerlink" href="#exit-bombzone" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player exits a bomb zone.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hasbomb</p></td>
+<td><p>True if the player is carrying a bomb.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>isplanted</p></td>
+<td><p>True if a bomb is planted at any site.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player exiting the bomb zone.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="exit-buyzone">
+<h2>exit_buyzone<a class="headerlink" href="#exit-buyzone" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player exits a buy zone.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>canbuy</p></td>
+<td><p>True if buy time has not expired.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player exiting the buy zone.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="exit-rescue-zone">
+<h2>exit_rescue_zone<a class="headerlink" href="#exit-rescue-zone" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="finale-start">
+<h2>finale_start<a class="headerlink" href="#finale-start" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>rushes</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="flare-ignite-npc">
+<h2>flare_ignite_npc<a class="headerlink" href="#flare-ignite-npc" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entindex</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="flashbang-detonate">
+<h2>flashbang_detonate<a class="headerlink" href="#flashbang-detonate" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a flashbang detonates.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entityid</p></td>
+<td><p>The index of the flashbang that detonated.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that threw the flashbang.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>x</p></td>
+<td><p>The x coordinate on the map where the flashbang detonated.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>y</p></td>
+<td><p>The y coordinate on the map where the flashbang detonated.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>z</p></td>
+<td><p>The z coordinate on the map where the flashbang detonated.</p></td>
+<td><p>float</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="freezecam-started">
+<h2>freezecam_started<a class="headerlink" href="#freezecam-started" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="game-end">
+<h2>game_end<a class="headerlink" href="#game-end" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>winner</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="game-init">
+<h2>game_init<a class="headerlink" href="#game-init" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="game-message">
+<h2>game_message<a class="headerlink" href="#game-message" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>target</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>text</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="game-newmap">
+<h2>game_newmap<a class="headerlink" href="#game-newmap" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>mapname</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="game-start">
+<h2>game_start<a class="headerlink" href="#game-start" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>fraglimit</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>objective</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>roundslimit</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>timelimit</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gameinstructor-draw">
+<h2>gameinstructor_draw<a class="headerlink" href="#gameinstructor-draw" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gameinstructor-nodraw">
+<h2>gameinstructor_nodraw<a class="headerlink" href="#gameinstructor-nodraw" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gameui-hidden">
+<h2>gameui_hidden<a class="headerlink" href="#gameui-hidden" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gc-connected">
+<h2>gc_connected<a class="headerlink" href="#gc-connected" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gg-bonus-grenade-achieved">
+<h2>gg_bonus_grenade_achieved<a class="headerlink" href="#gg-bonus-grenade-achieved" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player earns a bonus grenade in Arsenal: Demolition mode.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that achieved a bonus grenade.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gg-final-weapon-achieved">
+<h2>gg_final_weapon_achieved<a class="headerlink" href="#gg-final-weapon-achieved" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player gets to the final weapon in Arsenal: Arms Race mode.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>playerid</p></td>
+<td><p>The userid of the player that got to the final weapon.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gg-killed-enemy">
+<h2>gg_killed_enemy<a class="headerlink" href="#gg-killed-enemy" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player kills an enemy during an Arsenal match.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>attackerid</p></td>
+<td><p>The userid of the player killer.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>bonus</p></td>
+<td><p>True if the killer killed with a bonus weapon.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>dominated</p></td>
+<td><p>True (1) if the kill caused the killer to be dominating the victim.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>revenge</p></td>
+<td><p>True (1) if the victim was dominating the killer.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>victimid</p></td>
+<td><p>The userid of the victim.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gg-leader">
+<h2>gg_leader<a class="headerlink" href="#gg-leader" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>playerid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gg-player-impending-upgrade">
+<h2>gg_player_impending_upgrade<a class="headerlink" href="#gg-player-impending-upgrade" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player is impending a weapon upgrade from leveling up.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that will be leveling up.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gg-player-levelup">
+<h2>gg_player_levelup<a class="headerlink" href="#gg-player-levelup" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>weaponname</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>weaponrank</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gg-reset-round-start-sounds">
+<h2>gg_reset_round_start_sounds<a class="headerlink" href="#gg-reset-round-start-sounds" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player’s round start sounds are reset.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player whose round start sounds are reset.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="gg-team-leader">
+<h2>gg_team_leader<a class="headerlink" href="#gg-team-leader" title="Link to this heading">¶</a></h2>
+<p>This event …</p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>Update description of CS:GO gg_team_leader event.</p>
+</div>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>playerid</p></td>
+<td><p>The userid of the player that is currently in the lead.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ggprogressive-player-levelup">
+<h2>ggprogressive_player_levelup<a class="headerlink" href="#ggprogressive-player-levelup" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player levels up.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player who leveled up.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>weaponname</p></td>
+<td><p>The type of weapon the player is being leveled up to.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>weaponrank</p></td>
+<td><p>The rank of the weapon the player is being leveled up to.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ggtr-player-levelup">
+<h2>ggtr_player_levelup<a class="headerlink" href="#ggtr-player-levelup" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player levels up.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player who leveled up.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>weaponname</p></td>
+<td><p>The type of weapon the player is being leveled up to.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>weaponrank</p></td>
+<td><p>The rank of the weapon the player is being leveled up to.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="grenade-bounce">
+<h2>grenade_bounce<a class="headerlink" href="#grenade-bounce" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a grenade bounces off of a surface.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that threw the grenade.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>x</p></td>
+<td><p>The x coordinate on the map where the grenade bounced.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>y</p></td>
+<td><p>The y coordinate on the map where the grenade bounced.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>z</p></td>
+<td><p>The z coordinate on the map where the grenade bounced.</p></td>
+<td><p>float</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hegrenade-detonate">
+<h2>hegrenade_detonate<a class="headerlink" href="#hegrenade-detonate" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a high explosive grenade detonates.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entityid</p></td>
+<td><p>The index of the grenade that detonated.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that threw the grenade.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>x</p></td>
+<td><p>The x coordinate on the map where the grenade detonated.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>y</p></td>
+<td><p>The y coordinate on the map where the grenade detonated.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>z</p></td>
+<td><p>The z coordinate on the map where the grenade detonated.</p></td>
+<td><p>float</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="helicopter-grenade-punt-miss">
+<h2>helicopter_grenade_punt_miss<a class="headerlink" href="#helicopter-grenade-punt-miss" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hide-freezepanel">
+<h2>hide_freezepanel<a class="headerlink" href="#hide-freezepanel" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-cameraman">
+<h2>hltv_cameraman<a class="headerlink" href="#hltv-cameraman" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>index</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-changed-mode">
+<h2>hltv_changed_mode<a class="headerlink" href="#hltv-changed-mode" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>newmode</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>obs_target</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>oldmode</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-changed-target">
+<h2>hltv_changed_target<a class="headerlink" href="#hltv-changed-target" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>mode</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>obs_target</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>old_target</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-chase">
+<h2>hltv_chase<a class="headerlink" href="#hltv-chase" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>distance</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>inertia</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>ineye</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>phi</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>target1</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>target2</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>theta</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-chat">
+<h2>hltv_chat<a class="headerlink" href="#hltv-chat" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>text</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-fixed">
+<h2>hltv_fixed<a class="headerlink" href="#hltv-fixed" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>fov</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>offset</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>phi</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>posx</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>posy</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>posz</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>target</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>theta</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-message">
+<h2>hltv_message<a class="headerlink" href="#hltv-message" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>text</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-rank-camera">
+<h2>hltv_rank_camera<a class="headerlink" href="#hltv-rank-camera" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>index</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>rank</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>target</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-rank-entity">
+<h2>hltv_rank_entity<a class="headerlink" href="#hltv-rank-entity" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>index</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>rank</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>target</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-status">
+<h2>hltv_status<a class="headerlink" href="#hltv-status" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>clients</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>externallinked</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>externaltotal</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>master</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>proxies</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>slots</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hltv-title">
+<h2>hltv_title<a class="headerlink" href="#hltv-title" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>text</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hostage-call-for-help">
+<h2>hostage_call_for_help<a class="headerlink" href="#hostage-call-for-help" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hostage</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hostage-follows">
+<h2>hostage_follows<a class="headerlink" href="#hostage-follows" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a hostage is picked up by a player.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hostage</p></td>
+<td><p>The index of the hostage entity that is now being carried.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that picked up the hostage.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hostage-hurt">
+<h2>hostage_hurt<a class="headerlink" href="#hostage-hurt" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a hostage is hurt.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hostage</p></td>
+<td><p>The index of the hostage entity that sustained damage.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that hurt the hostage.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hostage-killed">
+<h2>hostage_killed<a class="headerlink" href="#hostage-killed" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a hostage is killed.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hostage</p></td>
+<td><p>The index of the hostage entity that was killed.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that killed the hostage.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hostage-rescued">
+<h2>hostage_rescued<a class="headerlink" href="#hostage-rescued" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a hostage reaches a hostage rescue zone.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hostage</p></td>
+<td><p>The index of the hostage entity that was rescued.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>site</p></td>
+<td><p>The index of the hostage rescue zone where the hostage was rescued.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that led the hostage to the rescue zone.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hostage-rescued-all">
+<h2>hostage_rescued_all<a class="headerlink" href="#hostage-rescued-all" title="Link to this heading">¶</a></h2>
+<p>This event is fired when all hostages have been rescued during a round.  In CS:GO, only one hostage needs to be rescued for the Counter-Terrorists to win the round.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hostage-stops-following">
+<h2>hostage_stops_following<a class="headerlink" href="#hostage-stops-following" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hostage</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="hostname-changed">
+<h2>hostname_changed<a class="headerlink" href="#hostname-changed" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hostname</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="inferno-expire">
+<h2>inferno_expire<a class="headerlink" href="#inferno-expire" title="Link to this heading">¶</a></h2>
+<p>This event is fired when the inferno caused by a molotov or incendiary grenade expires.  This event will also be fired if the inferno is [[Event-csgo:inferno_extinguish|extinguished by a smoke grenade]].</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entityid</p></td>
+<td><p>The index of the inferno entity.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>x</p></td>
+<td><p>The x coordinate of the inferno entity.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>y</p></td>
+<td><p>The y coordinate of the inferno entity.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>z</p></td>
+<td><p>The z coordinate of the inferno entity.</p></td>
+<td><p>float</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="inferno-extinguish">
+<h2>inferno_extinguish<a class="headerlink" href="#inferno-extinguish" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a molotov or incendiary grenade’s inferno is extinguished by a smoke grenade.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entityid</p></td>
+<td><p>The index of the inferno entity.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>x</p></td>
+<td><p>The x coordinate of the inferno entity.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>y</p></td>
+<td><p>The y coordinate of the inferno entity.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>z</p></td>
+<td><p>The z coordinate of the inferno entity.</p></td>
+<td><p>float</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="inferno-startburn">
+<h2>inferno_startburn<a class="headerlink" href="#inferno-startburn" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a molotov or incendiary grenade explodes into an inferno.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entityid</p></td>
+<td><p>The index of the inferno entity.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>x</p></td>
+<td><p>The x coordinate of the inferno entity.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>y</p></td>
+<td><p>The y coordinate of the inferno entity.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>z</p></td>
+<td><p>The z coordinate of the inferno entity.</p></td>
+<td><p>float</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="inspect-weapon">
+<h2>inspect_weapon<a class="headerlink" href="#inspect-weapon" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player uses the +lookatweapon client command to inspect their weapon.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that is inspecting their weapon.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="instructor-server-hint-create">
+<h2>instructor_server_hint_create<a class="headerlink" href="#instructor-server-hint-create" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hint_activator_caption</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_activator_userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_allow_nodraw_target</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_binding</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_caption</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_color</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_flags</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_forcecaption</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_gamepad_binding</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_icon_offscreen</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_icon_offset</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_icon_onscreen</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_local_player_only</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_name</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_nooffscreen</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_range</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_replace_key</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>hint_target</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>hint_timeout</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="instructor-server-hint-stop">
+<h2>instructor_server_hint_stop<a class="headerlink" href="#instructor-server-hint-stop" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hint_name</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="inventory-updated">
+<h2>inventory_updated<a class="headerlink" href="#inventory-updated" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="item-equip">
+<h2>item_equip<a class="headerlink" href="#item-equip" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player equips a new weapon.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>canzoom</p></td>
+<td><p>True if the weapon has a zoom feature.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>hassilencer</p></td>
+<td><p>True if the weapon has a silencer available.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>hastracers</p></td>
+<td><p>True if the weapon has tracer bullets that show when fired.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>ispainted</p></td>
+<td><p>True if the weapon is painted.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>issilenced</p></td>
+<td><p>True if the weapon has a silencer and it is on.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>item</p></td>
+<td><p>The type of item/weapon that the player equipped.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that equipped the item.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>weptype</p></td>
+<td><p>The weapon type of the item equipped (more below).</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="item-found">
+<h2>item_found<a class="headerlink" href="#item-found" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>itemdef</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>itemid</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>method</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>player</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>quality</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="item-pickup">
+<h2>item_pickup<a class="headerlink" href="#item-pickup" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player picks an item up.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>item</p></td>
+<td><p>The index of the item the player picked up.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>silent</p></td>
+<td><p>True if the item is a weapon that has a silencer.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that picked up the item.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="item-purchase">
+<h2>item_purchase<a class="headerlink" href="#item-purchase" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player purchases an item.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>team</p></td>
+<td><p>The team number of the player that purchased an item.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that purchased an item.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>weapon</p></td>
+<td><p>The type of item that the player purchased.</p></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="item-schema-initialized">
+<h2>item_schema_initialized<a class="headerlink" href="#item-schema-initialized" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="items-gifted">
+<h2>items_gifted<a class="headerlink" href="#items-gifted" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>accountid</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>giftidx</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>itemdef</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>numgifts</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>player</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="jointeam-failed">
+<h2>jointeam_failed<a class="headerlink" href="#jointeam-failed" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>reason</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="map-transition">
+<h2>map_transition<a class="headerlink" href="#map-transition" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="match-end-conditions">
+<h2>match_end_conditions<a class="headerlink" href="#match-end-conditions" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>frags</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>max_rounds</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>time</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>win_rounds</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="material-default-complete">
+<h2>material_default_complete<a class="headerlink" href="#material-default-complete" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="mb-input-lock-cancel">
+<h2>mb_input_lock_cancel<a class="headerlink" href="#mb-input-lock-cancel" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="mb-input-lock-success">
+<h2>mb_input_lock_success<a class="headerlink" href="#mb-input-lock-success" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="molotov-detonate">
+<h2>molotov_detonate<a class="headerlink" href="#molotov-detonate" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a molotov or incendiary grenade detonates.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that threw the molotov/incendiary grenade.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>x</p></td>
+<td><p>The x coordinate on the map where the molotov/incendiary grenade detonated.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>y</p></td>
+<td><p>The y coordinate on the map where the molotov/incendiary grenade detonated.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>z</p></td>
+<td><p>The z coordinate on the map where the molotov/incendiary grenade detonated.</p></td>
+<td><p>float</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="nav-blocked">
+<h2>nav_blocked<a class="headerlink" href="#nav-blocked" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>area</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>blocked</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="nav-generate">
+<h2>nav_generate<a class="headerlink" href="#nav-generate" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="nextlevel-changed">
+<h2>nextlevel_changed<a class="headerlink" href="#nextlevel-changed" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>nextlevel</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="other-death">
+<h2>other_death<a class="headerlink" href="#other-death" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a non-player entity is killed.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>attacker</p></td>
+<td><p>The userid of the killer.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>headshot</p></td>
+<td><p>True if the killshot was to the entity’s head hitbox.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>otherid</p></td>
+<td><p>The index of the entity that died.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>othertype</p></td>
+<td><p>The classname of the entity that died.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>penetrated</p></td>
+<td><p>The number of objects the killshot penetrated before killing entity.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>weapon</p></td>
+<td><p>The type of weapon used to kill the entity.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>weapon_fauxitemid</p></td>
+<td><p>Faux item id of weapon killer used.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>weapon_itemid</p></td>
+<td><p>Inventory item id of weapon killer used.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>weapon_originalowner_xuid</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="physgun-pickup">
+<h2>physgun_pickup<a class="headerlink" href="#physgun-pickup" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entindex</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-activate">
+<h2>player_activate<a class="headerlink" href="#player-activate" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player is fully connected during a map.  This event is fired each map change while the player is still on the map.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that is connected.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-avenged-teammate">
+<h2>player_avenged_teammate<a class="headerlink" href="#player-avenged-teammate" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player kills the killer of a teammate.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>avenged_player_id</p></td>
+<td><p>The userid of the teammate whose killer was killed.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>avenger_id</p></td>
+<td><p>The userid of the player that killed their teammate’s killer.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-blind">
+<h2>player_blind<a class="headerlink" href="#player-blind" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player gets flashed.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that got flashed.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>attacker</p></td>
+<td><p>The userid of the player that threw the flashbang.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>entityid</p></td>
+<td><p>The entity index of the flashbang that went off.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>blind_duration</p></td>
+<td><p>Duration of the flashed effect.</p></td>
+<td><p>float</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-changename">
+<h2>player_changename<a class="headerlink" href="#player-changename" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>newname</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>oldname</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-chat">
+<h2>player_chat<a class="headerlink" href="#player-chat" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>teamonly</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>text</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-class">
+<h2>player_class<a class="headerlink" href="#player-class" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>class</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-connect">
+<h2>player_connect<a class="headerlink" href="#player-connect" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player is first connected to the server.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>address</p></td>
+<td><p>The IP address and port of the player that is connecting.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>index</p></td>
+<td><p>The index given to the player that connected.</p></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>name</p></td>
+<td><p>The name of the connecting player.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>networkid</p></td>
+<td><p>The SteamID of the connecting player.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid given to the connecting player.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-connect-full">
+<h2>player_connect_full<a class="headerlink" href="#player-connect-full" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a client has fully connected to the server.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>index</p></td>
+<td><p>The index of the player that fully connected to the server.</p></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that fully connected to the server.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-death">
+<h2>player_death<a class="headerlink" href="#player-death" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player dies.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>assister</p></td>
+<td><p>The userid of the player that assisted in the kill (if any).</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>attacker</p></td>
+<td><p>The userid of the killer.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>dominated</p></td>
+<td><p>True (1) if the kill caused the killer to be dominating the victim.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>headshot</p></td>
+<td><p>True if the killshot was to the victim’s head hitbox.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>noreplay</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>penetrated</p></td>
+<td><p>The number of objects that were penetrated by the bullet before it struck the victim.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>revenge</p></td>
+<td><p>True (1) if the victim was dominating the killer.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the victim.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>weapon</p></td>
+<td><p>The type of weapon used to kill the victim.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>weapon_fauxitemid</p></td>
+<td><p>Faux item id of weapon killer used.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>weapon_itemid</p></td>
+<td><p>Inventory item id of weapon killer used.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>weapon_originalowner_xuid</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-decal">
+<h2>player_decal<a class="headerlink" href="#player-decal" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-disconnect">
+<h2>player_disconnect<a class="headerlink" href="#player-disconnect" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player disconnects from the server.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>name</p></td>
+<td><p>The name of the player that disconnected.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>networkid</p></td>
+<td><p>The SteamID of the player that disconnected.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>reason</p></td>
+<td><p>The reason why the player was disconnected.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that disconnected.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-falldamage">
+<h2>player_falldamage<a class="headerlink" href="#player-falldamage" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player sustains damage from falling.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>damage</p></td>
+<td><p>The amount of damage the player sustained.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that fell.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-footstep">
+<h2>player_footstep<a class="headerlink" href="#player-footstep" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player makes an audible footstep.  Using walk mode or crouch will cause the player to move silently.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that took a step.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-given-c4">
+<h2>player_given_c4<a class="headerlink" href="#player-given-c4" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player is given C4 at the start of a round.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that was given the C4.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-hintmessage">
+<h2>player_hintmessage<a class="headerlink" href="#player-hintmessage" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hintmessage</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-hurt">
+<h2>player_hurt<a class="headerlink" href="#player-hurt" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player is hurt.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>armor</p></td>
+<td><p>The remaining amount of armor the victim has after the damage.</p></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>attacker</p></td>
+<td><p>The userid of the attacking player.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>dmg_armor</p></td>
+<td><p>The amount of damage sustained by the victim’s armor.</p></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>dmg_health</p></td>
+<td><p>The amount of health the victim lost in the attack.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>health</p></td>
+<td><p>The remaining amount of health the victim has after the damage.</p></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>hitgroup</p></td>
+<td><p>The hitgroup that was damaged in the attack.</p></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the victim.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>weapon</p></td>
+<td><p>The type of weapon used in the attack.</p></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-info">
+<h2>player_info<a class="headerlink" href="#player-info" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>bot</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>index</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>name</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>networkid</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-jump">
+<h2>player_jump<a class="headerlink" href="#player-jump" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-radio">
+<h2>player_radio<a class="headerlink" href="#player-radio" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player uses a radio command.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>slot</p></td>
+<td><p>The index of the command used.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that used the radio command.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-reset-vote">
+<h2>player_reset_vote<a class="headerlink" href="#player-reset-vote" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>vote</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-say">
+<h2>player_say<a class="headerlink" href="#player-say" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player says something via chat.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>text</p></td>
+<td><p>The text that the player sent in the chat message.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that sent the chat message.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-score">
+<h2>player_score<a class="headerlink" href="#player-score" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>deaths</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>kills</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>score</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-shoot">
+<h2>player_shoot<a class="headerlink" href="#player-shoot" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>mode</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>weapon</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-spawn">
+<h2>player_spawn<a class="headerlink" href="#player-spawn" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player spawns on the server.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>teamnum</p></td>
+<td><p>The team number of the player that spawned.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that spawned.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-spawned">
+<h2>player_spawned<a class="headerlink" href="#player-spawned" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player has been spawned.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>inrestart</p></td>
+<td><p>True if spawning during a match restart.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that spawned.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-stats-updated">
+<h2>player_stats_updated<a class="headerlink" href="#player-stats-updated" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>forceupload</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-team">
+<h2>player_team<a class="headerlink" href="#player-team" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player changes teams.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>autoteam</p></td>
+<td><p>True if the player auto-picked a team.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>disconnect</p></td>
+<td><p>True if the player is disconnecting.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>isbot</p></td>
+<td><p>True if the player is a bot.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>oldteam</p></td>
+<td><p>The team that the player is changing from.</p></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>silent</p></td>
+<td><p>True if the event is to not be executed on each client.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>team</p></td>
+<td><p>The team that the player is changing to.</p></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that is changing teams.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="player-use">
+<h2>player_use<a class="headerlink" href="#player-use" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entity</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ragdoll-dissolved">
+<h2>ragdoll_dissolved<a class="headerlink" href="#ragdoll-dissolved" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entindex</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="read-game-titledata">
+<h2>read_game_titledata<a class="headerlink" href="#read-game-titledata" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>controllerId</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="repost-xbox-achievements">
+<h2>repost_xbox_achievements<a class="headerlink" href="#repost-xbox-achievements" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>splitscreenplayer</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="reset-game-titledata">
+<h2>reset_game_titledata<a class="headerlink" href="#reset-game-titledata" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>controllerId</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="reset-player-controls">
+<h2>reset_player_controls<a class="headerlink" href="#reset-player-controls" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-announce-final">
+<h2>round_announce_final<a class="headerlink" href="#round-announce-final" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-announce-last-round-half">
+<h2>round_announce_last_round_half<a class="headerlink" href="#round-announce-last-round-half" title="Link to this heading">¶</a></h2>
+<p>This event is fired when the announcement is made that the currently starting round is the last round before half-time (team switch).</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-announce-match-point">
+<h2>round_announce_match_point<a class="headerlink" href="#round-announce-match-point" title="Link to this heading">¶</a></h2>
+<p>This event is fired when the announcement is made that the currently starting round could be the last if the leading team wins the round.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-announce-match-start">
+<h2>round_announce_match_start<a class="headerlink" href="#round-announce-match-start" title="Link to this heading">¶</a></h2>
+<p>This event is fired when the announcement is made that the match is starting.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-announce-warmup">
+<h2>round_announce_warmup<a class="headerlink" href="#round-announce-warmup" title="Link to this heading">¶</a></h2>
+<p>This event is fired when the announcement is made that warmup is starting.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-end">
+<h2>round_end<a class="headerlink" href="#round-end" title="Link to this heading">¶</a></h2>
+<p>This event is fired at the end of every round.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>message</p></td>
+<td><p>The message that corresponds to the reason for the round ending.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>reason</p></td>
+<td><p>The reason that the round ended.</p></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>winner</p></td>
+<td><p>The team number of the winning team.</p></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-end-upload-stats">
+<h2>round_end_upload_stats<a class="headerlink" href="#round-end-upload-stats" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-freeze-end">
+<h2>round_freeze_end<a class="headerlink" href="#round-freeze-end" title="Link to this heading">¶</a></h2>
+<p>This event is fired when players are first allowed to move each round.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-mvp">
+<h2>round_mvp<a class="headerlink" href="#round-mvp" title="Link to this heading">¶</a></h2>
+<p>This event is fired at the end of each round when the round MVP is displayed.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>reason</p></td>
+<td><p>The reason why the player is the MVP of the round.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that was the MVP of the round.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-officially-ended">
+<h2>round_officially_ended<a class="headerlink" href="#round-officially-ended" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-poststart">
+<h2>round_poststart<a class="headerlink" href="#round-poststart" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-prestart">
+<h2>round_prestart<a class="headerlink" href="#round-prestart" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-start">
+<h2>round_start<a class="headerlink" href="#round-start" title="Link to this heading">¶</a></h2>
+<p>This event is fired at the very beginning of each round.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>fraglimit</p></td>
+<td><p>The number of kills required for the round to end.</p></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>objective</p></td>
+<td><p>The round objective.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>timelimit</p></td>
+<td><p>The time limit (in seconds) for the round to last.</p></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-start-pre-entity">
+<h2>round_start_pre_entity<a class="headerlink" href="#round-start-pre-entity" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="round-time-warning">
+<h2>round_time_warning<a class="headerlink" href="#round-time-warning" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="seasoncoin-levelup">
+<h2>seasoncoin_levelup<a class="headerlink" href="#seasoncoin-levelup" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>category</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>player</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>rank</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="server-addban">
+<h2>server_addban<a class="headerlink" href="#server-addban" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>by</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>duration</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>ip</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>kicked</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>name</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>networkid</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="server-cvar">
+<h2>server_cvar<a class="headerlink" href="#server-cvar" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a <a class="reference internal" href="../modules/cvars.html#cvars.ConVar" title="cvars.ConVar"><code class="xref py py-class docutils literal notranslate"><span class="pre">cvars.ConVar</span></code></a> with the <a class="reference internal" href="../modules/cvars.flags.html#cvars.flags.ConVarFlags.NOTIFY" title="cvars.flags.ConVarFlags.NOTIFY"><code class="xref py py-attr docutils literal notranslate"><span class="pre">cvars.flags.ConVarFlags.NOTIFY</span></code></a> flag set is changed.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>cvarname</p></td>
+<td><p>The name of the <a class="reference internal" href="../modules/cvars.html#cvars.ConVar" title="cvars.ConVar"><code class="xref py py-class docutils literal notranslate"><span class="pre">cvars.ConVar</span></code></a> whose value was changed.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>cvarvalue</p></td>
+<td><p>The value that the <a class="reference internal" href="../modules/cvars.html#cvars.ConVar" title="cvars.ConVar"><code class="xref py py-class docutils literal notranslate"><span class="pre">cvars.ConVar</span></code></a> was changed to.</p></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="server-message">
+<h2>server_message<a class="headerlink" href="#server-message" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>text</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="server-pre-shutdown">
+<h2>server_pre_shutdown<a class="headerlink" href="#server-pre-shutdown" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>reason</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="server-removeban">
+<h2>server_removeban<a class="headerlink" href="#server-removeban" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>by</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>ip</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>networkid</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="server-shutdown">
+<h2>server_shutdown<a class="headerlink" href="#server-shutdown" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>reason</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="server-spawn">
+<h2>server_spawn<a class="headerlink" href="#server-spawn" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a map is loaded.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>address</p></td>
+<td><p>The IP address/port of the server.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>dedicated</p></td>
+<td><p>True if the server is a dedicated server.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-even"><td><p>game</p></td>
+<td><p>The directory path of the server.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>hostname</p></td>
+<td><p>The value of the ‘hostname’ <a class="reference internal" href="../modules/cvars.html#cvars.ConVar" title="cvars.ConVar"><code class="xref py py-class docutils literal notranslate"><span class="pre">cvars.ConVar</span></code></a>.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>mapname</p></td>
+<td><p>The name of the map that is loaded on the server.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>maxplayers</p></td>
+<td><p>The maximum number of players allowed on the server.</p></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>official</p></td>
+<td><p>True if the server is an official Valve server.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>os</p></td>
+<td><p>The operating system that the server is on.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>password</p></td>
+<td><p>True if the server is password protected.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>port</p></td>
+<td><p>The port of the server.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="set-instructor-group-enabled">
+<h2>set_instructor_group_enabled<a class="headerlink" href="#set-instructor-group-enabled" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>enabled</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>group</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sfuievent">
+<h2>sfuievent<a class="headerlink" href="#sfuievent" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>action</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>data</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>slot</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="show-freezepanel">
+<h2>show_freezepanel<a class="headerlink" href="#show-freezepanel" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>damage_given</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>damage_taken</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>hits_given</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>hits_taken</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>killer</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>victim</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="silencer-detach">
+<h2>silencer_detach<a class="headerlink" href="#silencer-detach" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="silencer-off">
+<h2>silencer_off<a class="headerlink" href="#silencer-off" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="silencer-on">
+<h2>silencer_on<a class="headerlink" href="#silencer-on" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="smokegrenade-detonate">
+<h2>smokegrenade_detonate<a class="headerlink" href="#smokegrenade-detonate" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a smoke grenade detonates.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entityid</p></td>
+<td><p>The index of the smoke grenade that detonated.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that threw the smoke grenade.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>x</p></td>
+<td><p>The x coordinate on the map where the smoke grenade detonated.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>y</p></td>
+<td><p>The y coordinate on the map where the smoke grenade detonated.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>z</p></td>
+<td><p>The z coordinate on the map where the smoke grenade detonated.</p></td>
+<td><p>float</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="smokegrenade-expired">
+<h2>smokegrenade_expired<a class="headerlink" href="#smokegrenade-expired" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a smoke grenade’s smoke has expired.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entityid</p></td>
+<td><p>The index of the smoke grenade entity.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that threw the smoke grenade.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>x</p></td>
+<td><p>The x coordinate on the map where the smoke grenade expired.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>y</p></td>
+<td><p>The y coordinate on the map where the smoke grenade expired.</p></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>z</p></td>
+<td><p>The z coordinate on the map where the smoke grenade expired.</p></td>
+<td><p>float</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="spec-mode-updated">
+<h2>spec_mode_updated<a class="headerlink" href="#spec-mode-updated" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="spec-target-updated">
+<h2>spec_target_updated<a class="headerlink" href="#spec-target-updated" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="start-halftime">
+<h2>start_halftime<a class="headerlink" href="#start-halftime" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="start-vote">
+<h2>start_vote<a class="headerlink" href="#start-vote" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>type</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>vote_parameter</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="store-pricesheet-updated">
+<h2>store_pricesheet_updated<a class="headerlink" href="#store-pricesheet-updated" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="survival-announce-phase">
+<h2>survival_announce_phase<a class="headerlink" href="#survival-announce-phase" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>phase</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="switch-team">
+<h2>switch_team<a class="headerlink" href="#switch-team" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player switches teams.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>avg_rank</p></td>
+<td><p>The average rank of human players on the server.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>numCTSlotsFree</p></td>
+<td><p>The number of Counter-Terrorist slots that are free.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>numPlayers</p></td>
+<td><p>The total number of active players on both Terrorist and Counter-Terrorist teams.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>numSpectators</p></td>
+<td><p>The number of players that are spectating.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>numTSlotsFree</p></td>
+<td><p>The number of Terrorist slots that are free.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tagrenade-detonate">
+<h2>tagrenade_detonate<a class="headerlink" href="#tagrenade-detonate" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entityid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>x</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>y</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>z</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="team-info">
+<h2>team_info<a class="headerlink" href="#team-info" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>teamid</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>teamname</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="team-score">
+<h2>team_score<a class="headerlink" href="#team-score" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>score</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>teamid</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="teamchange-pending">
+<h2>teamchange_pending<a class="headerlink" href="#teamchange-pending" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player is going to be switching teams.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>toteam</p></td>
+<td><p>The team number that the player is switching to.</p></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player switching teams.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="teamplay-broadcast-audio">
+<h2>teamplay_broadcast_audio<a class="headerlink" href="#teamplay-broadcast-audio" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>sound</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>team</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="teamplay-round-start">
+<h2>teamplay_round_start<a class="headerlink" href="#teamplay-round-start" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>full_reset</p></td>
+<td></td>
+<td><p>bool</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tournament-reward">
+<h2>tournament_reward<a class="headerlink" href="#tournament-reward" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>accountid</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>defindex</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-even"><td><p>totalrewards</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tr-exit-hint-trigger">
+<h2>tr_exit_hint_trigger<a class="headerlink" href="#tr-exit-hint-trigger" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tr-mark-best-time">
+<h2>tr_mark_best_time<a class="headerlink" href="#tr-mark-best-time" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>time</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tr-mark-complete">
+<h2>tr_mark_complete<a class="headerlink" href="#tr-mark-complete" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>complete</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tr-player-flashbanged">
+<h2>tr_player_flashbanged<a class="headerlink" href="#tr-player-flashbanged" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tr-show-exit-msgbox">
+<h2>tr_show_exit_msgbox<a class="headerlink" href="#tr-show-exit-msgbox" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tr-show-finish-msgbox">
+<h2>tr_show_finish_msgbox<a class="headerlink" href="#tr-show-finish-msgbox" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="trial-time-expired">
+<h2>trial_time_expired<a class="headerlink" href="#trial-time-expired" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>slot</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ugc-file-download-finished">
+<h2>ugc_file_download_finished<a class="headerlink" href="#ugc-file-download-finished" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hcontent</p></td>
+<td></td>
+<td><p>uint64</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ugc-file-download-start">
+<h2>ugc_file_download_start<a class="headerlink" href="#ugc-file-download-start" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>hcontent</p></td>
+<td></td>
+<td><p>uint64</p></td>
+</tr>
+<tr class="row-odd"><td><p>published_file_id</p></td>
+<td></td>
+<td><p>uint64</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ugc-map-download-error">
+<h2>ugc_map_download_error<a class="headerlink" href="#ugc-map-download-error" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>error_code</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>published_file_id</p></td>
+<td></td>
+<td><p>uint64</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ugc-map-info-received">
+<h2>ugc_map_info_received<a class="headerlink" href="#ugc-map-info-received" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>published_file_id</p></td>
+<td></td>
+<td><p>uint64</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ugc-map-unsubscribed">
+<h2>ugc_map_unsubscribed<a class="headerlink" href="#ugc-map-unsubscribed" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>published_file_id</p></td>
+<td></td>
+<td><p>uint64</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="update-matchmaking-stats">
+<h2>update_matchmaking_stats<a class="headerlink" href="#update-matchmaking-stats" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="user-data-downloaded">
+<h2>user_data_downloaded<a class="headerlink" href="#user-data-downloaded" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="verify-client-hit">
+<h2>verify_client_hit<a class="headerlink" href="#verify-client-hit" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>pos_x</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>pos_y</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>pos_z</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-odd"><td><p>timestamp</p></td>
+<td></td>
+<td><p>float</p></td>
+</tr>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="vip-escaped">
+<h2>vip_escaped<a class="headerlink" href="#vip-escaped" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="vip-killed">
+<h2>vip_killed<a class="headerlink" href="#vip-killed" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>attacker</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="vote-cast">
+<h2>vote_cast<a class="headerlink" href="#vote-cast" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player casts a vote.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>entityid</p></td>
+<td><p>The index of the player that voted.</p></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>team</p></td>
+<td><p>The team number of the player that voted.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>vote_option</p></td>
+<td><p>The option the player voted for.</p></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="vote-changed">
+<h2>vote_changed<a class="headerlink" href="#vote-changed" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>potentialVotes</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>vote_option1</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>vote_option2</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>vote_option3</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-even"><td><p>vote_option4</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>vote_option5</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="vote-ended">
+<h2>vote_ended<a class="headerlink" href="#vote-ended" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="vote-failed">
+<h2>vote_failed<a class="headerlink" href="#vote-failed" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>team</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="vote-options">
+<h2>vote_options<a class="headerlink" href="#vote-options" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a vote starts.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>count</p></td>
+<td><p>The total number of options in the vote.</p></td>
+<td><p>byte</p></td>
+</tr>
+<tr class="row-odd"><td><p>option1</p></td>
+<td><p>The first option.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>option2</p></td>
+<td><p>The second option.</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>option3</p></td>
+<td><p>The third option (if available).</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>option4</p></td>
+<td><p>The fourth option (if available).</p></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>option5</p></td>
+<td><p>The fifth option (if available).</p></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="vote-passed">
+<h2>vote_passed<a class="headerlink" href="#vote-passed" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>details</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>param1</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>team</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="vote-started">
+<h2>vote_started<a class="headerlink" href="#vote-started" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>initiator</p></td>
+<td></td>
+<td><p>long</p></td>
+</tr>
+<tr class="row-odd"><td><p>issue</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-even"><td><p>param1</p></td>
+<td></td>
+<td><p>string</p></td>
+</tr>
+<tr class="row-odd"><td><p>team</p></td>
+<td></td>
+<td><p>byte</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="weapon-fire">
+<h2>weapon_fire<a class="headerlink" href="#weapon-fire" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a bullet is fired, or a projectile thrown, by a player.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>silenced</p></td>
+<td><p>True if the weapon has a silencer active.</p></td>
+<td><p>bool</p></td>
+</tr>
+<tr class="row-odd"><td><p>userid</p></td>
+<td><p>The userid of the player that fired the weapon.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-even"><td><p>weapon</p></td>
+<td><p>The type of weapon that was fired.</p></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="weapon-fire-on-empty">
+<h2>weapon_fire_on_empty<a class="headerlink" href="#weapon-fire-on-empty" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player attempts to fire a weapon that is completely out of ammo.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player attempting to fire an empty weapon.</p></td>
+<td><p>short</p></td>
+</tr>
+<tr class="row-odd"><td><p>weapon</p></td>
+<td><p>The type of weapon that the player is trying to fire.</p></td>
+<td><p>string</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="weapon-outofammo">
+<h2>weapon_outofammo<a class="headerlink" href="#weapon-outofammo" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="weapon-reload">
+<h2>weapon_reload<a class="headerlink" href="#weapon-reload" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player reloads their weapon by pressing their ‘reload’ button.  Automatic reloading does not fire this event.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that reloaded their weapon.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="weapon-reload-database">
+<h2>weapon_reload_database<a class="headerlink" href="#weapon-reload-database" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="weapon-zoom">
+<h2>weapon_zoom<a class="headerlink" href="#weapon-zoom" title="Link to this heading">¶</a></h2>
+<p>This event is fired each time a player zooms in (or out) their weapon.  This only fires on sniper rifles.  This event is notifies bots and has a zoom sound.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that zoomed their weapon.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="weapon-zoom-rifle">
+<h2>weapon_zoom_rifle<a class="headerlink" href="#weapon-zoom-rifle" title="Link to this heading">¶</a></h2>
+<p>This event is fired when a player zooms in with non-sniper rifles.  This event does not notify bots and is not accompanied by a zoom sound.</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>userid</p></td>
+<td><p>The userid of the player that zoomed their weapon.</p></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="write-game-titledata">
+<h2>write_game_titledata<a class="headerlink" href="#write-game-titledata" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>controllerId</p></td>
+<td></td>
+<td><p>short</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="write-profile-data">
+<h2>write_profile_data<a class="headerlink" href="#write-profile-data" title="Link to this heading">¶</a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Description</p></th>
+<th class="head"><p>Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td></td>
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Counter-Strike: Global Offensive</a><ul>
+<li><a class="reference internal" href="#achievement-earned">achievement_earned</a></li>
+<li><a class="reference internal" href="#achievement-earned-local">achievement_earned_local</a></li>
+<li><a class="reference internal" href="#achievement-event">achievement_event</a></li>
+<li><a class="reference internal" href="#achievement-increment">achievement_increment</a></li>
+<li><a class="reference internal" href="#achievement-info-loaded">achievement_info_loaded</a></li>
+<li><a class="reference internal" href="#achievement-write-failed">achievement_write_failed</a></li>
+<li><a class="reference internal" href="#add-bullet-hit-marker">add_bullet_hit_marker</a></li>
+<li><a class="reference internal" href="#add-player-sonar-icon">add_player_sonar_icon</a></li>
+<li><a class="reference internal" href="#ammo-pickup">ammo_pickup</a></li>
+<li><a class="reference internal" href="#announce-phase-end">announce_phase_end</a></li>
+<li><a class="reference internal" href="#assassination-target-killed">assassination_target_killed</a></li>
+<li><a class="reference internal" href="#begin-new-match">begin_new_match</a></li>
+<li><a class="reference internal" href="#bomb-abortdefuse">bomb_abortdefuse</a></li>
+<li><a class="reference internal" href="#bomb-abortplant">bomb_abortplant</a></li>
+<li><a class="reference internal" href="#bomb-beep">bomb_beep</a></li>
+<li><a class="reference internal" href="#bomb-begindefuse">bomb_begindefuse</a></li>
+<li><a class="reference internal" href="#bomb-beginplant">bomb_beginplant</a></li>
+<li><a class="reference internal" href="#bomb-defused">bomb_defused</a></li>
+<li><a class="reference internal" href="#bomb-dropped">bomb_dropped</a></li>
+<li><a class="reference internal" href="#bomb-exploded">bomb_exploded</a></li>
+<li><a class="reference internal" href="#bomb-pickup">bomb_pickup</a></li>
+<li><a class="reference internal" href="#bomb-planted">bomb_planted</a></li>
+<li><a class="reference internal" href="#bonus-updated">bonus_updated</a></li>
+<li><a class="reference internal" href="#bot-takeover">bot_takeover</a></li>
+<li><a class="reference internal" href="#break-breakable">break_breakable</a></li>
+<li><a class="reference internal" href="#break-prop">break_prop</a></li>
+<li><a class="reference internal" href="#bullet-impact">bullet_impact</a></li>
+<li><a class="reference internal" href="#buymenu-close">buymenu_close</a></li>
+<li><a class="reference internal" href="#buymenu-open">buymenu_open</a></li>
+<li><a class="reference internal" href="#buytime-ended">buytime_ended</a></li>
+<li><a class="reference internal" href="#cart-updated">cart_updated</a></li>
+<li><a class="reference internal" href="#client-disconnect">client_disconnect</a></li>
+<li><a class="reference internal" href="#client-loadout-changed">client_loadout_changed</a></li>
+<li><a class="reference internal" href="#cs-game-disconnected">cs_game_disconnected</a></li>
+<li><a class="reference internal" href="#cs-handle-ime-event">cs_handle_ime_event</a></li>
+<li><a class="reference internal" href="#cs-intermission">cs_intermission</a></li>
+<li><a class="reference internal" href="#cs-match-end-restart">cs_match_end_restart</a></li>
+<li><a class="reference internal" href="#cs-pre-restart">cs_pre_restart</a></li>
+<li><a class="reference internal" href="#cs-prev-next-spectator">cs_prev_next_spectator</a></li>
+<li><a class="reference internal" href="#cs-round-final-beep">cs_round_final_beep</a></li>
+<li><a class="reference internal" href="#cs-round-start-beep">cs_round_start_beep</a></li>
+<li><a class="reference internal" href="#cs-win-panel-match">cs_win_panel_match</a></li>
+<li><a class="reference internal" href="#cs-win-panel-round">cs_win_panel_round</a></li>
+<li><a class="reference internal" href="#decoy-detonate">decoy_detonate</a></li>
+<li><a class="reference internal" href="#decoy-firing">decoy_firing</a></li>
+<li><a class="reference internal" href="#decoy-started">decoy_started</a></li>
+<li><a class="reference internal" href="#defuser-dropped">defuser_dropped</a></li>
+<li><a class="reference internal" href="#defuser-pickup">defuser_pickup</a></li>
+<li><a class="reference internal" href="#difficulty-changed">difficulty_changed</a></li>
+<li><a class="reference internal" href="#dm-bonus-weapon-start">dm_bonus_weapon_start</a></li>
+<li><a class="reference internal" href="#door-moving">door_moving</a></li>
+<li><a class="reference internal" href="#enable-restart-voting">enable_restart_voting</a></li>
+<li><a class="reference internal" href="#endmatch-cmm-start-reveal-items">endmatch_cmm_start_reveal_items</a></li>
+<li><a class="reference internal" href="#endmatch-mapvote-selecting-map">endmatch_mapvote_selecting_map</a></li>
+<li><a class="reference internal" href="#enter-bombzone">enter_bombzone</a></li>
+<li><a class="reference internal" href="#enter-buyzone">enter_buyzone</a></li>
+<li><a class="reference internal" href="#enter-rescue-zone">enter_rescue_zone</a></li>
+<li><a class="reference internal" href="#entity-killed">entity_killed</a></li>
+<li><a class="reference internal" href="#entity-visible">entity_visible</a></li>
+<li><a class="reference internal" href="#exit-bombzone">exit_bombzone</a></li>
+<li><a class="reference internal" href="#exit-buyzone">exit_buyzone</a></li>
+<li><a class="reference internal" href="#exit-rescue-zone">exit_rescue_zone</a></li>
+<li><a class="reference internal" href="#finale-start">finale_start</a></li>
+<li><a class="reference internal" href="#flare-ignite-npc">flare_ignite_npc</a></li>
+<li><a class="reference internal" href="#flashbang-detonate">flashbang_detonate</a></li>
+<li><a class="reference internal" href="#freezecam-started">freezecam_started</a></li>
+<li><a class="reference internal" href="#game-end">game_end</a></li>
+<li><a class="reference internal" href="#game-init">game_init</a></li>
+<li><a class="reference internal" href="#game-message">game_message</a></li>
+<li><a class="reference internal" href="#game-newmap">game_newmap</a></li>
+<li><a class="reference internal" href="#game-start">game_start</a></li>
+<li><a class="reference internal" href="#gameinstructor-draw">gameinstructor_draw</a></li>
+<li><a class="reference internal" href="#gameinstructor-nodraw">gameinstructor_nodraw</a></li>
+<li><a class="reference internal" href="#gameui-hidden">gameui_hidden</a></li>
+<li><a class="reference internal" href="#gc-connected">gc_connected</a></li>
+<li><a class="reference internal" href="#gg-bonus-grenade-achieved">gg_bonus_grenade_achieved</a></li>
+<li><a class="reference internal" href="#gg-final-weapon-achieved">gg_final_weapon_achieved</a></li>
+<li><a class="reference internal" href="#gg-killed-enemy">gg_killed_enemy</a></li>
+<li><a class="reference internal" href="#gg-leader">gg_leader</a></li>
+<li><a class="reference internal" href="#gg-player-impending-upgrade">gg_player_impending_upgrade</a></li>
+<li><a class="reference internal" href="#gg-player-levelup">gg_player_levelup</a></li>
+<li><a class="reference internal" href="#gg-reset-round-start-sounds">gg_reset_round_start_sounds</a></li>
+<li><a class="reference internal" href="#gg-team-leader">gg_team_leader</a></li>
+<li><a class="reference internal" href="#ggprogressive-player-levelup">ggprogressive_player_levelup</a></li>
+<li><a class="reference internal" href="#ggtr-player-levelup">ggtr_player_levelup</a></li>
+<li><a class="reference internal" href="#grenade-bounce">grenade_bounce</a></li>
+<li><a class="reference internal" href="#hegrenade-detonate">hegrenade_detonate</a></li>
+<li><a class="reference internal" href="#helicopter-grenade-punt-miss">helicopter_grenade_punt_miss</a></li>
+<li><a class="reference internal" href="#hide-freezepanel">hide_freezepanel</a></li>
+<li><a class="reference internal" href="#hltv-cameraman">hltv_cameraman</a></li>
+<li><a class="reference internal" href="#hltv-changed-mode">hltv_changed_mode</a></li>
+<li><a class="reference internal" href="#hltv-changed-target">hltv_changed_target</a></li>
+<li><a class="reference internal" href="#hltv-chase">hltv_chase</a></li>
+<li><a class="reference internal" href="#hltv-chat">hltv_chat</a></li>
+<li><a class="reference internal" href="#hltv-fixed">hltv_fixed</a></li>
+<li><a class="reference internal" href="#hltv-message">hltv_message</a></li>
+<li><a class="reference internal" href="#hltv-rank-camera">hltv_rank_camera</a></li>
+<li><a class="reference internal" href="#hltv-rank-entity">hltv_rank_entity</a></li>
+<li><a class="reference internal" href="#hltv-status">hltv_status</a></li>
+<li><a class="reference internal" href="#hltv-title">hltv_title</a></li>
+<li><a class="reference internal" href="#hostage-call-for-help">hostage_call_for_help</a></li>
+<li><a class="reference internal" href="#hostage-follows">hostage_follows</a></li>
+<li><a class="reference internal" href="#hostage-hurt">hostage_hurt</a></li>
+<li><a class="reference internal" href="#hostage-killed">hostage_killed</a></li>
+<li><a class="reference internal" href="#hostage-rescued">hostage_rescued</a></li>
+<li><a class="reference internal" href="#hostage-rescued-all">hostage_rescued_all</a></li>
+<li><a class="reference internal" href="#hostage-stops-following">hostage_stops_following</a></li>
+<li><a class="reference internal" href="#hostname-changed">hostname_changed</a></li>
+<li><a class="reference internal" href="#inferno-expire">inferno_expire</a></li>
+<li><a class="reference internal" href="#inferno-extinguish">inferno_extinguish</a></li>
+<li><a class="reference internal" href="#inferno-startburn">inferno_startburn</a></li>
+<li><a class="reference internal" href="#inspect-weapon">inspect_weapon</a></li>
+<li><a class="reference internal" href="#instructor-server-hint-create">instructor_server_hint_create</a></li>
+<li><a class="reference internal" href="#instructor-server-hint-stop">instructor_server_hint_stop</a></li>
+<li><a class="reference internal" href="#inventory-updated">inventory_updated</a></li>
+<li><a class="reference internal" href="#item-equip">item_equip</a></li>
+<li><a class="reference internal" href="#item-found">item_found</a></li>
+<li><a class="reference internal" href="#item-pickup">item_pickup</a></li>
+<li><a class="reference internal" href="#item-purchase">item_purchase</a></li>
+<li><a class="reference internal" href="#item-schema-initialized">item_schema_initialized</a></li>
+<li><a class="reference internal" href="#items-gifted">items_gifted</a></li>
+<li><a class="reference internal" href="#jointeam-failed">jointeam_failed</a></li>
+<li><a class="reference internal" href="#map-transition">map_transition</a></li>
+<li><a class="reference internal" href="#match-end-conditions">match_end_conditions</a></li>
+<li><a class="reference internal" href="#material-default-complete">material_default_complete</a></li>
+<li><a class="reference internal" href="#mb-input-lock-cancel">mb_input_lock_cancel</a></li>
+<li><a class="reference internal" href="#mb-input-lock-success">mb_input_lock_success</a></li>
+<li><a class="reference internal" href="#molotov-detonate">molotov_detonate</a></li>
+<li><a class="reference internal" href="#nav-blocked">nav_blocked</a></li>
+<li><a class="reference internal" href="#nav-generate">nav_generate</a></li>
+<li><a class="reference internal" href="#nextlevel-changed">nextlevel_changed</a></li>
+<li><a class="reference internal" href="#other-death">other_death</a></li>
+<li><a class="reference internal" href="#physgun-pickup">physgun_pickup</a></li>
+<li><a class="reference internal" href="#player-activate">player_activate</a></li>
+<li><a class="reference internal" href="#player-avenged-teammate">player_avenged_teammate</a></li>
+<li><a class="reference internal" href="#player-blind">player_blind</a></li>
+<li><a class="reference internal" href="#player-changename">player_changename</a></li>
+<li><a class="reference internal" href="#player-chat">player_chat</a></li>
+<li><a class="reference internal" href="#player-class">player_class</a></li>
+<li><a class="reference internal" href="#player-connect">player_connect</a></li>
+<li><a class="reference internal" href="#player-connect-full">player_connect_full</a></li>
+<li><a class="reference internal" href="#player-death">player_death</a></li>
+<li><a class="reference internal" href="#player-decal">player_decal</a></li>
+<li><a class="reference internal" href="#player-disconnect">player_disconnect</a></li>
+<li><a class="reference internal" href="#player-falldamage">player_falldamage</a></li>
+<li><a class="reference internal" href="#player-footstep">player_footstep</a></li>
+<li><a class="reference internal" href="#player-given-c4">player_given_c4</a></li>
+<li><a class="reference internal" href="#player-hintmessage">player_hintmessage</a></li>
+<li><a class="reference internal" href="#player-hurt">player_hurt</a></li>
+<li><a class="reference internal" href="#player-info">player_info</a></li>
+<li><a class="reference internal" href="#player-jump">player_jump</a></li>
+<li><a class="reference internal" href="#player-radio">player_radio</a></li>
+<li><a class="reference internal" href="#player-reset-vote">player_reset_vote</a></li>
+<li><a class="reference internal" href="#player-say">player_say</a></li>
+<li><a class="reference internal" href="#player-score">player_score</a></li>
+<li><a class="reference internal" href="#player-shoot">player_shoot</a></li>
+<li><a class="reference internal" href="#player-spawn">player_spawn</a></li>
+<li><a class="reference internal" href="#player-spawned">player_spawned</a></li>
+<li><a class="reference internal" href="#player-stats-updated">player_stats_updated</a></li>
+<li><a class="reference internal" href="#player-team">player_team</a></li>
+<li><a class="reference internal" href="#player-use">player_use</a></li>
+<li><a class="reference internal" href="#ragdoll-dissolved">ragdoll_dissolved</a></li>
+<li><a class="reference internal" href="#read-game-titledata">read_game_titledata</a></li>
+<li><a class="reference internal" href="#repost-xbox-achievements">repost_xbox_achievements</a></li>
+<li><a class="reference internal" href="#reset-game-titledata">reset_game_titledata</a></li>
+<li><a class="reference internal" href="#reset-player-controls">reset_player_controls</a></li>
+<li><a class="reference internal" href="#round-announce-final">round_announce_final</a></li>
+<li><a class="reference internal" href="#round-announce-last-round-half">round_announce_last_round_half</a></li>
+<li><a class="reference internal" href="#round-announce-match-point">round_announce_match_point</a></li>
+<li><a class="reference internal" href="#round-announce-match-start">round_announce_match_start</a></li>
+<li><a class="reference internal" href="#round-announce-warmup">round_announce_warmup</a></li>
+<li><a class="reference internal" href="#round-end">round_end</a></li>
+<li><a class="reference internal" href="#round-end-upload-stats">round_end_upload_stats</a></li>
+<li><a class="reference internal" href="#round-freeze-end">round_freeze_end</a></li>
+<li><a class="reference internal" href="#round-mvp">round_mvp</a></li>
+<li><a class="reference internal" href="#round-officially-ended">round_officially_ended</a></li>
+<li><a class="reference internal" href="#round-poststart">round_poststart</a></li>
+<li><a class="reference internal" href="#round-prestart">round_prestart</a></li>
+<li><a class="reference internal" href="#round-start">round_start</a></li>
+<li><a class="reference internal" href="#round-start-pre-entity">round_start_pre_entity</a></li>
+<li><a class="reference internal" href="#round-time-warning">round_time_warning</a></li>
+<li><a class="reference internal" href="#seasoncoin-levelup">seasoncoin_levelup</a></li>
+<li><a class="reference internal" href="#server-addban">server_addban</a></li>
+<li><a class="reference internal" href="#server-cvar">server_cvar</a></li>
+<li><a class="reference internal" href="#server-message">server_message</a></li>
+<li><a class="reference internal" href="#server-pre-shutdown">server_pre_shutdown</a></li>
+<li><a class="reference internal" href="#server-removeban">server_removeban</a></li>
+<li><a class="reference internal" href="#server-shutdown">server_shutdown</a></li>
+<li><a class="reference internal" href="#server-spawn">server_spawn</a></li>
+<li><a class="reference internal" href="#set-instructor-group-enabled">set_instructor_group_enabled</a></li>
+<li><a class="reference internal" href="#sfuievent">sfuievent</a></li>
+<li><a class="reference internal" href="#show-freezepanel">show_freezepanel</a></li>
+<li><a class="reference internal" href="#silencer-detach">silencer_detach</a></li>
+<li><a class="reference internal" href="#silencer-off">silencer_off</a></li>
+<li><a class="reference internal" href="#silencer-on">silencer_on</a></li>
+<li><a class="reference internal" href="#smokegrenade-detonate">smokegrenade_detonate</a></li>
+<li><a class="reference internal" href="#smokegrenade-expired">smokegrenade_expired</a></li>
+<li><a class="reference internal" href="#spec-mode-updated">spec_mode_updated</a></li>
+<li><a class="reference internal" href="#spec-target-updated">spec_target_updated</a></li>
+<li><a class="reference internal" href="#start-halftime">start_halftime</a></li>
+<li><a class="reference internal" href="#start-vote">start_vote</a></li>
+<li><a class="reference internal" href="#store-pricesheet-updated">store_pricesheet_updated</a></li>
+<li><a class="reference internal" href="#survival-announce-phase">survival_announce_phase</a></li>
+<li><a class="reference internal" href="#switch-team">switch_team</a></li>
+<li><a class="reference internal" href="#tagrenade-detonate">tagrenade_detonate</a></li>
+<li><a class="reference internal" href="#team-info">team_info</a></li>
+<li><a class="reference internal" href="#team-score">team_score</a></li>
+<li><a class="reference internal" href="#teamchange-pending">teamchange_pending</a></li>
+<li><a class="reference internal" href="#teamplay-broadcast-audio">teamplay_broadcast_audio</a></li>
+<li><a class="reference internal" href="#teamplay-round-start">teamplay_round_start</a></li>
+<li><a class="reference internal" href="#tournament-reward">tournament_reward</a></li>
+<li><a class="reference internal" href="#tr-exit-hint-trigger">tr_exit_hint_trigger</a></li>
+<li><a class="reference internal" href="#tr-mark-best-time">tr_mark_best_time</a></li>
+<li><a class="reference internal" href="#tr-mark-complete">tr_mark_complete</a></li>
+<li><a class="reference internal" href="#tr-player-flashbanged">tr_player_flashbanged</a></li>
+<li><a class="reference internal" href="#tr-show-exit-msgbox">tr_show_exit_msgbox</a></li>
+<li><a class="reference internal" href="#tr-show-finish-msgbox">tr_show_finish_msgbox</a></li>
+<li><a class="reference internal" href="#trial-time-expired">trial_time_expired</a></li>
+<li><a class="reference internal" href="#ugc-file-download-finished">ugc_file_download_finished</a></li>
+<li><a class="reference internal" href="#ugc-file-download-start">ugc_file_download_start</a></li>
+<li><a class="reference internal" href="#ugc-map-download-error">ugc_map_download_error</a></li>
+<li><a class="reference internal" href="#ugc-map-info-received">ugc_map_info_received</a></li>
+<li><a class="reference internal" href="#ugc-map-unsubscribed">ugc_map_unsubscribed</a></li>
+<li><a class="reference internal" href="#update-matchmaking-stats">update_matchmaking_stats</a></li>
+<li><a class="reference internal" href="#user-data-downloaded">user_data_downloaded</a></li>
+<li><a class="reference internal" href="#verify-client-hit">verify_client_hit</a></li>
+<li><a class="reference internal" href="#vip-escaped">vip_escaped</a></li>
+<li><a class="reference internal" href="#vip-killed">vip_killed</a></li>
+<li><a class="reference internal" href="#vote-cast">vote_cast</a></li>
+<li><a class="reference internal" href="#vote-changed">vote_changed</a></li>
+<li><a class="reference internal" href="#vote-ended">vote_ended</a></li>
+<li><a class="reference internal" href="#vote-failed">vote_failed</a></li>
+<li><a class="reference internal" href="#vote-options">vote_options</a></li>
+<li><a class="reference internal" href="#vote-passed">vote_passed</a></li>
+<li><a class="reference internal" href="#vote-started">vote_started</a></li>
+<li><a class="reference internal" href="#weapon-fire">weapon_fire</a></li>
+<li><a class="reference internal" href="#weapon-fire-on-empty">weapon_fire_on_empty</a></li>
+<li><a class="reference internal" href="#weapon-outofammo">weapon_outofammo</a></li>
+<li><a class="reference internal" href="#weapon-reload">weapon_reload</a></li>
+<li><a class="reference internal" href="#weapon-reload-database">weapon_reload_database</a></li>
+<li><a class="reference internal" href="#weapon-zoom">weapon_zoom</a></li>
+<li><a class="reference internal" href="#weapon-zoom-rifle">weapon_zoom_rifle</a></li>
+<li><a class="reference internal" href="#write-game-titledata">write_game_titledata</a></li>
+<li><a class="reference internal" href="#write-profile-data">write_profile_data</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="bms.html"
+                          title="previous chapter">Black Mesa: Source</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="cstrike.html"
+                          title="next chapter">Counter-Strike: Source</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/events/csgo.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="cstrike.html" title="Counter-Strike: Source"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="bms.html" title="Black Mesa: Source"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../events.html" >Events</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Counter-Strike: Global Offensive</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

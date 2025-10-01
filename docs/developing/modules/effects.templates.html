@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>effects.templates module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">effects.templates module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-effects.templates">
+<span id="effects-templates-module"></span><h1>effects.templates module<a class="headerlink" href="#module-effects.templates" title="Link to this heading">¶</a></h1>
+<p>Base templates for effect classes.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="effects.templates.TempEntityTemplate">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">effects.templates.</span></span><span class="sig-name descname"><span class="pre">TempEntityTemplate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_entity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/effects/templates.html#TempEntityTemplate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#effects.templates.TempEntityTemplate" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="effects.base.html#effects.base.BaseTempEntity" title="_effects._base.BaseTempEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTempEntity</span></code></a></p>
+<p>A temp entity template.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="effects.templates.TempEntityTemplate.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_entity</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/effects/templates.html#TempEntityTemplate.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#effects.templates.TempEntityTemplate.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>temp_entity</strong> (<a class="reference internal" href="effects.base.html#effects.base.BaseTempEntity" title="effects.base.BaseTempEntity"><em>BaseTempEntity</em></a>) – The base entity instance to copy the base from.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="effects.templates.TempEntityTemplate.add_hook">
+<span class="sig-name descname"><span class="pre">add_hook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/effects/templates.html#TempEntityTemplate.add_hook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#effects.templates.TempEntityTemplate.add_hook" title="Link to this definition">¶</a></dt>
+<dd><p>Register a hook for this temp entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>callback</strong> (<em>function</em>) – The callback function to register.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="effects.templates.TempEntityTemplate.handle_hook">
+<span class="sig-name descname"><span class="pre">handle_hook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">temp_entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">recipient_filter</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/effects/templates.html#TempEntityTemplate.handle_hook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#effects.templates.TempEntityTemplate.handle_hook" title="Link to this definition">¶</a></dt>
+<dd><p>Call the registered callbacks.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>temp_entity</strong> (<a class="reference internal" href="effects.base.html#effects.base.TempEntity" title="effects.base.TempEntity"><em>TempEntity</em></a>) – The TempEntity instance.</p></li>
+<li><p><strong>recipient_filter</strong> (<a class="reference internal" href="filters.recipients.html#filters.recipients.RecipientFilter" title="filters.recipients.RecipientFilter"><em>RecipientFilter</em></a>) – The RecipientFilter instance.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="effects.templates.TempEntityTemplate.remove_hook">
+<span class="sig-name descname"><span class="pre">remove_hook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/effects/templates.html#TempEntityTemplate.remove_hook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#effects.templates.TempEntityTemplate.remove_hook" title="Link to this definition">¶</a></dt>
+<dd><p>Unregister a hook for this temp entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>callback</strong> (<em>function</em>) – The callback function to unregister.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="effects.templates.TempEntityTemplate.aliases">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">aliases</span></span><a class="headerlink" href="#effects.templates.TempEntityTemplate.aliases" title="Link to this definition">¶</a></dt>
+<dd><p>Return the aliases of the temp entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="core.html#core.GameConfigObj" title="core.GameConfigObj">GameConfigObj</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="effects.templates.TempEntityTemplate.hooks">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hooks</span></span><a class="headerlink" href="#effects.templates.TempEntityTemplate.hooks" title="Link to this definition">¶</a></dt>
+<dd><p>Return the registered hooks for this temp entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="effects.templates.TempEntityTemplate.properties">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">properties</span></span><a class="headerlink" href="#effects.templates.TempEntityTemplate.properties" title="Link to this definition">¶</a></dt>
+<dd><p>Return the properties data of the temp entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="effects.templates.TempEntityTemplate.size">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#effects.templates.TempEntityTemplate.size" title="Link to this definition">¶</a></dt>
+<dd><p>Return the size of the temp entity instance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="effects.templates.TempEntityTemplates">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">effects.templates.</span></span><span class="sig-name descname"><span class="pre">TempEntityTemplates</span></span><a class="reference internal" href="../../_modules/effects/templates.html#TempEntityTemplates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#effects.templates.TempEntityTemplates" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+<p>Container class used to store the temp entity templates instances.</p>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">effects.templates module</a><ul>
+<li><a class="reference internal" href="#effects.templates.TempEntityTemplate"><code class="docutils literal notranslate"><span class="pre">TempEntityTemplate</span></code></a><ul>
+<li><a class="reference internal" href="#effects.templates.TempEntityTemplate.__init__"><code class="docutils literal notranslate"><span class="pre">TempEntityTemplate.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#effects.templates.TempEntityTemplate.add_hook"><code class="docutils literal notranslate"><span class="pre">TempEntityTemplate.add_hook()</span></code></a></li>
+<li><a class="reference internal" href="#effects.templates.TempEntityTemplate.handle_hook"><code class="docutils literal notranslate"><span class="pre">TempEntityTemplate.handle_hook()</span></code></a></li>
+<li><a class="reference internal" href="#effects.templates.TempEntityTemplate.remove_hook"><code class="docutils literal notranslate"><span class="pre">TempEntityTemplate.remove_hook()</span></code></a></li>
+<li><a class="reference internal" href="#effects.templates.TempEntityTemplate.aliases"><code class="docutils literal notranslate"><span class="pre">TempEntityTemplate.aliases</span></code></a></li>
+<li><a class="reference internal" href="#effects.templates.TempEntityTemplate.hooks"><code class="docutils literal notranslate"><span class="pre">TempEntityTemplate.hooks</span></code></a></li>
+<li><a class="reference internal" href="#effects.templates.TempEntityTemplate.properties"><code class="docutils literal notranslate"><span class="pre">TempEntityTemplate.properties</span></code></a></li>
+<li><a class="reference internal" href="#effects.templates.TempEntityTemplate.size"><code class="docutils literal notranslate"><span class="pre">TempEntityTemplate.size</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#effects.templates.TempEntityTemplates"><code class="docutils literal notranslate"><span class="pre">TempEntityTemplates</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/effects.templates.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">effects.templates module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

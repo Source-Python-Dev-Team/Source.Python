@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>filters.players &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">filters.players</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for filters.players</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../filters/players.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides player filtering functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python</span>
+<span class="c1">#   Ast</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">ast</span>
+<span class="c1"># Site-Package Imports</span>
+<span class="c1">#   ConfigObj</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">configobj</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigObj</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">GAME_NAME</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">index_from_edict</span>
+<span class="c1">#   Filters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.iterator</span><span class="w"> </span><span class="kn">import</span> <span class="n">_IterObject</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">SP_DATA_PATH</span>
+<span class="c1">#   Players</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlayerGenerator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">index_from_userid</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;get_default_filters&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;parse_filter&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;PlayerIter&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Get the team&#39;s file for the current game</span>
+<span class="n">_game_teams</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span><span class="n">SP_DATA_PATH</span> <span class="o">/</span> <span class="s1">&#39;teams&#39;</span> <span class="o">/</span> <span class="n">GAME_NAME</span> <span class="o">+</span> <span class="s1">&#39;.ini&#39;</span><span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; PLAYER ITERATION CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="PlayerIter">
+<a class="viewcode-back" href="../../developing/modules/filters.players.html#filters.players.PlayerIter">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PlayerIter</span><span class="p">(</span><span class="n">_IterObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Player iterate class.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PlayerIter.iterator">
+<a class="viewcode-back" href="../../developing/modules/filters.players.html#filters.players.PlayerIter.iterator">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">iterator</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over all :class:`players.entity.Player` objects.&quot;&quot;&quot;</span>
+        <span class="c1"># Loop through all players on the server</span>
+        <span class="k">for</span> <span class="n">edict</span> <span class="ow">in</span> <span class="n">PlayerGenerator</span><span class="p">():</span>
+
+            <span class="c1"># Yield the Player instance for the current edict</span>
+            <span class="k">yield</span> <span class="n">Player</span><span class="p">(</span><span class="n">index_from_edict</span><span class="p">(</span><span class="n">edict</span><span class="p">))</span></div>
+</div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># PLAYER TEAM CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_PlayerTeams</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store team names for the current game.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a _Team instance for the given team name.&quot;&quot;&quot;</span>
+        <span class="c1"># Get the _Team instance</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="n">_Team</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="c1"># Add the _Team instance for the given team name</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setitem__</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">instance</span><span class="p">)</span>
+
+<span class="c1"># Get the _PlayerTeams instance</span>
+<span class="n">_player_teams</span> <span class="o">=</span> <span class="n">_PlayerTeams</span><span class="p">()</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_Team</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store a team number and compare to a given player.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">team</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store the team number for future use.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">team</span> <span class="o">=</span> <span class="n">team</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_player_is_on_team</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the player is on the team.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">player</span><span class="o">.</span><span class="n">team</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">team</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FILTER REGISTRATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Register the filter functions</span>
+<span class="n">PlayerIter</span><span class="o">.</span><span class="n">register_filter</span><span class="p">(</span><span class="s1">&#39;all&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">player</span><span class="p">:</span> <span class="kc">True</span><span class="p">)</span>
+<span class="n">PlayerIter</span><span class="o">.</span><span class="n">register_filter</span><span class="p">(</span><span class="s1">&#39;bot&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">player</span><span class="p">:</span> <span class="n">player</span><span class="o">.</span><span class="n">is_bot</span><span class="p">())</span>
+<span class="n">PlayerIter</span><span class="o">.</span><span class="n">register_filter</span><span class="p">(</span><span class="s1">&#39;human&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">player</span><span class="p">:</span> <span class="ow">not</span> <span class="n">player</span><span class="o">.</span><span class="n">is_bot</span><span class="p">())</span>
+<span class="n">PlayerIter</span><span class="o">.</span><span class="n">register_filter</span><span class="p">(</span><span class="s1">&#39;alive&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">player</span><span class="p">:</span> <span class="ow">not</span> <span class="n">player</span><span class="o">.</span><span class="n">dead</span><span class="p">)</span>
+<span class="n">PlayerIter</span><span class="o">.</span><span class="n">register_filter</span><span class="p">(</span><span class="s1">&#39;dead&#39;</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">player</span><span class="p">:</span> <span class="n">player</span><span class="o">.</span><span class="n">dead</span><span class="p">)</span>
+
+<span class="c1"># Loop through all teams in the game&#39;s team file</span>
+<span class="k">for</span> <span class="n">_team</span> <span class="ow">in</span> <span class="n">_game_teams</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;names&#39;</span><span class="p">,</span> <span class="p">{}):</span>
+
+    <span class="c1"># Add the team to the _player_teams dictionary</span>
+    <span class="n">_player_teams</span><span class="p">[</span><span class="n">_team</span><span class="p">]</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_game_teams</span><span class="p">[</span><span class="s1">&#39;names&#39;</span><span class="p">][</span><span class="n">_team</span><span class="p">])</span>
+
+    <span class="c1"># Register the filter</span>
+    <span class="n">PlayerIter</span><span class="o">.</span><span class="n">register_filter</span><span class="p">(</span>
+        <span class="n">_team</span><span class="p">,</span> <span class="n">_player_teams</span><span class="p">[</span><span class="n">_team</span><span class="p">]</span><span class="o">.</span><span class="n">_player_is_on_team</span><span class="p">)</span>
+
+<span class="c1"># Loop through all base team names</span>
+<span class="k">for</span> <span class="n">_number</span><span class="p">,</span> <span class="n">_team</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">((</span><span class="s1">&#39;un&#39;</span><span class="p">,</span> <span class="s1">&#39;spec&#39;</span><span class="p">,</span> <span class="s1">&#39;t&#39;</span><span class="p">,</span> <span class="s1">&#39;ct&#39;</span><span class="p">)):</span>
+
+    <span class="c1"># Has the team already been added to the _player_teams dictionary</span>
+    <span class="k">if</span> <span class="n">_team</span> <span class="ow">in</span> <span class="n">_player_teams</span><span class="p">:</span>
+
+        <span class="c1"># If it has been added, do not re-add it</span>
+        <span class="k">continue</span>
+
+    <span class="c1"># Add the team to the _player_teams dictionary</span>
+    <span class="n">_player_teams</span><span class="p">[</span><span class="n">_team</span><span class="p">]</span> <span class="o">=</span> <span class="n">_number</span>
+
+    <span class="c1"># Register the filter</span>
+    <span class="n">PlayerIter</span><span class="o">.</span><span class="n">register_filter</span><span class="p">(</span>
+        <span class="n">_team</span><span class="p">,</span> <span class="n">_player_teams</span><span class="p">[</span><span class="n">_team</span><span class="p">]</span><span class="o">.</span><span class="n">_player_is_on_team</span><span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FUNCTIONS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="parse_filter">
+<a class="viewcode-back" href="../../developing/modules/filters.players.html#filters.players.parse_filter">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">parse_filter</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="n">filters</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse an expression and return a set containing :class:`Player` objects.</span>
+
+<span class="sd">    :param str expr: The expression to parse.</span>
+<span class="sd">    :param dict filters: Filters that should be used instead of the default</span>
+<span class="sd">        filters. All filter names must be lowercase.</span>
+<span class="sd">    :rtype: set</span>
+<span class="sd">    :raise SyntaxError: Raised if the expression is invalid.</span>
+<span class="sd">    :raise KeyError: Raised if an invalid filter was used.</span>
+<span class="sd">    :raise ValueError: Raised if the conversion from userid to index failed.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">filters</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">filters</span> <span class="o">=</span> <span class="n">get_default_filters</span><span class="p">()</span>
+
+    <span class="k">return</span> <span class="n">_parse_node</span><span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">expr</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s1">&#39;eval&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">body</span><span class="p">,</span> <span class="n">filters</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_default_filters">
+<a class="viewcode-back" href="../../developing/modules/filters.players.html#filters.players.get_default_filters">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_default_filters</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the default filters (all available filters).&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">dict</span><span class="p">((</span><span class="n">name</span><span class="p">,</span> <span class="nb">set</span><span class="p">(</span><span class="n">PlayerIter</span><span class="p">(</span><span class="n">name</span><span class="p">)))</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">PlayerIter</span><span class="o">.</span><span class="n">filters</span><span class="p">)</span></div>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_parse_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">filters</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Parse an ast node.&quot;&quot;&quot;</span>
+    <span class="c1"># Userid?</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Num</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">([</span><span class="n">Player</span><span class="p">(</span><span class="n">index_from_userid</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">n</span><span class="p">))])</span>
+
+    <span class="c1"># Filter?</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Name</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">filters</span><span class="p">[</span><span class="n">node</span><span class="o">.</span><span class="n">id</span><span class="o">.</span><span class="n">casefold</span><span class="p">()]</span>
+
+    <span class="c1"># + or -?</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">op</span><span class="p">,</span> <span class="p">(</span><span class="n">ast</span><span class="o">.</span><span class="n">Add</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Sub</span><span class="p">)):</span>
+        <span class="n">left</span> <span class="o">=</span> <span class="n">_parse_node</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">left</span><span class="p">,</span> <span class="n">filters</span><span class="p">)</span>
+        <span class="n">right</span> <span class="o">=</span> <span class="n">_parse_node</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">right</span><span class="p">,</span> <span class="n">filters</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">node</span><span class="o">.</span><span class="n">op</span><span class="p">,</span> <span class="n">ast</span><span class="o">.</span><span class="n">Add</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">left</span> <span class="o">|</span> <span class="n">right</span>
+
+        <span class="k">return</span> <span class="n">left</span> <span class="o">-</span> <span class="n">right</span>
+
+    <span class="c1"># TODO:</span>
+    <span class="c1"># Figure out how to get the offset of the wrong node (for raising a better</span>
+    <span class="c1"># SyntaxError).</span>
+    <span class="k">raise</span> <span class="ne">SyntaxError</span><span class="p">(</span><span class="s1">&#39;Unsupported node type: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">node</span><span class="p">)))</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">filters.players</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

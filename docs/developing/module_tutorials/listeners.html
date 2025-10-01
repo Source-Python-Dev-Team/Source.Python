@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>listeners &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="memory" href="memory.html" />
+    <link rel="prev" title="events" href="events.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="memory.html" title="memory"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="events.html" title="events"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../module_tutorials.html" accesskey="U">Module tutorials</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">listeners</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="listeners">
+<h1>listeners<a class="headerlink" href="#listeners" title="Link to this heading">¶</a></h1>
+<p>This page contains tutorials about the <a class="reference internal" href="../modules/listeners.html#module-listeners" title="listeners"><code class="xref py py-mod docutils literal notranslate"><span class="pre">listeners</span></code></a> package.</p>
+<section id="onclientactive">
+<h2>OnClientActive<a class="headerlink" href="#onclientactive" title="Link to this heading">¶</a></h2>
+<p>Called when a client has passed the loading screen and spawns into the server.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnClientActive</span>
+
+<span class="nd">@OnClientActive</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_client_active</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onclientconnect">
+<h2>OnClientConnect<a class="headerlink" href="#onclientconnect" title="Link to this heading">¶</a></h2>
+<p>Called when a client tries to connect to the server. At this point the client
+can still be rejected.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnClientConnect</span>
+
+<span class="nd">@OnClientConnect</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_client_connect</span><span class="p">(</span><span class="n">allow_connect_ptr</span><span class="p">,</span> <span class="n">edict</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">address</span><span class="p">,</span> <span class="n">reject_msg_ptr</span><span class="p">,</span> <span class="n">reject_msg_len</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;something_you_dont_like&#39;</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="n">allow_connect_ptr</span><span class="o">.</span><span class="n">set_bool</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">reject_msg_ptr</span><span class="o">.</span><span class="n">set_string_array</span><span class="p">(</span><span class="s1">&#39;Your name is not allowed&#39;</span><span class="p">[:</span><span class="n">reject_msg_len</span><span class="p">])</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The length of the reject message should never exceed the value of <code class="docutils literal notranslate"><span class="pre">reject_msg_len</span></code>.</p>
+</div>
+</section>
+<section id="onclientdisconnect">
+<h2>OnClientDisconnect<a class="headerlink" href="#onclientdisconnect" title="Link to this heading">¶</a></h2>
+<p>Called when a client disconnects from the server.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnClientDisconnect</span>
+
+<span class="nd">@OnClientDisconnect</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_client_disconnect</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="onclientfullyconnect">
+<h2>OnClientFullyConnect<a class="headerlink" href="#onclientfullyconnect" title="Link to this heading">¶</a></h2>
+<p>Called when the client has fully connected to the server.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnClientFullyConnect</span>
+
+<span class="nd">@OnClientFullyConnect</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_client_fully_connect</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This listener only gets called in CS:GO and Blade Symphony.</p>
+</div>
+</section>
+<section id="onclientputinserver">
+<h2>OnClientPutInServer<a class="headerlink" href="#onclientputinserver" title="Link to this heading">¶</a></h2>
+<p>Called when the client is put in the server. It gets called right before
+<a class="reference internal" href="#onclientactive">OnClientActive</a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnClientPutInServer</span>
+
+<span class="nd">@OnClientPutInServer</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_client_put_in_server</span><span class="p">(</span><span class="n">edict</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onclientsettingschanged">
+<h2>OnClientSettingsChanged<a class="headerlink" href="#onclientsettingschanged" title="Link to this heading">¶</a></h2>
+<p>Called when a client setting has been changed e.g. <code class="docutils literal notranslate"><span class="pre">cl_language</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnClientSettingsChanged</span>
+
+<span class="nd">@OnClientSettingsChanged</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_client_settings_changed</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="oncombinerprecache">
+<h2>OnCombinerPreCache<a class="headerlink" href="#oncombinerprecache" title="Link to this heading">¶</a></h2>
+<p>Called when a combined model gets precached.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnCombinerPreCache</span>
+
+<span class="nd">@OnCombinerPreCache</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_combiner_precache</span><span class="p">(</span><span class="n">cache_data_type</span><span class="p">,</span> <span class="n">model_handle</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This listener only gets called in CS:GO.</p>
+</div>
+</section>
+<section id="onconvarchanged">
+<h2>OnConVarChanged<a class="headerlink" href="#onconvarchanged" title="Link to this heading">¶</a></h2>
+<p>Called when a convar has been changed.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnConVarChanged</span>
+
+<span class="nd">@OnConVarChanged</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_convar_changed</span><span class="p">(</span><span class="n">convar</span><span class="p">,</span> <span class="n">old_value</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="ondataloaded">
+<h2>OnDataLoaded<a class="headerlink" href="#ondataloaded" title="Link to this heading">¶</a></h2>
+<p>Called when data has been loaded into the model cache.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnDataLoaded</span>
+
+<span class="nd">@OnDataLoaded</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_data_loaded</span><span class="p">(</span><span class="n">cache_data_type</span><span class="p">,</span> <span class="n">model_handle</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="ondataunloaded">
+<h2>OnDataUnloaded<a class="headerlink" href="#ondataunloaded" title="Link to this heading">¶</a></h2>
+<p>Called when data has been unloaded from the model cache.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnDataUnloaded</span>
+
+<span class="nd">@OnDataUnloaded</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_data_unloaded</span><span class="p">(</span><span class="n">cache_data_type</span><span class="p">,</span> <span class="n">model_handle</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onedictallocated">
+<h2>OnEdictAllocated<a class="headerlink" href="#onedictallocated" title="Link to this heading">¶</a></h2>
+<p>Called when an edict has been allocated.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnEdictAllocated</span>
+
+<span class="nd">@OnEdictAllocated</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_edict_allocated</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This listener only gets called in CS:GO, Black Mesa: Source and Blade Symphony.</p>
+</div>
+</section>
+<section id="onedictfreed">
+<h2>OnEdictFreed<a class="headerlink" href="#onedictfreed" title="Link to this heading">¶</a></h2>
+<p>Called when an edict gets freed.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnEdictFreed</span>
+
+<span class="nd">@OnEdictFreed</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_edict_freed</span><span class="p">(</span><span class="n">edict</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This listener only gets called in CS:GO, Black Mesa: Source and Blade Symphony.</p>
+</div>
+</section>
+<section id="onentitycreated">
+<h2>OnEntityCreated<a class="headerlink" href="#onentitycreated" title="Link to this heading">¶</a></h2>
+<p>Called when an entity has been created.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnEntityCreated</span>
+
+<span class="nd">@OnEntityCreated</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_entity_created</span><span class="p">(</span><span class="n">base_entity</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onnetworkedentitycreated">
+<h2>OnNetworkedEntityCreated<a class="headerlink" href="#onnetworkedentitycreated" title="Link to this heading">¶</a></h2>
+<p>Called when a networked entity has been created.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnNetworkedEntityCreated</span>
+
+<span class="nd">@OnNetworkedEntityCreated</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_networked_entity_created</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onentitydeleted">
+<h2>OnEntityDeleted<a class="headerlink" href="#onentitydeleted" title="Link to this heading">¶</a></h2>
+<p>Called when an entity gets deleted.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnEntityDeleted</span>
+
+<span class="nd">@OnEntityDeleted</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_entity_deleted</span><span class="p">(</span><span class="n">base_entity</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onnetworkedentitydeleted">
+<h2>OnNetworkedEntityDeleted<a class="headerlink" href="#onnetworkedentitydeleted" title="Link to this heading">¶</a></h2>
+<p>Called when a networked entity gets deleted.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnNetworkedEntityDeleted</span>
+
+<span class="nd">@OnNetworkedEntityDeleted</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_networked_entity_deleted</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onentityoutput">
+<h2>OnEntityOutput<a class="headerlink" href="#onentityoutput" title="Link to this heading">¶</a></h2>
+<p>Called when an entity output has been fired.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnEntityOutput</span>
+
+<span class="nd">@OnEntityOutput</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_entity_output</span><span class="p">(</span><span class="n">output_name</span><span class="p">,</span> <span class="n">activator</span><span class="p">,</span> <span class="n">caller</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">delay</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">activator</span></code> and <code class="docutils literal notranslate"><span class="pre">caller</span></code> are <a class="reference internal" href="../modules/entities.entity.html#entities.entity.BaseEntity" title="entities.entity.BaseEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.entity.BaseEntity</span></code></a>
+instances if they are server-only entities. Otherwise they are
+<a class="reference internal" href="../modules/entities.entity.html#entities.entity.Entity" title="entities.entity.Entity"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.entity.Entity</span></code></a> instances.</p>
+</div>
+</section>
+<section id="onentityprespawned">
+<h2>OnEntityPreSpawned<a class="headerlink" href="#onentityprespawned" title="Link to this heading">¶</a></h2>
+<p>Called before an entity has been spawned.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnEntityPreSpawned</span>
+
+<span class="nd">@OnEntityPreSpawned</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_entity_pre_spawned</span><span class="p">(</span><span class="n">base_entity</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This listener gets only called in Black Mesa: Source.</p>
+</div>
+</section>
+<section id="onnetworkedentityprespawned">
+<h2>OnNetworkedEntityPreSpawned<a class="headerlink" href="#onnetworkedentityprespawned" title="Link to this heading">¶</a></h2>
+<p>Called before a networked entity has been spawned.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnNetworkedEntityPreSpawned</span>
+
+<span class="nd">@OnNetworkedEntityPreSpawned</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_networked_entity_pre_spawned</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This listener gets only called in Black Mesa: Source.</p>
+</div>
+</section>
+<section id="onentityspawned">
+<h2>OnEntitySpawned<a class="headerlink" href="#onentityspawned" title="Link to this heading">¶</a></h2>
+<p>Called when an entity has been spawned.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnEntitySpawned</span>
+
+<span class="nd">@OnEntitySpawned</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_entity_spawned</span><span class="p">(</span><span class="n">base_entity</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onnetworkedentityspawned">
+<h2>OnNetworkedEntitySpawned<a class="headerlink" href="#onnetworkedentityspawned" title="Link to this heading">¶</a></h2>
+<p>Called when a networked entity has been spawned.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnNetworkedEntitySpawned</span>
+
+<span class="nd">@OnNetworkedEntitySpawned</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_networked_entity_spawned</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onentitycollision">
+<h2>OnEntityCollision<a class="headerlink" href="#onentitycollision" title="Link to this heading">¶</a></h2>
+<p>Called when a non-player entity is about to collide with another entity.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This listener can be extremely noisy. Use <a class="reference internal" href="../modules/entities.collisions.html#entities.collisions.CollisionHash" title="entities.collisions.CollisionHash"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.collisions.CollisionHash</span></code></a>,
+<a class="reference internal" href="../modules/entities.collisions.html#entities.collisions.CollisionMap" title="entities.collisions.CollisionMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.collisions.CollisionMap</span></code></a>, or <a class="reference internal" href="../modules/entities.collisions.html#entities.collisions.CollisionSet" title="entities.collisions.CollisionSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.collisions.CollisionSet</span></code></a>
+if you don’t have dynamic conditions to test for.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnEntityCollision</span>
+
+<span class="nd">@OnEntityCollision</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_entity_collision</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="c1"># Disable weapons/projectiles collisions with everything except players</span>
+    <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">is_weapon</span><span class="p">()</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">other</span><span class="o">.</span><span class="n">is_player</span><span class="p">())</span>
+</pre></div>
+</div>
+</section>
+<section id="onentitytransmit">
+<h2>OnEntityTransmit<a class="headerlink" href="#onentitytransmit" title="Link to this heading">¶</a></h2>
+<p>Called when a non-player entity is about to be transmitted to a player.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This listener can be extremely noisy. Use <a class="reference internal" href="../modules/entities.transmit.html#entities.transmit.TransmitHash" title="entities.transmit.TransmitHash"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.transmit.TransmitHash</span></code></a>,
+<a class="reference internal" href="../modules/entities.transmit.html#entities.transmit.TransmitMap" title="entities.transmit.TransmitMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.transmit.TransmitMap</span></code></a>, or <a class="reference internal" href="../modules/entities.transmit.html#entities.transmit.TransmitSet" title="entities.transmit.TransmitSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.transmit.TransmitSet</span></code></a>
+if you don’t have dynamic conditions to test for.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnEntityTransmit</span>
+
+<span class="nd">@OnEntityTransmit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_entity_transmit</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+    <span class="c1"># Never transmit hostages</span>
+    <span class="k">return</span> <span class="n">entity</span><span class="o">.</span><span class="n">classname</span> <span class="o">!=</span> <span class="s1">&#39;hostage_entity&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="onlevelinit">
+<h2>OnLevelInit<a class="headerlink" href="#onlevelinit" title="Link to this heading">¶</a></h2>
+<p>Called when a map starts.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnLevelInit</span>
+
+<span class="nd">@OnLevelInit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_level_init</span><span class="p">(</span><span class="n">map_name</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onlevelshutdown">
+<h2>OnLevelShutdown<a class="headerlink" href="#onlevelshutdown" title="Link to this heading">¶</a></h2>
+<p>Called when a map ends e.g. due to a manual map change or time limit.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Can be called multiple times per map change! Use <a class="reference internal" href="../modules/listeners.html#listeners.OnLevelEnd" title="listeners.OnLevelEnd"><code class="xref py py-class docutils literal notranslate"><span class="pre">listeners.OnLevelEnd</span></code></a> if you want to make sure it’s only getting called once per map change.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnLevelShutdown</span>
+
+<span class="nd">@OnLevelShutdown</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_level_shutdown</span><span class="p">():</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onlevelend">
+<h2>OnLevelEnd<a class="headerlink" href="#onlevelend" title="Link to this heading">¶</a></h2>
+<p>Called when a map ends e.g. due to a manual map change or time limit.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnLevelEnd</span>
+
+<span class="nd">@OnLevelEnd</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_level_end</span><span class="p">():</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onnetworkidvalidated">
+<h2>OnNetworkidValidated<a class="headerlink" href="#onnetworkidvalidated" title="Link to this heading">¶</a></h2>
+<p>Called when a client has been authenticated.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnNetworkidValidated</span>
+
+<span class="nd">@OnNetworkidValidated</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_networkid_validated</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">steamid</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If your server can’t establish a connection to the Steam servers, this
+listener will never get called.</p>
+</div>
+</section>
+<section id="onbuttonstatechanged">
+<h2>OnButtonStateChanged<a class="headerlink" href="#onbuttonstatechanged" title="Link to this heading">¶</a></h2>
+<p>Called when the button state of a player changed.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnButtonStateChanged</span>
+
+<span class="nd">@OnButtonStateChanged</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_button_state_changed</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">old_buttons</span><span class="p">,</span> <span class="n">new_buttons</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>Use <a class="reference internal" href="../modules/listeners.html#listeners.get_button_combination_status" title="listeners.get_button_combination_status"><code class="xref py py-func docutils literal notranslate"><span class="pre">listeners.get_button_combination_status()</span></code></a> to check if a specific
+button or button combination has been pressed or released.</p>
+</div>
+</section>
+<section id="onplayercollision">
+<h2>OnPlayerCollision<a class="headerlink" href="#onplayercollision" title="Link to this heading">¶</a></h2>
+<p>Called when a player is about to collide with an entity.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This listener can be extremely noisy. Use <a class="reference internal" href="../modules/entities.collisions.html#entities.collisions.CollisionHash" title="entities.collisions.CollisionHash"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.collisions.CollisionHash</span></code></a>,
+<a class="reference internal" href="../modules/entities.collisions.html#entities.collisions.CollisionMap" title="entities.collisions.CollisionMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.collisions.CollisionMap</span></code></a>, or <a class="reference internal" href="../modules/entities.collisions.html#entities.collisions.CollisionSet" title="entities.collisions.CollisionSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.collisions.CollisionSet</span></code></a>
+if you don’t have dynamic conditions to test for.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnPlayerCollision</span>
+
+<span class="nd">@OnPlayerCollision</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_player_collision</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+    <span class="c1"># Disable teammates collisions</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">entity</span><span class="o">.</span><span class="n">is_player</span><span class="p">():</span>
+        <span class="k">return</span>
+    <span class="k">return</span> <span class="n">player</span><span class="o">.</span><span class="n">team_index</span> <span class="o">!=</span> <span class="n">entity</span><span class="o">.</span><span class="n">team_index</span>
+</pre></div>
+</div>
+</section>
+<section id="onplayertransmit">
+<h2>OnPlayerTransmit<a class="headerlink" href="#onplayertransmit" title="Link to this heading">¶</a></h2>
+<p>Called when a player is about to be transmitted to another.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This listener can be extremely noisy. Use <a class="reference internal" href="../modules/entities.transmit.html#entities.transmit.TransmitHash" title="entities.transmit.TransmitHash"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.transmit.TransmitHash</span></code></a>,
+<a class="reference internal" href="../modules/entities.transmit.html#entities.transmit.TransmitMap" title="entities.transmit.TransmitMap"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.transmit.TransmitMap</span></code></a>, or <a class="reference internal" href="../modules/entities.transmit.html#entities.transmit.TransmitSet" title="entities.transmit.TransmitSet"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.transmit.TransmitSet</span></code></a>
+if you don’t have dynamic conditions to test for.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnPlayerTransmit</span>
+
+<span class="nd">@OnPlayerTransmit</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_player_transmit</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+    <span class="c1"># Don&#39;t transmit teammates</span>
+    <span class="k">return</span> <span class="n">player</span><span class="o">.</span><span class="n">team</span> <span class="o">!=</span> <span class="n">other</span><span class="o">.</span><span class="n">team</span>
+</pre></div>
+</div>
+</section>
+<section id="onplayerruncommand">
+<h2>OnPlayerRunCommand<a class="headerlink" href="#onplayerruncommand" title="Link to this heading">¶</a></h2>
+<p>Called when a player runs a command.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnPlayerRunCommand</span>
+
+<span class="nd">@OnPlayerRunCommand</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_player_run_command</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">user_cmd</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onplayerpostruncommand">
+<h2>OnPlayerPostRunCommand<a class="headerlink" href="#onplayerpostruncommand" title="Link to this heading">¶</a></h2>
+<p>Called after a player ran a command.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnPlayerPostRunCommand</span>
+
+<span class="nd">@OnPlayerPostRunCommand</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_player_post_run_command</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">user_cmd</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onpluginloaded">
+<h2>OnPluginLoaded<a class="headerlink" href="#onpluginloaded" title="Link to this heading">¶</a></h2>
+<p>Called when a plugin has been loaded successfully.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnPluginLoaded</span>
+
+<span class="nd">@OnPluginLoaded</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_plugin_loaded</span><span class="p">(</span><span class="n">plugin</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onpluginloading">
+<h2>OnPluginLoading<a class="headerlink" href="#onpluginloading" title="Link to this heading">¶</a></h2>
+<p>Called right before a plugin is imported and loaded. All checks (e.g. plugin
+file exists, etc.) have been done at this point.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnPluginLoading</span>
+
+<span class="nd">@OnPluginLoading</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_plugin_loading</span><span class="p">(</span><span class="n">plugin</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onpluginunloaded">
+<h2>OnPluginUnloaded<a class="headerlink" href="#onpluginunloaded" title="Link to this heading">¶</a></h2>
+<p>Called when a plugin has been unloaded successfully.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnPluginUnloaded</span>
+
+<span class="nd">@OnPluginUnloaded</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_plugin_unloaded</span><span class="p">(</span><span class="n">plugin</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onpluginunloading">
+<h2>OnPluginUnloading<a class="headerlink" href="#onpluginunloading" title="Link to this heading">¶</a></h2>
+<p>Called right before a loaded plugin is unloaded.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnPluginUnloading</span>
+
+<span class="nd">@OnPluginUnloading</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_plugin_unloading</span><span class="p">(</span><span class="n">plugin</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onquerycvarvaluefinished">
+<h2>OnQueryCvarValueFinished<a class="headerlink" href="#onquerycvarvaluefinished" title="Link to this heading">¶</a></h2>
+<p>Called when a client cvar query finished. Cvar queries need to be started with
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">engines.server._EngineServer.start_query_cvar_value()</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnQueryCvarValueFinished</span>
+
+<span class="nd">@OnQueryCvarValueFinished</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_query_cvar_value_finished</span><span class="p">(</span><span class="n">cookie</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">status</span><span class="p">,</span> <span class="n">cvar_name</span><span class="p">,</span> <span class="n">cvar_value</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onserveractivate">
+<h2>OnServerActivate<a class="headerlink" href="#onserveractivate" title="Link to this heading">¶</a></h2>
+<p>Called when a map starts and the server is ready to accept clients.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnServerActivate</span>
+
+<span class="nd">@OnServerActivate</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_server_activate</span><span class="p">(</span><span class="n">edicts</span><span class="p">,</span> <span class="n">edict_count</span><span class="p">,</span> <span class="n">max_clients</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+<section id="onserveroutput">
+<h2>OnServerOutput<a class="headerlink" href="#onserveroutput" title="Link to this heading">¶</a></h2>
+<p>Called when something is printed to the console. You can decide whether the
+message is logged/printed or not.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Be careful when printing something within this listener. It can easily
+result into a recursion, which results into a crash of the server.</p>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnServerOutput</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">OutputReturn</span>
+
+<span class="nd">@OnServerOutput</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_server_output</span><span class="p">(</span><span class="n">severity</span><span class="p">,</span> <span class="n">msg</span><span class="p">):</span>
+    <span class="c1"># Block everything starting with &#39;sv_&#39; or &#39;mp_&#39; from being logged.</span>
+    <span class="c1"># This keeps the console clean in CS:GO.</span>
+    <span class="k">if</span> <span class="n">msg</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s1">&#39;sv_&#39;</span><span class="p">,</span> <span class="s1">&#39;mp_&#39;</span><span class="p">)):</span>
+        <span class="k">return</span> <span class="n">OutputReturn</span><span class="o">.</span><span class="n">BLOCK</span>
+
+    <span class="k">return</span> <span class="n">OutputReturn</span><span class="o">.</span><span class="n">CONTINUE</span>
+</pre></div>
+</div>
+</section>
+<section id="ontick">
+<h2>OnTick<a class="headerlink" href="#ontick" title="Link to this heading">¶</a></h2>
+<p>Called once per server frame.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnTick</span>
+
+<span class="nd">@OnTick</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_tick</span><span class="p">():</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Be careful when using this listeners. Depending on your implementation
+this can cause a performance impact on your server.</p>
+</div>
+</section>
+<section id="onversionupdate">
+<h2>OnVersionUpdate<a class="headerlink" href="#onversionupdate" title="Link to this heading">¶</a></h2>
+<p>Called when a new Source.Python version is available. Version updates are
+checked once per map.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnVersionUpdate</span>
+
+<span class="nd">@OnVersionUpdate</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_version_update</span><span class="p">(</span><span class="n">old_version</span><span class="p">,</span> <span class="n">new_version</span><span class="p">):</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This requires <code class="docutils literal notranslate"><span class="pre">sp_check_for_update</span></code> to be set to <code class="docutils literal notranslate"><span class="pre">1</span></code> and the current
+installation has to be versioned (no build from source).</p>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">listeners</a><ul>
+<li><a class="reference internal" href="#onclientactive">OnClientActive</a></li>
+<li><a class="reference internal" href="#onclientconnect">OnClientConnect</a></li>
+<li><a class="reference internal" href="#onclientdisconnect">OnClientDisconnect</a></li>
+<li><a class="reference internal" href="#onclientfullyconnect">OnClientFullyConnect</a></li>
+<li><a class="reference internal" href="#onclientputinserver">OnClientPutInServer</a></li>
+<li><a class="reference internal" href="#onclientsettingschanged">OnClientSettingsChanged</a></li>
+<li><a class="reference internal" href="#oncombinerprecache">OnCombinerPreCache</a></li>
+<li><a class="reference internal" href="#onconvarchanged">OnConVarChanged</a></li>
+<li><a class="reference internal" href="#ondataloaded">OnDataLoaded</a></li>
+<li><a class="reference internal" href="#ondataunloaded">OnDataUnloaded</a></li>
+<li><a class="reference internal" href="#onedictallocated">OnEdictAllocated</a></li>
+<li><a class="reference internal" href="#onedictfreed">OnEdictFreed</a></li>
+<li><a class="reference internal" href="#onentitycreated">OnEntityCreated</a></li>
+<li><a class="reference internal" href="#onnetworkedentitycreated">OnNetworkedEntityCreated</a></li>
+<li><a class="reference internal" href="#onentitydeleted">OnEntityDeleted</a></li>
+<li><a class="reference internal" href="#onnetworkedentitydeleted">OnNetworkedEntityDeleted</a></li>
+<li><a class="reference internal" href="#onentityoutput">OnEntityOutput</a></li>
+<li><a class="reference internal" href="#onentityprespawned">OnEntityPreSpawned</a></li>
+<li><a class="reference internal" href="#onnetworkedentityprespawned">OnNetworkedEntityPreSpawned</a></li>
+<li><a class="reference internal" href="#onentityspawned">OnEntitySpawned</a></li>
+<li><a class="reference internal" href="#onnetworkedentityspawned">OnNetworkedEntitySpawned</a></li>
+<li><a class="reference internal" href="#onentitycollision">OnEntityCollision</a></li>
+<li><a class="reference internal" href="#onentitytransmit">OnEntityTransmit</a></li>
+<li><a class="reference internal" href="#onlevelinit">OnLevelInit</a></li>
+<li><a class="reference internal" href="#onlevelshutdown">OnLevelShutdown</a></li>
+<li><a class="reference internal" href="#onlevelend">OnLevelEnd</a></li>
+<li><a class="reference internal" href="#onnetworkidvalidated">OnNetworkidValidated</a></li>
+<li><a class="reference internal" href="#onbuttonstatechanged">OnButtonStateChanged</a></li>
+<li><a class="reference internal" href="#onplayercollision">OnPlayerCollision</a></li>
+<li><a class="reference internal" href="#onplayertransmit">OnPlayerTransmit</a></li>
+<li><a class="reference internal" href="#onplayerruncommand">OnPlayerRunCommand</a></li>
+<li><a class="reference internal" href="#onplayerpostruncommand">OnPlayerPostRunCommand</a></li>
+<li><a class="reference internal" href="#onpluginloaded">OnPluginLoaded</a></li>
+<li><a class="reference internal" href="#onpluginloading">OnPluginLoading</a></li>
+<li><a class="reference internal" href="#onpluginunloaded">OnPluginUnloaded</a></li>
+<li><a class="reference internal" href="#onpluginunloading">OnPluginUnloading</a></li>
+<li><a class="reference internal" href="#onquerycvarvaluefinished">OnQueryCvarValueFinished</a></li>
+<li><a class="reference internal" href="#onserveractivate">OnServerActivate</a></li>
+<li><a class="reference internal" href="#onserveroutput">OnServerOutput</a></li>
+<li><a class="reference internal" href="#ontick">OnTick</a></li>
+<li><a class="reference internal" href="#onversionupdate">OnVersionUpdate</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="events.html"
+                          title="previous chapter">events</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="memory.html"
+                          title="next chapter">memory</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/module_tutorials/listeners.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="memory.html" title="memory"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="events.html" title="events"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../module_tutorials.html" >Module tutorials</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">listeners</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

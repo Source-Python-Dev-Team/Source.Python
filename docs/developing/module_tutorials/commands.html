@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>commands &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="config" href="config.html" />
+    <link rel="prev" title="colors" href="colors.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="config.html" title="config"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="colors.html" title="colors"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../module_tutorials.html" accesskey="U">Module tutorials</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">commands</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="commands">
+<h1>commands<a class="headerlink" href="#commands" title="Link to this heading">¶</a></h1>
+<p>This page contains tutorials about the <a class="reference internal" href="../modules/commands.html#module-commands" title="commands"><code class="xref py py-mod docutils literal notranslate"><span class="pre">commands</span></code></a> package.</p>
+<section id="typed-commands">
+<h2>Typed commands<a class="headerlink" href="#typed-commands" title="Link to this heading">¶</a></h2>
+<p>The typed commands API allows you to create robust server, say and client
+commands that are protected against users entering invalid data. If a user has
+entered invalid data, he will be notified with an understandable error
+message and your callback won’t get called. Invalid data can be an invalid
+value for an argument or simply too many/less arguments. A quick example will
+make this more clear.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">commands.typed</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedServerCommand</span>
+
+<span class="nd">@TypedServerCommand</span><span class="p">(</span><span class="s1">&#39;multiply&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_test</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span><span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Multiply x and y and print the result.&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Result:&#39;</span><span class="p">,</span> <span class="n">x</span> <span class="o">*</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Example input/output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>multiply
+Not enough arguments:
+  multiply &lt;x:int&gt; &lt;y:int&gt;
+
+multiply 10 5
+Result: 50
+
+multiply 10 5 3
+Too many arguments:
+  multiply &lt;x:int&gt; &lt;y:int&gt;
+
+multiply 10 a
+&#39;a&#39; is an invalid value for &#39;y:int&#39;.
+
+sp help multiply
+multiply &lt;x:int&gt; &lt;y:int&gt;
+  Multiply x and y and print the result.
+</pre></div>
+</div>
+<p>As you can see the API does all the error checking for you.</p>
+<p>There are 3 typed command decorator classes in total.</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="../modules/commands.typed.html#commands.typed.TypedServerCommand" title="commands.typed.TypedServerCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">commands.typed.TypedServerCommand</span></code></a> to create server commands.</p></li>
+<li><p><a class="reference internal" href="../modules/commands.typed.html#commands.typed.TypedSayCommand" title="commands.typed.TypedSayCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">commands.typed.TypedSayCommand</span></code></a> to create say commands.</p></li>
+<li><p><a class="reference internal" href="../modules/commands.typed.html#commands.typed.TypedClientCommand" title="commands.typed.TypedClientCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">commands.typed.TypedClientCommand</span></code></a> to create client commands.</p></li>
+</ol>
+<p>These 3 classes share the same constructor
+(<code class="xref py py-meth docutils literal notranslate"><span class="pre">commands.typed._TypedCommand.__init__()</span></code>). The only difference is that
+<a class="reference internal" href="../modules/commands.typed.html#commands.typed.TypedServerCommand" title="commands.typed.TypedServerCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">commands.typed.TypedServerCommand</span></code></a> ignores the <code class="docutils literal notranslate"><span class="pre">permission</span></code> and
+<code class="docutils literal notranslate"><span class="pre">fail_callback</span></code> arguments. Another thing to remember is which attributes of
+the <a class="reference internal" href="../modules/commands.typed.html#commands.typed.CommandInfo" title="commands.typed.CommandInfo"><code class="xref py py-class docutils literal notranslate"><span class="pre">commands.typed.CommandInfo</span></code></a> instance are set in each of these
+decorator types.</p>
+<ol class="arabic simple">
+<li><p><a class="reference internal" href="../modules/commands.typed.html#commands.typed.TypedServerCommand" title="commands.typed.TypedServerCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">commands.typed.TypedServerCommand</span></code></a> only sets the <code class="docutils literal notranslate"><span class="pre">command</span></code> attribute.</p></li>
+<li><p><a class="reference internal" href="../modules/commands.typed.html#commands.typed.TypedSayCommand" title="commands.typed.TypedSayCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">commands.typed.TypedSayCommand</span></code></a> sets the attributes <code class="docutils literal notranslate"><span class="pre">command</span></code> and <code class="docutils literal notranslate"><span class="pre">index</span></code>.</p></li>
+<li><p><a class="reference internal" href="../modules/commands.typed.html#commands.typed.TypedClientCommand" title="commands.typed.TypedClientCommand"><code class="xref py py-class docutils literal notranslate"><span class="pre">commands.typed.TypedClientCommand</span></code></a> sets all of the 3 attributes (<code class="docutils literal notranslate"><span class="pre">command</span></code>, <code class="docutils literal notranslate"><span class="pre">index</span></code> and <code class="docutils literal notranslate"><span class="pre">team_only</span></code>).</p></li>
+</ol>
+<section id="creating-optional-arguments">
+<h3>Creating optional arguments<a class="headerlink" href="#creating-optional-arguments" title="Link to this heading">¶</a></h3>
+<p>You can create optional arguments by assigning a default value to an argument.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">commands.typed</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedServerCommand</span>
+
+<span class="nd">@TypedServerCommand</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_add</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span><span class="nb">int</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span><span class="nb">int</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add x and y and print the result.&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Result:&#39;</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Example input/output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>add
+Not enough arguments:
+  add &lt;x:int&gt; [y:int=10]
+
+add 5
+Result: 15
+
+add 5 3
+Result: 8
+</pre></div>
+</div>
+</section>
+<section id="creating-variadic-commands">
+<h3>Creating variadic commands<a class="headerlink" href="#creating-variadic-commands" title="Link to this heading">¶</a></h3>
+<p>You can create variadic commands by making the decorated function variadic using the asterisk (*).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@TypedServerCommand</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_add</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span><span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add all passed arguments and print the result.&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Result:&#39;</span><span class="p">,</span> <span class="nb">sum</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Example input/output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>add
+Result: 0
+
+add 3
+Result: 3
+
+add 3 5
+Result: 8
+
+add 3 5 2
+Result: 10
+
+add 3 a 4
+&#39;a&#39; is an invalid value for &#39;args:int&#39;.
+
+sp help add
+add [*args:int]
+  Add all passed arguments and print the result.
+</pre></div>
+</div>
+<p>If you create variadic commands, you are not restricted to only use variadic
+arguments. You can still use optional and required arguments.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">commands.typed</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedServerCommand</span>
+
+<span class="nd">@TypedServerCommand</span><span class="p">(</span><span class="s1">&#39;add&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_add</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span><span class="nb">int</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Add all passed arguments and print the result.&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Result:&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="nb">sum</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Example input/output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>add
+Not enough arguments:
+  add &lt;x&gt; [y=None] [*args:int]
+
+add a
+Result: (&#39;a&#39;, None) 0
+
+add a b
+Result: (&#39;a&#39;, &#39;b&#39;) 0
+
+add a b 5
+Result: (&#39;a&#39;, &#39;b&#39;) 5
+
+add a b 5 10
+Result: (&#39;a&#39;, &#39;b&#39;) 15
+</pre></div>
+</div>
+</section>
+<section id="creating-sub-commands">
+<h3>Creating sub-commands<a class="headerlink" href="#creating-sub-commands" title="Link to this heading">¶</a></h3>
+<p>You can easily create sub-commands. All you need to do is passing an iterable as the first argument.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">commands.typed</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedServerCommand</span>
+
+<span class="nd">@TypedServerCommand</span><span class="p">([</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;a&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_test</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;a&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+<span class="nd">@TypedServerCommand</span><span class="p">([</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;b&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_test</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Example input/output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>test
+A sub-command is required:
+  test a &lt;x&gt;
+  test b &lt;x&gt; &lt;y&gt;
+
+test a
+Not enough arguments:
+  test a &lt;x&gt;
+
+test b &quot;Hello, world!&quot;
+Not enough arguments:
+  test b &lt;x&gt; &lt;y&gt;
+
+test b &quot;Hello, world!&quot; bla
+b (&#39;Hello, world!&#39;, &#39;bla&#39;)
+</pre></div>
+</div>
+<p>There is no limit on the number or depth of the sub-commands. That means you
+can create an abitrary number of sub-commands and these sub-commands can have
+sub-commands as well.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">sp</span> <span class="pre">auth</span></code> sub-command has a high sub-command depth.</p>
+</div>
+</section>
+<section id="adding-value-validation">
+<h3>Adding value validation<a class="headerlink" href="#adding-value-validation" title="Link to this heading">¶</a></h3>
+<p>As you might have noticed in the very first example, it’s quite easy to add
+value validation to your command. All you need to do is adding a colon (:) and
+a callable object behind your argument. When the command gets triggered, the
+API will call the given object with the passed value. If any exception was
+raised during this call, the validation is considered as a failure. Thus, an
+error message is printed to the user. If the call has been finished
+successfully, its return value will be passed to your callback.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">commands.typed</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedServerCommand</span>
+
+<span class="nd">@TypedServerCommand</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_test</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span><span class="nb">float</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Got:&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Example input/output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>test
+Not enough arguments:
+  test &lt;x:float&gt;
+
+test a
+&#39;a&#39; is an invalid value for &#39;x:float&#39;.
+
+test 3
+Got: 3.0
+
+test 3.3
+Got: 3.3
+</pre></div>
+</div>
+<section id="using-custom-error-messages">
+<h4>Using custom error messages<a class="headerlink" href="#using-custom-error-messages" title="Link to this heading">¶</a></h4>
+<p>If you are not happy with the automatic error message, you can simply raise
+your own <a class="reference internal" href="../modules/commands.typed.html#commands.typed.ValidationError" title="commands.typed.ValidationError"><code class="xref py py-class docutils literal notranslate"><span class="pre">commands.typed.ValidationError</span></code></a> exception in your validator.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">commands.typed</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedServerCommand</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">commands.typed</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidationError</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">my_float</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ValidationError</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is not a floating value.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+<span class="nd">@TypedServerCommand</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_test</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span><span class="n">my_float</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Got:&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Example input/output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>test
+Not enough arguments:
+  test &lt;x:my_float&gt;
+
+test a
+&#39;a&#39; is not a floating value.
+</pre></div>
+</div>
+</section>
+<section id="creating-custom-validators">
+<h4>Creating custom validators<a class="headerlink" href="#creating-custom-validators" title="Link to this heading">¶</a></h4>
+<p>Just like we created custom error messages, you can also use the same
+principle to create a validator that doesn’t use the built-in types like
+<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a> or <a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">float</span></code></a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">commands.typed</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedServerCommand</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">positive_int</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">value</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">Exception</span>
+
+    <span class="k">return</span> <span class="n">value</span>
+
+<span class="nd">@TypedServerCommand</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_test</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span><span class="n">positive_int</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Got:&#39;</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Example input/output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>test
+Not enough arguments:
+  test &lt;x:positive_int&gt;
+
+test -1
+&#39;-1&#39; is an invalid value for &#39;x:positive_int&#39;.
+
+test a
+&#39;a&#39; is an invalid value for &#39;x:positive_int&#39;.
+
+test 0
+Got: 0
+</pre></div>
+</div>
+<p>Source.Python has one custom validator built-in to allow iterating over
+players easily (<a class="reference internal" href="../modules/commands.typed.html#commands.typed.filter_str" title="commands.typed.filter_str"><code class="xref py py-func docutils literal notranslate"><span class="pre">commands.typed.filter_str()</span></code></a>).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">commands.typed</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedServerCommand</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">commands.typed</span><span class="w"> </span><span class="kn">import</span> <span class="n">filter_str</span>
+
+<span class="nd">@TypedServerCommand</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_test</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">players</span><span class="p">:</span><span class="n">filter_str</span><span class="p">):</span>
+    <span class="k">for</span> <span class="n">player</span> <span class="ow">in</span> <span class="n">players</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{player.name}</span><span class="s1"> in team </span><span class="si">{player.team}</span><span class="s1">. Dead?: </span><span class="si">{player.dead}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">player</span><span class="o">=</span><span class="n">player</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Example input/output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>status
+# userid name                uniqueid
+#      2 &quot;Xavier&quot;            BOT
+#      3 &quot;Shawn&quot;             BOT
+#      4 &quot;Rick&quot;              BOT
+#      5 &quot;Ian&quot;               BOT
+#      6 &quot;Ayuto&quot;             [U:1:39094154]
+
+test all
+Xavier in team 3. Dead?: False
+Shawn in team 2. Dead?: True
+Rick in team 3. Dead?: False
+Ian in team 2. Dead?: True
+Ayuto in team 2. Dead?: False
+
+test human
+Ayuto in team 2. Dead?: False
+
+test bot
+Xavier in team 3. Dead?: False
+Shawn in team 2. Dead?: False
+Rick in team 3. Dead?: False
+Ian in team 2. Dead?: False
+
+test t
+Shawn in team 2. Dead?: False
+Ian in team 2. Dead?: False
+Ayuto in team 2. Dead?: False
+
+test ct
+Xavier in team 3. Dead?: False
+Rick in team 3. Dead?: False
+
+test dead
+Ayuto in team 2. Dead?: True
+
+test alive
+Xavier in team 3. Dead?: False
+Shawn in team 2. Dead?: False
+Rick in team 3. Dead?: False
+Ian in team 2. Dead?: False
+
+test 2+6
+Xavier in team 3. Dead?: False
+Ayuto in team 2. Dead?: False
+
+test all-ct
+Shawn in team 2. Dead?: False
+Ian in team 2. Dead?: False
+Ayuto in team 2. Dead?: False
+
+test bot-2-4
+Shawn in team 2. Dead?: True
+Ian in team 2. Dead?: True
+
+test ct+t
+Xavier in team 3. Dead?: False
+Shawn in team 2. Dead?: True
+Rick in team 3. Dead?: False
+Ian in team 2. Dead?: True
+Ayuto in team 2. Dead?: False
+
+test asd
+&#39;asd&#39; is an invalid value for &#39;players:filter_str&#39;.
+</pre></div>
+</div>
+<p>This custom validator is also cappable to parse complex expressions that use
+parentheses and multiple plus and minus operators. The plus sign stands for
+the set operation <cite>Union</cite> and the minus sign for <cite>Complement</cite>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Set_%28mathematics%29#Basic_operations">https://en.wikipedia.org/wiki/Set_%28mathematics%29#Basic_operations</a></p>
+</div>
+</section>
+</section>
+<section id="using-permissions">
+<h3>Using permissions<a class="headerlink" href="#using-permissions" title="Link to this heading">¶</a></h3>
+<p>It’s quite common that some commands should only be executable by specific
+players. Thus, there is the <code class="docutils literal notranslate"><span class="pre">permission</span></code> parameter in the constructor of the
+typed command decorators.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">commands.typed</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedClientCommand</span>
+
+<span class="nd">@TypedClientCommand</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;my_plugin.test&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_test</span><span class="p">(</span><span class="n">command_info</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Executed!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Example input/output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>test
+Unknown command: test
+You are not authorized to use this command.
+Required permission: my_plugin.test
+</pre></div>
+</div>
+<p>In this case the player requires the permission <code class="docutils literal notranslate"><span class="pre">my_plugin.test</span></code> to execute
+the command.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The permission is checked before arguments are validated.</p>
+</div>
+<p>You can also auto-generate the permission string by setting the second parameter to <code class="docutils literal notranslate"><span class="pre">True</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">commands.typed</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedClientCommand</span>
+
+<span class="nd">@TypedClientCommand</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_test</span><span class="p">(</span><span class="n">command_info</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Executed!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Example input/output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>test
+Unknown command: test
+You are not authorized to use this command.
+Required permission: test
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You should only use this feature if it generates a permission string that
+doesn’t conflict with our guideline on permission names. That means you
+should only use it if you are using sub-commands. E.g. for the sub-command
+<code class="docutils literal notranslate"><span class="pre">xy</span> <span class="pre">kick</span></code> it would generate the permission string <code class="docutils literal notranslate"><span class="pre">xy.kick</span></code>.</p>
+</div>
+<p>You can also add a callback that gets called when an unauthorized player tries
+to execute the command.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">commands.typed</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedClientCommand</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">on_test_failed</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Not authorized.&#39;</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+
+<span class="nd">@TypedClientCommand</span><span class="p">(</span><span class="s1">&#39;test&#39;</span><span class="p">,</span> <span class="s1">&#39;my_plugin.test&#39;</span><span class="p">,</span> <span class="n">on_test_failed</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_test</span><span class="p">(</span><span class="n">command_info</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Executed!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Example input/output:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>test
+Unknown command: test
+Not authorized. []
+
+test 1 2
+Unknown command: test
+Not authorized. [&#39;1&#39;, &#39;2&#39;]
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">commands</a><ul>
+<li><a class="reference internal" href="#typed-commands">Typed commands</a><ul>
+<li><a class="reference internal" href="#creating-optional-arguments">Creating optional arguments</a></li>
+<li><a class="reference internal" href="#creating-variadic-commands">Creating variadic commands</a></li>
+<li><a class="reference internal" href="#creating-sub-commands">Creating sub-commands</a></li>
+<li><a class="reference internal" href="#adding-value-validation">Adding value validation</a><ul>
+<li><a class="reference internal" href="#using-custom-error-messages">Using custom error messages</a></li>
+<li><a class="reference internal" href="#creating-custom-validators">Creating custom validators</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-permissions">Using permissions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="colors.html"
+                          title="previous chapter">colors</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="config.html"
+                          title="next chapter">config</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/module_tutorials/commands.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="config.html" title="config"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="colors.html" title="colors"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../module_tutorials.html" >Module tutorials</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">commands</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

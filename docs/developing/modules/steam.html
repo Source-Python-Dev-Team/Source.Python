@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>steam module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">steam module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-steam">
+<span id="steam-module"></span><h1>steam module<a class="headerlink" href="#module-steam" title="Link to this heading">¶</a></h1>
+<p>Provides functions specific to steam.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="steam.AccountType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">steam.</span></span><span class="sig-name descname"><span class="pre">AccountType</span></span><a class="headerlink" href="#steam.AccountType" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.AccountType.ANONYMOUS_GAME_SERVER">
+<span class="sig-name descname"><span class="pre">ANONYMOUS_GAME_SERVER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_steam.AccountType.ANONYMOUS_GAME_SERVER</span></em><a class="headerlink" href="#steam.AccountType.ANONYMOUS_GAME_SERVER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.AccountType.ANONYMOUS_USER">
+<span class="sig-name descname"><span class="pre">ANONYMOUS_USER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_steam.AccountType.ANONYMOUS_USER</span></em><a class="headerlink" href="#steam.AccountType.ANONYMOUS_USER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.AccountType.CHAT">
+<span class="sig-name descname"><span class="pre">CHAT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_steam.AccountType.CHAT</span></em><a class="headerlink" href="#steam.AccountType.CHAT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.AccountType.CLAN">
+<span class="sig-name descname"><span class="pre">CLAN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_steam.AccountType.CLAN</span></em><a class="headerlink" href="#steam.AccountType.CLAN" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.AccountType.CONSOLE_USER">
+<span class="sig-name descname"><span class="pre">CONSOLE_USER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#steam.AccountType.CONSOLE_USER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.AccountType.CONTENT_SERVER">
+<span class="sig-name descname"><span class="pre">CONTENT_SERVER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_steam.AccountType.CONTENT_SERVER</span></em><a class="headerlink" href="#steam.AccountType.CONTENT_SERVER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.AccountType.GAME_SERVER">
+<span class="sig-name descname"><span class="pre">GAME_SERVER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_steam.AccountType.GAME_SERVER</span></em><a class="headerlink" href="#steam.AccountType.GAME_SERVER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.AccountType.INDIVIDUAL">
+<span class="sig-name descname"><span class="pre">INDIVIDUAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_steam.AccountType.INDIVIDUAL</span></em><a class="headerlink" href="#steam.AccountType.INDIVIDUAL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.AccountType.INVALID">
+<span class="sig-name descname"><span class="pre">INVALID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_steam.AccountType.INVALID</span></em><a class="headerlink" href="#steam.AccountType.INVALID" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.AccountType.MULTISEAT">
+<span class="sig-name descname"><span class="pre">MULTISEAT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_steam.AccountType.MULTISEAT</span></em><a class="headerlink" href="#steam.AccountType.MULTISEAT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.AccountType.P2P_SUPER_SEEDER">
+<span class="sig-name descname"><span class="pre">P2P_SUPER_SEEDER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#steam.AccountType.P2P_SUPER_SEEDER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.AccountType.PENDING">
+<span class="sig-name descname"><span class="pre">PENDING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_steam.AccountType.PENDING</span></em><a class="headerlink" href="#steam.AccountType.PENDING" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.AccountType.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'ANONYMOUS_GAME_SERVER':</span> <span class="pre">_steam.AccountType.ANONYMOUS_GAME_SERVER,</span> <span class="pre">'ANONYMOUS_USER':</span> <span class="pre">_steam.AccountType.ANONYMOUS_USER,</span> <span class="pre">'CHAT':</span> <span class="pre">_steam.AccountType.CHAT,</span> <span class="pre">'CLAN':</span> <span class="pre">_steam.AccountType.CLAN,</span> <span class="pre">'CONTENT_SERVER':</span> <span class="pre">_steam.AccountType.CONTENT_SERVER,</span> <span class="pre">'GAME_SERVER':</span> <span class="pre">_steam.AccountType.GAME_SERVER,</span> <span class="pre">'INDIVIDUAL':</span> <span class="pre">_steam.AccountType.INDIVIDUAL,</span> <span class="pre">'INVALID':</span> <span class="pre">_steam.AccountType.INVALID,</span> <span class="pre">'MULTISEAT':</span> <span class="pre">_steam.AccountType.MULTISEAT,</span> <span class="pre">'PENDING':</span> <span class="pre">_steam.AccountType.PENDING}</span></em><a class="headerlink" href="#steam.AccountType.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.AccountType.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">_steam.AccountType.INVALID,</span> <span class="pre">1:</span> <span class="pre">_steam.AccountType.INDIVIDUAL,</span> <span class="pre">2:</span> <span class="pre">_steam.AccountType.MULTISEAT,</span> <span class="pre">3:</span> <span class="pre">_steam.AccountType.GAME_SERVER,</span> <span class="pre">4:</span> <span class="pre">_steam.AccountType.ANONYMOUS_GAME_SERVER,</span> <span class="pre">5:</span> <span class="pre">_steam.AccountType.PENDING,</span> <span class="pre">6:</span> <span class="pre">_steam.AccountType.CONTENT_SERVER,</span> <span class="pre">7:</span> <span class="pre">_steam.AccountType.CLAN,</span> <span class="pre">8:</span> <span class="pre">_steam.AccountType.CHAT,</span> <span class="pre">10:</span> <span class="pre">_steam.AccountType.ANONYMOUS_USER}</span></em><a class="headerlink" href="#steam.AccountType.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="steam.SteamID">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">steam.</span></span><span class="sig-name descname"><span class="pre">SteamID</span></span><a class="headerlink" href="#steam.SteamID" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.parse">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(str)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SteamID</span> <span class="pre">:</span></span></span><a class="headerlink" href="#steam.SteamID.parse" title="Link to this definition">¶</a></dt>
+<dd><p>Parse a SteamID2, SteamID3 or SteamID64 string representation and create a new SteamID object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#steam.SteamID.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>__init__( (object)arg1, (int)arg2, (Universe)arg3, (AccountType)arg4) -&gt; None</p>
+<p>__init__( (object)arg1, (int)arg2, (int)arg3, (Universe)arg4, (AccountType)arg5) -&gt; None</p>
+<p>__init__( (object)arg1, (int)arg2) -&gt; None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#steam.SteamID.clear" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>object clear(tuple args, dict kwds) :</dt><dd><p>Not implemented on this engine.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.clear_individual_instance">
+<span class="sig-name descname"><span class="pre">clear_individual_instance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#steam.SteamID.clear_individual_instance" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>object clear_individual_instance(tuple args, dict kwds) :</dt><dd><p>Not implemented on this engine.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.create_blank_anonymous_logon">
+<span class="sig-name descname"><span class="pre">create_blank_anonymous_logon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SteamID)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Universe)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#steam.SteamID.create_blank_anonymous_logon" title="Link to this definition">¶</a></dt>
+<dd><p>Create an anonymous game server login to be filled in by the AM.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.create_blank_anonymous_user_account">
+<span class="sig-name descname"><span class="pre">create_blank_anonymous_user_account</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#steam.SteamID.create_blank_anonymous_user_account" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>object create_blank_anonymous_user_account(tuple args, dict kwds) :</dt><dd><p>Not implemented on this engine.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.full_set">
+<span class="sig-name descname"><span class="pre">full_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SteamID)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(int)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Universe)arg3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(AccountType)arg4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#steam.SteamID.full_set" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize a Steam ID from its 52-bit parts and universe/type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.has_no_individual_instance">
+<span class="sig-name descname"><span class="pre">has_no_individual_instance</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#steam.SteamID.has_no_individual_instance" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>object has_no_individual_instance(tuple args, dict kwds) :</dt><dd><p>Not implemented on this engine.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.instanced_set">
+<span class="sig-name descname"><span class="pre">instanced_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SteamID)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(int)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(int)arg3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Universe)arg4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(AccountType)arg5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#steam.SteamID.instanced_set" title="Link to this definition">¶</a></dt>
+<dd><p>Set parameters for SteamID.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.is_anonymous_account">
+<span class="sig-name descname"><span class="pre">is_anonymous_account</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#steam.SteamID.is_anonymous_account" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>object is_anonymous_account(tuple args, dict kwds) :</dt><dd><p>Not implemented on this engine.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.is_anonymous_game_server_account">
+<span class="sig-name descname"><span class="pre">is_anonymous_game_server_account</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#steam.SteamID.is_anonymous_game_server_account" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>object is_anonymous_game_server_account(tuple args, dict kwds) :</dt><dd><p>Not implemented on this engine.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.is_anonymous_user_account">
+<span class="sig-name descname"><span class="pre">is_anonymous_user_account</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#steam.SteamID.is_anonymous_user_account" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>object is_anonymous_user_account(tuple args, dict kwds) :</dt><dd><p>Not implemented on this engine.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.is_blank_anonymous_account">
+<span class="sig-name descname"><span class="pre">is_blank_anonymous_account</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SteamID)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#steam.SteamID.is_blank_anonymous_account" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if this is an anonymous game server login that will be filled in.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.is_chat_account">
+<span class="sig-name descname"><span class="pre">is_chat_account</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SteamID)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#steam.SteamID.is_chat_account" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if this a chat account ID.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.is_clan_account">
+<span class="sig-name descname"><span class="pre">is_clan_account</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SteamID)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#steam.SteamID.is_clan_account" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if this is a clan account ID.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.is_console_user_account">
+<span class="sig-name descname"><span class="pre">is_console_user_account</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#steam.SteamID.is_console_user_account" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>object is_console_user_account(tuple args, dict kwds) :</dt><dd><p>Not implemented on this engine.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.is_content_server_account">
+<span class="sig-name descname"><span class="pre">is_content_server_account</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SteamID)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#steam.SteamID.is_content_server_account" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if this is a content server account ID.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.is_game_server_account">
+<span class="sig-name descname"><span class="pre">is_game_server_account</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SteamID)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#steam.SteamID.is_game_server_account" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if this is a game server account ID.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.is_individual_account">
+<span class="sig-name descname"><span class="pre">is_individual_account</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SteamID)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#steam.SteamID.is_individual_account" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if this is an individual user account ID.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.is_lobby">
+<span class="sig-name descname"><span class="pre">is_lobby</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#steam.SteamID.is_lobby" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>object is_lobby(tuple args, dict kwds) :</dt><dd><p>Not implemented on this engine.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.is_persistent_game_server_account">
+<span class="sig-name descname"><span class="pre">is_persistent_game_server_account</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#steam.SteamID.is_persistent_game_server_account" title="Link to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>object is_persistent_game_server_account(tuple args, dict kwds) :</dt><dd><p>Not implemented on this engine.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.is_valid">
+<span class="sig-name descname"><span class="pre">is_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SteamID)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#steam.SteamID.is_valid" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SteamID)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(int)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(Universe)arg3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(AccountType)arg4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#steam.SteamID.set" title="Link to this definition">¶</a></dt>
+<dd><p>Set parameters for SteamID.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.set_from_uint64">
+<span class="sig-name descname"><span class="pre">set_from_uint64</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SteamID)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(int)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#steam.SteamID.set_from_uint64" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize a Steam ID from its 64-bit representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.to_steamid2">
+<span class="sig-name descname"><span class="pre">to_steamid2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SteamID)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span> <span class="pre">:</span></span></span><a class="headerlink" href="#steam.SteamID.to_steamid2" title="Link to this definition">¶</a></dt>
+<dd><p>Convert the Steam ID to its SteamID2 string representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.to_steamid3">
+<span class="sig-name descname"><span class="pre">to_steamid3</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SteamID)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span> <span class="pre">:</span></span></span><a class="headerlink" href="#steam.SteamID.to_steamid3" title="Link to this definition">¶</a></dt>
+<dd><p>Convert the Steam ID to its SteamID3 string representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="steam.SteamID.to_uint64">
+<span class="sig-name descname"><span class="pre">to_uint64</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(SteamID)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#steam.SteamID.to_uint64" title="Link to this definition">¶</a></dt>
+<dd><p>Convert a Steam ID to its 64-bit representation.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="steam.SteamID.account_id">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">account_id</span></span><a class="headerlink" href="#steam.SteamID.account_id" title="Link to this definition">¶</a></dt>
+<dd><p>A property to get/set the account ID.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="steam.SteamID.account_instance">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">account_instance</span></span><a class="headerlink" href="#steam.SteamID.account_instance" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_steam.SteamID)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="steam.SteamID.account_type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">account_type</span></span><a class="headerlink" href="#steam.SteamID.account_type" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_steam.SteamID)arg1) -&gt; object</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="steam.SteamID.static_account_key">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">static_account_key</span></span><a class="headerlink" href="#steam.SteamID.static_account_key" title="Link to this definition">¶</a></dt>
+<dd><p>Convert the static parts of a Steam ID to a 64-bit representation. For multiseat accounts, all instances of that account will have the same static account key, so they can be grouped together by the static account key.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="steam.SteamID.universe">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">universe</span></span><a class="headerlink" href="#steam.SteamID.universe" title="Link to this definition">¶</a></dt>
+<dd><p>A property to get/set the universe.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="steam.Universe">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">steam.</span></span><span class="sig-name descname"><span class="pre">Universe</span></span><a class="headerlink" href="#steam.Universe" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.Universe.BETA">
+<span class="sig-name descname"><span class="pre">BETA</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_steam.Universe.BETA</span></em><a class="headerlink" href="#steam.Universe.BETA" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.Universe.DEV">
+<span class="sig-name descname"><span class="pre">DEV</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_steam.Universe.DEV</span></em><a class="headerlink" href="#steam.Universe.DEV" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.Universe.INTERNAL">
+<span class="sig-name descname"><span class="pre">INTERNAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_steam.Universe.INTERNAL</span></em><a class="headerlink" href="#steam.Universe.INTERNAL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.Universe.INVALID">
+<span class="sig-name descname"><span class="pre">INVALID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_steam.Universe.INVALID</span></em><a class="headerlink" href="#steam.Universe.INVALID" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.Universe.MAX">
+<span class="sig-name descname"><span class="pre">MAX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_steam.Universe.MAX</span></em><a class="headerlink" href="#steam.Universe.MAX" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.Universe.PUBLIC">
+<span class="sig-name descname"><span class="pre">PUBLIC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_steam.Universe.PUBLIC</span></em><a class="headerlink" href="#steam.Universe.PUBLIC" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.Universe.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'BETA':</span> <span class="pre">_steam.Universe.BETA,</span> <span class="pre">'DEV':</span> <span class="pre">_steam.Universe.DEV,</span> <span class="pre">'INTERNAL':</span> <span class="pre">_steam.Universe.INTERNAL,</span> <span class="pre">'INVALID':</span> <span class="pre">_steam.Universe.INVALID,</span> <span class="pre">'MAX':</span> <span class="pre">_steam.Universe.MAX,</span> <span class="pre">'PUBLIC':</span> <span class="pre">_steam.Universe.PUBLIC}</span></em><a class="headerlink" href="#steam.Universe.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="steam.Universe.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">_steam.Universe.INVALID,</span> <span class="pre">1:</span> <span class="pre">_steam.Universe.PUBLIC,</span> <span class="pre">2:</span> <span class="pre">_steam.Universe.BETA,</span> <span class="pre">3:</span> <span class="pre">_steam.Universe.INTERNAL,</span> <span class="pre">4:</span> <span class="pre">_steam.Universe.DEV,</span> <span class="pre">5:</span> <span class="pre">_steam.Universe.MAX}</span></em><a class="headerlink" href="#steam.Universe.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">steam module</a><ul>
+<li><a class="reference internal" href="#steam.AccountType"><code class="docutils literal notranslate"><span class="pre">AccountType</span></code></a><ul>
+<li><a class="reference internal" href="#steam.AccountType.ANONYMOUS_GAME_SERVER"><code class="docutils literal notranslate"><span class="pre">AccountType.ANONYMOUS_GAME_SERVER</span></code></a></li>
+<li><a class="reference internal" href="#steam.AccountType.ANONYMOUS_USER"><code class="docutils literal notranslate"><span class="pre">AccountType.ANONYMOUS_USER</span></code></a></li>
+<li><a class="reference internal" href="#steam.AccountType.CHAT"><code class="docutils literal notranslate"><span class="pre">AccountType.CHAT</span></code></a></li>
+<li><a class="reference internal" href="#steam.AccountType.CLAN"><code class="docutils literal notranslate"><span class="pre">AccountType.CLAN</span></code></a></li>
+<li><a class="reference internal" href="#steam.AccountType.CONSOLE_USER"><code class="docutils literal notranslate"><span class="pre">AccountType.CONSOLE_USER</span></code></a></li>
+<li><a class="reference internal" href="#steam.AccountType.CONTENT_SERVER"><code class="docutils literal notranslate"><span class="pre">AccountType.CONTENT_SERVER</span></code></a></li>
+<li><a class="reference internal" href="#steam.AccountType.GAME_SERVER"><code class="docutils literal notranslate"><span class="pre">AccountType.GAME_SERVER</span></code></a></li>
+<li><a class="reference internal" href="#steam.AccountType.INDIVIDUAL"><code class="docutils literal notranslate"><span class="pre">AccountType.INDIVIDUAL</span></code></a></li>
+<li><a class="reference internal" href="#steam.AccountType.INVALID"><code class="docutils literal notranslate"><span class="pre">AccountType.INVALID</span></code></a></li>
+<li><a class="reference internal" href="#steam.AccountType.MULTISEAT"><code class="docutils literal notranslate"><span class="pre">AccountType.MULTISEAT</span></code></a></li>
+<li><a class="reference internal" href="#steam.AccountType.P2P_SUPER_SEEDER"><code class="docutils literal notranslate"><span class="pre">AccountType.P2P_SUPER_SEEDER</span></code></a></li>
+<li><a class="reference internal" href="#steam.AccountType.PENDING"><code class="docutils literal notranslate"><span class="pre">AccountType.PENDING</span></code></a></li>
+<li><a class="reference internal" href="#steam.AccountType.names"><code class="docutils literal notranslate"><span class="pre">AccountType.names</span></code></a></li>
+<li><a class="reference internal" href="#steam.AccountType.values"><code class="docutils literal notranslate"><span class="pre">AccountType.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#steam.SteamID"><code class="docutils literal notranslate"><span class="pre">SteamID</span></code></a><ul>
+<li><a class="reference internal" href="#steam.SteamID.parse"><code class="docutils literal notranslate"><span class="pre">SteamID.parse()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.__init__"><code class="docutils literal notranslate"><span class="pre">SteamID.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.clear"><code class="docutils literal notranslate"><span class="pre">SteamID.clear()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.clear_individual_instance"><code class="docutils literal notranslate"><span class="pre">SteamID.clear_individual_instance()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.create_blank_anonymous_logon"><code class="docutils literal notranslate"><span class="pre">SteamID.create_blank_anonymous_logon()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.create_blank_anonymous_user_account"><code class="docutils literal notranslate"><span class="pre">SteamID.create_blank_anonymous_user_account()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.full_set"><code class="docutils literal notranslate"><span class="pre">SteamID.full_set()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.has_no_individual_instance"><code class="docutils literal notranslate"><span class="pre">SteamID.has_no_individual_instance()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.instanced_set"><code class="docutils literal notranslate"><span class="pre">SteamID.instanced_set()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.is_anonymous_account"><code class="docutils literal notranslate"><span class="pre">SteamID.is_anonymous_account()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.is_anonymous_game_server_account"><code class="docutils literal notranslate"><span class="pre">SteamID.is_anonymous_game_server_account()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.is_anonymous_user_account"><code class="docutils literal notranslate"><span class="pre">SteamID.is_anonymous_user_account()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.is_blank_anonymous_account"><code class="docutils literal notranslate"><span class="pre">SteamID.is_blank_anonymous_account()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.is_chat_account"><code class="docutils literal notranslate"><span class="pre">SteamID.is_chat_account()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.is_clan_account"><code class="docutils literal notranslate"><span class="pre">SteamID.is_clan_account()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.is_console_user_account"><code class="docutils literal notranslate"><span class="pre">SteamID.is_console_user_account()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.is_content_server_account"><code class="docutils literal notranslate"><span class="pre">SteamID.is_content_server_account()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.is_game_server_account"><code class="docutils literal notranslate"><span class="pre">SteamID.is_game_server_account()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.is_individual_account"><code class="docutils literal notranslate"><span class="pre">SteamID.is_individual_account()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.is_lobby"><code class="docutils literal notranslate"><span class="pre">SteamID.is_lobby()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.is_persistent_game_server_account"><code class="docutils literal notranslate"><span class="pre">SteamID.is_persistent_game_server_account()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.is_valid"><code class="docutils literal notranslate"><span class="pre">SteamID.is_valid()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.set"><code class="docutils literal notranslate"><span class="pre">SteamID.set()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.set_from_uint64"><code class="docutils literal notranslate"><span class="pre">SteamID.set_from_uint64()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.to_steamid2"><code class="docutils literal notranslate"><span class="pre">SteamID.to_steamid2()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.to_steamid3"><code class="docutils literal notranslate"><span class="pre">SteamID.to_steamid3()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.to_uint64"><code class="docutils literal notranslate"><span class="pre">SteamID.to_uint64()</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.account_id"><code class="docutils literal notranslate"><span class="pre">SteamID.account_id</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.account_instance"><code class="docutils literal notranslate"><span class="pre">SteamID.account_instance</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.account_type"><code class="docutils literal notranslate"><span class="pre">SteamID.account_type</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.static_account_key"><code class="docutils literal notranslate"><span class="pre">SteamID.static_account_key</span></code></a></li>
+<li><a class="reference internal" href="#steam.SteamID.universe"><code class="docutils literal notranslate"><span class="pre">SteamID.universe</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#steam.Universe"><code class="docutils literal notranslate"><span class="pre">Universe</span></code></a><ul>
+<li><a class="reference internal" href="#steam.Universe.BETA"><code class="docutils literal notranslate"><span class="pre">Universe.BETA</span></code></a></li>
+<li><a class="reference internal" href="#steam.Universe.DEV"><code class="docutils literal notranslate"><span class="pre">Universe.DEV</span></code></a></li>
+<li><a class="reference internal" href="#steam.Universe.INTERNAL"><code class="docutils literal notranslate"><span class="pre">Universe.INTERNAL</span></code></a></li>
+<li><a class="reference internal" href="#steam.Universe.INVALID"><code class="docutils literal notranslate"><span class="pre">Universe.INVALID</span></code></a></li>
+<li><a class="reference internal" href="#steam.Universe.MAX"><code class="docutils literal notranslate"><span class="pre">Universe.MAX</span></code></a></li>
+<li><a class="reference internal" href="#steam.Universe.PUBLIC"><code class="docutils literal notranslate"><span class="pre">Universe.PUBLIC</span></code></a></li>
+<li><a class="reference internal" href="#steam.Universe.names"><code class="docutils literal notranslate"><span class="pre">Universe.names</span></code></a></li>
+<li><a class="reference internal" href="#steam.Universe.values"><code class="docutils literal notranslate"><span class="pre">Universe.values</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/steam.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">steam module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

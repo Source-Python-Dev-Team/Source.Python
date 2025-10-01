@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>weapons.scripts module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">weapons.scripts module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-weapons.scripts">
+<span id="weapons-scripts-module"></span><h1>weapons.scripts module<a class="headerlink" href="#module-weapons.scripts" title="Link to this heading">¶</a></h1>
+<p>Provides weapon scripts functionalities.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">weapons.scripts.</span></span><span class="sig-name descname"><span class="pre">WeaponInfo</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrap</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto_dealloc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#weapons.scripts.WeaponInfo" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="memory.manager.html#memory.manager.CustomType" title="memory.manager.CustomType"><code class="xref py py-class docutils literal notranslate"><span class="pre">CustomType</span></code></a></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.accuracy_divisor">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">accuracy_divisor</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.accuracy_divisor" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.accuracy_offset">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">accuracy_offset</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.accuracy_offset" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.accuracy_quadratic">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">accuracy_quadratic</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.accuracy_quadratic" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.active_icon">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">active_icon</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.active_icon" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.addon_model">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">addon_model</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.addon_model" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.ai_addon">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ai_addon</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.ai_addon" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.alternate_inaccuracy_crouch">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alternate_inaccuracy_crouch</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.alternate_inaccuracy_crouch" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.alternate_inaccuracy_fire">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alternate_inaccuracy_fire</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.alternate_inaccuracy_fire" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.alternate_inaccuracy_jump">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alternate_inaccuracy_jump</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.alternate_inaccuracy_jump" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.alternate_inaccuracy_ladder">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alternate_inaccuracy_ladder</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.alternate_inaccuracy_ladder" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.alternate_inaccuracy_land">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alternate_inaccuracy_land</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.alternate_inaccuracy_land" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.alternate_inaccuracy_move">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alternate_inaccuracy_move</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.alternate_inaccuracy_move" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.alternate_inaccuracy_reload">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alternate_inaccuracy_reload</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.alternate_inaccuracy_reload" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.alternate_inaccuracy_stand">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alternate_inaccuracy_stand</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.alternate_inaccuracy_stand" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.alternate_spread">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">alternate_spread</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.alternate_spread" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.animation_prefix">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">animation_prefix</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.animation_prefix" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.auto_switch_from">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">auto_switch_from</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.auto_switch_from" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.auto_switch_to">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">auto_switch_to</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.auto_switch_to" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.autoaim_icon">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">autoaim_icon</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.autoaim_icon" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.bot_audible_range">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bot_audible_range</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.bot_audible_range" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.burst_sound">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">burst_sound</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.burst_sound" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.can_equip_with_shield">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">can_equip_with_shield</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.can_equip_with_shield" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.class_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">class_name</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.class_name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.crosshair_delta_distance">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">crosshair_delta_distance</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.crosshair_delta_distance" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.crosshair_icon">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">crosshair_icon</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.crosshair_icon" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.crosshair_minimum_distance">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">crosshair_minimum_distance</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.crosshair_minimum_distance" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.cycle_time">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cycle_time</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.cycle_time" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.damage">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">damage</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.damage" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.default_price">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_price</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.default_price" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.default_primary_clip">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_primary_clip</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.default_primary_clip" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.default_secondary_clip">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">default_secondary_clip</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.default_secondary_clip" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.double_npc_sound">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">double_npc_sound</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.double_npc_sound" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.double_sound">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">double_sound</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.double_sound" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.dropped_model">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dropped_model</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.dropped_model" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.empty_sound">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">empty_sound</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.empty_sound" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.fired_bullets">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fired_bullets</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.fired_bullets" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.flags">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flags</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.flags" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.full_auto">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">full_auto</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.full_auto" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.idle_interval">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">idle_interval</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.idle_interval" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.inaccuracy_crouch">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inaccuracy_crouch</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.inaccuracy_crouch" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.inaccuracy_fire">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inaccuracy_fire</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.inaccuracy_fire" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.inaccuracy_jump">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inaccuracy_jump</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.inaccuracy_jump" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.inaccuracy_ladder">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inaccuracy_ladder</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.inaccuracy_ladder" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.inaccuracy_land">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inaccuracy_land</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.inaccuracy_land" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.inaccuracy_move">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inaccuracy_move</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.inaccuracy_move" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.inaccuracy_reload">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inaccuracy_reload</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.inaccuracy_reload" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.inaccuracy_stand">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inaccuracy_stand</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.inaccuracy_stand" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.inactive_icon">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inactive_icon</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.inactive_icon" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.is_built_right_handed">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_built_right_handed</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.is_built_right_handed" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.is_flipping_allowed">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_flipping_allowed</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.is_flipping_allowed" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.is_hud_elements_loaded">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_hud_elements_loaded</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.is_hud_elements_loaded" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.is_melee">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_melee</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.is_melee" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.is_script_parsed">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_script_parsed</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.is_script_parsed" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.maximum_inaccuracy">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">maximum_inaccuracy</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.maximum_inaccuracy" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.maximum_player_speed">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">maximum_player_speed</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.maximum_player_speed" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.maximum_primary_clip">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">maximum_primary_clip</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.maximum_primary_clip" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.maximum_secondary_clip">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">maximum_secondary_clip</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.maximum_secondary_clip" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.melee_hit_sound">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">melee_hit_sound</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.melee_hit_sound" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.melee_hit_world_sound">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">melee_hit_world_sound</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.melee_hit_world_sound" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.melee_miss_sound">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">melee_miss_sound</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.melee_miss_sound" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.muzzle_flash_scale">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">muzzle_flash_scale</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.muzzle_flash_scale" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.muzzle_flash_style_index">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">muzzle_flash_style_index</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.muzzle_flash_style_index" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.parse">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.parse" title="Link to this definition">¶</a></dt>
+<dd><p>Return the virtual function.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.penetration">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">penetration</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.penetration" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.player_animation_extension">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">player_animation_extension</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.player_animation_extension" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.position">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">position</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.position" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.previous_price">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">previous_price</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.previous_price" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.price">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">price</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.price" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.primary_ammo_icon">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">primary_ammo_icon</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.primary_ammo_icon" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.primary_ammo_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">primary_ammo_name</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.primary_ammo_name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.primary_ammo_type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">primary_ammo_type</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.primary_ammo_type" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.print_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">print_name</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.print_name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.range">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">range</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.range" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.range_modifier">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">range_modifier</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.range_modifier" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.recovery_time_crouch">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">recovery_time_crouch</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.recovery_time_crouch" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.recovery_time_stand">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">recovery_time_stand</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.recovery_time_stand" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.reload_npc_sound">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reload_npc_sound</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.reload_npc_sound" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.reload_sound">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reload_sound</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.reload_sound" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.rumble_effect">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rumble_effect</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.rumble_effect" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.secondary_ammo_icon">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">secondary_ammo_icon</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.secondary_ammo_icon" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.secondary_ammo_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">secondary_ammo_name</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.secondary_ammo_name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.secondary_ammo_type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">secondary_ammo_type</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.secondary_ammo_type" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.shield_view_model">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shield_view_model</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.shield_view_model" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.show_usage_hint">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">show_usage_hint</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.show_usage_hint" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.silencer_model">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">silencer_model</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.silencer_model" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.single_npc_sound">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">single_npc_sound</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.single_npc_sound" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.single_sound">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">single_sound</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.single_sound" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.slot_index">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">slot_index</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.slot_index" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.small_icon">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">small_icon</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.small_icon" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.special_sound_1">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">special_sound_1</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.special_sound_1" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.special_sound_2">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">special_sound_2</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.special_sound_2" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.special_sound_3">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">special_sound_3</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.special_sound_3" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.spread">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spread</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.spread" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.sprite_count">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sprite_count</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.sprite_count" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.taunt_sound">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">taunt_sound</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.taunt_sound" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.team_index">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">team_index</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.team_index" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.time_to_idle">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time_to_idle</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.time_to_idle" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.weapon_armor_radio">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weapon_armor_radio</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.weapon_armor_radio" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.weapon_type_index">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weapon_type_index</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.weapon_type_index" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.weight">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weight</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.weight" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.world_model">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">world_model</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.world_model" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.wrong_team_message">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wrong_team_message</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.wrong_team_message" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.zommed_autoaim_icon">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">zommed_autoaim_icon</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.zommed_autoaim_icon" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.scripts.WeaponInfo.zoomed_crosshair_icon">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">zoomed_crosshair_icon</span></span><a class="headerlink" href="#weapons.scripts.WeaponInfo.zoomed_crosshair_icon" title="Link to this definition">¶</a></dt>
+<dd><p>Return the instance attribute value.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">weapons.scripts module</a><ul>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo"><code class="docutils literal notranslate"><span class="pre">WeaponInfo</span></code></a><ul>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.accuracy_divisor"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.accuracy_divisor</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.accuracy_offset"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.accuracy_offset</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.accuracy_quadratic"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.accuracy_quadratic</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.active_icon"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.active_icon</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.addon_model"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.addon_model</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.ai_addon"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.ai_addon</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.alternate_inaccuracy_crouch"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.alternate_inaccuracy_crouch</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.alternate_inaccuracy_fire"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.alternate_inaccuracy_fire</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.alternate_inaccuracy_jump"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.alternate_inaccuracy_jump</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.alternate_inaccuracy_ladder"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.alternate_inaccuracy_ladder</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.alternate_inaccuracy_land"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.alternate_inaccuracy_land</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.alternate_inaccuracy_move"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.alternate_inaccuracy_move</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.alternate_inaccuracy_reload"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.alternate_inaccuracy_reload</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.alternate_inaccuracy_stand"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.alternate_inaccuracy_stand</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.alternate_spread"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.alternate_spread</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.animation_prefix"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.animation_prefix</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.auto_switch_from"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.auto_switch_from</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.auto_switch_to"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.auto_switch_to</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.autoaim_icon"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.autoaim_icon</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.bot_audible_range"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.bot_audible_range</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.burst_sound"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.burst_sound</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.can_equip_with_shield"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.can_equip_with_shield</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.class_name"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.class_name</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.crosshair_delta_distance"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.crosshair_delta_distance</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.crosshair_icon"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.crosshair_icon</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.crosshair_minimum_distance"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.crosshair_minimum_distance</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.cycle_time"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.cycle_time</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.damage"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.damage</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.default_price"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.default_price</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.default_primary_clip"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.default_primary_clip</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.default_secondary_clip"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.default_secondary_clip</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.double_npc_sound"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.double_npc_sound</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.double_sound"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.double_sound</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.dropped_model"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.dropped_model</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.empty_sound"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.empty_sound</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.fired_bullets"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.fired_bullets</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.flags"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.flags</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.full_auto"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.full_auto</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.idle_interval"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.idle_interval</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.inaccuracy_crouch"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.inaccuracy_crouch</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.inaccuracy_fire"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.inaccuracy_fire</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.inaccuracy_jump"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.inaccuracy_jump</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.inaccuracy_ladder"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.inaccuracy_ladder</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.inaccuracy_land"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.inaccuracy_land</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.inaccuracy_move"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.inaccuracy_move</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.inaccuracy_reload"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.inaccuracy_reload</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.inaccuracy_stand"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.inaccuracy_stand</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.inactive_icon"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.inactive_icon</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.is_built_right_handed"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.is_built_right_handed</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.is_flipping_allowed"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.is_flipping_allowed</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.is_hud_elements_loaded"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.is_hud_elements_loaded</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.is_melee"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.is_melee</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.is_script_parsed"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.is_script_parsed</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.maximum_inaccuracy"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.maximum_inaccuracy</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.maximum_player_speed"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.maximum_player_speed</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.maximum_primary_clip"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.maximum_primary_clip</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.maximum_secondary_clip"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.maximum_secondary_clip</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.melee_hit_sound"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.melee_hit_sound</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.melee_hit_world_sound"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.melee_hit_world_sound</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.melee_miss_sound"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.melee_miss_sound</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.muzzle_flash_scale"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.muzzle_flash_scale</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.muzzle_flash_style_index"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.muzzle_flash_style_index</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.parse"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.parse</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.penetration"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.penetration</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.player_animation_extension"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.player_animation_extension</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.position"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.position</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.previous_price"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.previous_price</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.price"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.price</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.primary_ammo_icon"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.primary_ammo_icon</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.primary_ammo_name"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.primary_ammo_name</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.primary_ammo_type"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.primary_ammo_type</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.print_name"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.print_name</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.range"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.range</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.range_modifier"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.range_modifier</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.recovery_time_crouch"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.recovery_time_crouch</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.recovery_time_stand"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.recovery_time_stand</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.reload_npc_sound"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.reload_npc_sound</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.reload_sound"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.reload_sound</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.rumble_effect"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.rumble_effect</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.secondary_ammo_icon"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.secondary_ammo_icon</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.secondary_ammo_name"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.secondary_ammo_name</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.secondary_ammo_type"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.secondary_ammo_type</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.shield_view_model"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.shield_view_model</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.show_usage_hint"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.show_usage_hint</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.silencer_model"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.silencer_model</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.single_npc_sound"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.single_npc_sound</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.single_sound"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.single_sound</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.slot_index"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.slot_index</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.small_icon"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.small_icon</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.special_sound_1"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.special_sound_1</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.special_sound_2"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.special_sound_2</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.special_sound_3"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.special_sound_3</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.spread"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.spread</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.sprite_count"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.sprite_count</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.taunt_sound"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.taunt_sound</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.team_index"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.team_index</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.time_to_idle"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.time_to_idle</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.weapon_armor_radio"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.weapon_armor_radio</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.weapon_type_index"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.weapon_type_index</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.weight"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.weight</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.world_model"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.world_model</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.wrong_team_message"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.wrong_team_message</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.zommed_autoaim_icon"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.zommed_autoaim_icon</span></code></a></li>
+<li><a class="reference internal" href="#weapons.scripts.WeaponInfo.zoomed_crosshair_icon"><code class="docutils literal notranslate"><span class="pre">WeaponInfo.zoomed_crosshair_icon</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/weapons.scripts.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">weapons.scripts module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Getting started &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=2780edc4" />
+    
+    <script src="../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Events" href="events.html" />
+    <link rel="prev" title="Credits" href="../general/credits.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="events.html" title="Events"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../general/credits.html" title="Credits"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Getting started</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="getting-started">
+<h1>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading">¶</a></h1>
+<p>If you would like to start developing server plugins with Source.Python this is
+the right place for you!</p>
+<p>In order to use Source.Python you first need to install it on your game server. To
+do so, please follow the instructions described <a class="reference internal" href="../general/installation.html"><span class="doc">here</span></a>.</p>
+<p>As soon as you have successfully installed Source.Python you can start writing
+your first plugin.</p>
+<section id="writing-your-first-plugin">
+<h2>Writing your first plugin<a class="headerlink" href="#writing-your-first-plugin" title="Link to this heading">¶</a></h2>
+<p>The first plugin will be a very simple one. But before writing any code, you
+have to create the plugin files.</p>
+<p>To do so, please create a directory in Source.Python’s plugin directory
+(<code class="docutils literal notranslate"><span class="pre">../addons/source-python/plugins</span></code>). All plugins will be located in this
+directory and must have their own sub-directory. Give the new created
+directory an arbitrary name (e.g. test1). Now, you need to create the actual
+plugin file. It must be named like its directory. So, if you have created a
+<code class="docutils literal notranslate"><span class="pre">test1</span></code> directory, you have to create a <code class="docutils literal notranslate"><span class="pre">test1.py</span></code> in that directory.</p>
+<p>The first plugin should simply print a message to the server console, when the
+plugin has been loaded and another message when the plugin has been unloaded.
+You can easily do that by adding a <code class="docutils literal notranslate"><span class="pre">load</span></code> and an <code class="docutils literal notranslate"><span class="pre">unload</span></code> function to your
+plugin file. These two functions will be called by Source.Python when the
+plugin is loaded or unloaded.</p>
+<p>To print a message to the console you can use Python’s
+<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#print">print</a> function.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This only prints a message to the server console. It will not appear in any
+log files.</p>
+</div>
+<p>Your plugin should now look like this.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Plugin has been loaded successfully!&#39;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">unload</span><span class="p">():</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Plugin has been unloaded successfully!&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>To load your plugin enter <code class="docutils literal notranslate"><span class="pre">sp</span> <span class="pre">plugin</span> <span class="pre">load</span> <span class="pre">test1</span></code> in your server console. To
+unload or reload it, you can use <code class="docutils literal notranslate"><span class="pre">sp</span> <span class="pre">plugin</span> <span class="pre">reload</span> <span class="pre">test1</span></code> or
+<code class="docutils literal notranslate"><span class="pre">sp</span> <span class="pre">plugin</span> <span class="pre">unload</span> <span class="pre">test1</span></code>.
+Source.Python plugins are not getting loaded automatically. Thus, you need to
+add the statement <code class="docutils literal notranslate"><span class="pre">sp</span> <span class="pre">plugin</span> <span class="pre">load</span> <span class="pre">test1</span></code> to your <code class="docutils literal notranslate"><span class="pre">autoexec.cfg</span></code> if you wish
+this behaviour.</p>
+</section>
+<section id="modifying-your-first-plugin">
+<h2>Modifying your first plugin<a class="headerlink" href="#modifying-your-first-plugin" title="Link to this heading">¶</a></h2>
+<p>Just sending a message to the server console is not very exciting. Moreover,
+players on your server don’t even noticed that. Therefore, this section will
+show you how to send the message to the chat of all players.</p>
+<p>To send a message to a player you can make use of the <a class="reference internal" href="modules/messages.html#module-messages" title="messages"><code class="xref py py-mod docutils literal notranslate"><span class="pre">messages</span></code></a> module.
+It provides various classes to send different kinds of messages. For example
+you can send messages to the player’s chat or directly in the center of the
+player’s screen. In this example we will use <a class="reference internal" href="modules/messages.html#messages.SayText2" title="messages.SayText2"><code class="xref py py-class docutils literal notranslate"><span class="pre">messages.SayText2</span></code></a>,
+because we want to print the message in the chat of each player. The basic
+procedure to send a message is very simple.</p>
+<ol class="arabic simple">
+<li><p>Create an object of the desired message class.</p></li>
+<li><p>Send the message by using its <a class="reference internal" href="modules/messages.base.html#messages.base.UserMessageCreator.send" title="messages.base.UserMessageCreator.send"><code class="xref py py-meth docutils literal notranslate"><span class="pre">send()</span></code></a> method.</p></li>
+</ol>
+<p>Your plugin should now look like this.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SayText2</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">():</span>
+    <span class="n">SayText2</span><span class="p">(</span><span class="s1">&#39;Plugin has been loaded successfully!&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">unload</span><span class="p">():</span>
+    <span class="n">SayText2</span><span class="p">(</span><span class="s1">&#39;Plugin has been unloaded successfully!&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="using-events-in-your-first-plugin">
+<h2>Using events in your first plugin<a class="headerlink" href="#using-events-in-your-first-plugin" title="Link to this heading">¶</a></h2>
+<p>Admittedly, this plugin is still very boring, but that will change immediately
+when you listen to events. Before continuing please read the
+<a class="reference external" href="events.html#introduction">event introduction</a>. It will give you a short
+overview of what events are and how to listen to them.</p>
+<p>We will now listen to the <code class="docutils literal notranslate"><span class="pre">player_spawn</span></code> event to give every player a little
+extra HP when they spawn. To modify the player’s health you need an object of
+the <a class="reference internal" href="modules/players.entity.html#players.entity.Player" title="players.entity.Player"><code class="xref py py-class docutils literal notranslate"><span class="pre">players.entity.Player</span></code></a> class. Its constructor only requires
+a player index. Since the <code class="docutils literal notranslate"><span class="pre">player_spawn</span></code> event provides the user ID of the
+player that spawned, you can use <a class="reference internal" href="modules/players.helpers.html#players.helpers.index_from_userid" title="players.helpers.index_from_userid"><code class="xref py py-func docutils literal notranslate"><span class="pre">players.helpers.index_from_userid()</span></code></a> to
+convert the user ID into a player index.</p>
+<p>Your plugin should now look like this.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">index_from_userid</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SayText2</span>
+
+<span class="c1"># Extra amount of health every player should get on spawn</span>
+<span class="n">EXTRA_HP</span> <span class="o">=</span> <span class="mi">25</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">():</span>
+    <span class="n">SayText2</span><span class="p">(</span><span class="s1">&#39;Plugin has been loaded successfully!&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">unload</span><span class="p">():</span>
+    <span class="n">SayText2</span><span class="p">(</span><span class="s1">&#39;Plugin has been unloaded successfully!&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+
+<span class="nd">@Event</span><span class="p">(</span><span class="s1">&#39;player_spawn&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_player_spawn</span><span class="p">(</span><span class="n">game_event</span><span class="p">):</span>
+    <span class="c1"># Get the user ID of the spawned player</span>
+    <span class="n">userid</span> <span class="o">=</span> <span class="n">game_event</span><span class="p">[</span><span class="s1">&#39;userid&#39;</span><span class="p">]</span>
+
+    <span class="c1"># Convert the user ID into a player index</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="n">index_from_userid</span><span class="p">(</span><span class="n">userid</span><span class="p">)</span>
+
+    <span class="c1"># Create a Player object...</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+    <span class="c1"># ... to add some extra HP</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">health</span> <span class="o">+=</span> <span class="n">EXTRA_HP</span>
+</pre></div>
+</div>
+<p>Alternatively, you can use the classmethod
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">players.entity.Player.from_userid()</span></code>. It’s a wrapper around
+<a class="reference internal" href="modules/players.helpers.html#players.helpers.index_from_userid" title="players.helpers.index_from_userid"><code class="xref py py-func docutils literal notranslate"><span class="pre">players.helpers.index_from_userid()</span></code></a> and will shorten your code in
+events.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">SayText2</span>
+
+<span class="c1"># Extra amount of health every player should get on spawn</span>
+<span class="n">EXTRA_HP</span> <span class="o">=</span> <span class="mi">25</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">():</span>
+    <span class="n">SayText2</span><span class="p">(</span><span class="s1">&#39;Plugin has been loaded successfully!&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">unload</span><span class="p">():</span>
+    <span class="n">SayText2</span><span class="p">(</span><span class="s1">&#39;Plugin has been unloaded successfully!&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">send</span><span class="p">()</span>
+
+<span class="nd">@Event</span><span class="p">(</span><span class="s1">&#39;player_spawn&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_player_spawn</span><span class="p">(</span><span class="n">game_event</span><span class="p">):</span>
+    <span class="c1"># Create a Player object from the user ID...</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="o">.</span><span class="n">from_userid</span><span class="p">(</span><span class="n">game_event</span><span class="p">[</span><span class="s1">&#39;userid&#39;</span><span class="p">])</span>
+
+    <span class="c1"># ... and add some extra HP</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">health</span> <span class="o">+=</span> <span class="n">EXTRA_HP</span>
+</pre></div>
+</div>
+</section>
+<section id="what-s-next">
+<h2>What’s next?<a class="headerlink" href="#what-s-next" title="Link to this heading">¶</a></h2>
+<p>You should definitely take a look at the <a class="reference internal" href="module_tutorials.html"><span class="doc">module tutorials section</span></a>.
+It contains detailed tutorials about some Source.Python modules/packages.</p>
+<p>Moreover, you should take a look at the <a class="reference internal" href="../py-modindex.html"><span class="std std-ref">Module Index</span></a>. It’s a list of all
+Source.Python modules/packages and contains the API documentation.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Getting started</a><ul>
+<li><a class="reference internal" href="#writing-your-first-plugin">Writing your first plugin</a></li>
+<li><a class="reference internal" href="#modifying-your-first-plugin">Modifying your first plugin</a></li>
+<li><a class="reference internal" href="#using-events-in-your-first-plugin">Using events in your first plugin</a></li>
+<li><a class="reference internal" href="#what-s-next">What’s next?</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="../general/credits.html"
+                          title="previous chapter">Credits</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="events.html"
+                          title="next chapter">Events</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/developing/getting-started.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="events.html" title="Events"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../general/credits.html" title="Credits"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Getting started</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>messages.impl module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">messages.impl module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-messages.impl">
+<span id="messages-impl-module"></span><h1>messages.impl module<a class="headerlink" href="#module-messages.impl" title="Link to this heading">¶</a></h1>
+<p>Provides user message implementations.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.impl.SayText2Impl">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.impl.</span></span><span class="sig-name descname"><span class="pre">SayText2Impl</span></span><a class="reference internal" href="../../_modules/messages/impl.html#SayText2Impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.SayText2Impl" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#messages.impl.UserMessageImpl" title="messages.impl.UserMessageImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserMessageImpl</span></code></a></p>
+<p>SayText2 implementation.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.SayText2Impl.read_bitbuffer">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_bitbuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#SayText2Impl.read_bitbuffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.SayText2Impl.read_bitbuffer" title="Link to this definition">¶</a></dt>
+<dd><p>Read data from the given buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buffer</strong> (<a class="reference internal" href="bitbuffers.html#bitbuffers.BitBufferRead" title="bitbuffers.BitBufferRead"><em>BitBufferRead</em></a>) – The buffer to read.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData">UserMessageData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.SayText2Impl.read_protobuf">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#SayText2Impl.read_protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.SayText2Impl.read_protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Read data from the given buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buffer</strong> (<em>ProtobufMessage</em>) – The buffer to read.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData">UserMessageData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.SayText2Impl.write_bitbuffer">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">write_bitbuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#SayText2Impl.write_bitbuffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.SayText2Impl.write_bitbuffer" title="Link to this definition">¶</a></dt>
+<dd><p>Write data to the given buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> (<a class="reference internal" href="bitbuffers.html#bitbuffers.BitBufferWrite" title="bitbuffers.BitBufferWrite"><em>BitBufferWrite</em></a>) – The buffer to write to.</p></li>
+<li><p><strong>data</strong> (<a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData"><em>UserMessageData</em></a>) – User message data that should be written to the buffer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.SayText2Impl.write_protobuf">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">write_protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#SayText2Impl.write_protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.SayText2Impl.write_protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Write data to the given buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> (<em>ProtobufMessage</em>) – The buffer to write to.</p></li>
+<li><p><strong>data</strong> (<a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData"><em>UserMessageData</em></a>) – User message data that should be written to the buffer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.impl.ShowMenuImpl">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.impl.</span></span><span class="sig-name descname"><span class="pre">ShowMenuImpl</span></span><a class="reference internal" href="../../_modules/messages/impl.html#ShowMenuImpl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.ShowMenuImpl" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#messages.impl.UserMessageImpl" title="messages.impl.UserMessageImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserMessageImpl</span></code></a></p>
+<p>ShowMenu implementation.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.ShowMenuImpl.read_bitbuffer">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_bitbuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#ShowMenuImpl.read_bitbuffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.ShowMenuImpl.read_bitbuffer" title="Link to this definition">¶</a></dt>
+<dd><p>Read data from the given buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buffer</strong> (<a class="reference internal" href="bitbuffers.html#bitbuffers.BitBufferRead" title="bitbuffers.BitBufferRead"><em>BitBufferRead</em></a>) – The buffer to read.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData">UserMessageData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.ShowMenuImpl.read_protobuf">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#ShowMenuImpl.read_protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.ShowMenuImpl.read_protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Read data from the given buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buffer</strong> (<em>ProtobufMessage</em>) – The buffer to read.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData">UserMessageData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.ShowMenuImpl.write_bitbuffer">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">write_bitbuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#ShowMenuImpl.write_bitbuffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.ShowMenuImpl.write_bitbuffer" title="Link to this definition">¶</a></dt>
+<dd><p>Write data to the given buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> (<a class="reference internal" href="bitbuffers.html#bitbuffers.BitBufferWrite" title="bitbuffers.BitBufferWrite"><em>BitBufferWrite</em></a>) – The buffer to write to.</p></li>
+<li><p><strong>data</strong> (<a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData"><em>UserMessageData</em></a>) – User message data that should be written to the buffer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.ShowMenuImpl.write_protobuf">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">write_protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#ShowMenuImpl.write_protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.ShowMenuImpl.write_protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Write data to the given buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> (<em>ProtobufMessage</em>) – The buffer to write to.</p></li>
+<li><p><strong>data</strong> (<a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData"><em>UserMessageData</em></a>) – User message data that should be written to the buffer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.impl.UserMessageData">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.impl.</span></span><span class="sig-name descname"><span class="pre">UserMessageData</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#UserMessageData"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.UserMessageData" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+<p>A dict that keeps track whether it has been modified.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.UserMessageData.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#UserMessageData.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.UserMessageData.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.UserMessageData.has_been_changed">
+<span class="sig-name descname"><span class="pre">has_been_changed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#UserMessageData.has_been_changed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.UserMessageData.has_been_changed" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether the data has been changed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.impl.UserMessageImpl">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.impl.</span></span><span class="sig-name descname"><span class="pre">UserMessageImpl</span></span><a class="reference internal" href="../../_modules/messages/impl.html#UserMessageImpl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.UserMessageImpl" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Base class for user message implementations.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.UserMessageImpl.read">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#UserMessageImpl.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.UserMessageImpl.read" title="Link to this definition">¶</a></dt>
+<dd><p>A wrapper for <a class="reference internal" href="#messages.impl.UserMessageImpl.read_protobuf" title="messages.impl.UserMessageImpl.read_protobuf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read_protobuf()</span></code></a> and <a class="reference internal" href="#messages.impl.UserMessageImpl.read_bitbuffer" title="messages.impl.UserMessageImpl.read_bitbuffer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">read_bitbuffer()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buffer</strong> – The buffer to read.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData">UserMessageData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.UserMessageImpl.write">
+<em class="property"><span class="k"><span class="pre">classmethod</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#UserMessageImpl.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.UserMessageImpl.write" title="Link to this definition">¶</a></dt>
+<dd><p>A wrapper for <a class="reference internal" href="#messages.impl.UserMessageImpl.write_protobuf" title="messages.impl.UserMessageImpl.write_protobuf"><code class="xref py py-meth docutils literal notranslate"><span class="pre">write_protobuf()</span></code></a> and <a class="reference internal" href="#messages.impl.UserMessageImpl.write_bitbuffer" title="messages.impl.UserMessageImpl.write_bitbuffer"><code class="xref py py-meth docutils literal notranslate"><span class="pre">write_bitbuffer()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buffer</strong> – The buffer to write.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData">UserMessageData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.UserMessageImpl.read_bitbuffer">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_bitbuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#UserMessageImpl.read_bitbuffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.UserMessageImpl.read_bitbuffer" title="Link to this definition">¶</a></dt>
+<dd><p>Read data from the given buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buffer</strong> (<a class="reference internal" href="bitbuffers.html#bitbuffers.BitBufferRead" title="bitbuffers.BitBufferRead"><em>BitBufferRead</em></a>) – The buffer to read.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData">UserMessageData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.UserMessageImpl.read_protobuf">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#UserMessageImpl.read_protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.UserMessageImpl.read_protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Read data from the given buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buffer</strong> (<em>ProtobufMessage</em>) – The buffer to read.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData">UserMessageData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.UserMessageImpl.write_bitbuffer">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">write_bitbuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#UserMessageImpl.write_bitbuffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.UserMessageImpl.write_bitbuffer" title="Link to this definition">¶</a></dt>
+<dd><p>Write data to the given buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> (<a class="reference internal" href="bitbuffers.html#bitbuffers.BitBufferWrite" title="bitbuffers.BitBufferWrite"><em>BitBufferWrite</em></a>) – The buffer to write to.</p></li>
+<li><p><strong>data</strong> (<a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData"><em>UserMessageData</em></a>) – User message data that should be written to the buffer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.UserMessageImpl.write_protobuf">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">write_protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#UserMessageImpl.write_protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.UserMessageImpl.write_protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Write data to the given buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> (<em>ProtobufMessage</em>) – The buffer to write to.</p></li>
+<li><p><strong>data</strong> (<a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData"><em>UserMessageData</em></a>) – User message data that should be written to the buffer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="messages.impl.VGUIMenuImpl">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">messages.impl.</span></span><span class="sig-name descname"><span class="pre">VGUIMenuImpl</span></span><a class="reference internal" href="../../_modules/messages/impl.html#VGUIMenuImpl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.VGUIMenuImpl" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#messages.impl.UserMessageImpl" title="messages.impl.UserMessageImpl"><code class="xref py py-class docutils literal notranslate"><span class="pre">UserMessageImpl</span></code></a></p>
+<p>VGUIMenu implementation.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.VGUIMenuImpl.read_bitbuffer">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_bitbuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#VGUIMenuImpl.read_bitbuffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.VGUIMenuImpl.read_bitbuffer" title="Link to this definition">¶</a></dt>
+<dd><p>Read data from the given buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buffer</strong> (<a class="reference internal" href="bitbuffers.html#bitbuffers.BitBufferRead" title="bitbuffers.BitBufferRead"><em>BitBufferRead</em></a>) – The buffer to read.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData">UserMessageData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.VGUIMenuImpl.read_protobuf">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read_protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#VGUIMenuImpl.read_protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.VGUIMenuImpl.read_protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Read data from the given buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>buffer</strong> (<em>ProtobufMessage</em>) – The buffer to read.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData">UserMessageData</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.VGUIMenuImpl.write_bitbuffer">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">write_bitbuffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#VGUIMenuImpl.write_bitbuffer"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.VGUIMenuImpl.write_bitbuffer" title="Link to this definition">¶</a></dt>
+<dd><p>Write data to the given buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> (<a class="reference internal" href="bitbuffers.html#bitbuffers.BitBufferWrite" title="bitbuffers.BitBufferWrite"><em>BitBufferWrite</em></a>) – The buffer to write to.</p></li>
+<li><p><strong>data</strong> (<a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData"><em>UserMessageData</em></a>) – User message data that should be written to the buffer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="messages.impl.VGUIMenuImpl.write_protobuf">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">write_protobuf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">buffer</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#VGUIMenuImpl.write_protobuf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.VGUIMenuImpl.write_protobuf" title="Link to this definition">¶</a></dt>
+<dd><p>Write data to the given buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>buffer</strong> (<em>ProtobufMessage</em>) – The buffer to write to.</p></li>
+<li><p><strong>data</strong> (<a class="reference internal" href="#messages.impl.UserMessageData" title="messages.impl.UserMessageData"><em>UserMessageData</em></a>) – User message data that should be written to the buffer.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="messages.impl.get_user_message_impl">
+<span class="sig-prename descclassname"><span class="pre">messages.impl.</span></span><span class="sig-name descname"><span class="pre">get_user_message_impl</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg_index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/messages/impl.html#get_user_message_impl"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#messages.impl.get_user_message_impl" title="Link to this definition">¶</a></dt>
+<dd><p>Return the user message implementation for the given message index.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>msg_index</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The index of the user message.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#NotImplementedError" title="(in Python v3.13)"><strong>NotImplementedError</strong></a> – Raised if the given user message is not implemented.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#messages.impl.UserMessageImpl" title="messages.impl.UserMessageImpl">UserMessageImpl</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="messages.impl.implemented_usermessages">
+<span class="sig-prename descclassname"><span class="pre">messages.impl.</span></span><span class="sig-name descname"><span class="pre">implemented_usermessages</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{4:</span> <span class="pre">&lt;class</span> <span class="pre">'messages.impl.SayText2Impl'&gt;,</span> <span class="pre">10:</span> <span class="pre">&lt;class</span> <span class="pre">'messages.impl.ShowMenuImpl'&gt;,</span> <span class="pre">13:</span> <span class="pre">&lt;class</span> <span class="pre">'messages.impl.VGUIMenuImpl'&gt;}</span></em><a class="headerlink" href="#messages.impl.implemented_usermessages" title="Link to this definition">¶</a></dt>
+<dd><p>A dictionary that contains all implemented user messages.</p>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">messages.impl module</a><ul>
+<li><a class="reference internal" href="#messages.impl.SayText2Impl"><code class="docutils literal notranslate"><span class="pre">SayText2Impl</span></code></a><ul>
+<li><a class="reference internal" href="#messages.impl.SayText2Impl.read_bitbuffer"><code class="docutils literal notranslate"><span class="pre">SayText2Impl.read_bitbuffer()</span></code></a></li>
+<li><a class="reference internal" href="#messages.impl.SayText2Impl.read_protobuf"><code class="docutils literal notranslate"><span class="pre">SayText2Impl.read_protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.impl.SayText2Impl.write_bitbuffer"><code class="docutils literal notranslate"><span class="pre">SayText2Impl.write_bitbuffer()</span></code></a></li>
+<li><a class="reference internal" href="#messages.impl.SayText2Impl.write_protobuf"><code class="docutils literal notranslate"><span class="pre">SayText2Impl.write_protobuf()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#messages.impl.ShowMenuImpl"><code class="docutils literal notranslate"><span class="pre">ShowMenuImpl</span></code></a><ul>
+<li><a class="reference internal" href="#messages.impl.ShowMenuImpl.read_bitbuffer"><code class="docutils literal notranslate"><span class="pre">ShowMenuImpl.read_bitbuffer()</span></code></a></li>
+<li><a class="reference internal" href="#messages.impl.ShowMenuImpl.read_protobuf"><code class="docutils literal notranslate"><span class="pre">ShowMenuImpl.read_protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.impl.ShowMenuImpl.write_bitbuffer"><code class="docutils literal notranslate"><span class="pre">ShowMenuImpl.write_bitbuffer()</span></code></a></li>
+<li><a class="reference internal" href="#messages.impl.ShowMenuImpl.write_protobuf"><code class="docutils literal notranslate"><span class="pre">ShowMenuImpl.write_protobuf()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#messages.impl.UserMessageData"><code class="docutils literal notranslate"><span class="pre">UserMessageData</span></code></a><ul>
+<li><a class="reference internal" href="#messages.impl.UserMessageData.__init__"><code class="docutils literal notranslate"><span class="pre">UserMessageData.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#messages.impl.UserMessageData.has_been_changed"><code class="docutils literal notranslate"><span class="pre">UserMessageData.has_been_changed()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#messages.impl.UserMessageImpl"><code class="docutils literal notranslate"><span class="pre">UserMessageImpl</span></code></a><ul>
+<li><a class="reference internal" href="#messages.impl.UserMessageImpl.read"><code class="docutils literal notranslate"><span class="pre">UserMessageImpl.read()</span></code></a></li>
+<li><a class="reference internal" href="#messages.impl.UserMessageImpl.write"><code class="docutils literal notranslate"><span class="pre">UserMessageImpl.write()</span></code></a></li>
+<li><a class="reference internal" href="#messages.impl.UserMessageImpl.read_bitbuffer"><code class="docutils literal notranslate"><span class="pre">UserMessageImpl.read_bitbuffer()</span></code></a></li>
+<li><a class="reference internal" href="#messages.impl.UserMessageImpl.read_protobuf"><code class="docutils literal notranslate"><span class="pre">UserMessageImpl.read_protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.impl.UserMessageImpl.write_bitbuffer"><code class="docutils literal notranslate"><span class="pre">UserMessageImpl.write_bitbuffer()</span></code></a></li>
+<li><a class="reference internal" href="#messages.impl.UserMessageImpl.write_protobuf"><code class="docutils literal notranslate"><span class="pre">UserMessageImpl.write_protobuf()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#messages.impl.VGUIMenuImpl"><code class="docutils literal notranslate"><span class="pre">VGUIMenuImpl</span></code></a><ul>
+<li><a class="reference internal" href="#messages.impl.VGUIMenuImpl.read_bitbuffer"><code class="docutils literal notranslate"><span class="pre">VGUIMenuImpl.read_bitbuffer()</span></code></a></li>
+<li><a class="reference internal" href="#messages.impl.VGUIMenuImpl.read_protobuf"><code class="docutils literal notranslate"><span class="pre">VGUIMenuImpl.read_protobuf()</span></code></a></li>
+<li><a class="reference internal" href="#messages.impl.VGUIMenuImpl.write_bitbuffer"><code class="docutils literal notranslate"><span class="pre">VGUIMenuImpl.write_bitbuffer()</span></code></a></li>
+<li><a class="reference internal" href="#messages.impl.VGUIMenuImpl.write_protobuf"><code class="docutils literal notranslate"><span class="pre">VGUIMenuImpl.write_protobuf()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#messages.impl.get_user_message_impl"><code class="docutils literal notranslate"><span class="pre">get_user_message_impl()</span></code></a></li>
+<li><a class="reference internal" href="#messages.impl.implemented_usermessages"><code class="docutils literal notranslate"><span class="pre">implemented_usermessages</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/messages.impl.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">messages.impl module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

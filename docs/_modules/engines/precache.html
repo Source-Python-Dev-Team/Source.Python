@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>engines.precache &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">engines.precache</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for engines.precache</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../engines/precache.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides classes to automatically precache models and decals.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoUnload</span>
+<span class="c1">#   Engines</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">engine_server</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">global_vars</span>
+<span class="c1">#   Events</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">events.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">event_manager</span>
+<span class="c1">#   Stringtables</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">stringtables</span><span class="w"> </span><span class="kn">import</span> <span class="n">INVALID_STRING_INDEX</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">stringtables</span><span class="w"> </span><span class="kn">import</span> <span class="n">string_tables</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">stringtables.downloads</span><span class="w"> </span><span class="kn">import</span> <span class="n">Downloadables</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Decal&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Generic&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Model&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;_PrecacheBase&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PrecacheError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Object was not able to be precached due to limit being reached.&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_PrecacheBase</span><span class="p">(</span><span class="n">AutoUnload</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base precache class used to interact with a specific object.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Set the base _downloads attribute to know whether</span>
+    <span class="c1">#   or not the path was added to the downloadables</span>
+    <span class="n">_downloads</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">preload</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">download</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the file to downloadables if download is True.</span>
+
+<span class="sd">        :param str path:</span>
+<span class="sd">            Path to file to use.</span>
+<span class="sd">        :param bool preload:</span>
+<span class="sd">            If ``True`` the file will be pre-loaded.</span>
+<span class="sd">        :param bool download:</span>
+<span class="sd">            If ``True`` the file will be added to the ``downloadables`` string</span>
+<span class="sd">            table.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Save the path that should be precached</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_path</span> <span class="o">=</span> <span class="n">path</span>
+
+        <span class="c1"># Save whether the the file should be preloaded</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_preload</span> <span class="o">=</span> <span class="n">preload</span>
+
+        <span class="c1"># Is the map loaded?</span>
+        <span class="k">if</span> <span class="n">global_vars</span><span class="o">.</span><span class="n">map_name</span><span class="p">:</span>
+
+            <span class="c1"># Precache the instance</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_precache</span><span class="p">()</span>
+
+        <span class="c1"># Register the server_spawn event to precache every map change</span>
+        <span class="n">event_manager</span><span class="o">.</span><span class="n">register_for_event</span><span class="p">(</span><span class="s1">&#39;server_spawn&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server_spawn</span><span class="p">)</span>
+
+        <span class="c1"># Should the path be added to the downloadables?</span>
+        <span class="k">if</span> <span class="n">download</span><span class="p">:</span>
+
+            <span class="c1"># Add the path to the downloadables</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_downloads</span> <span class="o">=</span> <span class="n">Downloadables</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_downloads</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the precached index of the object.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the index of the object in its precache table</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="n">string_tables</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">precache_table</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">]</span>
+
+        <span class="c1"># Is the object precached?</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">!=</span> <span class="n">INVALID_STRING_INDEX</span><span class="p">:</span>
+
+            <span class="c1"># Return the precache index</span>
+            <span class="k">return</span> <span class="n">index</span>
+
+        <span class="c1"># If the object was not precached, raise an error</span>
+        <span class="k">raise</span> <span class="n">PrecacheError</span><span class="p">(</span>
+            <span class="s1">&#39;&quot;</span><span class="si">{0}</span><span class="s1">&quot; was not able to be precached due to the &quot;</span><span class="si">{1}</span><span class="s1">&quot; table &#39;</span>
+            <span class="s1">&#39;reaching its limit.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">precache_table</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">path</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the path.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_path</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_precache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Precache the file.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;Must be implemented by a subclass.&#39;</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_server_spawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game_event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Precache the object on map change.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_precache</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unregister server_spawn.&quot;&quot;&quot;</span>
+        <span class="c1"># Unregister the server_spawn event</span>
+        <span class="n">event_manager</span><span class="o">.</span><span class="n">unregister_for_event</span><span class="p">(</span><span class="s1">&#39;server_spawn&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_server_spawn</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">precache_table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the name of the precache table.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No precache_table defined for class.&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="Decal">
+<a class="viewcode-back" href="../../developing/modules/engines.precache.html#engines.precache.Decal">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Decal</span><span class="p">(</span><span class="n">_PrecacheBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to handle a specific decal.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Set the base attributes</span>
+    <span class="n">precache_table</span> <span class="o">=</span> <span class="s1">&#39;decalprecache&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_precache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">engine_server</span><span class="o">.</span><span class="n">precache_decal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preload</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Generic">
+<a class="viewcode-back" href="../../developing/modules/engines.precache.html#engines.precache.Generic">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Generic</span><span class="p">(</span><span class="n">_PrecacheBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to handle generic precaching.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Set the base attributes</span>
+    <span class="n">precache_table</span> <span class="o">=</span> <span class="s1">&#39;genericprecache&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_precache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">engine_server</span><span class="o">.</span><span class="n">precache_generic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preload</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="Model">
+<a class="viewcode-back" href="../../developing/modules/engines.precache.html#engines.precache.Model">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Model</span><span class="p">(</span><span class="n">_PrecacheBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to handle a specific model.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Set the base attributes</span>
+    <span class="n">precache_table</span> <span class="o">=</span> <span class="s1">&#39;modelprecache&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_precache</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">engine_server</span><span class="o">.</span><span class="n">precache_model</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_preload</span><span class="p">)</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">engines.precache</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>memory.hooks module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">memory.hooks module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-memory.hooks">
+<span id="memory-hooks-module"></span><h1>memory.hooks module<a class="headerlink" href="#module-memory.hooks" title="Link to this heading">¶</a></h1>
+<p>Provides memory hooking functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="memory.hooks.HookType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memory.hooks.</span></span><span class="sig-name descname"><span class="pre">HookType</span></span><a class="headerlink" href="#memory.hooks.HookType" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.hooks.HookType.POST">
+<span class="sig-name descname"><span class="pre">POST</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_memory.HookType.POST</span></em><a class="headerlink" href="#memory.hooks.HookType.POST" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.hooks.HookType.PRE">
+<span class="sig-name descname"><span class="pre">PRE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_memory.HookType.PRE</span></em><a class="headerlink" href="#memory.hooks.HookType.PRE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.hooks.HookType.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'POST':</span> <span class="pre">_memory.HookType.POST,</span> <span class="pre">'PRE':</span> <span class="pre">_memory.HookType.PRE}</span></em><a class="headerlink" href="#memory.hooks.HookType.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.hooks.HookType.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">_memory.HookType.PRE,</span> <span class="pre">1:</span> <span class="pre">_memory.HookType.POST}</span></em><a class="headerlink" href="#memory.hooks.HookType.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memory.hooks.PostHook">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memory.hooks.</span></span><span class="sig-name descname"><span class="pre">PostHook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/hooks.html#PostHook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.hooks.PostHook" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_Hook</span></code></p>
+<p>Decorator class used to create post hooks that auto unload.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.hooks.PostHook.hook_type">
+<span class="sig-name descname"><span class="pre">hook_type</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_memory.HookType.POST</span></em><a class="headerlink" href="#memory.hooks.PostHook.hook_type" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="memory.hooks.PreHook">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">memory.hooks.</span></span><span class="sig-name descname"><span class="pre">PreHook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/hooks.html#PreHook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.hooks.PreHook" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_Hook</span></code></p>
+<p>Decorator class used to create pre hooks that auto unload.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="memory.hooks.PreHook.hook_type">
+<span class="sig-name descname"><span class="pre">hook_type</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_memory.HookType.PRE</span></em><a class="headerlink" href="#memory.hooks.PreHook.hook_type" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="memory.hooks.get_hooks_disabled">
+<span class="sig-prename descclassname"><span class="pre">memory.hooks.</span></span><span class="sig-name descname"><span class="pre">get_hooks_disabled</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#memory.hooks.get_hooks_disabled" title="Link to this definition">¶</a></dt>
+<dd><p>Return whether or not hook callbacks are disabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="memory.hooks.hooks_disabled">
+<span class="sig-prename descclassname"><span class="pre">memory.hooks.</span></span><span class="sig-name descname"><span class="pre">hooks_disabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">disabled</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/hooks.html#hooks_disabled"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.hooks.hooks_disabled" title="Link to this definition">¶</a></dt>
+<dd><p>Temporarily disable or enable all hook callbacks. By default hooks are
+enabled. Thus, this context manager is mainly used to temporarily disable
+hook callbacks. If the context ends, the original value is restored. This
+can be used e. g. to avoid recursive calls when damaging a player in a
+<code class="docutils literal notranslate"><span class="pre">on_take_damage</span></code> hook or <code class="docutils literal notranslate"><span class="pre">player_hurt</span></code> event.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This would only disable hooks created with Source.Python. Hooks that
+have been created by other server plugins will still be called.</p>
+</div>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">hooks_disabled</span>
+
+<span class="c1"># Get a Player instance of the player with index 1</span>
+<span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Damage the player. This would call e. g. on_take_damage hooks</span>
+<span class="n">player</span><span class="o">.</span><span class="n">take_damage</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+
+<span class="c1"># To avoid calling the on_take_damage hooks, use the following:</span>
+<span class="k">with</span> <span class="n">hooks_disabled</span><span class="p">()</span>
+    <span class="n">player</span><span class="o">.</span><span class="n">take_damage</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="memory.hooks.set_hooks_disabled">
+<span class="sig-prename descclassname"><span class="pre">memory.hooks.</span></span><span class="sig-name descname"><span class="pre">set_hooks_disabled</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(bool)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#memory.hooks.set_hooks_disabled" title="Link to this definition">¶</a></dt>
+<dd><p>Set whether or not hook callbacks are disabled.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>disabled</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code>, hook callbacks are disabled.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="memory.hooks.use_pre_registers">
+<span class="sig-prename descclassname"><span class="pre">memory.hooks.</span></span><span class="sig-name descname"><span class="pre">use_pre_registers</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stack_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/memory/hooks.html#use_pre_registers"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#memory.hooks.use_pre_registers" title="Link to this definition">¶</a></dt>
+<dd><p>Temporarily set <code class="docutils literal notranslate"><span class="pre">StackData.use_pre_registers</span></code> to the given value.
+When the context ends, the previous value is restored.</p>
+<p>Some functions overwrite CPU registers during their execution with values
+from their internal calculations. In a post-hook, you have access to the
+modified CPU registers, but in some cases you might want to access the
+registers that were saved before the pre-hook was called. In that case you
+can use this context manager to get access to the previous state of the
+registers. On Windows this is often required when hooking THISCALL
+functions, because the this-pointer is saved in the CPU register <code class="docutils literal notranslate"><span class="pre">ECX</span></code>,
+but gets overwritten during the execution of the hooked function. So, in a
+post-hook you won’t have access to the this-pointer anymore.</p>
+<p>Example (CS:S/Windows):</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">entities.hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">EntityCondition</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">EntityPostHook</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">EntityPreHook</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">use_pre_registers</span>
+
+<span class="nd">@EntityPreHook</span><span class="p">(</span><span class="n">EntityCondition</span><span class="o">.</span><span class="n">is_player</span><span class="p">,</span> <span class="s1">&#39;drop_weapon&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pre_on_drop_weapon</span><span class="p">(</span><span class="n">stack_data</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;PRE: this = </span><span class="si">{</span><span class="n">stack_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">address</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nd">@EntityPostHook</span><span class="p">(</span><span class="n">EntityCondition</span><span class="o">.</span><span class="n">is_player</span><span class="p">,</span> <span class="s1">&#39;drop_weapon&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">post_on_drop_weapon</span><span class="p">(</span><span class="n">stack_data</span><span class="p">,</span> <span class="n">ret_val</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;POST FALSE: this = </span><span class="si">{</span><span class="n">stack_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">address</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">use_pre_registers</span><span class="p">(</span><span class="n">stack_data</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;POST CORRECT: this = </span><span class="si">{</span><span class="n">stack_data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">address</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Output:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">PRE</span><span class="p">:</span> <span class="n">this</span> <span class="o">=</span> <span class="mi">546778280</span>
+<span class="n">POST</span> <span class="n">FALSE</span><span class="p">:</span> <span class="n">this</span> <span class="o">=</span> <span class="mi">16439007</span>
+<span class="n">POST</span> <span class="n">CORRECT</span><span class="p">:</span> <span class="n">this</span> <span class="o">=</span> <span class="mi">546778280</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">memory.hooks module</a><ul>
+<li><a class="reference internal" href="#memory.hooks.HookType"><code class="docutils literal notranslate"><span class="pre">HookType</span></code></a><ul>
+<li><a class="reference internal" href="#memory.hooks.HookType.POST"><code class="docutils literal notranslate"><span class="pre">HookType.POST</span></code></a></li>
+<li><a class="reference internal" href="#memory.hooks.HookType.PRE"><code class="docutils literal notranslate"><span class="pre">HookType.PRE</span></code></a></li>
+<li><a class="reference internal" href="#memory.hooks.HookType.names"><code class="docutils literal notranslate"><span class="pre">HookType.names</span></code></a></li>
+<li><a class="reference internal" href="#memory.hooks.HookType.values"><code class="docutils literal notranslate"><span class="pre">HookType.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#memory.hooks.PostHook"><code class="docutils literal notranslate"><span class="pre">PostHook</span></code></a><ul>
+<li><a class="reference internal" href="#memory.hooks.PostHook.hook_type"><code class="docutils literal notranslate"><span class="pre">PostHook.hook_type</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#memory.hooks.PreHook"><code class="docutils literal notranslate"><span class="pre">PreHook</span></code></a><ul>
+<li><a class="reference internal" href="#memory.hooks.PreHook.hook_type"><code class="docutils literal notranslate"><span class="pre">PreHook.hook_type</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#memory.hooks.get_hooks_disabled"><code class="docutils literal notranslate"><span class="pre">get_hooks_disabled()</span></code></a></li>
+<li><a class="reference internal" href="#memory.hooks.hooks_disabled"><code class="docutils literal notranslate"><span class="pre">hooks_disabled()</span></code></a></li>
+<li><a class="reference internal" href="#memory.hooks.set_hooks_disabled"><code class="docutils literal notranslate"><span class="pre">set_hooks_disabled()</span></code></a></li>
+<li><a class="reference internal" href="#memory.hooks.use_pre_registers"><code class="docutils literal notranslate"><span class="pre">use_pre_registers()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/memory.hooks.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">memory.hooks module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

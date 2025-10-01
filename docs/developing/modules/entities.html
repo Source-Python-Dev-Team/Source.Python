@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>entities package &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities package</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="entities-package">
+<h1>entities package<a class="headerlink" href="#entities-package" title="Link to this heading">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Link to this heading">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="entities.classes.html">entities.classes module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entities.constants.html">entities.constants module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entities.datamaps.html">entities.datamaps module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entities.dictionary.html">entities.dictionary module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entities.entity.html">entities.entity module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entities.factories.html">entities.factories module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entities.helpers.html">entities.helpers module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entities.hooks.html">entities.hooks module</a></li>
+<li class="toctree-l1"><a class="reference internal" href="entities.props.html">entities.props module</a></li>
+</ul>
+</div>
+</section>
+<section id="module-entities">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-entities" title="Link to this heading">¶</a></h2>
+<p>Provides entity based functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.BaseEntityGenerator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">BaseEntityGenerator</span></span><a class="headerlink" href="#entities.BaseEntityGenerator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.BaseEntityGenerator.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.BaseEntityGenerator.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>__init__( (object)arg1, (str)arg2) -&gt; None</p>
+<p>__init__( (object)arg1, (str)arg2, (bool)arg3) -&gt; None</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.BaseEntityHandle">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">BaseEntityHandle</span></span><a class="headerlink" href="#entities.BaseEntityHandle" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.BaseEntityHandle.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.BaseEntityHandle.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>__init__( (object)arg1, (BaseEntityHandle)arg2) -&gt; None</p>
+<p>__init__( (object)arg1, (int)arg2) -&gt; None</p>
+<p>__init__( (object)arg1, (_engines._sound.Channel)arg2, (_engines._sound.Channel)arg3) -&gt; None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.BaseEntityHandle.init">
+<span class="sig-name descname"><span class="pre">init</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(BaseEntityHandle)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)entry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)serial_number</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.BaseEntityHandle.init" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.BaseEntityHandle.is_valid">
+<span class="sig-name descname"><span class="pre">is_valid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(BaseEntityHandle)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.BaseEntityHandle.is_valid" title="Link to this definition">¶</a></dt>
+<dd><p>Returns whether the handle has been initted with any values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.BaseEntityHandle.set">
+<span class="sig-name descname"><span class="pre">set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(BaseEntityHandle)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(HandleEntity)entity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">BaseEntityHandle</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.BaseEntityHandle.set" title="Link to this definition">¶</a></dt>
+<dd><p>Assigns a value to the handle.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.BaseEntityHandle.term">
+<span class="sig-name descname"><span class="pre">term</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(BaseEntityHandle)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.BaseEntityHandle.term" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.BaseEntityHandle.to_int">
+<span class="sig-name descname"><span class="pre">to_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(BaseEntityHandle)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#entities.BaseEntityHandle.to_int" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.BaseEntityHandle.entry_index">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">entry_index</span></span><a class="headerlink" href="#entities.BaseEntityHandle.entry_index" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.BaseEntityHandle)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.BaseEntityHandle.serial_number">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">serial_number</span></span><a class="headerlink" href="#entities.BaseEntityHandle.serial_number" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.BaseEntityHandle)arg1) -&gt; int</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.BaseEntityOutput">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">BaseEntityOutput</span></span><a class="headerlink" href="#entities.BaseEntityOutput" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.BaseEntityOutput.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#entities.BaseEntityOutput.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.BaseEntityOutput.event_action">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">event_action</span></span><a class="headerlink" href="#entities.BaseEntityOutput.event_action" title="Link to this definition">¶</a></dt>
+<dd><p>Linked list of registered event actions for this output.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.BaseEntityOutput.event_actions">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">event_actions</span></span><a class="headerlink" href="#entities.BaseEntityOutput.event_actions" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a generator iterating over registered event actions for this output.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.BaseEntityOutput.fire_output">
+<span class="sig-name descname"><span class="pre">fire_output</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&lt;_memory.Function</span> <span class="pre">object&gt;</span></em><a class="headerlink" href="#entities.BaseEntityOutput.fire_output" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.BaseEntityOutput.variant">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">variant</span></span><a class="headerlink" href="#entities.BaseEntityOutput.variant" title="Link to this definition">¶</a></dt>
+<dd><p>Current variant value for this output.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.CheckTransmitInfo">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">CheckTransmitInfo</span></span><a class="headerlink" href="#entities.CheckTransmitInfo" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.CheckTransmitInfo.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.CheckTransmitInfo.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.CheckTransmitInfo.areas_networked">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">areas_networked</span></span><a class="headerlink" href="#entities.CheckTransmitInfo.areas_networked" title="Link to this definition">¶</a></dt>
+<dd><p>Number of networked areas.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.CheckTransmitInfo.client">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">client</span></span><a class="headerlink" href="#entities.CheckTransmitInfo.client" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.CheckTransmitInfo)arg1) -&gt; _entities.Edict</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.CheckTransmitInfo.map_areas">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_areas</span></span><a class="headerlink" href="#entities.CheckTransmitInfo.map_areas" title="Link to this definition">¶</a></dt>
+<dd><p>Number of map areas.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.CheckTransmitInfo.pvs_size">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pvs_size</span></span><a class="headerlink" href="#entities.CheckTransmitInfo.pvs_size" title="Link to this definition">¶</a></dt>
+<dd><p>PVS size in bytes.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.Collideable">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">Collideable</span></span><a class="headerlink" href="#entities.Collideable" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.Collideable.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#entities.Collideable.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.Collideable.entity_handle">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">entity_handle</span></span><a class="headerlink" href="#entities.Collideable.entity_handle" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.Collideable)arg1) -&gt; _entities.HandleEntity</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.Edict">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">Edict</span></span><a class="headerlink" href="#entities.Edict" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_BaseEdict</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.Edict.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.Edict.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.Edict.collideable">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">collideable</span></span><a class="headerlink" href="#entities.Edict.collideable" title="Link to this definition">¶</a></dt>
+<dd><p>Returns its Collideable instance.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.EntityGenerator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">EntityGenerator</span></span><a class="headerlink" href="#entities.EntityGenerator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.EntityGenerator.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.EntityGenerator.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>__init__( (object)arg1, (str)arg2) -&gt; None</p>
+<p>__init__( (object)arg1, (str)arg2, (bool)arg3) -&gt; None</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.EntityListener">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">EntityListener</span></span><a class="headerlink" href="#entities.EntityListener" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.EntityListener.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.EntityListener.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.EventAction">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">EventAction</span></span><a class="headerlink" href="#entities.EventAction" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.EventAction.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#entities.EventAction.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.EventAction.delay">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">delay</span></span><a class="headerlink" href="#entities.EventAction.delay" title="Link to this definition">¶</a></dt>
+<dd><p>The number of seconds to wait before firing the action.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.EventAction.id_stamp">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id_stamp</span></span><a class="headerlink" href="#entities.EventAction.id_stamp" title="Link to this definition">¶</a></dt>
+<dd><p>Unique identifier stamp.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.EventAction.next">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">next</span></span><a class="headerlink" href="#entities.EventAction.next" title="Link to this definition">¶</a></dt>
+<dd><p>The next action in the linked list.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.EventAction.parameter">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parameter</span></span><a class="headerlink" href="#entities.EventAction.parameter" title="Link to this definition">¶</a></dt>
+<dd><p>Parameter to send, 0 if none.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.EventAction.target">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">target</span></span><a class="headerlink" href="#entities.EventAction.target" title="Link to this definition">¶</a></dt>
+<dd><p>Name of the entity(s) to cause the action in.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.EventAction.target_input">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">target_input</span></span><a class="headerlink" href="#entities.EventAction.target_input" title="Link to this definition">¶</a></dt>
+<dd><p>The name of the action to fire.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.EventAction.times_to_fire">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">times_to_fire</span></span><a class="headerlink" href="#entities.EventAction.times_to_fire" title="Link to this definition">¶</a></dt>
+<dd><p>The number of times to fire this event, or EVENT_FIRE_ALWAYS.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.EventActionGenerator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">EventActionGenerator</span></span><a class="headerlink" href="#entities.EventActionGenerator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.EventActionGenerator.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(EventAction)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.EventActionGenerator.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.GlobalEntityList">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">GlobalEntityList</span></span><a class="headerlink" href="#entities.GlobalEntityList" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.GlobalEntityList.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#entities.GlobalEntityList.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.GlobalEntityList.add_entity_listener">
+<span class="sig-name descname"><span class="pre">add_entity_listener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GlobalEntityList)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(EntityListener)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.GlobalEntityList.add_entity_listener" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.GlobalEntityList.remove_entity_listener">
+<span class="sig-name descname"><span class="pre">remove_entity_listener</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GlobalEntityList)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(EntityListener)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.GlobalEntityList.remove_entity_listener" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.HandleEntity">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">HandleEntity</span></span><a class="headerlink" href="#entities.HandleEntity" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.HandleEntity.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#entities.HandleEntity.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.HandleEntity.basehandle">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">basehandle</span></span><a class="headerlink" href="#entities.HandleEntity.basehandle" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.HandleEntity)arg1) -&gt; _entities.BaseEntityHandle</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.ServerClassGenerator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">ServerClassGenerator</span></span><a class="headerlink" href="#entities.ServerClassGenerator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.ServerClassGenerator.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.ServerClassGenerator.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.ServerEntity">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">ServerEntity</span></span><a class="headerlink" href="#entities.ServerEntity" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#entities.ServerUnknown" title="_entities.ServerUnknown"><code class="xref py py-class docutils literal notranslate"><span class="pre">ServerUnknown</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.ServerEntity.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#entities.ServerEntity.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.ServerEntity.lookup_attachment">
+<span class="sig-name descname"><span class="pre">lookup_attachment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ServerEntity)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.ServerEntity.lookup_attachment" title="Link to this definition">¶</a></dt>
+<dd><p>Return the attachment index matching the given name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of the attachment.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.ServerEntity.lookup_bone">
+<span class="sig-name descname"><span class="pre">lookup_bone</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ServerEntity)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.ServerEntity.lookup_bone" title="Link to this definition">¶</a></dt>
+<dd><p>Return the bone index matching the given name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The name of the bone.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.ServerEntity.model_handle">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model_handle</span></span><a class="headerlink" href="#entities.ServerEntity.model_handle" title="Link to this definition">¶</a></dt>
+<dd><p>Return the handle of the entity’s model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.ServerEntity.model_header">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model_header</span></span><a class="headerlink" href="#entities.ServerEntity.model_header" title="Link to this definition">¶</a></dt>
+<dd><p>Return the entity’s model header.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="studio.html#studio.ModelHeader" title="studio.ModelHeader">ModelHeader</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.ServerEntity.model_index">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model_index</span></span><a class="headerlink" href="#entities.ServerEntity.model_index" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the model index for this entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.ServerEntity.model_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">model_name</span></span><a class="headerlink" href="#entities.ServerEntity.model_name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the name of the model this entity is using.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.ServerNetworkable">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">ServerNetworkable</span></span><a class="headerlink" href="#entities.ServerNetworkable" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.ServerNetworkable.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#entities.ServerNetworkable.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.ServerNetworkable.area_num">
+<span class="sig-name descname"><span class="pre">area_num</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ServerNetworkable)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#entities.ServerNetworkable.area_num" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.ServerNetworkable.release">
+<span class="sig-name descname"><span class="pre">release</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ServerNetworkable)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.ServerNetworkable.release" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.ServerNetworkable.base_entity">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">base_entity</span></span><a class="headerlink" href="#entities.ServerNetworkable.base_entity" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.ServerNetworkable)arg1) -&gt; object</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.ServerNetworkable.classname">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">classname</span></span><a class="headerlink" href="#entities.ServerNetworkable.classname" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the class name of this entity.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.ServerNetworkable.edict">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">edict</span></span><a class="headerlink" href="#entities.ServerNetworkable.edict" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the edict_t instance of this entity.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.ServerNetworkable.entity_handle">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">entity_handle</span></span><a class="headerlink" href="#entities.ServerNetworkable.entity_handle" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the HandleEntity instance of this entity.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.ServerNetworkable.pvs_info">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pvs_info</span></span><a class="headerlink" href="#entities.ServerNetworkable.pvs_info" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the current visible data.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.ServerNetworkable.server_class">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">server_class</span></span><a class="headerlink" href="#entities.ServerNetworkable.server_class" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the ServerClass instance of this entity.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.ServerUnknown">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">ServerUnknown</span></span><a class="headerlink" href="#entities.ServerUnknown" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#entities.HandleEntity" title="_entities.HandleEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">HandleEntity</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.ServerUnknown.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#entities.ServerUnknown.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.ServerUnknown.is_networked">
+<span class="sig-name descname"><span class="pre">is_networked</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(ServerUnknown)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.ServerUnknown.is_networked" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if the entity is networked.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.ServerUnknown.base_entity">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">base_entity</span></span><a class="headerlink" href="#entities.ServerUnknown.base_entity" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the CBasEntity pointer for this entity.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.ServerUnknown.class_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">class_name</span></span><a class="headerlink" href="#entities.ServerUnknown.class_name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the entity’s classname.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.ServerUnknown.classname">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">classname</span></span><a class="headerlink" href="#entities.ServerUnknown.classname" title="Link to this definition">¶</a></dt>
+<dd><p>Return the entity’s classname.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.ServerUnknown.collideable">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">collideable</span></span><a class="headerlink" href="#entities.ServerUnknown.collideable" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the Collideable object for this entity.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.ServerUnknown.networkable">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">networkable</span></span><a class="headerlink" href="#entities.ServerUnknown.networkable" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the ServerNetworkable object for this entity.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.</span></span><span class="sig-name descname"><span class="pre">TakeDamageInfo</span></span><a class="headerlink" href="#entities.TakeDamageInfo" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#entities.TakeDamageInfo.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>__init__( (object)arg1) -&gt; object</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.ammo">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ammo</span></span><a class="headerlink" href="#entities.TakeDamageInfo.ammo" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.TakeDamageInfo)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.attacker">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">attacker</span></span><a class="headerlink" href="#entities.TakeDamageInfo.attacker" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.TakeDamageInfo)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.base_damage">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">base_damage</span></span><a class="headerlink" href="#entities.TakeDamageInfo.base_damage" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.TakeDamageInfo)arg1) -&gt; float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.bullet">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">bullet</span></span><a class="headerlink" href="#entities.TakeDamageInfo.bullet" title="Link to this definition">¶</a></dt>
+<dd><p>Not implemented on this engine.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.damage">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">damage</span></span><a class="headerlink" href="#entities.TakeDamageInfo.damage" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.TakeDamageInfo)arg1) -&gt; float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.damaged_other_players">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">damaged_other_players</span></span><a class="headerlink" href="#entities.TakeDamageInfo.damaged_other_players" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.TakeDamageInfo)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.force">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">force</span></span><a class="headerlink" href="#entities.TakeDamageInfo.force" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.TakeDamageInfo)arg1) -&gt; object</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.inflictor">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">inflictor</span></span><a class="headerlink" href="#entities.TakeDamageInfo.inflictor" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.TakeDamageInfo)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.penetrated">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">penetrated</span></span><a class="headerlink" href="#entities.TakeDamageInfo.penetrated" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.TakeDamageInfo)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.position">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">position</span></span><a class="headerlink" href="#entities.TakeDamageInfo.position" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.TakeDamageInfo)arg1) -&gt; object</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.radius">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">radius</span></span><a class="headerlink" href="#entities.TakeDamageInfo.radius" title="Link to this definition">¶</a></dt>
+<dd><p>Not implemented on this engine.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.recoil">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">recoil</span></span><a class="headerlink" href="#entities.TakeDamageInfo.recoil" title="Link to this definition">¶</a></dt>
+<dd><p>Not implemented on this engine.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.reported_position">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reported_position</span></span><a class="headerlink" href="#entities.TakeDamageInfo.reported_position" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.TakeDamageInfo)arg1) -&gt; object</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.stats">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stats</span></span><a class="headerlink" href="#entities.TakeDamageInfo.stats" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.TakeDamageInfo)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#entities.TakeDamageInfo.type" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.TakeDamageInfo)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.TakeDamageInfo.weapon">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">weapon</span></span><a class="headerlink" href="#entities.TakeDamageInfo.weapon" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_entities.TakeDamageInfo)arg1) -&gt; int</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">entities package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-entities">Module contents</a><ul>
+<li><a class="reference internal" href="#entities.BaseEntityGenerator"><code class="docutils literal notranslate"><span class="pre">BaseEntityGenerator</span></code></a><ul>
+<li><a class="reference internal" href="#entities.BaseEntityGenerator.__init__"><code class="docutils literal notranslate"><span class="pre">BaseEntityGenerator.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.BaseEntityHandle"><code class="docutils literal notranslate"><span class="pre">BaseEntityHandle</span></code></a><ul>
+<li><a class="reference internal" href="#entities.BaseEntityHandle.__init__"><code class="docutils literal notranslate"><span class="pre">BaseEntityHandle.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.BaseEntityHandle.init"><code class="docutils literal notranslate"><span class="pre">BaseEntityHandle.init()</span></code></a></li>
+<li><a class="reference internal" href="#entities.BaseEntityHandle.is_valid"><code class="docutils literal notranslate"><span class="pre">BaseEntityHandle.is_valid()</span></code></a></li>
+<li><a class="reference internal" href="#entities.BaseEntityHandle.set"><code class="docutils literal notranslate"><span class="pre">BaseEntityHandle.set()</span></code></a></li>
+<li><a class="reference internal" href="#entities.BaseEntityHandle.term"><code class="docutils literal notranslate"><span class="pre">BaseEntityHandle.term()</span></code></a></li>
+<li><a class="reference internal" href="#entities.BaseEntityHandle.to_int"><code class="docutils literal notranslate"><span class="pre">BaseEntityHandle.to_int()</span></code></a></li>
+<li><a class="reference internal" href="#entities.BaseEntityHandle.entry_index"><code class="docutils literal notranslate"><span class="pre">BaseEntityHandle.entry_index</span></code></a></li>
+<li><a class="reference internal" href="#entities.BaseEntityHandle.serial_number"><code class="docutils literal notranslate"><span class="pre">BaseEntityHandle.serial_number</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.BaseEntityOutput"><code class="docutils literal notranslate"><span class="pre">BaseEntityOutput</span></code></a><ul>
+<li><a class="reference internal" href="#entities.BaseEntityOutput.__init__"><code class="docutils literal notranslate"><span class="pre">BaseEntityOutput.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.BaseEntityOutput.event_action"><code class="docutils literal notranslate"><span class="pre">BaseEntityOutput.event_action</span></code></a></li>
+<li><a class="reference internal" href="#entities.BaseEntityOutput.event_actions"><code class="docutils literal notranslate"><span class="pre">BaseEntityOutput.event_actions</span></code></a></li>
+<li><a class="reference internal" href="#entities.BaseEntityOutput.fire_output"><code class="docutils literal notranslate"><span class="pre">BaseEntityOutput.fire_output</span></code></a></li>
+<li><a class="reference internal" href="#entities.BaseEntityOutput.variant"><code class="docutils literal notranslate"><span class="pre">BaseEntityOutput.variant</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.CheckTransmitInfo"><code class="docutils literal notranslate"><span class="pre">CheckTransmitInfo</span></code></a><ul>
+<li><a class="reference internal" href="#entities.CheckTransmitInfo.__init__"><code class="docutils literal notranslate"><span class="pre">CheckTransmitInfo.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.CheckTransmitInfo.areas_networked"><code class="docutils literal notranslate"><span class="pre">CheckTransmitInfo.areas_networked</span></code></a></li>
+<li><a class="reference internal" href="#entities.CheckTransmitInfo.client"><code class="docutils literal notranslate"><span class="pre">CheckTransmitInfo.client</span></code></a></li>
+<li><a class="reference internal" href="#entities.CheckTransmitInfo.map_areas"><code class="docutils literal notranslate"><span class="pre">CheckTransmitInfo.map_areas</span></code></a></li>
+<li><a class="reference internal" href="#entities.CheckTransmitInfo.pvs_size"><code class="docutils literal notranslate"><span class="pre">CheckTransmitInfo.pvs_size</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.Collideable"><code class="docutils literal notranslate"><span class="pre">Collideable</span></code></a><ul>
+<li><a class="reference internal" href="#entities.Collideable.__init__"><code class="docutils literal notranslate"><span class="pre">Collideable.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.Collideable.entity_handle"><code class="docutils literal notranslate"><span class="pre">Collideable.entity_handle</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.Edict"><code class="docutils literal notranslate"><span class="pre">Edict</span></code></a><ul>
+<li><a class="reference internal" href="#entities.Edict.__init__"><code class="docutils literal notranslate"><span class="pre">Edict.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.Edict.collideable"><code class="docutils literal notranslate"><span class="pre">Edict.collideable</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.EntityGenerator"><code class="docutils literal notranslate"><span class="pre">EntityGenerator</span></code></a><ul>
+<li><a class="reference internal" href="#entities.EntityGenerator.__init__"><code class="docutils literal notranslate"><span class="pre">EntityGenerator.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.EntityListener"><code class="docutils literal notranslate"><span class="pre">EntityListener</span></code></a><ul>
+<li><a class="reference internal" href="#entities.EntityListener.__init__"><code class="docutils literal notranslate"><span class="pre">EntityListener.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.EventAction"><code class="docutils literal notranslate"><span class="pre">EventAction</span></code></a><ul>
+<li><a class="reference internal" href="#entities.EventAction.__init__"><code class="docutils literal notranslate"><span class="pre">EventAction.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.EventAction.delay"><code class="docutils literal notranslate"><span class="pre">EventAction.delay</span></code></a></li>
+<li><a class="reference internal" href="#entities.EventAction.id_stamp"><code class="docutils literal notranslate"><span class="pre">EventAction.id_stamp</span></code></a></li>
+<li><a class="reference internal" href="#entities.EventAction.next"><code class="docutils literal notranslate"><span class="pre">EventAction.next</span></code></a></li>
+<li><a class="reference internal" href="#entities.EventAction.parameter"><code class="docutils literal notranslate"><span class="pre">EventAction.parameter</span></code></a></li>
+<li><a class="reference internal" href="#entities.EventAction.target"><code class="docutils literal notranslate"><span class="pre">EventAction.target</span></code></a></li>
+<li><a class="reference internal" href="#entities.EventAction.target_input"><code class="docutils literal notranslate"><span class="pre">EventAction.target_input</span></code></a></li>
+<li><a class="reference internal" href="#entities.EventAction.times_to_fire"><code class="docutils literal notranslate"><span class="pre">EventAction.times_to_fire</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.EventActionGenerator"><code class="docutils literal notranslate"><span class="pre">EventActionGenerator</span></code></a><ul>
+<li><a class="reference internal" href="#entities.EventActionGenerator.__init__"><code class="docutils literal notranslate"><span class="pre">EventActionGenerator.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.GlobalEntityList"><code class="docutils literal notranslate"><span class="pre">GlobalEntityList</span></code></a><ul>
+<li><a class="reference internal" href="#entities.GlobalEntityList.__init__"><code class="docutils literal notranslate"><span class="pre">GlobalEntityList.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.GlobalEntityList.add_entity_listener"><code class="docutils literal notranslate"><span class="pre">GlobalEntityList.add_entity_listener()</span></code></a></li>
+<li><a class="reference internal" href="#entities.GlobalEntityList.remove_entity_listener"><code class="docutils literal notranslate"><span class="pre">GlobalEntityList.remove_entity_listener()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.HandleEntity"><code class="docutils literal notranslate"><span class="pre">HandleEntity</span></code></a><ul>
+<li><a class="reference internal" href="#entities.HandleEntity.__init__"><code class="docutils literal notranslate"><span class="pre">HandleEntity.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.HandleEntity.basehandle"><code class="docutils literal notranslate"><span class="pre">HandleEntity.basehandle</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.ServerClassGenerator"><code class="docutils literal notranslate"><span class="pre">ServerClassGenerator</span></code></a><ul>
+<li><a class="reference internal" href="#entities.ServerClassGenerator.__init__"><code class="docutils literal notranslate"><span class="pre">ServerClassGenerator.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.ServerEntity"><code class="docutils literal notranslate"><span class="pre">ServerEntity</span></code></a><ul>
+<li><a class="reference internal" href="#entities.ServerEntity.__init__"><code class="docutils literal notranslate"><span class="pre">ServerEntity.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerEntity.lookup_attachment"><code class="docutils literal notranslate"><span class="pre">ServerEntity.lookup_attachment()</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerEntity.lookup_bone"><code class="docutils literal notranslate"><span class="pre">ServerEntity.lookup_bone()</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerEntity.model_handle"><code class="docutils literal notranslate"><span class="pre">ServerEntity.model_handle</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerEntity.model_header"><code class="docutils literal notranslate"><span class="pre">ServerEntity.model_header</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerEntity.model_index"><code class="docutils literal notranslate"><span class="pre">ServerEntity.model_index</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerEntity.model_name"><code class="docutils literal notranslate"><span class="pre">ServerEntity.model_name</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.ServerNetworkable"><code class="docutils literal notranslate"><span class="pre">ServerNetworkable</span></code></a><ul>
+<li><a class="reference internal" href="#entities.ServerNetworkable.__init__"><code class="docutils literal notranslate"><span class="pre">ServerNetworkable.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerNetworkable.area_num"><code class="docutils literal notranslate"><span class="pre">ServerNetworkable.area_num()</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerNetworkable.release"><code class="docutils literal notranslate"><span class="pre">ServerNetworkable.release()</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerNetworkable.base_entity"><code class="docutils literal notranslate"><span class="pre">ServerNetworkable.base_entity</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerNetworkable.classname"><code class="docutils literal notranslate"><span class="pre">ServerNetworkable.classname</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerNetworkable.edict"><code class="docutils literal notranslate"><span class="pre">ServerNetworkable.edict</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerNetworkable.entity_handle"><code class="docutils literal notranslate"><span class="pre">ServerNetworkable.entity_handle</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerNetworkable.pvs_info"><code class="docutils literal notranslate"><span class="pre">ServerNetworkable.pvs_info</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerNetworkable.server_class"><code class="docutils literal notranslate"><span class="pre">ServerNetworkable.server_class</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.ServerUnknown"><code class="docutils literal notranslate"><span class="pre">ServerUnknown</span></code></a><ul>
+<li><a class="reference internal" href="#entities.ServerUnknown.__init__"><code class="docutils literal notranslate"><span class="pre">ServerUnknown.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerUnknown.is_networked"><code class="docutils literal notranslate"><span class="pre">ServerUnknown.is_networked()</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerUnknown.base_entity"><code class="docutils literal notranslate"><span class="pre">ServerUnknown.base_entity</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerUnknown.class_name"><code class="docutils literal notranslate"><span class="pre">ServerUnknown.class_name</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerUnknown.classname"><code class="docutils literal notranslate"><span class="pre">ServerUnknown.classname</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerUnknown.collideable"><code class="docutils literal notranslate"><span class="pre">ServerUnknown.collideable</span></code></a></li>
+<li><a class="reference internal" href="#entities.ServerUnknown.networkable"><code class="docutils literal notranslate"><span class="pre">ServerUnknown.networkable</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo</span></code></a><ul>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.__init__"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.ammo"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.ammo</span></code></a></li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.attacker"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.attacker</span></code></a></li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.base_damage"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.base_damage</span></code></a></li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.bullet"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.bullet</span></code></a></li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.damage"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.damage</span></code></a></li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.damaged_other_players"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.damaged_other_players</span></code></a></li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.force"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.force</span></code></a></li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.inflictor"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.inflictor</span></code></a></li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.penetrated"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.penetrated</span></code></a></li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.position"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.position</span></code></a></li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.radius"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.radius</span></code></a></li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.recoil"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.recoil</span></code></a></li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.reported_position"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.reported_position</span></code></a></li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.stats"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.stats</span></code></a></li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.type"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.type</span></code></a></li>
+<li><a class="reference internal" href="#entities.TakeDamageInfo.weapon"><code class="docutils literal notranslate"><span class="pre">TakeDamageInfo.weapon</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/entities.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities package</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

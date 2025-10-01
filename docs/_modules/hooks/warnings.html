@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hooks.warnings &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">hooks.warnings</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for hooks.warnings</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../hooks/warnings.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides warning hooking functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   TextWrap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">textwrap</span><span class="w"> </span><span class="kn">import</span> <span class="n">TextWrapper</span>
+<span class="c1">#   Warnings</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Hooks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">_hooks_strings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">hooks_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hooks.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_HookBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hooks.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_HookDecorator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hooks.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">except_hooks</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">GAME_PATH</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;WarningHook&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;_WarningHooks&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;warning_hooks&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Get the sp.hooks.warnings logger</span>
+<span class="n">hooks_warnings_logger</span> <span class="o">=</span> <span class="n">hooks_logger</span><span class="o">.</span><span class="n">warnings</span>
+
+<span class="c1"># Get the TextWrapper instance to use for warnings</span>
+<span class="n">_text_wrapper</span> <span class="o">=</span> <span class="n">TextWrapper</span><span class="p">(</span><span class="mi">80</span><span class="p">,</span> <span class="n">subsequent_indent</span><span class="o">=</span><span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="mi">8</span><span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_WarningHooks</span><span class="p">(</span><span class="n">_HookBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to log warnings.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_warning</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when a warning is encountered.</span>
+
+<span class="sd">        This method hooks :obj:`warnings.showwarning` to log all warnings</span>
+<span class="sd">        and call registered callbacks with the provided arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Loop through each callback in the warning list</span>
+        <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+
+            <span class="c1"># Try to call the callback</span>
+            <span class="k">try</span><span class="p">:</span>
+
+                <span class="c1"># Call the callback</span>
+                <span class="n">callback</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">category</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="n">lineno</span><span class="p">)</span>
+
+            <span class="c1"># Was an error encountered?</span>
+            <span class="k">except</span><span class="p">:</span>
+
+                <span class="c1"># Log the exception</span>
+                <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span><span class="p">()</span>
+
+        <span class="c1"># Get the message to log</span>
+        <span class="n">print_message</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">[SP] &#39;</span> <span class="o">+</span> <span class="n">_hooks_strings</span><span class="p">[</span><span class="s1">&#39;Warning&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">()</span>
+
+        <span class="c1"># Add the warning to the message</span>
+        <span class="n">print_message</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">  File &#39;..</span><span class="si">{0}</span><span class="s2">&#39;, line </span><span class="si">{1}</span><span class="s2">: </span><span class="si">{2}</span><span class="se">\n</span><span class="s2">    </span><span class="si">{3}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">filename</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">GAME_PATH</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">),</span> <span class="n">lineno</span><span class="p">,</span>
+            <span class="n">category</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_text_wrapper</span><span class="o">.</span><span class="n">wrap</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">message</span><span class="p">))))</span>
+
+        <span class="c1"># Log the warning</span>
+        <span class="n">hooks_warnings_logger</span><span class="o">.</span><span class="n">log_warning</span><span class="p">(</span><span class="n">print_message</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># The singleton object of the :class:`_WarningHooks` class</span>
+<span class="n">warning_hooks</span> <span class="o">=</span> <span class="n">_WarningHooks</span><span class="p">()</span>
+
+<span class="c1"># Set warnings.showwarning to the print_warning method</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">showwarning</span> <span class="o">=</span> <span class="n">warning_hooks</span><span class="o">.</span><span class="n">print_warning</span>
+
+<span class="c1"># Set warnings to only appear once (the first occurrence)</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;once&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="WarningHook">
+<a class="viewcode-back" href="../../developing/modules/hooks.warnings.html#hooks.warnings.WarningHook">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">WarningHook</span><span class="p">(</span><span class="n">_HookDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a function/method for hooking warnings.&quot;&quot;&quot;</span>
+
+    <span class="n">_class_instance</span> <span class="o">=</span> <span class="n">warning_hooks</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">hooks.warnings</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

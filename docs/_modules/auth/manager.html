@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>auth.manager &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">auth.manager</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for auth.manager</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../auth/manager.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides a singleton class to access player permissions.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="c1">#   Importlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">importlib.machinery</span><span class="w"> </span><span class="kn">import</span> <span class="n">SourceFileLoader</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Auth</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">auth.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">Backend</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.settings</span><span class="w"> </span><span class="kn">import</span> <span class="n">_core_settings</span>
+<span class="c1">#   Listeners</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnLevelEnd</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">BACKENDS_PATH</span>
+<span class="c1">#   Players</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">playerinfo_from_index</span>
+<span class="c1">#   Steam</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">steam</span><span class="w"> </span><span class="kn">import</span> <span class="n">SteamID</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;_AuthManager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;auth_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ParentPermissionDict&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ParentPermissions&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;PermissionBase&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;PlayerPermissionDict&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;PlayerPermissions&#39;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CONSTANTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Name of the guest parent.</span>
+<span class="n">GUEST_PARENT_NAME</span> <span class="o">=</span> <span class="s1">&#39;guest&#39;</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="PermissionBase">
+<a class="viewcode-back" href="../../developing/modules/auth.manager.html#auth.manager.PermissionBase">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PermissionBase</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for parent and player permissions.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PermissionBase.__init__">
+<a class="viewcode-back" href="../../developing/modules/auth.manager.html#auth.manager.PermissionBase.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the object.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parents</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="n">GUEST_PARENT_NAME</span><span class="p">:</span>
+            <span class="c1"># Don&#39;t update the backend, because it&#39;s a hidden group</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_parent</span><span class="p">(</span><span class="n">GUEST_PARENT_NAME</span><span class="p">,</span> <span class="n">update_backend</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a hash value based on the name.&quot;&quot;&quot;</span>
+        <span class="c1"># This is required, because we are adding dicts to sets</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PermissionBase.add">
+<a class="viewcode-back" href="../../developing/modules/auth.manager.html#auth.manager.PermissionBase.add">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">permission</span><span class="p">,</span> <span class="n">server_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">update_backend</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a permission.</span>
+
+<span class="sd">        :param str permission:</span>
+<span class="sd">            The permission to add.</span>
+<span class="sd">        :param int server_id:</span>
+<span class="sd">            The server ID to which the permission should be added. If no</span>
+<span class="sd">            server ID is given, it will be only added to this server.</span>
+<span class="sd">        :param bool update_backend:</span>
+<span class="sd">            If True, the backend will be updated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">auth_manager</span><span class="o">.</span><span class="n">targets_this_server</span><span class="p">(</span><span class="n">server_id</span><span class="p">)</span> <span class="ow">and</span>
+                <span class="n">permission</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">permission</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compile_permission</span><span class="p">(</span><span class="n">permission</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">update_backend</span> <span class="ow">and</span> <span class="n">auth_manager</span><span class="o">.</span><span class="n">active_backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">auth_manager</span><span class="o">.</span><span class="n">active_backend</span><span class="o">.</span><span class="n">permission_added</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">permission</span><span class="p">,</span>
+                <span class="n">auth_manager</span><span class="o">.</span><span class="n">server_id</span> <span class="k">if</span> <span class="n">server_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">server_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PermissionBase.remove">
+<a class="viewcode-back" href="../../developing/modules/auth.manager.html#auth.manager.PermissionBase.remove">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">permission</span><span class="p">,</span> <span class="n">server_id</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">update_backend</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a permission.</span>
+
+<span class="sd">        :param str permission:</span>
+<span class="sd">            The permission to remove.</span>
+<span class="sd">        :param int server_id:</span>
+<span class="sd">            The server ID from which the permission should be removed. If no</span>
+<span class="sd">            server ID is given, it will be only removed from this server.</span>
+<span class="sd">        :param bool update_backend:</span>
+<span class="sd">            If True, the backend will be updated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">auth_manager</span><span class="o">.</span><span class="n">targets_this_server</span><span class="p">(</span><span class="n">server_id</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="n">permission</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="n">update_backend</span> <span class="ow">and</span> <span class="n">auth_manager</span><span class="o">.</span><span class="n">active_backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">auth_manager</span><span class="o">.</span><span class="n">active_backend</span><span class="o">.</span><span class="n">permission_removed</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">permission</span><span class="p">,</span>
+                <span class="n">auth_manager</span><span class="o">.</span><span class="n">server_id</span> <span class="k">if</span> <span class="n">server_id</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">server_id</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PermissionBase.add_parent">
+<a class="viewcode-back" href="../../developing/modules/auth.manager.html#auth.manager.PermissionBase.add_parent">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_name</span><span class="p">,</span> <span class="n">update_backend</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a parent.</span>
+
+<span class="sd">        :param str parent_name:</span>
+<span class="sd">            Name of the parent.</span>
+<span class="sd">        :param bool update_backend:</span>
+<span class="sd">            If True, the backend will be updated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="n">auth_manager</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">parent_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+            <span class="c1"># TODO: Detect cycles</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+            <span class="n">parent</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">update_backend</span> <span class="ow">and</span> <span class="n">auth_manager</span><span class="o">.</span><span class="n">active_backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">auth_manager</span><span class="o">.</span><span class="n">active_backend</span><span class="o">.</span><span class="n">parent_added</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PermissionBase.remove_parent">
+<a class="viewcode-back" href="../../developing/modules/auth.manager.html#auth.manager.PermissionBase.remove_parent">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_name</span><span class="p">,</span> <span class="n">update_backend</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove a parent.</span>
+
+<span class="sd">        :param str parent_name:</span>
+<span class="sd">            Name of the parent.</span>
+<span class="sd">        :param bool update_backend:</span>
+<span class="sd">            If True, the backend will be updated.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="n">auth_manager</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">parent_name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+            <span class="n">parent</span><span class="o">.</span><span class="n">children</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">update_backend</span> <span class="ow">and</span> <span class="n">auth_manager</span><span class="o">.</span><span class="n">active_backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">auth_manager</span><span class="o">.</span><span class="n">active_backend</span><span class="o">.</span><span class="n">parent_removed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_name</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_compile_permission</span><span class="p">(</span><span class="n">permission</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compile a permission.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^</span><span class="si">{}</span><span class="s1">$&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">permission</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="se">\\</span><span class="s1">.&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;(.*)&#39;</span><span class="p">)))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__contains__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">permission</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the permission is granted by this object.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_has_permission</span><span class="p">(</span><span class="n">permission</span><span class="p">,</span> <span class="p">[])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_has_permission</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">permission</span><span class="p">,</span> <span class="n">name_list</span><span class="p">):</span>
+        <span class="c1"># Checks to see if parents are recursive</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="n">name_list</span><span class="p">:</span>
+            <span class="c1"># Break if recursive</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">name_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">re_perm</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">re_perm</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">permission</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">parent</span><span class="o">.</span><span class="n">_has_permission</span><span class="p">(</span><span class="n">permission</span><span class="p">,</span> <span class="n">name_list</span><span class="p">):</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">return</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="PermissionBase.flatten">
+<a class="viewcode-back" href="../../developing/modules/auth.manager.html#auth.manager.PermissionBase.flatten">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">flatten</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return all permissions flattened recursively.</span>
+
+<span class="sd">        :rtype: generator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">yield from</span> <span class="bp">self</span>
+        <span class="k">for</span> <span class="n">parent</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">:</span>
+            <span class="k">yield from</span> <span class="n">parent</span></div>
+
+
+<div class="viewcode-block" id="PermissionBase.clear">
+<a class="viewcode-back" href="../../developing/modules/auth.manager.html#auth.manager.PermissionBase.clear">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Removes all permissions stored in this object and its parents.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="PlayerPermissions">
+<a class="viewcode-back" href="../../developing/modules/auth.manager.html#auth.manager.PlayerPermissions">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PlayerPermissions</span><span class="p">(</span><span class="n">PermissionBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A container for player permissions.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PlayerPermissions.__init__">
+<a class="viewcode-back" href="../../developing/modules/auth.manager.html#auth.manager.PlayerPermissions.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">steamid64</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the object.</span>
+
+<span class="sd">        :param str name:</span>
+<span class="sd">            A SteamID2, SteamID3 or SteamID64 value.</span>
+<span class="sd">        :param int steamid64:</span>
+<span class="sd">            The SteamID64 value that was also used to store the object in the</span>
+<span class="sd">            :class:PlayerPermissionDict`` object.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">steamid64</span> <span class="o">=</span> <span class="n">steamid64</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="ParentPermissions">
+<a class="viewcode-back" href="../../developing/modules/auth.manager.html#auth.manager.ParentPermissions">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ParentPermissions</span><span class="p">(</span><span class="n">PermissionBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A container for parent permissions.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ParentPermissions.__init__">
+<a class="viewcode-back" href="../../developing/modules/auth.manager.html#auth.manager.ParentPermissions.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the object.</span>
+
+<span class="sd">        :param str name:</span>
+<span class="sd">            Name of the parent.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span></div>
+</div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_PermissionDict</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A permission storage.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">clear</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="ParentPermissionDict">
+<a class="viewcode-back" href="../../developing/modules/auth.manager.html#auth.manager.ParentPermissionDict">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ParentPermissionDict</span><span class="p">(</span><span class="n">_PermissionDict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__missing__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create, store and return a :class:`ParentPermissions` object.</span>
+
+<span class="sd">        :param str parent_name:</span>
+<span class="sd">            The name of the parent to retrieve.</span>
+<span class="sd">        :rtype: ParentPermissions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">parent_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">ParentPermissions</span><span class="p">(</span><span class="n">parent_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">instance</span></div>
+
+
+
+<div class="viewcode-block" id="PlayerPermissionDict">
+<a class="viewcode-back" href="../../developing/modules/auth.manager.html#auth.manager.PlayerPermissionDict">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PlayerPermissionDict</span><span class="p">(</span><span class="n">_PermissionDict</span><span class="p">):</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__missing__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steamid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create, store and return a :class:`PlayerPermissions` object.</span>
+
+<span class="sd">        :param str/int steamid:</span>
+<span class="sd">            A SteamID2, SteamID3 or SteamID64 value.</span>
+<span class="sd">        :rtype: PlayerPermissions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">steamid</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">steamid64</span> <span class="o">=</span> <span class="n">SteamID</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">steamid</span><span class="p">)</span><span class="o">.</span><span class="n">to_uint64</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">steamid64</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">steamid64</span><span class="p">]</span>
+
+            <span class="c1"># We got a SteamID in a string format, so we can store it by using</span>
+            <span class="c1"># its SteamID64 value, but keep the original name.</span>
+            <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">steamid64</span><span class="p">]</span> <span class="o">=</span> <span class="n">PlayerPermissions</span><span class="p">(</span><span class="n">steamid</span><span class="p">,</span> <span class="n">steamid64</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">steamid</span><span class="p">]</span> <span class="o">=</span> <span class="n">PlayerPermissions</span><span class="p">(</span><span class="n">steamid</span><span class="p">,</span> <span class="n">steamid</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">instance</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_AuthManager</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Manages backends and configuration files.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the object.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">parents</span> <span class="o">=</span> <span class="n">ParentPermissionDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">players</span> <span class="o">=</span> <span class="n">PlayerPermissionDict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_backend</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server_id</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">find_and_add_available_backends</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find and add all available backends.</span>
+
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if no backend or multiple backends are found within a</span>
+<span class="sd">            single file.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">backend</span> <span class="ow">in</span> <span class="n">BACKENDS_PATH</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="s1">&#39;*.py&#39;</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;auth.backend.&#39;</span> <span class="o">+</span> <span class="n">backend</span><span class="o">.</span><span class="n">basename</span><span class="p">()</span><span class="o">.</span><span class="n">splitext</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">loader</span> <span class="o">=</span> <span class="n">SourceFileLoader</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">backend</span><span class="p">))</span>
+            <span class="n">module</span> <span class="o">=</span> <span class="n">loader</span><span class="o">.</span><span class="n">load_module</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="n">module</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">Backend</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">casefold</span><span class="p">()]</span> <span class="o">=</span> <span class="n">var</span>
+                    <span class="k">break</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Found no backend or multiple backends in &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">backend</span><span class="p">))</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load the auth manager.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">server_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">_core_settings</span><span class="p">[</span><span class="s1">&#39;AUTH_SETTINGS&#39;</span><span class="p">][</span><span class="s1">&#39;server_id&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_active_backend</span><span class="p">(</span><span class="n">_core_settings</span><span class="p">[</span><span class="s1">&#39;AUTH_SETTINGS&#39;</span><span class="p">][</span><span class="s1">&#39;backend&#39;</span><span class="p">])</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">unload</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unload the auth manager.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unload_active_backend</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_active_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the active backend.</span>
+
+<span class="sd">        :param str backend_name:</span>
+<span class="sd">            Name of the backend.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the backend does not exist.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">backend</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">backend_name</span><span class="o">.</span><span class="n">casefold</span><span class="p">()]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Backend &quot;</span><span class="si">{}</span><span class="s1">&quot; does not exist.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">backend_name</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unload_active_backend</span><span class="p">()</span>
+        <span class="n">backend</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">active_backend</span> <span class="o">=</span> <span class="n">backend</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_active_backend</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unload the active backend if there is one.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">active_backend</span><span class="o">.</span><span class="n">unload</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">players</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">active_backend</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_backend_loaded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">backend_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the given backend is currently loaded.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">active_backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+            <span class="n">backend_name</span><span class="o">.</span><span class="n">casefold</span><span class="p">()</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">active_backend</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_player_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;.. seealso:: :meth:`get_player_permissions_from_steamid`&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_player_permissions_from_steamid</span><span class="p">(</span>
+            <span class="n">playerinfo_from_index</span><span class="p">(</span><span class="n">index</span><span class="p">)</span><span class="o">.</span><span class="n">steamid</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_player_permissions_from_steamid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">steamid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the permissions of a player.</span>
+
+<span class="sd">        :param str/int steamid:</span>
+<span class="sd">            The SteamID2, SteamID3 or SteamID64 of a player.</span>
+<span class="sd">        :return:</span>
+<span class="sd">            If the given SteamID is invalid (e.g. &#39;BOT&#39;), None will be</span>
+<span class="sd">            returned.</span>
+<span class="sd">        :rtype: PlayerPermissions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">players</span><span class="p">[</span><span class="n">steamid</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_player_authorized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">permission</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the player has been granted the given permission.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">permissions</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_player_permissions</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">permissions</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+        <span class="k">return</span> <span class="n">permission</span> <span class="ow">in</span> <span class="n">permissions</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_parent_permissions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the parent permissions.</span>
+
+<span class="sd">        :param str parent_name:</span>
+<span class="sd">            Name of the parent.</span>
+<span class="sd">        :rtype: ParentPermissions</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">parents</span><span class="p">[</span><span class="n">parent_name</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_parent_authorized</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent_name</span><span class="p">,</span> <span class="n">permission</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the parent has been granted the given permission.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">permission</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_parent_permissions</span><span class="p">(</span><span class="n">parent_name</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">targets_this_server</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">server_id</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether the server ID targets this server.</span>
+
+<span class="sd">        :param int server_id:</span>
+<span class="sd">            A server ID to test.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">server_id</span> <span class="ow">in</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_id</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<span class="c1">#: The singleton object of :class:`_AuthManager`.</span>
+<span class="n">auth_manager</span> <span class="o">=</span> <span class="n">_AuthManager</span><span class="p">()</span>
+
+<span class="nd">@OnLevelEnd</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_on_level_end</span><span class="p">():</span>
+    <span class="n">backend</span> <span class="o">=</span> <span class="n">auth_manager</span><span class="o">.</span><span class="n">active_backend</span>
+    <span class="k">if</span> <span class="n">backend</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">backend</span><span class="o">.</span><span class="n">sync</span><span class="p">()</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">auth.manager</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

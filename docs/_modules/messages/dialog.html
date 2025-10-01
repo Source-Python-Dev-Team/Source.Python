@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>messages.dialog &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">messages.dialog</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for messages.dialog</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../messages/dialog.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides wrapper classes for the _messages.create_message function.&quot;&quot;&quot;</span>
+<span class="c1"># ============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Collections</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Colors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">colors</span><span class="w"> </span><span class="kn">import</span> <span class="n">WHITE</span>
+<span class="c1">#   Filters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.recipients</span><span class="w"> </span><span class="kn">import</span> <span class="n">RecipientFilter</span>
+<span class="c1">#   KeyValues</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">keyvalues</span><span class="w"> </span><span class="kn">import</span> <span class="n">KeyValues</span>
+<span class="c1">#   Listeners</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnLevelEnd</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners.tick</span><span class="w"> </span><span class="kn">import</span> <span class="n">Delay</span>
+<span class="c1">#   Messages</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">DialogType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_message</span>
+<span class="c1">#   Players</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+<span class="c1">#   Translations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">translations.strings</span><span class="w"> </span><span class="kn">import</span> <span class="n">TranslationStrings</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Create a dictionary to store player message levels</span>
+<span class="n">_player_levels</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># ============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_DialogBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base Dialog class used to send Dialog messages to players.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Set the base attributes</span>
+    <span class="n">time</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">player_indexes</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the Dialog message to the appropriate recipients.</span>
+
+<span class="sd">        :param player_indexes: Values can be a player index, multiple player</span>
+<span class="sd">            indexes (star args),</span>
+<span class="sd">            a :class:`filters.players.PlayerIter` instance,</span>
+<span class="sd">            or a :class:`filters.recipients.RecipientFilter` instance.</span>
+<span class="sd">        :param tokens: Keyword arguments used to replace values in messages.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get a recipient filter of the given users</span>
+        <span class="n">recipients</span> <span class="o">=</span> <span class="n">RecipientFilter</span><span class="p">(</span><span class="o">*</span><span class="n">player_indexes</span><span class="p">)</span>
+
+        <span class="c1"># Get the KeyValues instance</span>
+        <span class="n">keyvalues</span> <span class="o">=</span> <span class="n">KeyValues</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">message_type</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">())</span>
+
+        <span class="c1"># Set the time for the message to display</span>
+        <span class="n">keyvalues</span><span class="o">.</span><span class="n">set_int</span><span class="p">(</span><span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">)</span>
+
+        <span class="c1"># Loop through all recipients</span>
+        <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="n">recipients</span><span class="p">:</span>
+
+            <span class="c1"># Get a Player instance for the current player</span>
+            <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+            <span class="c1"># Is the player not human?</span>
+            <span class="k">if</span> <span class="n">player</span><span class="o">.</span><span class="n">is_fake_client</span><span class="p">():</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Get the level for the message</span>
+            <span class="n">level</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_player_level</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">userid</span><span class="p">)</span>
+
+            <span class="c1"># Set the level for the player</span>
+            <span class="n">keyvalues</span><span class="o">.</span><span class="n">set_int</span><span class="p">(</span><span class="s1">&#39;level&#39;</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+
+            <span class="c1"># Set the title (value should be server IP address)</span>
+            <span class="n">keyvalues</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span>
+                <span class="s1">&#39;title&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">))</span>
+
+            <span class="c1"># Set any remaining keyvalues</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_keyvalues</span><span class="p">(</span><span class="n">keyvalues</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">)</span>
+
+            <span class="c1"># Send the message</span>
+            <span class="n">create_message</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">edict</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">message_type</span><span class="p">,</span> <span class="n">keyvalues</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_text</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the text for the given message.&quot;&quot;&quot;</span>
+        <span class="c1"># Does the message need to be translated?</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">TranslationStrings</span><span class="p">):</span>
+
+            <span class="c1"># Return the translated message</span>
+            <span class="k">return</span> <span class="n">message</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">player</span><span class="o">.</span><span class="n">language</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">)</span>
+
+        <span class="c1"># Return the message itself</span>
+        <span class="k">return</span> <span class="n">message</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_player_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">userid</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the current dialog message level for the given player.&quot;&quot;&quot;</span>
+        <span class="c1"># Get the player&#39;s next message level</span>
+        <span class="n">level</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">_player_levels</span><span class="p">[</span><span class="n">userid</span><span class="p">])</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># Increase the player&#39;s level</span>
+        <span class="n">_player_levels</span><span class="p">[</span><span class="n">userid</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">level</span><span class="p">)</span>
+
+        <span class="c1"># Remove the level after the time is up</span>
+        <span class="n">Delay</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">time</span><span class="p">,</span> <span class="n">_player_levels</span><span class="p">[</span><span class="n">userid</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">,</span> <span class="p">(</span><span class="n">level</span><span class="p">,</span> <span class="p">))</span>
+
+        <span class="c1"># Return the level</span>
+        <span class="k">return</span> <span class="n">level</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">message_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Raise an error if the inheriting class does not have their own.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s1">&#39;No message_type attribute defined for class.&#39;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_keyvalues</span><span class="p">(</span><span class="n">keyvalues</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set any class specific KeyValues.</span>
+
+<span class="sd">        As a base, this does nothing.  Inheriting classes need to</span>
+<span class="sd">        define their own method to handle setting their specific values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="DialogAskConnect">
+<a class="viewcode-back" href="../../developing/modules/messages.html#messages.DialogAskConnect">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DialogAskConnect</span><span class="p">(</span><span class="n">_DialogBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to send DialogType.ASKCONNECT messages to players.</span>
+
+<span class="sd">    DialogType.ASKCONNECT shows a box in-game that requests the player to hit</span>
+<span class="sd">    the key they have bound to &quot;askconnect_accept&quot; (default to F3) to connect</span>
+<span class="sd">    to a different server, whose address is given as the title value.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">message_type</span> <span class="o">=</span> <span class="n">DialogType</span><span class="o">.</span><span class="n">ASKCONNECT</span>
+
+<div class="viewcode-block" id="DialogAskConnect.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.html#messages.DialogAskConnect.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set all the base attributes on instantiation.</span>
+
+<span class="sd">        :param str title: The IP address to connect to.</span>
+<span class="sd">        :param int time: The time (in seconds) for the notification to display.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="DialogEntry">
+<a class="viewcode-back" href="../../developing/modules/messages.html#messages.DialogEntry">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DialogEntry</span><span class="p">(</span><span class="n">_DialogBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to send DialogType.ENTRY messages to players.</span>
+
+<span class="sd">    DialogType.ENTRY shows the title while in-game (TopText) in the given</span>
+<span class="sd">    color, as well as the msg in a box when the player uses their ESC key</span>
+<span class="sd">    and an entry box where they can enter any values they wish.</span>
+
+<span class="sd">    The values the player enters are then sent as arguments for the given</span>
+<span class="sd">    client command name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">message_type</span> <span class="o">=</span> <span class="n">DialogType</span><span class="o">.</span><span class="n">ENTRY</span>
+
+<div class="viewcode-block" id="DialogEntry.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.html#messages.DialogEntry.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set all the base attributes on instantiation.</span>
+
+<span class="sd">        :param str title: The title of the entry box and top text.</span>
+<span class="sd">        :param str msg: The message of the entry box.</span>
+<span class="sd">        :param str command: The command to execute on entry.  Note that</span>
+<span class="sd">            the entered values are arguments of the command on entry.</span>
+<span class="sd">        :param Color color: The color of the toptext notification.</span>
+<span class="sd">        :param int time: The time (in seconds) for the notification to display.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_command</span> <span class="o">=</span> <span class="n">command</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the registered command for the Entry box.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_command</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_keyvalues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyvalues</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set any remaining values to the KeyValues object.&quot;&quot;&quot;</span>
+        <span class="n">keyvalues</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+        <span class="n">keyvalues</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">))</span>
+        <span class="n">keyvalues</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;command&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">command</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="DialogMenu">
+<a class="viewcode-back" href="../../developing/modules/messages.html#messages.DialogMenu">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DialogMenu</span><span class="p">(</span><span class="n">_DialogBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to send DialogType.MENU messages to players.</span>
+
+<span class="sd">    DialogType.MENU shows the title while in-game (TopText) in the given</span>
+<span class="sd">    color, as well as the msg in a box when the player uses their ESC key</span>
+<span class="sd">    and a menu for the player to choose an option from.</span>
+
+<span class="sd">    The value the player chooses is then sent as an argument for the given</span>
+<span class="sd">    client command name.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">message_type</span> <span class="o">=</span> <span class="n">DialogType</span><span class="o">.</span><span class="n">MENU</span>
+
+<div class="viewcode-block" id="DialogMenu.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.html#messages.DialogMenu.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">options</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set all the base attributes on instantiation.</span>
+
+<span class="sd">        :param str title: The title of the menu box and top text.</span>
+<span class="sd">        :param str msg: The message of the menu box.</span>
+<span class="sd">        :param str command: The command to execute on entry.  Note that</span>
+<span class="sd">            the key/item of the selected option will be the argument.</span>
+<span class="sd">        :param Color color: The color of the toptext notification.</span>
+<span class="sd">        :param int time: The time (in seconds) for the notification to display.</span>
+<span class="sd">        :param iterable options: The options for the menu.  If a dictionary</span>
+<span class="sd">            is passed, the values will be displayed while the keys will be</span>
+<span class="sd">            the argument of the command when selected.</span>
+<span class="sd">            If any other iterable is used, the items will be both the</span>
+<span class="sd">            displayed text and the argument.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_command</span> <span class="o">=</span> <span class="n">command</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">options</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">command</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the registered command for the Menu.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_command</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_keyvalues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyvalues</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set any remaining values to the KeyValues object.&quot;&quot;&quot;</span>
+        <span class="c1"># Are there any options for the menu?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Invalid value for options.  Attribute must be iterable.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Set the base values</span>
+        <span class="n">keyvalues</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+        <span class="n">keyvalues</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">))</span>
+
+        <span class="c1"># Are the options in a dictionary?</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">button</span> <span class="o">=</span> <span class="n">keyvalues</span><span class="o">.</span><span class="n">find_key</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">key</span><span class="p">),</span> <span class="kc">True</span><span class="p">)</span>
+                <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span>
+                    <span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_text</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">))</span>
+                <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span>
+                    <span class="s1">&#39;command&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
+            <span class="k">return</span>
+
+        <span class="c1"># The options are in a non-dictionary iterable</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">options</span><span class="p">:</span>
+            <span class="n">button</span> <span class="o">=</span> <span class="n">keyvalues</span><span class="o">.</span><span class="n">find_key</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+            <span class="n">button</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span>
+                <span class="s1">&#39;command&#39;</span><span class="p">,</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> </span><span class="si">{1}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">command</span><span class="p">,</span> <span class="n">item</span><span class="p">))</span></div>
+
+
+
+<div class="viewcode-block" id="DialogMsg">
+<a class="viewcode-back" href="../../developing/modules/messages.html#messages.DialogMsg">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DialogMsg</span><span class="p">(</span><span class="n">_DialogBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to send DialogType.MSG messages to players.</span>
+
+<span class="sd">    DialogType.MSG shows the title while in-game (TopText) in the given color.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">message_type</span> <span class="o">=</span> <span class="n">DialogType</span><span class="o">.</span><span class="n">MSG</span>
+
+<div class="viewcode-block" id="DialogMsg.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.html#messages.DialogMsg.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set all the base attributes on instantiation.</span>
+
+<span class="sd">        :param str title: The top text.</span>
+<span class="sd">        :param Color color: The color of the toptext notification.</span>
+<span class="sd">        :param int time: The time (in seconds) for the notification to display.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_keyvalues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyvalues</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set any remaining values to the KeyValues object.&quot;&quot;&quot;</span>
+        <span class="n">keyvalues</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="DialogText">
+<a class="viewcode-back" href="../../developing/modules/messages.html#messages.DialogText">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">DialogText</span><span class="p">(</span><span class="n">_DialogBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to send DialogType.TEXT messages to players.</span>
+
+<span class="sd">    DialogType.TEXT shows the title while in-game (TopText) in the given</span>
+<span class="sd">    color, as well as the msg in a box when the player uses their ESC key.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">message_type</span> <span class="o">=</span> <span class="n">DialogType</span><span class="o">.</span><span class="n">TEXT</span>
+
+<div class="viewcode-block" id="DialogText.__init__">
+<a class="viewcode-back" href="../../developing/modules/messages.html#messages.DialogText.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">msg</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">WHITE</span><span class="p">,</span> <span class="n">time</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set all the base attributes on instantiation.</span>
+
+<span class="sd">        :param str title: The title of the message box and top text.</span>
+<span class="sd">        :param str msg: The message of the message box.</span>
+<span class="sd">        :param Color color: The color of the toptext notification.</span>
+<span class="sd">        :param int time: The time (in seconds) for the notification to display.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">msg</span> <span class="o">=</span> <span class="n">msg</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">color</span> <span class="o">=</span> <span class="n">color</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">time</span> <span class="o">=</span> <span class="n">time</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_keyvalues</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">keyvalues</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set any remaining values to the KeyValues object.&quot;&quot;&quot;</span>
+        <span class="n">keyvalues</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="s1">&#39;color&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">color</span><span class="p">)</span>
+        <span class="n">keyvalues</span><span class="o">.</span><span class="n">set_string</span><span class="p">(</span><span class="s1">&#39;msg&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">,</span> <span class="n">player</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">))</span></div>
+
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># &gt;&gt; LISTENERS</span>
+<span class="c1"># ============================================================================</span>
+<span class="nd">@OnLevelEnd</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_level_end</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Clear the player levels dictionary.&quot;&quot;&quot;</span>
+    <span class="n">_player_levels</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">messages.dialog</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

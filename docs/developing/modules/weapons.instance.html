@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>weapons.instance module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">weapons.instance module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-weapons.instance">
+<span id="weapons-instance-module"></span><h1>weapons.instance module<a class="headerlink" href="#module-weapons.instance" title="Link to this heading">¶</a></h1>
+<p>Provides a class to store information specific to each weapon.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="weapons.instance.WeaponClass">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">weapons.instance.</span></span><span class="sig-name descname"><span class="pre">WeaponClass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/instance.html#WeaponClass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.instance.WeaponClass" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Class used to store information specific to the given weapon.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.instance.WeaponClass.parse_weapon_constants">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parse_weapon_constants</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">value</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weapon_constants</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/instance.html#WeaponClass.parse_weapon_constants"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.instance.WeaponClass.parse_weapon_constants" title="Link to this definition">¶</a></dt>
+<dd><p>Parses weapon constants.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Returns the value as it is if weapon constants cannot be found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="weapons.instance.WeaponClass.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">basename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">properties</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/weapons/instance.html#WeaponClass.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#weapons.instance.WeaponClass.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Store the base attributes for the weapon.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.instance.WeaponClass.ammoprop">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ammoprop</span></span><a class="headerlink" href="#weapons.instance.WeaponClass.ammoprop" title="Link to this definition">¶</a></dt>
+<dd><p>Return the ammoprop of the weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None if the weapon doesn’t have ammo.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.instance.WeaponClass.basename">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">basename</span></span><a class="headerlink" href="#weapons.instance.WeaponClass.basename" title="Link to this definition">¶</a></dt>
+<dd><p>Return the basename of the weapon (e.g. ‘knife’).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.instance.WeaponClass.clip">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">clip</span></span><a class="headerlink" href="#weapons.instance.WeaponClass.clip" title="Link to this definition">¶</a></dt>
+<dd><p>Return the clip value of the weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None if the weapon doesn’t have ammo.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.instance.WeaponClass.cost">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cost</span></span><a class="headerlink" href="#weapons.instance.WeaponClass.cost" title="Link to this definition">¶</a></dt>
+<dd><p>Return the cost of the weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None if the cost data is missing.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.instance.WeaponClass.id">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">id</span></span><a class="headerlink" href="#weapons.instance.WeaponClass.id" title="Link to this definition">¶</a></dt>
+<dd><p>Return the id of the weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int/WeaponID</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.instance.WeaponClass.item_definition_index">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">item_definition_index</span></span><a class="headerlink" href="#weapons.instance.WeaponClass.item_definition_index" title="Link to this definition">¶</a></dt>
+<dd><p>Return the item definition index of the weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None if the item defition index data is missing.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.instance.WeaponClass.maxammo">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">maxammo</span></span><a class="headerlink" href="#weapons.instance.WeaponClass.maxammo" title="Link to this definition">¶</a></dt>
+<dd><p>Return the maxammo amount for the weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None if the weapon doesn’t have ammo.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.instance.WeaponClass.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#weapons.instance.WeaponClass.name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the entity classname of the weapon (e.g. ‘weapon_knife’).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.instance.WeaponClass.parent_class">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parent_class</span></span><a class="headerlink" href="#weapons.instance.WeaponClass.parent_class" title="Link to this definition">¶</a></dt>
+<dd><p>Return the parent class of the weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>None if the parent class data is missing.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.instance.WeaponClass.slot">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">slot</span></span><a class="headerlink" href="#weapons.instance.WeaponClass.slot" title="Link to this definition">¶</a></dt>
+<dd><p>Return the slot of the weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int/WeaponSlot</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.instance.WeaponClass.tags">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tags</span></span><a class="headerlink" href="#weapons.instance.WeaponClass.tags" title="Link to this definition">¶</a></dt>
+<dd><p>Return the tags of the weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="weapons.instance.WeaponClass.type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#weapons.instance.WeaponClass.type" title="Link to this definition">¶</a></dt>
+<dd><p>Return the type of the weapon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>int/WeaponType</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">weapons.instance module</a><ul>
+<li><a class="reference internal" href="#weapons.instance.WeaponClass"><code class="docutils literal notranslate"><span class="pre">WeaponClass</span></code></a><ul>
+<li><a class="reference internal" href="#weapons.instance.WeaponClass.parse_weapon_constants"><code class="docutils literal notranslate"><span class="pre">WeaponClass.parse_weapon_constants()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.instance.WeaponClass.__init__"><code class="docutils literal notranslate"><span class="pre">WeaponClass.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#weapons.instance.WeaponClass.ammoprop"><code class="docutils literal notranslate"><span class="pre">WeaponClass.ammoprop</span></code></a></li>
+<li><a class="reference internal" href="#weapons.instance.WeaponClass.basename"><code class="docutils literal notranslate"><span class="pre">WeaponClass.basename</span></code></a></li>
+<li><a class="reference internal" href="#weapons.instance.WeaponClass.clip"><code class="docutils literal notranslate"><span class="pre">WeaponClass.clip</span></code></a></li>
+<li><a class="reference internal" href="#weapons.instance.WeaponClass.cost"><code class="docutils literal notranslate"><span class="pre">WeaponClass.cost</span></code></a></li>
+<li><a class="reference internal" href="#weapons.instance.WeaponClass.id"><code class="docutils literal notranslate"><span class="pre">WeaponClass.id</span></code></a></li>
+<li><a class="reference internal" href="#weapons.instance.WeaponClass.item_definition_index"><code class="docutils literal notranslate"><span class="pre">WeaponClass.item_definition_index</span></code></a></li>
+<li><a class="reference internal" href="#weapons.instance.WeaponClass.maxammo"><code class="docutils literal notranslate"><span class="pre">WeaponClass.maxammo</span></code></a></li>
+<li><a class="reference internal" href="#weapons.instance.WeaponClass.name"><code class="docutils literal notranslate"><span class="pre">WeaponClass.name</span></code></a></li>
+<li><a class="reference internal" href="#weapons.instance.WeaponClass.parent_class"><code class="docutils literal notranslate"><span class="pre">WeaponClass.parent_class</span></code></a></li>
+<li><a class="reference internal" href="#weapons.instance.WeaponClass.slot"><code class="docutils literal notranslate"><span class="pre">WeaponClass.slot</span></code></a></li>
+<li><a class="reference internal" href="#weapons.instance.WeaponClass.tags"><code class="docutils literal notranslate"><span class="pre">WeaponClass.tags</span></code></a></li>
+<li><a class="reference internal" href="#weapons.instance.WeaponClass.type"><code class="docutils literal notranslate"><span class="pre">WeaponClass.type</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/weapons.instance.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">weapons.instance module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

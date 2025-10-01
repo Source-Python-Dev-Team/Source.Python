@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>entities &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="events" href="events.html" />
+    <link rel="prev" title="config" href="config.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="events.html" title="events"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="config.html" title="config"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../module_tutorials.html" accesskey="U">Module tutorials</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="entities">
+<h1>entities<a class="headerlink" href="#entities" title="Link to this heading">¶</a></h1>
+<p>This page contains tutorials about the <a class="reference internal" href="../modules/entities.html#module-entities" title="entities"><code class="xref py py-mod docutils literal notranslate"><span class="pre">entities</span></code></a> package. Basically, the
+entities package provides functions and classes to create, modify, access and
+delete entities. An entity is an object somewhere on the map that has a specific
+type (class name) and different properties (e. g. health, position, team index,
+speed, model, etc.).</p>
+<p>There are two types of entities:</p>
+<ul class="simple">
+<li><p>Networked entities</p></li>
+<li><p>Non-networked entities</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">Networked</span></code> already indicates that those entities are sent over the network.
+Their information is shared with all players on the server. Some common examples
+for those entities are players, weapons, barrels or trigger entities.
+Non-networked entities are entities that only exist on the server or client, but
+not on both sides. Entities are uniquely identified by an index that
+starts at 0 and can go up to the
+<a class="reference external" href="https://developer.valvesoftware.com/wiki/Entity_limit">entity limit</a>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Indexes uniquely identify an entity. However, if the entity is deleted, a
+new entity can reuse that index.</p>
+</div>
+<p>You will most likely want to access networked entities. Those are the most
+common and interesting ones.</p>
+<p>There are multiple classes in Source.Python to access the various entity types:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="../modules/entities.entity.html#entities.entity.BaseEntity" title="entities.entity.BaseEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.entity.BaseEntity</span></code></a> - A very basic, but fast class to access networked and non-networked entities.</p></li>
+<li><p><a class="reference internal" href="../modules/entities.entity.html#entities.entity.Entity" title="entities.entity.Entity"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.entity.Entity</span></code></a> - An extended version of the <a class="reference internal" href="../modules/entities.entity.html#entities.entity.BaseEntity" title="entities.entity.BaseEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.entity.BaseEntity</span></code></a> class. It provides a lot convenience methods, but is only able to access networked entities.</p></li>
+<li><p><a class="reference internal" href="../modules/players.entity.html#players.entity.Player" title="players.entity.Player"><code class="xref py py-class docutils literal notranslate"><span class="pre">players.entity.Player</span></code></a> - An extended version of the <a class="reference internal" href="../modules/entities.entity.html#entities.entity.Entity" title="entities.entity.Entity"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.entity.Entity</span></code></a> class that provides additional methods to manipulate players.</p></li>
+<li><p><a class="reference internal" href="../modules/weapons.entity.html#weapons.entity.Weapon" title="weapons.entity.Weapon"><code class="xref py py-class docutils literal notranslate"><span class="pre">weapons.entity.Weapon</span></code></a> - An extended version of the <a class="reference internal" href="../modules/entities.entity.html#entities.entity.Entity" title="entities.entity.Entity"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.entity.Entity</span></code></a> class that provides additional methods for weapons.</p></li>
+</ul>
+<p>This tutorial will only cover <a class="reference internal" href="../modules/entities.entity.html#entities.entity.BaseEntity" title="entities.entity.BaseEntity"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.entity.BaseEntity</span></code></a> and
+<a class="reference internal" href="../modules/entities.entity.html#entities.entity.Entity" title="entities.entity.Entity"><code class="xref py py-class docutils literal notranslate"><span class="pre">entities.entity.Entity</span></code></a>. For the other two classes, there will be
+separate tutorials.</p>
+<section id="accessing-entities">
+<h2>Accessing entities<a class="headerlink" href="#accessing-entities" title="Link to this heading">¶</a></h2>
+<p>If you know the index of an entity, it’s quite simple to access it.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">entities.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entity</span>
+
+<span class="c1"># Access the entity with index 0. The world entity always has the index 0.</span>
+<span class="n">entity</span> <span class="o">=</span> <span class="n">Entity</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Print the class name of the entity. This will print &quot;worldspawn&quot;.</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">classname</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>However, often you need to search for entities of a specific type. E. g. to get
+all buy zones:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import the entity iterator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">EntityIter</span>
+
+<span class="c1"># Loop through all buy zones</span>
+<span class="k">for</span> <span class="n">buy_zone</span> <span class="ow">in</span> <span class="n">EntityIter</span><span class="p">(</span><span class="s1">&#39;func_buyzone&#39;</span><span class="p">):</span>
+
+    <span class="c1"># Print the team index of the buy zone. Only teams with the same index can</span>
+    <span class="c1"># use this buy zone.</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Buy zone for team: </span><span class="si">{</span><span class="n">buy_zone</span><span class="o">.</span><span class="n">team_index</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># If you are not used to Python 3.6, the print statement might be</span>
+    <span class="c1"># confusing at first. Alternatively, you could also write:</span>
+    <span class="c1"># print(&#39;Buy zone for team: {}&#39;.format(buy_zone.team_index))</span>
+</pre></div>
+</div>
+<p>You might wonder how to know which entity types are currently available on the
+map. You can easily discover that by using the following snippet.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import the entity iterator.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">EntityIter</span>
+
+<span class="c1"># Get the class name of every entity on the map. Use set() to get a distinct</span>
+<span class="c1"># set.</span>
+<span class="n">classnames</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">entity</span><span class="o">.</span><span class="n">classname</span> <span class="k">for</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">EntityIter</span><span class="p">())</span>
+
+<span class="c1"># Sort all class names alphabetically and then print them.</span>
+<span class="k">for</span> <span class="n">classname</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">classnames</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">classname</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="modifying-entities">
+<h2>Modifying entities<a class="headerlink" href="#modifying-entities" title="Link to this heading">¶</a></h2>
+<p>In the previous chapter we looped through all buy zones to print their team
+indexes. Now, let’s loop through all doors on the map and open them.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import the entity iterator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">EntityIter</span>
+
+<span class="c1"># Loop through all doors</span>
+<span class="k">for</span> <span class="n">door</span> <span class="ow">in</span> <span class="n">EntityIter</span><span class="p">(</span><span class="s1">&#39;prop_door_rotating&#39;</span><span class="p">):</span>
+
+    <span class="c1"># Open the door</span>
+    <span class="n">door</span><span class="o">.</span><span class="n">open</span><span class="p">()</span>
+
+    <span class="c1"># Or, if you are tired of the doors, simply remove them with:</span>
+    <span class="c1"># door.remove()</span>
+</pre></div>
+</div>
+<p>If you just tried to find information about <code class="docutils literal notranslate"><span class="pre">door.open()</span></code> on the wiki, you
+probably didn’t find anything except this tutorial. This is because of all the
+different entity types. They all have different properties and methods, which
+also differs from game to game. Thus, you can only print these information at
+runtime. To do so, you can use the following snippet.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">entities.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entity</span>
+
+<span class="c1"># Find an entity with the class name &quot;prop_door_rotating&quot;. If no entity was</span>
+<span class="c1"># found, it will be created.</span>
+<span class="n">entity</span> <span class="o">=</span> <span class="n">Entity</span><span class="o">.</span><span class="n">find_or_create</span><span class="p">(</span><span class="s1">&#39;prop_door_rotating&#39;</span><span class="p">)</span>
+
+<span class="c1"># Loop through all attributes</span>
+<span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">entity</span><span class="p">):</span>
+
+    <span class="c1"># Print the attribute</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="creating-new-entities">
+<h2>Creating new entities<a class="headerlink" href="#creating-new-entities" title="Link to this heading">¶</a></h2>
+<p>Creating new entities is quite simple. Often you just need to create an entity
+of the desired type, assign it a model and then spawn it. Here is how to do
+that.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Import the required classes.</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.precache</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
+
+<span class="c1"># Wrap the model (a barrel) with the Model class. It will ensure that the model</span>
+<span class="c1"># is precached, when you want to use it. Precaching is important. Otherwise</span>
+<span class="c1"># the model might not work.</span>
+<span class="n">my_model</span> <span class="o">=</span> <span class="n">Model</span><span class="p">(</span><span class="s1">&#39;models/props_c17/oildrum001.mdl&#39;</span><span class="p">)</span>
+
+<span class="c1"># Listen to the player_say event. It gets fired everytime a player says</span>
+<span class="c1"># something in the chat.</span>
+<span class="nd">@Event</span><span class="p">(</span><span class="s1">&#39;player_say&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_player_say</span><span class="p">(</span><span class="n">event</span><span class="p">):</span>
+    <span class="c1"># Get a Player instance for the player who typed something into the chat.</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="o">.</span><span class="n">from_userid</span><span class="p">(</span><span class="n">event</span><span class="p">[</span><span class="s1">&#39;userid&#39;</span><span class="p">])</span>
+
+    <span class="c1"># Create an entity of the type &quot;prop_physics_multiplayer&quot;.</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">Entity</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;prop_physics_multiplayer&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Assign the model.</span>
+    <span class="n">entity</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">my_model</span>
+
+    <span class="c1"># Set the location where the entity should be created. In this case we want</span>
+    <span class="c1"># to spawn it where the player is currently looking at.</span>
+    <span class="n">entity</span><span class="o">.</span><span class="n">origin</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">view_coordinates</span>
+
+    <span class="c1"># Finally spawn the entity.</span>
+    <span class="n">entity</span><span class="o">.</span><span class="n">spawn</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The model <code class="docutils literal notranslate"><span class="pre">models/props_c17/oildrum001.mdl</span></code> already exists in CS:S. In
+other games this might be different.</p>
+</div>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">entities</a><ul>
+<li><a class="reference internal" href="#accessing-entities">Accessing entities</a></li>
+<li><a class="reference internal" href="#modifying-entities">Modifying entities</a></li>
+<li><a class="reference internal" href="#creating-new-entities">Creating new entities</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="config.html"
+                          title="previous chapter">config</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="events.html"
+                          title="next chapter">events</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/module_tutorials/entities.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="events.html" title="events"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="config.html" title="config"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../module_tutorials.html" >Module tutorials</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

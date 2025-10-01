@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>events.hooks &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../events.html" accesskey="U">events</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">events.hooks</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for events.hooks</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../events/hooks.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides event hooking functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntEnum</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoUnload</span>
+<span class="c1">#   Events</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">events</span><span class="w"> </span><span class="kn">import</span> <span class="n">GameEvent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">events.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">game_event_manager</span>
+<span class="c1">#   Hooks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hooks.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">except_hooks</span>
+<span class="c1">#   Memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_virtual_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_object</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">PreHook</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;EventAction&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;PreEvent&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;_PreEventManager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;pre_event_manager&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="EventAction">
+<a class="viewcode-back" href="../../developing/modules/events.hooks.html#events.hooks.EventAction">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">EventAction</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Enum class used to know what to do with a pre-hooked event.&quot;&quot;&quot;</span>
+
+    <span class="n">CONTINUE</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">STOP_BROADCAST</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">BLOCK</span> <span class="o">=</span> <span class="mi">2</span></div>
+
+
+
+<div class="viewcode-block" id="PreEvent">
+<a class="viewcode-back" href="../../developing/modules/events.hooks.html#events.hooks.PreEvent">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PreEvent</span><span class="p">(</span><span class="n">AutoUnload</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Pre-Event decorator class.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">event_names</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store the event names.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_event_names</span> <span class="o">=</span> <span class="n">event_names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store the callback and register the pre-events.&quot;&quot;&quot;</span>
+        <span class="c1"># Store the callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">callback</span>
+
+        <span class="c1"># Loop through all pre-event names</span>
+        <span class="k">for</span> <span class="n">event_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_names</span><span class="p">:</span>
+
+            <span class="c1"># Register the pre-event</span>
+            <span class="n">pre_event_manager</span><span class="o">.</span><span class="n">register_for_event</span><span class="p">(</span><span class="n">event_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">)</span>
+
+        <span class="c1"># Return the callback</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unregister the pre-events.&quot;&quot;&quot;</span>
+        <span class="c1"># Loop through all pre-event names</span>
+        <span class="k">for</span> <span class="n">event_name</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_event_names</span><span class="p">:</span>
+
+            <span class="c1"># Unregister the pre-event</span>
+            <span class="n">pre_event_manager</span><span class="o">.</span><span class="n">unregister_for_event</span><span class="p">(</span><span class="n">event_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">)</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_PreEventManager</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dictionary class used to store pre-events with their callbacks.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__missing__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the event to the dictionary and return its instance.&quot;&quot;&quot;</span>
+        <span class="c1"># Add the event to the dictionary as a new list</span>
+        <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">_PreEventList</span><span class="p">(</span><span class="n">event_name</span><span class="p">)</span>
+
+        <span class="c1"># Return the instance</span>
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_for_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register the callback for the given event.</span>
+
+<span class="sd">        :param str event_name: The name of the event to register.</span>
+<span class="sd">        :param callback: The function to be called when the</span>
+<span class="sd">            event is fired on the server.</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            from events.hooks import pre_event_manager</span>
+
+<span class="sd">            def function(game_event):</span>
+<span class="sd">                # Code...</span>
+
+<span class="sd">            pre_event_manager.register_for_event(&#39;player_death&#39;, function)</span>
+
+<span class="sd">        .. seealso:: :doc:`../events` for a list of supported events per game.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Is the callback callable?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span>
+
+            <span class="c1"># Raise an error</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;&#39;&quot;</span> <span class="o">+</span> <span class="nb">type</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s2">&quot;&#39; object is not callable.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Add the callback to the pre-event&#39;s registered callback list</span>
+        <span class="bp">self</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">unregister_for_event</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unregister the callback for the given event.</span>
+
+<span class="sd">        :param str event_name: The name of the event to unregister.</span>
+<span class="sd">        :param callback: The function to unregister from the event.</span>
+
+<span class="sd">        .. code-block:: python</span>
+
+<span class="sd">            from events.hooks import pre_event_manager</span>
+
+<span class="sd">            def function(game_event):</span>
+<span class="sd">                # Code...</span>
+
+<span class="sd">            pre_event_manager.unregister_for_event(&#39;player_death&#39;, function)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Is the event registered?</span>
+        <span class="k">if</span> <span class="n">event_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+
+            <span class="c1"># Raise an error</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Pre-Event &quot;</span><span class="si">{0}</span><span class="s1">&quot; is not registered&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event_name</span><span class="p">))</span>
+
+        <span class="c1"># Remove the callback from the pre-event&#39;s list</span>
+        <span class="bp">self</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+
+        <span class="c1"># Are there any callbacks remaining for the pre-event?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="p">[</span><span class="n">event_name</span><span class="p">]:</span>
+
+            <span class="c1"># Remove the pre-event from the dictionary</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="n">event_name</span><span class="p">]</span>
+
+<span class="c1"># The singleton object of the :class:`_PreEventManager` class</span>
+<span class="n">pre_event_manager</span> <span class="o">=</span> <span class="n">_PreEventManager</span><span class="p">()</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_PreEventList</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List class used to store callbacks for a given event.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">event_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the list and store the event name.&quot;&quot;&quot;</span>
+        <span class="c1"># Initialize the list</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Store the event name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">event_name</span> <span class="o">=</span> <span class="n">event_name</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the callback to the list.&quot;&quot;&quot;</span>
+        <span class="c1"># Is the callback already in the list?</span>
+        <span class="k">if</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+
+            <span class="c1"># Raise an error</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Pre-Event callback &quot;</span><span class="si">{0}</span><span class="s1">&quot; is already registered &#39;</span>
+                <span class="s1">&#39;for event &quot;</span><span class="si">{1}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_name</span><span class="p">))</span>
+
+        <span class="c1"># Add the callback to the list</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the callback from the list.&quot;&quot;&quot;</span>
+        <span class="c1"># Is the callback in the list?</span>
+        <span class="k">if</span> <span class="n">callback</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+
+            <span class="c1"># If not, raise an error</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;Pre-Event callback &quot;</span><span class="si">{0}</span><span class="s1">&quot; is not registered for &#39;</span>
+                <span class="s1">&#39;event &quot;</span><span class="si">{1}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">event_name</span><span class="p">))</span>
+
+        <span class="c1"># Remove the callback from the list</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; PRE-HOOK FUNCTIONS</span>
+<span class="c1"># =============================================================================</span>
+<span class="nd">@PreHook</span><span class="p">(</span><span class="n">get_virtual_function</span><span class="p">(</span><span class="n">game_event_manager</span><span class="p">,</span> <span class="s1">&#39;FireEvent&#39;</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_pre_game_event</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Call pre-event functions if the event is registered.&quot;&quot;&quot;</span>
+    <span class="c1"># Crashfix for CS:GO:</span>
+    <span class="c1"># https://github.com/Source-Python-Dev-Team/Source.Python/issues/230</span>
+    <span class="n">game_event_ptr</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">game_event_ptr</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="c1"># Get the GameEvent object</span>
+    <span class="n">game_event</span> <span class="o">=</span> <span class="n">make_object</span><span class="p">(</span><span class="n">GameEvent</span><span class="p">,</span> <span class="n">game_event_ptr</span><span class="p">)</span>
+
+    <span class="c1"># Get the name of the event</span>
+    <span class="n">event_name</span> <span class="o">=</span> <span class="n">game_event</span><span class="o">.</span><span class="n">name</span>
+
+    <span class="c1"># If the current event is not in the dictionary, return</span>
+    <span class="k">if</span> <span class="n">event_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">pre_event_manager</span><span class="p">:</span>
+        <span class="k">return</span>
+
+    <span class="c1"># Create a variable to know what to do after all pre-events are called</span>
+    <span class="n">event_action</span> <span class="o">=</span> <span class="n">EventAction</span><span class="o">.</span><span class="n">CONTINUE</span>
+
+    <span class="c1"># Loop through all callbacks in the pre-event&#39;s list</span>
+    <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="n">pre_event_manager</span><span class="p">[</span><span class="n">event_name</span><span class="p">]:</span>
+
+        <span class="c1"># Use try/except in case an error occurs during in the callback</span>
+        <span class="k">try</span><span class="p">:</span>
+
+            <span class="c1"># Call the callback and get its return value</span>
+            <span class="n">current_action</span> <span class="o">=</span> <span class="n">callback</span><span class="p">(</span><span class="n">game_event</span><span class="p">)</span>
+
+            <span class="c1"># Is the return value invalid?</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">current_action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span>
+                    <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">current_action</span><span class="p">,</span> <span class="n">EventAction</span><span class="p">)):</span>
+
+                <span class="c1"># Raise an error to exit the try</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s1">&#39;Invalid return value for pre-event &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">current_action</span><span class="p">))</span>
+
+        <span class="c1"># Was an error encountered?</span>
+        <span class="k">except</span><span class="p">:</span>
+
+            <span class="c1"># Print the exception to the console</span>
+            <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span><span class="p">()</span>
+
+        <span class="c1"># Was no error encountered?</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># Does the current action have a higher priority?</span>
+            <span class="k">if</span> <span class="n">current_action</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">current_action</span> <span class="o">&gt;</span> <span class="n">event_action</span><span class="p">:</span>
+
+                <span class="c1"># Change the event action</span>
+                <span class="n">event_action</span> <span class="o">=</span> <span class="n">current_action</span>
+
+    <span class="c1"># Does the return value want to set the dontbroadcast value?</span>
+    <span class="k">if</span> <span class="n">event_action</span> <span class="ow">is</span> <span class="n">EventAction</span><span class="o">.</span><span class="n">STOP_BROADCAST</span><span class="p">:</span>
+
+        <span class="c1"># Set the dontbroadcast value</span>
+        <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="c1"># Does the return value want to block the event?</span>
+    <span class="k">elif</span> <span class="n">event_action</span> <span class="ow">is</span> <span class="n">EventAction</span><span class="o">.</span><span class="n">BLOCK</span><span class="p">:</span>
+
+        <span class="c1"># Free the event</span>
+        <span class="n">game_event_manager</span><span class="o">.</span><span class="n">free_event</span><span class="p">(</span><span class="n">game_event</span><span class="p">)</span>
+
+        <span class="c1"># Block the event</span>
+        <span class="k">return</span> <span class="kc">False</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../events.html" >events</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">events.hooks</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

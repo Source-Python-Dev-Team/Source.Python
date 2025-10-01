@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>hooks.exceptions &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">hooks.exceptions</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for hooks.exceptions</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../hooks/exceptions.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides exception hooking functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   OS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">os</span><span class="w"> </span><span class="kn">import</span> <span class="n">sep</span>
+<span class="c1">#   Sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="c1">#   Traceback</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">traceback</span><span class="w"> </span><span class="kn">import</span> <span class="n">format_exception</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Hooks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">_hooks_strings</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">hooks_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hooks.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_HookBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hooks.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">_HookDecorator</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">GAME_PATH</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;ExceptHook&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;_ExceptHooks&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;except_hooks&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Get the sp.hooks.exceptions logger</span>
+<span class="n">hooks_exceptions_logger</span> <span class="o">=</span> <span class="n">hooks_logger</span><span class="o">.</span><span class="n">exceptions</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_ExceptHooks</span><span class="p">(</span><span class="n">_HookBase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List class that stores callbacks to be called on an exception.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">print_exception</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">exctype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">trace_back</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when an exception is raised.</span>
+
+<span class="sd">        This method hooks :obj:`sys.excepthook` to log all exceptions</span>
+<span class="sd">        and call registered callbacks with the provided arguments.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Was an exception passed?</span>
+        <span class="k">if</span> <span class="n">exctype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Get the exception</span>
+            <span class="n">exctype</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">trace_back</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">exc_info</span><span class="p">()</span>
+
+        <span class="c1"># Do all of the callbacks need looped through?</span>
+        <span class="k">if</span> <span class="n">callbacks</span><span class="p">:</span>
+
+            <span class="c1"># Loop through all callbacks in the list</span>
+            <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+
+                <span class="c1"># Try to call the callback</span>
+                <span class="c1"># Without this try/except, if a callback encounters</span>
+                <span class="c1"># an error, it could cause an infinite loop.</span>
+                <span class="k">try</span><span class="p">:</span>
+
+                    <span class="c1"># Call the callback with the exception arguments</span>
+                    <span class="n">callback</span><span class="p">(</span><span class="n">exctype</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">trace_back</span><span class="p">)</span>
+
+                <span class="c1"># Was an exception raised?</span>
+                <span class="k">except</span><span class="p">:</span>
+
+                    <span class="c1"># Re-call print_exception with the new error.</span>
+                    <span class="c1"># Pass False for callbacks, so that</span>
+                    <span class="c1"># it does not cause an infinite loop.</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">print_exception</span><span class="p">(</span><span class="n">callbacks</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="c1"># Format the exception</span>
+        <span class="n">format_error</span> <span class="o">=</span> <span class="n">format_exception</span><span class="p">(</span><span class="n">exctype</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">trace_back</span><span class="p">)</span>
+
+        <span class="c1"># Add a blank line before the actual exception</span>
+        <span class="n">format_error</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Get the header</span>
+        <span class="n">message</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">[SP] &#39;</span> <span class="o">+</span> <span class="n">_hooks_strings</span><span class="p">[</span><span class="s1">&#39;Exception&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">get_string</span><span class="p">()</span>
+
+        <span class="c1"># Loop through each line in the exception</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">format_error</span><span class="p">:</span>
+
+            <span class="c1"># Remove any lines pertaining to importlib in the exception</span>
+            <span class="k">if</span> <span class="s1">&#39;importlib&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Strip the ending \n from the exception</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+
+            <span class="c1"># Strip the GAME_PATH to make the exception shorter</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">GAME_PATH</span><span class="p">,</span> <span class="s1">&#39;..&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">sep</span> <span class="o">+</span> <span class="s1">&#39;.&#39;</span> <span class="o">+</span> <span class="n">sep</span><span class="p">,</span> <span class="n">sep</span><span class="p">)</span>
+
+            <span class="c1"># Add the current line to the message</span>
+            <span class="n">message</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span> <span class="o">+</span> <span class="n">line</span>
+
+        <span class="c1"># Print a blank line to separate the console</span>
+        <span class="n">hooks_exceptions_logger</span><span class="o">.</span><span class="n">log_exception</span><span class="p">(</span><span class="n">message</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="c1"># The singleton object of the :class:`_ExceptHooks` class</span>
+<span class="n">except_hooks</span> <span class="o">=</span> <span class="n">_ExceptHooks</span><span class="p">()</span>
+
+<span class="c1"># Set sys.excepthook to the print_exception method</span>
+<span class="n">sys</span><span class="o">.</span><span class="n">excepthook</span> <span class="o">=</span> <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span>
+
+
+<div class="viewcode-block" id="ExceptHook">
+<a class="viewcode-back" href="../../developing/modules/hooks.exceptions.html#hooks.exceptions.ExceptHook">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ExceptHook</span><span class="p">(</span><span class="n">_HookDecorator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register/unregister a function/method for hooking exceptions.&quot;&quot;&quot;</span>
+
+    <span class="n">_class_instance</span> <span class="o">=</span> <span class="n">except_hooks</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">hooks.exceptions</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

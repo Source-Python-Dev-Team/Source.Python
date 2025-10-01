@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>players.constants &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">players.constants</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for players.constants</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../players/constants.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides constant values that are player based.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntEnum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntFlag</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FORWARD IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Players</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FIXANGLE_NONE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FIXANGLE_ABSOLUTE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FIXANGLE_RELATIVE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_ONGROUND</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_DUCKING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_WATERJUMP</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_ONTRAIN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_INRAIN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_FROZEN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_ATCONTROLS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_CLIENT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_FAKECLIENT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">FL_INWATER</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HIDEHUD_WEAPONSELECTION</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HIDEHUD_FLASHLIGHT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HIDEHUD_ALL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HIDEHUD_HEALTH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HIDEHUD_PLAYERDEAD</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HIDEHUD_NEEDSUIT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HIDEHUD_MISCSTATUS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HIDEHUD_CHAT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HIDEHUD_CROSSHAIR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HIDEHUD_VEHICLE_CROSSHAIR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HIDEHUD_INVEHICLE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HIDEHUD_BONUS_PROGRESS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HIDEHUD_RADAR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HITGROUP_GENERIC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HITGROUP_HEAD</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HITGROUP_CHEST</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HITGROUP_STOMACH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HITGROUP_LEFTARM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HITGROUP_RIGHTARM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HITGROUP_LEFTLEG</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HITGROUP_RIGHTLEG</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HITGROUP_GEAR</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_ATTACK</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_JUMP</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_DUCK</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_FORWARD</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_BACK</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_USE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_CANCEL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_LEFT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_RIGHT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_MOVELEFT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_MOVERIGHT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_ATTACK2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_RUN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_RELOAD</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_ALT1</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_ALT2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_SCORE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_SPEED</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_WALK</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_ZOOM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_WEAPON1</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_WEAPON2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_BULLRUSH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_GRENADE1</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_GRENADE2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">IN_LOOKSPIN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">INVALID_PLAYER_USERID</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">LIFE_ALIVE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">LIFE_DYING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">LIFE_DEAD</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">LIFE_RESPAWNABLE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">LIFE_DISCARDBODY</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">OBS_MODE_NONE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">OBS_MODE_DEATHCAM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">OBS_MODE_FREEZECAM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">OBS_MODE_FIXED</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">OBS_MODE_IN_EYE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">OBS_MODE_CHASE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">OBS_MODE_ROAMING</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_players._constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">PlayerAnimation</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;FixAngle&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;HideHudFlags&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;HitGroup&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;INVALID_PLAYER_USERID&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;LifeState&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ObserverMode&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;PlayerAnimation&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;PlayerButtons&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;PlayerStates&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ENUMERATORS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="FixAngle">
+<a class="viewcode-back" href="../../developing/modules/players.constants.html#players.constants.FixAngle">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FixAngle</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Player fix angle enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">NONE</span> <span class="o">=</span> <span class="n">FIXANGLE_NONE</span>
+    <span class="n">ABSOLUTE</span> <span class="o">=</span> <span class="n">FIXANGLE_ABSOLUTE</span>
+    <span class="n">RELATIVE</span> <span class="o">=</span> <span class="n">FIXANGLE_RELATIVE</span></div>
+
+
+
+<div class="viewcode-block" id="PlayerStates">
+<a class="viewcode-back" href="../../developing/modules/players.constants.html#players.constants.PlayerStates">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PlayerStates</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Player states wrapper enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">ONGROUND</span> <span class="o">=</span> <span class="n">FL_ONGROUND</span>
+    <span class="n">DUCKING</span> <span class="o">=</span> <span class="n">FL_DUCKING</span>
+    <span class="n">WATERJUMP</span> <span class="o">=</span> <span class="n">FL_WATERJUMP</span>
+    <span class="n">ONTRAIN</span> <span class="o">=</span> <span class="n">FL_ONTRAIN</span>
+    <span class="n">INRAIN</span> <span class="o">=</span> <span class="n">FL_INRAIN</span>
+    <span class="n">FROZEN</span> <span class="o">=</span> <span class="n">FL_FROZEN</span>
+    <span class="n">ATCONTROLS</span> <span class="o">=</span> <span class="n">FL_ATCONTROLS</span>
+    <span class="n">CLIENT</span> <span class="o">=</span> <span class="n">FL_CLIENT</span>
+    <span class="n">FAKECLIENT</span> <span class="o">=</span> <span class="n">FL_FAKECLIENT</span>
+    <span class="n">INWATER</span> <span class="o">=</span> <span class="n">FL_INWATER</span></div>
+
+
+
+<div class="viewcode-block" id="LifeState">
+<a class="viewcode-back" href="../../developing/modules/players.constants.html#players.constants.LifeState">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LifeState</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Player life states wrapper enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">ALIVE</span> <span class="o">=</span> <span class="n">LIFE_ALIVE</span>
+    <span class="n">DYING</span> <span class="o">=</span> <span class="n">LIFE_DYING</span>
+    <span class="n">DEAD</span> <span class="o">=</span> <span class="n">LIFE_DEAD</span>
+    <span class="n">RESPAWNABLE</span> <span class="o">=</span> <span class="n">LIFE_RESPAWNABLE</span>
+    <span class="n">DISCARDBODY</span> <span class="o">=</span> <span class="n">LIFE_DISCARDBODY</span></div>
+
+
+
+<div class="viewcode-block" id="PlayerButtons">
+<a class="viewcode-back" href="../../developing/modules/players.constants.html#players.constants.PlayerButtons">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PlayerButtons</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Player buttons wrapper enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">ATTACK</span> <span class="o">=</span> <span class="n">IN_ATTACK</span>
+    <span class="n">JUMP</span> <span class="o">=</span> <span class="n">IN_JUMP</span>
+    <span class="n">DUCK</span> <span class="o">=</span> <span class="n">IN_DUCK</span>
+    <span class="n">FORWARD</span> <span class="o">=</span> <span class="n">IN_FORWARD</span>
+    <span class="n">BACK</span> <span class="o">=</span> <span class="n">IN_BACK</span>
+    <span class="n">USE</span> <span class="o">=</span> <span class="n">IN_USE</span>
+    <span class="n">CANCEL</span> <span class="o">=</span> <span class="n">IN_CANCEL</span>
+    <span class="n">LEFT</span> <span class="o">=</span> <span class="n">IN_LEFT</span>
+    <span class="n">RIGHT</span> <span class="o">=</span> <span class="n">IN_RIGHT</span>
+    <span class="n">MOVELEFT</span> <span class="o">=</span> <span class="n">IN_MOVELEFT</span>
+    <span class="n">MOVERIGHT</span> <span class="o">=</span> <span class="n">IN_MOVERIGHT</span>
+    <span class="n">ATTACK2</span> <span class="o">=</span> <span class="n">IN_ATTACK2</span>
+    <span class="n">RUN</span> <span class="o">=</span> <span class="n">IN_RUN</span>
+    <span class="n">RELOAD</span> <span class="o">=</span> <span class="n">IN_RELOAD</span>
+    <span class="n">ALT1</span> <span class="o">=</span> <span class="n">IN_ALT1</span>
+    <span class="n">ALT2</span> <span class="o">=</span> <span class="n">IN_ALT2</span>
+    <span class="n">SCORE</span> <span class="o">=</span> <span class="n">IN_SCORE</span>
+    <span class="n">SPEED</span> <span class="o">=</span> <span class="n">IN_SPEED</span>
+    <span class="n">WALK</span> <span class="o">=</span> <span class="n">IN_WALK</span>
+    <span class="n">ZOOM</span> <span class="o">=</span> <span class="n">IN_ZOOM</span>
+    <span class="n">WEAPON1</span> <span class="o">=</span> <span class="n">IN_WEAPON1</span>
+    <span class="n">WEAPON2</span> <span class="o">=</span> <span class="n">IN_WEAPON2</span>
+    <span class="n">BULLRUSH</span> <span class="o">=</span> <span class="n">IN_BULLRUSH</span>
+    <span class="n">GRENADE1</span> <span class="o">=</span> <span class="n">IN_GRENADE1</span>
+    <span class="n">GRENADE2</span> <span class="o">=</span> <span class="n">IN_GRENADE2</span>
+    <span class="n">LOOKSPIN</span> <span class="o">=</span> <span class="n">IN_LOOKSPIN</span></div>
+
+
+
+<div class="viewcode-block" id="HideHudFlags">
+<a class="viewcode-back" href="../../developing/modules/players.constants.html#players.constants.HideHudFlags">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HideHudFlags</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Hide hud flags wrapper enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">WEAPONSELECTION</span> <span class="o">=</span> <span class="n">HIDEHUD_WEAPONSELECTION</span>
+    <span class="n">FLASHLIGHT</span> <span class="o">=</span> <span class="n">HIDEHUD_FLASHLIGHT</span>
+    <span class="n">ALL</span> <span class="o">=</span> <span class="n">HIDEHUD_ALL</span>
+    <span class="n">HEALTH</span> <span class="o">=</span> <span class="n">HIDEHUD_HEALTH</span>
+    <span class="n">PLAYERDEAD</span> <span class="o">=</span> <span class="n">HIDEHUD_PLAYERDEAD</span>
+    <span class="n">NEEDSUIT</span> <span class="o">=</span> <span class="n">HIDEHUD_NEEDSUIT</span>
+    <span class="n">MISCSTATUS</span> <span class="o">=</span> <span class="n">HIDEHUD_MISCSTATUS</span>
+    <span class="n">CHAT</span> <span class="o">=</span> <span class="n">HIDEHUD_CHAT</span>
+    <span class="n">CROSSHAIR</span> <span class="o">=</span> <span class="n">HIDEHUD_CROSSHAIR</span>
+    <span class="n">VEHICLE_CROSSHAIR</span> <span class="o">=</span> <span class="n">HIDEHUD_VEHICLE_CROSSHAIR</span>
+    <span class="n">INVEHICLE</span> <span class="o">=</span> <span class="n">HIDEHUD_INVEHICLE</span>
+    <span class="n">BONUS_PROGRESS</span> <span class="o">=</span> <span class="n">HIDEHUD_BONUS_PROGRESS</span>
+    <span class="n">RADAR</span> <span class="o">=</span> <span class="n">HIDEHUD_RADAR</span></div>
+
+
+
+<div class="viewcode-block" id="HitGroup">
+<a class="viewcode-back" href="../../developing/modules/players.constants.html#players.constants.HitGroup">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">HitGroup</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Hit groups wrapper enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">GENERIC</span> <span class="o">=</span> <span class="n">HITGROUP_GENERIC</span>
+    <span class="n">HEAD</span> <span class="o">=</span> <span class="n">HITGROUP_HEAD</span>
+    <span class="n">CHEST</span> <span class="o">=</span> <span class="n">HITGROUP_CHEST</span>
+    <span class="n">STOMACH</span> <span class="o">=</span> <span class="n">HITGROUP_STOMACH</span>
+    <span class="n">LEFTARM</span> <span class="o">=</span> <span class="n">HITGROUP_LEFTARM</span>
+    <span class="n">RIGHTARM</span> <span class="o">=</span> <span class="n">HITGROUP_RIGHTARM</span>
+    <span class="n">LEFTLEG</span> <span class="o">=</span> <span class="n">HITGROUP_LEFTLEG</span>
+    <span class="n">RIGHTLEG</span> <span class="o">=</span> <span class="n">HITGROUP_RIGHTLEG</span>
+    <span class="n">GEAR</span> <span class="o">=</span> <span class="n">HITGROUP_GEAR</span></div>
+
+
+
+<div class="viewcode-block" id="ObserverMode">
+<a class="viewcode-back" href="../../developing/modules/players.constants.html#players.constants.ObserverMode">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ObserverMode</span><span class="p">(</span><span class="n">IntEnum</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Observer modes wrapper enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">NONE</span> <span class="o">=</span> <span class="n">OBS_MODE_NONE</span>
+    <span class="n">DEATHCAM</span> <span class="o">=</span> <span class="n">OBS_MODE_DEATHCAM</span>
+    <span class="n">FREEZECAM</span> <span class="o">=</span> <span class="n">OBS_MODE_FREEZECAM</span>
+    <span class="n">FIXED</span> <span class="o">=</span> <span class="n">OBS_MODE_FIXED</span>
+    <span class="n">IN_EYE</span> <span class="o">=</span> <span class="n">OBS_MODE_IN_EYE</span>
+    <span class="n">CHASE</span> <span class="o">=</span> <span class="n">OBS_MODE_CHASE</span>
+    <span class="n">ROAMING</span> <span class="o">=</span> <span class="n">OBS_MODE_ROAMING</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">players.constants</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

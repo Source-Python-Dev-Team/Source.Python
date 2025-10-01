@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>plugins.info &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins.info</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for plugins.info</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../plugins/info.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides plugin information storing.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Cvars</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">cvars.public</span><span class="w"> </span><span class="kn">import</span> <span class="n">PublicConVar</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;PluginInfo&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="PluginInfo">
+<a class="viewcode-back" href="../../developing/modules/plugins.info.html#plugins.info.PluginInfo">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PluginInfo</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Store information for a plugin.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="PluginInfo.__init__">
+<a class="viewcode-back" href="../../developing/modules/plugins.info.html#plugins.info.PluginInfo.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">verbose_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">author</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">version</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">url</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">permissions</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">public_convar</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">display_in_listing</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the instance.</span>
+
+<span class="sd">        :param str name:</span>
+<span class="sd">            Name of the plugin on the file system.</span>
+<span class="sd">        :param str verbose_name:</span>
+<span class="sd">            A verbose name for the plugin (e.g. GunGame).</span>
+<span class="sd">        :param str author:</span>
+<span class="sd">            Name of the author.</span>
+<span class="sd">        :param str description:</span>
+<span class="sd">            A short description of what the plugin does.</span>
+<span class="sd">        :param str version:</span>
+<span class="sd">            Current version of the plugin.</span>
+<span class="sd">        :param str url:</span>
+<span class="sd">            A link to a thread in the &#39;Plugin Releases&#39; forum section or the</span>
+<span class="sd">            plugin&#39;s SPPM link.</span>
+<span class="sd">        :param list permissions:</span>
+<span class="sd">            A list of permissions defined or used by the plugin. The list</span>
+<span class="sd">            should contain tuples that define the permission and a short</span>
+<span class="sd">            description of the permission.</span>
+<span class="sd">        :param public_convar:</span>
+<span class="sd">            If set to ``True``, a public convar will be generated based on the</span>
+<span class="sd">            plugin name, verbose name and version. Set it to ``False`` if you</span>
+<span class="sd">            don&#39;t want a public convar or set it to a dictionary containing</span>
+<span class="sd">            the parameters to create a :class:`cvars.public.PublicConvar`</span>
+<span class="sd">            instance.</span>
+<span class="sd">        :param list display_in_listing:</span>
+<span class="sd">            A list that contains custom attributes that should appear in the</span>
+<span class="sd">            plugin listing (e.g. sp plugin list).</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            Any additional attributes you want to set. If you want those</span>
+<span class="sd">            attributes to appear in the plugin listing, update</span>
+<span class="sd">            :attr:`display_in_listing`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose_name</span> <span class="o">=</span> <span class="n">verbose_name</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">author</span> <span class="o">=</span> <span class="n">author</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_version</span> <span class="o">=</span> <span class="n">version</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">url</span>
+
+        <span class="c1"># All permissions defined by this plugin</span>
+        <span class="c1"># A list that contains tuples:</span>
+        <span class="c1"># Example:</span>
+        <span class="c1"># [(&#39;test1.kick&#39;, &#39;Permission to kick players.&#39;),</span>
+        <span class="c1">#  (&#39;test1.ban&#39;, &#39;Permission to ban players.&#39;),</span>
+        <span class="c1">#  (&#39;test1.start_vote&#39;, &#39;Permission to start a vote.&#39;)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">permissions</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">permissions</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">permissions</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">public_convar</span> <span class="o">=</span> <span class="n">public_convar</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">display_in_listing</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">display_in_listing</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">display_in_listing</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_public_convar</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a public convar if :attr:`public_convar` is set to True.&quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">_version&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+        <span class="n">description</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> version.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">verbose_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">public_convar</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">public_convar</span> <span class="o">=</span> <span class="n">PublicConVar</span><span class="p">(</span>
+                <span class="n">name</span><span class="p">,</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">,</span>
+                <span class="n">description</span>
+            <span class="p">)</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">public_convar</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">public_convar</span> <span class="o">=</span> <span class="n">PublicConVar</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">public_convar</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">name</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">public_convar</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;value&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">),</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">public_convar</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="n">description</span><span class="p">),</span>
+                <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">public_convar</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PluginInfo.get_verbose_name">
+<a class="viewcode-back" href="../../developing/modules/plugins.info.html#plugins.info.PluginInfo.get_verbose_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_verbose_name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the verbose name of the plugin.</span>
+
+<span class="sd">        If no verbose name has been set, the plugin name will be titled.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">,</span> <span class="s1">&#39; &#39;</span><span class="p">)</span><span class="o">.</span><span class="n">title</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_verbose_name</span></div>
+
+
+<div class="viewcode-block" id="PluginInfo.set_verbose_name">
+<a class="viewcode-back" href="../../developing/modules/plugins.info.html#plugins.info.PluginInfo.set_verbose_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_verbose_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the verbose name of the plugin.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_verbose_name</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+    <span class="n">verbose_name</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">get_verbose_name</span><span class="p">,</span> <span class="n">set_verbose_name</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PluginInfo.get_version">
+<a class="viewcode-back" href="../../developing/modules/plugins.info.html#plugins.info.PluginInfo.get_version">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the plugin&#39;s version.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s1">&#39;unversioned&#39;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_version</span></div>
+
+
+<div class="viewcode-block" id="PluginInfo.set_version">
+<a class="viewcode-back" href="../../developing/modules/plugins.info.html#plugins.info.PluginInfo.set_version">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_version</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the plugin&#39;s version.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_version</span> <span class="o">=</span> <span class="n">value</span></div>
+
+
+    <span class="n">version</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span><span class="n">get_version</span><span class="p">,</span> <span class="n">set_version</span><span class="p">)</span>
+
+    <span class="c1"># Redirect __getitem__ and __setitem__ to __getattr__ and __setattr__</span>
+    <span class="fm">__getattr__</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__getitem__</span>
+    <span class="fm">__setattr__</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="fm">__setitem__</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins.info</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

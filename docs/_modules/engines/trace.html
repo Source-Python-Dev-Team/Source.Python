@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>engines.trace &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">engines.trace</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for engines.trace</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../engines/trace.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides ray tracing functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Enum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">enum</span><span class="w"> </span><span class="kn">import</span> <span class="n">IntFlag</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">inthandle_from_baseentity</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FORWARD IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Engines</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ray</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">engine_trace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseTrace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">DisplacementFlags</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">GameTrace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">Surface</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">SurfaceFlags</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">TraceFilter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">EntityEnumerator</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">TraceType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_EMPTY</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_SOLID</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_WINDOW</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_AUX</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_GRATE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_SLIME</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_WATER</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_BLOCKLOS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_OPAQUE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">LAST_VISIBLE_CONTENTS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">ALL_VISIBLE_CONTENTS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_TESTFOGVOLUME</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_UNUSED</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_TEAM1</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_TEAM2</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_IGNORE_NODRAW_OPAQUE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_MOVEABLE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_AREAPORTAL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_PLAYERCLIP</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_MONSTERCLIP</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_CURRENT_0</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_CURRENT_90</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_CURRENT_180</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_CURRENT_270</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_CURRENT_UP</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_CURRENT_DOWN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_ORIGIN</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_MONSTER</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_DEBRIS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_DETAIL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_TRANSLUCENT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_LADDER</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">CONTENTS_HITBOX</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">COORD_EXTENT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_ALL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_SOLID</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_PLAYERSOLID</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_NPCSOLID</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_WATER</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_OPAQUE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_OPAQUE_AND_NPCS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_BLOCKLOS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_BLOCKLOS_AND_NPCS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_VISIBLE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_VISIBLE_AND_NPCS</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_SHOT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_SHOT_HULL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_SHOT_PORTAL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_SOLID_BRUSHONLY</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_PLAYERSOLID_BRUSHONLY</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_NPCWORLDSTATIC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_SPLITAREAPORTAL</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_CURRENT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MASK_DEADSOLID</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MAX_COORD_INTEGER</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MAX_COORD_FRACTION</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MAX_COORD_FLOAT</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MAX_TRACE_LENGTH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MAX_COORD_RANGE</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MIN_COORD_INTEGER</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MIN_COORD_FRACTION</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_engines._trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">MIN_COORD_FLOAT</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;BaseTrace&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;COORD_EXTENT&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ContentFlags&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ContentMasks&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;DisplacementFlags&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;EntityEnumerator&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;GameTrace&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;MAX_COORD_FLOAT&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;MAX_COORD_FRACTION&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;MAX_COORD_INTEGER&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;MAX_COORD_RANGE&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;MAX_TRACE_LENGTH&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;MIN_COORD_FLOAT&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;MIN_COORD_FRACTION&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;MIN_COORD_INTEGER&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Ray&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;Surface&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;SurfaceFlags&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TraceFilter&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TraceFilterSimple&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TraceType&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;engine_trace&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ENUMERATORS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="ContentFlags">
+<a class="viewcode-back" href="../../developing/modules/engines.trace.html#engines.trace.ContentFlags">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ContentFlags</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Content flags wrapper enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">EMPTY</span> <span class="o">=</span> <span class="n">CONTENTS_EMPTY</span>
+    <span class="n">SOLID</span> <span class="o">=</span> <span class="n">CONTENTS_SOLID</span>
+    <span class="n">WINDOW</span> <span class="o">=</span> <span class="n">CONTENTS_WINDOW</span>
+    <span class="n">AUX</span> <span class="o">=</span> <span class="n">CONTENTS_AUX</span>
+    <span class="n">GRATE</span> <span class="o">=</span> <span class="n">CONTENTS_GRATE</span>
+    <span class="n">SLIME</span> <span class="o">=</span> <span class="n">CONTENTS_SLIME</span>
+    <span class="n">WATER</span> <span class="o">=</span> <span class="n">CONTENTS_WATER</span>
+    <span class="n">BLOCKLOS</span> <span class="o">=</span> <span class="n">CONTENTS_BLOCKLOS</span>
+    <span class="n">OPAQUE</span> <span class="o">=</span> <span class="n">CONTENTS_OPAQUE</span>
+    <span class="n">LAST_VISIBLE</span> <span class="o">=</span> <span class="n">LAST_VISIBLE_CONTENTS</span>
+    <span class="n">ALL_VISIBLE</span> <span class="o">=</span> <span class="n">ALL_VISIBLE_CONTENTS</span>
+    <span class="n">TESTFOGVOLUME</span> <span class="o">=</span> <span class="n">CONTENTS_TESTFOGVOLUME</span>
+    <span class="n">UNUSED</span> <span class="o">=</span> <span class="n">CONTENTS_UNUSED</span>
+    <span class="n">TEAM1</span> <span class="o">=</span> <span class="n">CONTENTS_TEAM1</span>
+    <span class="n">TEAM2</span> <span class="o">=</span> <span class="n">CONTENTS_TEAM2</span>
+    <span class="n">IGNORE_NODRAW_OPAQUE</span> <span class="o">=</span> <span class="n">CONTENTS_IGNORE_NODRAW_OPAQUE</span>
+    <span class="n">MOVEABLE</span> <span class="o">=</span> <span class="n">CONTENTS_MOVEABLE</span>
+    <span class="n">AREAPORTAL</span> <span class="o">=</span> <span class="n">CONTENTS_AREAPORTAL</span>
+    <span class="n">PLAYERCLIP</span> <span class="o">=</span> <span class="n">CONTENTS_PLAYERCLIP</span>
+    <span class="n">MONSTERCLIP</span> <span class="o">=</span> <span class="n">CONTENTS_MONSTERCLIP</span>
+    <span class="n">CURRENT_0</span> <span class="o">=</span> <span class="n">CONTENTS_CURRENT_0</span>
+    <span class="n">CURRENT_90</span> <span class="o">=</span> <span class="n">CONTENTS_CURRENT_90</span>
+    <span class="n">CURRENT_180</span> <span class="o">=</span> <span class="n">CONTENTS_CURRENT_180</span>
+    <span class="n">CURRENT_270</span> <span class="o">=</span> <span class="n">CONTENTS_CURRENT_270</span>
+    <span class="n">CURRENT_UP</span> <span class="o">=</span> <span class="n">CONTENTS_CURRENT_UP</span>
+    <span class="n">CURRENT_DOWN</span> <span class="o">=</span> <span class="n">CONTENTS_CURRENT_DOWN</span>
+    <span class="n">ORIGIN</span> <span class="o">=</span> <span class="n">CONTENTS_ORIGIN</span>
+    <span class="n">MONSTER</span> <span class="o">=</span> <span class="n">CONTENTS_MONSTER</span>
+    <span class="n">DEBRIS</span> <span class="o">=</span> <span class="n">CONTENTS_DEBRIS</span>
+    <span class="n">DETAIL</span> <span class="o">=</span> <span class="n">CONTENTS_DETAIL</span>
+    <span class="n">TRANSLUCENT</span> <span class="o">=</span> <span class="n">CONTENTS_TRANSLUCENT</span>
+    <span class="n">LADDER</span> <span class="o">=</span> <span class="n">CONTENTS_LADDER</span>
+    <span class="n">HITBOX</span> <span class="o">=</span> <span class="n">CONTENTS_HITBOX</span></div>
+
+
+
+<div class="viewcode-block" id="ContentMasks">
+<a class="viewcode-back" href="../../developing/modules/engines.trace.html#engines.trace.ContentMasks">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ContentMasks</span><span class="p">(</span><span class="n">IntFlag</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Content masks wrapper enumerator.&quot;&quot;&quot;</span>
+
+    <span class="n">ALL</span> <span class="o">=</span> <span class="n">MASK_ALL</span>
+    <span class="n">SOLID</span> <span class="o">=</span> <span class="n">MASK_SOLID</span>
+    <span class="n">PLAYER_SOLID</span> <span class="o">=</span> <span class="n">MASK_PLAYERSOLID</span>
+    <span class="n">NPC_SOLID</span> <span class="o">=</span> <span class="n">MASK_NPCSOLID</span>
+    <span class="n">WATER</span> <span class="o">=</span> <span class="n">MASK_WATER</span>
+    <span class="n">OPAQUE</span> <span class="o">=</span> <span class="n">MASK_OPAQUE</span>
+    <span class="n">OPAQUE_AND_NPCS</span> <span class="o">=</span> <span class="n">MASK_OPAQUE_AND_NPCS</span>
+    <span class="n">BLOCKLOS</span> <span class="o">=</span> <span class="n">MASK_BLOCKLOS</span>
+    <span class="n">BLOCKLOS_AND_NPCS</span> <span class="o">=</span> <span class="n">MASK_BLOCKLOS_AND_NPCS</span>
+    <span class="n">VISIBLE</span> <span class="o">=</span> <span class="n">MASK_VISIBLE</span>
+    <span class="n">VISIBLE_AND_NPCS</span> <span class="o">=</span> <span class="n">MASK_VISIBLE_AND_NPCS</span>
+    <span class="n">SHOT</span> <span class="o">=</span> <span class="n">MASK_SHOT</span>
+    <span class="n">SHOT_HULL</span> <span class="o">=</span> <span class="n">MASK_SHOT_HULL</span>
+    <span class="n">SHOT_PORTAL</span> <span class="o">=</span> <span class="n">MASK_SHOT_PORTAL</span>
+    <span class="n">SOLID_BRUSH_ONLY</span> <span class="o">=</span> <span class="n">MASK_SOLID_BRUSHONLY</span>
+    <span class="n">PLAYER_SOLID_BRUSH_ONLY</span> <span class="o">=</span> <span class="n">MASK_PLAYERSOLID_BRUSHONLY</span>
+    <span class="n">NPC_WORLD_STATIC</span> <span class="o">=</span> <span class="n">MASK_NPCWORLDSTATIC</span>
+    <span class="n">SPLIT_AREA_PORTAL</span> <span class="o">=</span> <span class="n">MASK_SPLITAREAPORTAL</span>
+    <span class="n">CURRENT</span> <span class="o">=</span> <span class="n">MASK_CURRENT</span>
+    <span class="n">DEAD_SOLID</span> <span class="o">=</span> <span class="n">MASK_DEADSOLID</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="TraceFilterSimple">
+<a class="viewcode-back" href="../../developing/modules/engines.trace.html#engines.trace.TraceFilterSimple">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TraceFilterSimple</span><span class="p">(</span><span class="n">TraceFilter</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A simple trace filter.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TraceFilterSimple.__init__">
+<a class="viewcode-back" href="../../developing/modules/engines.trace.html#engines.trace.TraceFilterSimple.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ignore</span><span class="o">=</span><span class="p">(),</span> <span class="n">trace_type</span><span class="o">=</span><span class="n">TraceType</span><span class="o">.</span><span class="n">EVERYTHING</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the filter.</span>
+
+<span class="sd">        :param iterable ignore:</span>
+<span class="sd">            An iterable of entity indexes to ignore. The trace will not hit</span>
+<span class="sd">            these entities.</span>
+<span class="sd">        :param TraceType trace_type:</span>
+<span class="sd">            The trace type that should be used.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trace_type</span> <span class="o">=</span> <span class="n">trace_type</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ignore</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">inthandle_from_baseentity</span><span class="p">,</span> <span class="n">ignore</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="TraceFilterSimple.should_hit_entity">
+<a class="viewcode-back" href="../../developing/modules/engines.trace.html#engines.trace.TraceFilterSimple.should_hit_entity">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">should_hit_entity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">entity</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when a trace is about to hit an entity.</span>
+
+<span class="sd">        :param HandleEntity entity:</span>
+<span class="sd">            The entity that should be hit.</span>
+<span class="sd">        :param int mask:</span>
+<span class="sd">            The mask that was used to intialize the trace.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">entity</span><span class="o">.</span><span class="n">basehandle</span><span class="o">.</span><span class="n">to_int</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">ignore</span></div>
+
+
+<div class="viewcode-block" id="TraceFilterSimple.get_trace_type">
+<a class="viewcode-back" href="../../developing/modules/engines.trace.html#engines.trace.TraceFilterSimple.get_trace_type">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_trace_type</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the trace type.</span>
+
+<span class="sd">        :rtype: TraceType</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">trace_type</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">engines.trace</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

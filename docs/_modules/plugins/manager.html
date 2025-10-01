@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>plugins.manager &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins.manager</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for plugins.manager</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../plugins/manager.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides plugin loading/unloading functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Collections</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
+<span class="c1">#   Configobj</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">configobj</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigObj</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">configobj</span><span class="w"> </span><span class="kn">import</span> <span class="n">Section</span>
+<span class="c1">#   GC</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">gc</span><span class="w"> </span><span class="kn">import</span> <span class="n">collect</span>
+<span class="c1">#   Importlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">importlib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">find_spec</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">importlib.util</span><span class="w"> </span><span class="kn">import</span> <span class="n">spec_from_file_location</span>
+<span class="c1">#   Sys</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sys</span>
+<span class="c1">#   Re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoUnload</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">WeakAutoUnload</span>
+<span class="c1">#   Hooks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hooks.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">except_hooks</span>
+<span class="c1">#   Listeners</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_plugin_loaded_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_plugin_unloaded_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_plugin_loading_manager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">on_plugin_unloading_manager</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">PLUGIN_PATH</span>
+<span class="c1">#   Plugins</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">plugins_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plugins.info</span><span class="w"> </span><span class="kn">import</span> <span class="n">PluginInfo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plugins.instance</span><span class="w"> </span><span class="kn">import</span> <span class="n">Plugin</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FORWARD IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">ServerPluginManager</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_plugins</span><span class="w"> </span><span class="kn">import</span> <span class="n">server_plugin_manager</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;PluginManager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ServerPluginManager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;plugin_manager&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;server_plugin_manager&#39;</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Get the sp.plugins.manager logger</span>
+<span class="n">plugins_manager_logger</span> <span class="o">=</span> <span class="n">plugins_logger</span><span class="o">.</span><span class="n">manager</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">PluginError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PluginFileNotFoundError</span><span class="p">(</span><span class="n">PluginError</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">InvalidPluginName</span><span class="p">(</span><span class="n">PluginError</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PluginAlreadyLoaded</span><span class="p">(</span><span class="n">PluginError</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PluginHasBuiltInName</span><span class="p">(</span><span class="n">PluginError</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">PluginNotLoaded</span><span class="p">(</span><span class="n">PluginError</span><span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<div class="viewcode-block" id="PluginManager">
+<a class="viewcode-back" href="../../developing/modules/plugins.manager.html#plugins.manager.PluginManager">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PluginManager</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stores plugins and their instances.&quot;&quot;&quot;</span>
+
+    <span class="n">RE_VALID_PLUGIN</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="s1">&#39;^([A-Za-z][A-Za-z0-9_]*[A-Za-z0-9])$&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PluginManager.__init__">
+<a class="viewcode-back" href="../../developing/modules/plugins.manager.html#plugins.manager.PluginManager.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_import</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when the class instance is initialized.&quot;&quot;&quot;</span>
+        <span class="c1"># Re-call OrderedDict&#39;s __init__ to properly setup the object</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_base_import</span> <span class="o">=</span> <span class="n">base_import</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_plugin_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new plugin instance.</span>
+
+<span class="sd">        Overwrite this method if you wish to use your own Plugin subclass.</span>
+
+<span class="sd">        :rtype: Plugin</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">Plugin</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">base_import</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the base import path for the manager.</span>
+
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_base_import</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plugins_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the directory where the plugins are stored.</span>
+
+<span class="sd">        :rtype: path.Path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">PLUGIN_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="o">*</span><span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_import</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">)[:</span><span class="o">~</span><span class="mi">0</span><span class="p">]))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a generator to iterate over all existing plugins.</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            The generator yields the plugin names.</span>
+<span class="sd">        :rtype: generator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">path</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugins_directory</span><span class="o">.</span><span class="n">dirs</span><span class="p">():</span>
+            <span class="n">plugin_name</span> <span class="o">=</span> <span class="n">path</span><span class="o">.</span><span class="n">name</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_valid_plugin_name</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_exists</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="k">yield</span> <span class="n">plugin_name</span>
+            
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">loaded_plugins</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a tuple containing all loaded plugins.</span>
+<span class="sd">        </span>
+<span class="sd">        :return:</span>
+<span class="sd">            The tuple contains :class:`plugins.instance.Plugin` instances.</span>
+<span class="sd">        :rtype: tuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+
+<div class="viewcode-block" id="PluginManager.load">
+<a class="viewcode-back" href="../../developing/modules/plugins.manager.html#plugins.manager.PluginManager.load">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load a plugin by name.</span>
+
+<span class="sd">        :param str plugin_name:</span>
+<span class="sd">            Name of the plugin to load.</span>
+<span class="sd">        :raise InvalidPluginName:</span>
+<span class="sd">            Raised if the given plugin name is invalid.</span>
+<span class="sd">        :raise PluginAlreadyLoaded:</span>
+<span class="sd">            Raised if the plugin was already loaded.</span>
+<span class="sd">        :raise PluginFileNotFoundError:</span>
+<span class="sd">            Raised if the plugin&#39;s main file wasn&#39;t found.</span>
+<span class="sd">        :raise PluginHasBuiltInName:</span>
+<span class="sd">            Raised if the plugin has the name of a built-in module.</span>
+<span class="sd">        :raise Exception:</span>
+<span class="sd">            Any other exceptions raised by the plugin during the load process.</span>
+<span class="sd">        :rtype: Plugin</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_loaded</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">PluginAlreadyLoaded</span><span class="p">(</span>
+                <span class="s1">&#39;Plugin &quot;</span><span class="si">{}</span><span class="s1">&quot; is already loaded.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_valid_plugin_name</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">InvalidPluginName</span><span class="p">(</span>
+                <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is an invalid plugin name.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">))</span>
+
+        <span class="n">plugin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_plugin_instance</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">plugin</span><span class="o">.</span><span class="n">file_path</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="n">PluginFileNotFoundError</span><span class="p">(</span>
+                <span class="s1">&#39;File </span><span class="si">{}</span><span class="s1"> does not exist.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">plugin</span><span class="o">.</span><span class="n">file_path</span><span class="p">))</span>
+
+        <span class="n">spec</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">plugin_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">builtin_module_names</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">spec</span> <span class="o">=</span> <span class="n">find_spec</span><span class="p">(</span><span class="n">plugin</span><span class="o">.</span><span class="n">import_name</span><span class="p">)</span>
+            <span class="c1"># AttributeError:</span>
+            <span class="c1">#   An existing .py module that do not have a __path__ attribute.</span>
+            <span class="c1"># ValueError:</span>
+            <span class="c1">#   An existing .pyc/.pyd package that have its __spec__ attribute</span>
+            <span class="c1">#   set to None.</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">AttributeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
+                <span class="k">pass</span>
+
+        <span class="k">if</span> <span class="n">spec</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">spec</span> <span class="o">!=</span> <span class="n">spec_from_file_location</span><span class="p">(</span>
+                <span class="n">plugin</span><span class="o">.</span><span class="n">import_name</span><span class="p">,</span> <span class="n">plugin</span><span class="o">.</span><span class="n">file_path</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">PluginHasBuiltInName</span><span class="p">(</span>
+                <span class="s1">&#39;Plugin &quot;</span><span class="si">{}</span><span class="s1">&quot; has the name of a built-in module.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">plugin_name</span><span class="p">))</span>
+
+        <span class="c1"># Add the instance here, so we can use get_plugin_instance() etc.</span>
+        <span class="c1"># within the plugin itself before the plugin has been fully loaded.</span>
+        <span class="c1"># This is also required e.g. for retrieving the PluginInfo instance.</span>
+        <span class="bp">self</span><span class="p">[</span><span class="n">plugin_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">plugin</span>
+        <span class="n">on_plugin_loading_manager</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Actually load the plugin</span>
+            <span class="n">plugin</span><span class="o">.</span><span class="n">_load</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_remove_modules</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span>
+            <span class="k">raise</span>
+
+        <span class="n">on_plugin_loaded_manager</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">plugin</span></div>
+
+
+<div class="viewcode-block" id="PluginManager.unload">
+<a class="viewcode-back" href="../../developing/modules/plugins.manager.html#plugins.manager.PluginManager.unload">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">unload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unload a plugin by name.</span>
+
+<span class="sd">        :param str plugin_name:</span>
+<span class="sd">            Name of the plugin to unload.</span>
+<span class="sd">        :raise PluginNotLoaded:</span>
+<span class="sd">            Raised if the plugin is not loaded.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_loaded</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">PluginNotLoaded</span><span class="p">(</span>
+                <span class="s1">&#39;Plugin &quot;</span><span class="si">{}</span><span class="s1">&quot; is not loaded.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">))</span>
+
+        <span class="n">plugin</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">plugin_name</span><span class="p">]</span>
+        <span class="n">on_plugin_unloading_manager</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">plugin</span><span class="o">.</span><span class="n">_unload</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_remove_modules</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="p">[</span><span class="n">plugin_name</span><span class="p">]</span>
+        <span class="n">collect</span><span class="p">()</span>
+        <span class="n">on_plugin_unloaded_manager</span><span class="o">.</span><span class="n">notify</span><span class="p">(</span><span class="n">plugin</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PluginManager.reload">
+<a class="viewcode-back" href="../../developing/modules/plugins.manager.html#plugins.manager.PluginManager.reload">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reload</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reload a plugin by name.</span>
+
+<span class="sd">        :param str plugin_name:</span>
+<span class="sd">            Name of the plugin to reload.</span>
+<span class="sd">        :raise PluginNotLoaded:</span>
+<span class="sd">            Raised if the plugin is not loaded.</span>
+<span class="sd">        :raise InvalidPluginName:</span>
+<span class="sd">            Raised if the given plugin name is invalid.</span>
+<span class="sd">        :raise PluginFileNotFoundError:</span>
+<span class="sd">            Raised if the plugin&#39;s main file wasn&#39;t found.</span>
+<span class="sd">        :raise PluginHasBuiltInName:</span>
+<span class="sd">            Raised if the plugin has the name of a built-in module.</span>
+<span class="sd">        :raise Exception:</span>
+<span class="sd">            Any other exceptions raised by the plugin during the load process.</span>
+<span class="sd">        :rtype: Plugin</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">unload</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="PluginManager.is_valid_plugin_name">
+<a class="viewcode-back" href="../../developing/modules/plugins.manager.html#plugins.manager.PluginManager.is_valid_plugin_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_valid_plugin_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether or not the given plugin name is valid.</span>
+
+<span class="sd">        :param str plugin_name:</span>
+<span class="sd">            Name to check.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">RE_VALID_PLUGIN</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="PluginManager.is_loaded">
+<a class="viewcode-back" href="../../developing/modules/plugins.manager.html#plugins.manager.PluginManager.is_loaded">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_loaded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether or not a plugin is loaded.</span>
+
+<span class="sd">        :param str plugin_name:</span>
+<span class="sd">            The plugin to check.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">plugin_name</span> <span class="ow">in</span> <span class="bp">self</span></div>
+
+
+<div class="viewcode-block" id="PluginManager.plugin_exists">
+<a class="viewcode-back" href="../../developing/modules/plugins.manager.html#plugins.manager.PluginManager.plugin_exists">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">plugin_exists</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether of not a plugin exists.</span>
+
+<span class="sd">        :param str plugin_name:</span>
+<span class="sd">            The plugin to check.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_plugin_file_path</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span><span class="o">.</span><span class="n">is_file</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="PluginManager.get_plugin_instance">
+<a class="viewcode-back" href="../../developing/modules/plugins.manager.html#plugins.manager.PluginManager.get_plugin_instance">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_plugin_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a plugin&#39;s instance, if it is loaded.</span>
+
+<span class="sd">        :param str plugin_name:</span>
+<span class="sd">            The plugin to check. You can pass ``__name__`` from one of your</span>
+<span class="sd">            plugin files to retrieve its own plugin instance.</span>
+<span class="sd">        :rtype: Plugin</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">plugin_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_plugin_name</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_loaded</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">plugin_name</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="PluginManager.get_plugin_name">
+<a class="viewcode-back" href="../../developing/modules/plugins.manager.html#plugins.manager.PluginManager.get_plugin_name">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_plugin_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the plugin&#39;s name.</span>
+
+<span class="sd">        :param str plugin_name:</span>
+<span class="sd">            The plugin&#39;s real name (will be passed through) or the</span>
+<span class="sd">            ``__name__`` variable of one of the plugin&#39;s files.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">plugin_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_import</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">plugin_name</span>
+
+        <span class="k">return</span> <span class="n">plugin_name</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_import</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="PluginManager.get_plugin_directory">
+<a class="viewcode-back" href="../../developing/modules/plugins.manager.html#plugins.manager.PluginManager.get_plugin_directory">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_plugin_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the directory of the given plugin.</span>
+
+<span class="sd">        :rtype: path.Path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugins_directory</span> <span class="o">/</span> <span class="n">plugin_name</span></div>
+
+
+<div class="viewcode-block" id="PluginManager.get_plugin_file_path">
+<a class="viewcode-back" href="../../developing/modules/plugins.manager.html#plugins.manager.PluginManager.get_plugin_file_path">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_plugin_file_path</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the path to the plugin&#39;s main file.</span>
+
+<span class="sd">        :param str plugin_name:</span>
+<span class="sd">            Name of the plugin.</span>
+<span class="sd">        :rtype: path.Path</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_plugin_directory</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span> <span class="o">/</span> <span class="n">plugin_name</span> <span class="o">+</span> <span class="s1">&#39;.py&#39;</span></div>
+
+
+<div class="viewcode-block" id="PluginManager.get_plugin_info">
+<a class="viewcode-back" href="../../developing/modules/plugins.manager.html#plugins.manager.PluginManager.get_plugin_info">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_plugin_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return information about the given plugin.</span>
+
+<span class="sd">        :param str plugin_name:</span>
+<span class="sd">            The plugin to check. You can pass ``__name__`` from one of your</span>
+<span class="sd">            plugin files to retrieve its own plugin instance.</span>
+<span class="sd">        :rtype: PluginInfo</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">plugin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_plugin_instance</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">plugin</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">plugin</span><span class="o">.</span><span class="n">info</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_plugin_info</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_create_plugin_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create a new :class:`plugins.info.PluginInfo` instance.</span>
+
+<span class="sd">        :param str plugin_name:</span>
+<span class="sd">            Name of the plugin whose plugin info should be created.</span>
+<span class="sd">        :raise PluginFileNotFoundError:</span>
+<span class="sd">            Raised if the plugin&#39;s main file wasn&#39;t found.</span>
+<span class="sd">        :rtype: PluginInfo</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">plugin_exists</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">PluginFileNotFoundError</span><span class="p">(</span>
+                <span class="s1">&#39;Plugin &quot;</span><span class="si">{}</span><span class="s1">&quot; does not exist.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">))</span>
+
+        <span class="n">info_file</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_plugin_directory</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span> <span class="o">/</span> <span class="s1">&#39;info.ini&#39;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">info_file</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="c1"># Just return an &quot;empty&quot; PluginInfo instance. We don&#39;t have more</span>
+            <span class="c1"># information.</span>
+            <span class="k">return</span> <span class="n">PluginInfo</span><span class="p">(</span><span class="n">plugin_name</span><span class="p">)</span>
+
+        <span class="n">info</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span><span class="n">info_file</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">PluginInfo</span><span class="p">(</span>
+            <span class="n">plugin_name</span><span class="p">,</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;verbose_name&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;author&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;description&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="n">info</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;url&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+            <span class="nb">tuple</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;permissions&#39;</span><span class="p">,</span> <span class="nb">dict</span><span class="p">())</span><span class="o">.</span><span class="n">items</span><span class="p">()),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_public_convar_from_info_file</span><span class="p">(</span><span class="n">info</span><span class="p">),</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_get_display_in_listing_from_info_file</span><span class="p">(</span><span class="n">info</span><span class="p">),</span>
+            <span class="o">**</span><span class="n">info</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+        <span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_public_convar_from_info_file</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;public_convar&#39;</span><span class="p">,</span> <span class="s1">&#39;True&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Section</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+
+        <span class="c1"># False and 0 result in False, everything else is True</span>
+        <span class="k">return</span> <span class="n">data</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">(</span><span class="s1">&#39;false&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_display_in_listing_from_info_file</span><span class="p">(</span><span class="n">info</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">info</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;display_in_listing&#39;</span><span class="p">,</span> <span class="p">[])</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">data</span><span class="p">]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_remove_modules</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">plugin_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all modules from the plugin.&quot;&quot;&quot;</span>
+        <span class="c1"># Get the plugins import path</span>
+        <span class="n">base_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_import</span> <span class="o">+</span> <span class="n">plugin_name</span>
+
+        <span class="c1"># Remove modules from sys.modules</span>
+        <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_related_module</span><span class="p">(</span><span class="n">base_name</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
+                <span class="k">del</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span><span class="p">[</span><span class="n">module</span><span class="p">]</span>
+
+        <span class="c1"># Unload AutoUnload instances</span>
+        <span class="k">for</span> <span class="n">module</span><span class="p">,</span> <span class="n">instances</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">AutoUnload</span><span class="o">.</span><span class="n">_module_instances</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_related_module</span><span class="p">(</span><span class="n">base_name</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unload_auto_unload_instances</span><span class="p">(</span><span class="n">instances</span><span class="p">)</span>
+            <span class="k">del</span> <span class="n">AutoUnload</span><span class="o">.</span><span class="n">_module_instances</span><span class="p">[</span><span class="n">module</span><span class="p">]</span>
+
+        <span class="c1"># Unload WeakAutoUnload instances</span>
+        <span class="k">for</span> <span class="n">module</span><span class="p">,</span> <span class="n">instance_dict</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span>
+                <span class="n">WeakAutoUnload</span><span class="o">.</span><span class="n">_module_instances</span><span class="o">.</span><span class="n">items</span><span class="p">()):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_related_module</span><span class="p">(</span><span class="n">base_name</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
+                <span class="k">continue</span>
+
+            <span class="bp">self</span><span class="o">.</span><span class="n">_unload_auto_unload_instances</span><span class="p">(</span><span class="n">instance_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="k">del</span> <span class="n">WeakAutoUnload</span><span class="o">.</span><span class="n">_module_instances</span><span class="p">[</span><span class="n">module</span><span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_is_related_module</span><span class="p">(</span><span class="n">base_name</span><span class="p">,</span> <span class="n">module</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if a plugin&#39;s base name is related to a module name.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">module</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">base_name</span><span class="p">))</span>
+            <span class="ow">or</span> <span class="n">module</span> <span class="o">==</span> <span class="n">base_name</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_auto_unload_instances</span><span class="p">(</span><span class="n">instances</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unload all given :class:`AutoUnload` instances.&quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">instances</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">instance</span><span class="o">.</span><span class="n">_unload_instance</span><span class="p">()</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="c1"># Print the error to console, but allow all</span>
+                <span class="c1"># other AutoUnload instances to be unloaded</span>
+                <span class="c1"># and the plugin to be fully unloaded itself</span>
+                <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span><span class="p">()</span></div>
+
+
+<span class="c1"># The singleton instance of the :class:`PluginManager` class</span>
+<span class="n">plugin_manager</span> <span class="o">=</span> <span class="n">PluginManager</span><span class="p">()</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">plugins.manager</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

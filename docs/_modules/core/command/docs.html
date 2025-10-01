@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>core.command.docs &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../core.html" >core</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../command.html" accesskey="U">core.command</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">core.command.docs</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for core.command.docs</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../core/command/docs.py</span>
+
+<span class="sd">&quot;&quot;&quot;Registers the sp docs sub-commands.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Site-Package Imports</span>
+<span class="c1">#   Configobj</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">configobj</span><span class="w"> </span><span class="kn">import</span> <span class="n">ConfigObj</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Autodoc</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">autodoc</span><span class="w"> </span><span class="kn">import</span> <span class="n">SphinxProject</span>
+<span class="c1">#   Commands</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">commands.typed</span><span class="w"> </span><span class="kn">import</span> <span class="n">TypedServerCommand</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.command</span><span class="w"> </span><span class="kn">import</span> <span class="n">core_command</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.command</span><span class="w"> </span><span class="kn">import</span> <span class="n">core_command_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">VERSION</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.version</span><span class="w"> </span><span class="kn">import</span> <span class="n">is_unversioned</span>
+<span class="c1">#   Hooks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">hooks.exceptions</span><span class="w"> </span><span class="kn">import</span> <span class="n">except_hooks</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">SP_DATA_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">SP_DOCS_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">CUSTOM_PACKAGES_DOCS_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">PLUGIN_DOCS_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">SP_PACKAGES_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">CUSTOM_PACKAGES_PATH</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">PLUGIN_PATH</span>
+<span class="c1">#   Plugins</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">plugins.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">plugin_manager</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBALS</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">core_command_logger</span><span class="o">.</span><span class="n">docs</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; sp docs create/generate/build</span>
+<span class="c1"># =============================================================================</span>
+<span class="nd">@core_command</span><span class="o">.</span><span class="n">server_sub_command</span><span class="p">([</span><span class="s1">&#39;docs&#39;</span><span class="p">,</span> <span class="s1">&#39;create&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_sp_docs_create</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">package</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a Sphinx project.&quot;&quot;&quot;</span>
+    <span class="n">_create_sphinx_project</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+
+
+<span class="nd">@core_command</span><span class="o">.</span><span class="n">server_sub_command</span><span class="p">([</span><span class="s1">&#39;docs&#39;</span><span class="p">,</span> <span class="s1">&#39;generate&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_sp_docs_generate</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">package</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a Sphinx project.&quot;&quot;&quot;</span>
+    <span class="n">_generate_sphinx_project</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+
+
+<span class="nd">@core_command</span><span class="o">.</span><span class="n">server_sub_command</span><span class="p">([</span><span class="s1">&#39;docs&#39;</span><span class="p">,</span> <span class="s1">&#39;build&#39;</span><span class="p">])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_sp_docs_build</span><span class="p">(</span><span class="n">command_info</span><span class="p">,</span> <span class="n">package</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build a Sphinx project.&quot;&quot;&quot;</span>
+    <span class="n">_build_sphinx_project</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CREATE FUNCTIONS</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_sphinx_project</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a Sphinx project.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">is_source_python</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+        <span class="n">_create_source_python_docs</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">is_custom_package</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+        <span class="n">_create_custom_package_docs</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">is_plugin</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+        <span class="n">_create_plugin_docs</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="s1">&#39;Invalid project name: &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">)</span> <span class="o">+</span>
+            <span class="s1">&#39;  Project name must be source-python, &#39;</span> <span class="o">+</span>
+            <span class="s1">&#39;a custom package name, or a plugin name.&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_source_python_docs</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a Sphinx project for Source.Python.&quot;&quot;&quot;</span>
+    <span class="n">project</span> <span class="o">=</span> <span class="n">SphinxProject</span><span class="p">(</span><span class="n">SP_PACKAGES_PATH</span><span class="p">,</span> <span class="n">SP_DOCS_PATH</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">project</span><span class="o">.</span><span class="n">project_exists</span><span class="p">():</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="s1">&#39;Sphinx project already exists for Source.Python&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">project</span><span class="o">.</span><span class="n">create</span><span class="p">(</span>
+                <span class="s1">&#39;Source.Python Development Team&#39;</span><span class="p">,</span> <span class="s1">&#39;Source.Python&#39;</span><span class="p">,</span> <span class="n">VERSION</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;An error occured while creating Sphinx &#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;project for Source.Python.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;Sphinx project has been created for Source.Python.&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_custom_package_docs</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a Sphinx project for a custom package.&quot;&quot;&quot;</span>
+    <span class="n">project</span> <span class="o">=</span> <span class="n">SphinxProject</span><span class="p">(</span>
+        <span class="n">CUSTOM_PACKAGES_PATH</span> <span class="o">/</span> <span class="n">package</span><span class="p">,</span>
+        <span class="n">CUSTOM_PACKAGES_DOCS_PATH</span> <span class="o">/</span> <span class="n">package</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">project</span><span class="o">.</span><span class="n">project_exists</span><span class="p">():</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="s1">&#39;Sphinx project already exists for custom&#39;</span> <span class="o">+</span>
+            <span class="s1">&#39; package &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">project</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;Unknown&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;An error occured while creating Sphinx project for &#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;custom package &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;Sphinx project has been created for&#39;</span> <span class="o">+</span>
+                <span class="s1">&#39; custom package &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_create_plugin_docs</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a Sphinx project for a plugin.&quot;&quot;&quot;</span>
+    <span class="n">project</span> <span class="o">=</span> <span class="n">SphinxProject</span><span class="p">(</span>
+        <span class="n">PLUGIN_PATH</span> <span class="o">/</span> <span class="n">package</span><span class="p">,</span> <span class="n">PLUGIN_DOCS_PATH</span> <span class="o">/</span> <span class="n">package</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">project</span><span class="o">.</span><span class="n">project_exists</span><span class="p">():</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="s1">&#39;Sphinx project already exists for &#39;</span> <span class="o">+</span>
+            <span class="s1">&#39;plugin &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">project</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="s1">&#39;Unknown&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;An error occured while creating Sphinx project &#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;for plugin &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;Sphinx project has been created for&#39;</span> <span class="o">+</span>
+                <span class="s1">&#39; plugin &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GENERATE FUNCTIONS</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_generate_sphinx_project</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate project files for a Sphinx project.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">is_source_python</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+        <span class="n">_generate_source_python_docs</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">is_custom_package</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+        <span class="n">_generate_custom_package_docs</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">is_plugin</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+        <span class="n">_generate_plugin_docs</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="s1">&#39;Invalid project name: &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">)</span> <span class="o">+</span>
+            <span class="s1">&#39;  Project name must be source-python, &#39;</span> <span class="o">+</span>
+            <span class="s1">&#39;a custom package name, or a plugin name.&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_generate_source_python_docs</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate Sphinx project files for Source.Python.&quot;&quot;&quot;</span>
+    <span class="n">project</span> <span class="o">=</span> <span class="n">SphinxProject</span><span class="p">(</span><span class="n">SP_PACKAGES_PATH</span><span class="p">,</span> <span class="n">SP_DOCS_PATH</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">project</span><span class="o">.</span><span class="n">project_exists</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">project</span><span class="o">.</span><span class="n">generate_project_files</span><span class="p">(</span><span class="s1">&#39;developing/modules&#39;</span><span class="p">)</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;An error occured while generating &#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;project files for Source.Python&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">modules_dir</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">project_source_dir</span> <span class="o">/</span> <span class="s1">&#39;developing&#39;</span> <span class="o">/</span> <span class="s1">&#39;modules&#39;</span>
+            <span class="n">modules_dir</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s1">&#39;modules.rst&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">file_path</span> <span class="ow">in</span> <span class="n">modules_dir</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s1">&#39;source-python.*.rst&#39;</span><span class="p">):</span>
+                <span class="n">_prepare_generated_source_python_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;Project files have been generated for Source.Python.&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="s1">&#39;Sphinx project does not exist for Source.Python.&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_prepare_generated_source_python_file</span><span class="p">(</span><span class="n">file_path</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Rename the generated file if it wasn&#39;t already renamed.</span>
+
+<span class="sd">    If it was already renamed, remove the generated file.</span>
+
+<span class="sd">    After renaming the file several patches are applied to the file like</span>
+<span class="sd">    removing &#39;source-python.&#39; and adding the &#39;:titlesonly:&#39; directive.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">new_name</span> <span class="o">=</span> <span class="n">file_path</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="n">file_path</span><span class="o">.</span><span class="n">basename</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
+        <span class="s1">&#39;source-python.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">new_name</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+        <span class="n">file_path</span><span class="o">.</span><span class="n">remove</span><span class="p">()</span>
+        <span class="k">return</span>
+
+    <span class="n">file_path</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">new_name</span><span class="p">)</span>
+
+    <span class="k">with</span> <span class="n">new_name</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+    <span class="k">with</span> <span class="n">new_name</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="c1"># Remove source-python from the title</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;source-python.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+
+        <span class="c1"># Since the heading underline is now longer than required, we also</span>
+        <span class="c1"># adapt it to the new title</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">lines</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">title</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">def</span><span class="w"> </span><span class="nf">write_next_4_lines</span><span class="p">(</span><span class="n">current</span><span class="p">):</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">current</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">lines</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+
+        <span class="k">while</span> <span class="n">lines</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">lstrip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span>
+                    <span class="p">(</span><span class="s1">&#39;.. automodule:: source-python.&#39;</span><span class="p">,</span> <span class="s1">&#39;source-python.&#39;</span><span class="p">)):</span>
+                <span class="c1"># We need to get rid of &quot;source-python.&quot;</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;source-python.&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">))</span>
+
+            <span class="c1"># Who&#39;s so funny and added two different indentions?</span>
+            <span class="c1"># Subpackages are indented with 4 spaces</span>
+            <span class="k">elif</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">&#39;Subpackages</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span>
+                <span class="n">write_next_4_lines</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;    :titlesonly:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Submodules only need 3 spaces...</span>
+            <span class="k">elif</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">&#39;Submodules</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">:</span>
+                <span class="n">write_next_4_lines</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;   :titlesonly:</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_generate_custom_package_docs</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate Sphinx project files for a custom package.&quot;&quot;&quot;</span>
+    <span class="n">project</span> <span class="o">=</span> <span class="n">SphinxProject</span><span class="p">(</span>
+        <span class="n">CUSTOM_PACKAGES_PATH</span> <span class="o">/</span> <span class="n">package</span><span class="p">,</span>
+        <span class="n">CUSTOM_PACKAGES_DOCS_PATH</span> <span class="o">/</span> <span class="n">package</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">project</span><span class="o">.</span><span class="n">project_exists</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">project</span><span class="o">.</span><span class="n">generate_project_files</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;An error occured while generating project &#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;files for custom package &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;Project files have been generated for &#39;</span>
+                <span class="s1">&#39;custom package &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="s1">&#39;Sphinx project does not exist for &#39;</span> <span class="o">+</span>
+            <span class="s1">&#39;custom package &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_generate_plugin_docs</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate Sphinx project files for a plugin.&quot;&quot;&quot;</span>
+    <span class="n">project</span> <span class="o">=</span> <span class="n">SphinxProject</span><span class="p">(</span>
+        <span class="n">PLUGIN_PATH</span> <span class="o">/</span> <span class="n">package</span><span class="p">,</span> <span class="n">PLUGIN_DOCS_PATH</span> <span class="o">/</span> <span class="n">package</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">project</span><span class="o">.</span><span class="n">project_exists</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">project</span><span class="o">.</span><span class="n">generate_project_files</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;An error occured while generating project &#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;files for plugin &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;Project files have been generated &#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;for plugin &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="s1">&#39;Sphinx project does not exist for&#39;</span> <span class="o">+</span>
+            <span class="s1">&#39; plugin &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; BUILD FUNCTIONS</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_build_sphinx_project</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build project files for a Sphinx project.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">is_source_python</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+        <span class="n">_build_source_python_docs</span><span class="p">()</span>
+    <span class="k">elif</span> <span class="n">is_custom_package</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+        <span class="n">_build_custom_package_docs</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+    <span class="k">elif</span> <span class="n">is_plugin</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+        <span class="n">_build_plugin_docs</span><span class="p">(</span><span class="n">package</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="s1">&#39;Invalid project name: &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">)</span> <span class="o">+</span>
+            <span class="s1">&#39;  Project name must be source-python, &#39;</span> <span class="o">+</span>
+            <span class="s1">&#39;a custom package name, or a plugin name.&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_build_source_python_docs</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build Sphinx project files for Source.Python.&quot;&quot;&quot;</span>
+    <span class="n">project</span> <span class="o">=</span> <span class="n">SphinxProject</span><span class="p">(</span><span class="n">SP_PACKAGES_PATH</span><span class="p">,</span> <span class="n">SP_DOCS_PATH</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">project</span><span class="o">.</span><span class="n">project_exists</span><span class="p">():</span>
+        <span class="c1"># Update version and release</span>
+        <span class="n">conf_file</span> <span class="o">=</span> <span class="n">project</span><span class="o">.</span><span class="n">project_source_dir</span> <span class="o">/</span> <span class="s1">&#39;conf.py&#39;</span>
+        <span class="k">with</span> <span class="n">conf_file</span><span class="o">.</span><span class="n">open</span><span class="p">()</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+
+        <span class="c1"># Get the version string</span>
+        <span class="n">version</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span> <span class="k">if</span> <span class="n">is_unversioned</span><span class="p">()</span> <span class="k">else</span> <span class="sa">f</span><span class="s1">&#39;v</span><span class="si">{</span><span class="n">VERSION</span><span class="si">}</span><span class="s1">&#39;</span>
+
+        <span class="k">with</span> <span class="n">conf_file</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s1">&#39;version&#39;</span><span class="p">,</span> <span class="s1">&#39;release&#39;</span><span class="p">)):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{0}</span><span class="s1"> = </span><span class="se">\&#39;</span><span class="s1"> </span><span class="si">{1}</span><span class="se">\&#39;\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">maxsplit</span><span class="o">=</span><span class="mi">1</span><span class="p">)[</span><span class="mi">0</span><span class="p">],</span> <span class="n">version</span><span class="p">)</span>
+
+                <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+        <span class="c1"># Create/update credits.rst</span>
+        <span class="k">with</span> <span class="n">project</span><span class="o">.</span><span class="n">project_source_dir</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span>
+                <span class="s1">&#39;general&#39;</span><span class="p">,</span> <span class="s1">&#39;credits.rst&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;wb&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_get_updated_credits_wiki</span><span class="p">()</span><span class="o">.</span><span class="n">encode</span><span class="p">())</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;An error occured while building &#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;project files for Source.Python.&#39;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;Project files have been built for Source.Python.&#39;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="s1">&#39;Sphinx project does not exist for Source.Python.&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_get_updated_credits_wiki</span><span class="p">():</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return the content for the credits.rst.&quot;&quot;&quot;</span>
+    <span class="n">groups</span> <span class="o">=</span> <span class="n">ConfigObj</span><span class="p">(</span>
+        <span class="n">SP_DATA_PATH</span> <span class="o">/</span> <span class="s1">&#39;credits.ini&#39;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s1">&#39;unicode_escape&#39;</span><span class="p">)</span>
+
+    <span class="n">header</span> <span class="o">=</span> <span class="s1">&#39;Credits&#39;</span>
+    <span class="n">column1</span> <span class="o">=</span> <span class="s1">&#39;Nickname&#39;</span>
+    <span class="n">column2</span> <span class="o">=</span> <span class="s1">&#39;Real name&#39;</span>
+    <span class="n">col1_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">column1</span><span class="p">)</span>
+    <span class="n">col2_len</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">column2</span><span class="p">)</span>
+
+    <span class="n">output</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">group</span><span class="p">,</span> <span class="n">names</span> <span class="ow">in</span> <span class="n">groups</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="c1"># Determine the maximum column widths</span>
+        <span class="n">max_nickname</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">names</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">))</span> <span class="ow">or</span> <span class="n">col1_len</span>
+        <span class="n">max_realname</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="n">names</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="nb">len</span><span class="p">))</span> <span class="ow">or</span> <span class="n">col2_len</span>
+
+        <span class="c1"># Calculate the row separator</span>
+        <span class="n">separator</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">  </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="n">max_nickname</span><span class="p">,</span> <span class="s1">&#39;=&#39;</span><span class="o">*</span><span class="n">max_realname</span><span class="p">)</span>
+
+        <span class="c1"># Use the group name as a sub-heading</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="si">{}</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="s1">&#39;-&#39;</span><span class="o">*</span><span class="nb">len</span><span class="p">(</span><span class="n">group</span><span class="p">))</span>
+
+        <span class="c1"># Add columns + separators</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="se">\n</span><span class="si">{}{}</span><span class="s1">  </span><span class="si">{}</span><span class="se">\n</span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">separator</span><span class="p">,</span> <span class="n">column1</span><span class="p">,</span>
+            <span class="s1">&#39; &#39;</span> <span class="o">*</span> <span class="p">(</span><span class="n">max_nickname</span> <span class="o">-</span> <span class="n">col1_len</span><span class="p">),</span>
+            <span class="n">column2</span><span class="p">,</span> <span class="n">separator</span><span class="p">)</span>
+
+        <span class="c1"># Add the table content</span>
+        <span class="k">for</span> <span class="n">nickname</span><span class="p">,</span> <span class="n">realname</span> <span class="ow">in</span> <span class="n">names</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1">  </span><span class="si">{}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">nickname</span><span class="o">.</span><span class="n">ljust</span><span class="p">(</span><span class="n">max_nickname</span><span class="p">),</span> <span class="n">realname</span><span class="p">)</span>
+
+        <span class="n">output</span> <span class="o">+=</span> <span class="n">separator</span>
+        <span class="n">output</span> <span class="o">+=</span> <span class="s1">&#39;</span><span class="se">\n\n\n</span><span class="s1">&#39;</span>
+
+    <span class="k">return</span> <span class="n">output</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_build_custom_package_docs</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build Sphinx project files for a custom package.&quot;&quot;&quot;</span>
+    <span class="n">project</span> <span class="o">=</span> <span class="n">SphinxProject</span><span class="p">(</span>
+        <span class="n">CUSTOM_PACKAGES_PATH</span> <span class="o">/</span> <span class="n">package</span><span class="p">,</span>
+        <span class="n">CUSTOM_PACKAGES_DOCS_PATH</span> <span class="o">/</span> <span class="n">package</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">project</span><span class="o">.</span><span class="n">project_exists</span><span class="p">():</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;An error occured while building project &#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;files for custom package &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;Project files have been built for &#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;custom package &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="s1">&#39;Sphinx project does not exist for &#39;</span> <span class="o">+</span>
+            <span class="s1">&#39;custom package &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_build_plugin_docs</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Build Sphinx project files for a plugin.&quot;&quot;&quot;</span>
+    <span class="n">project</span> <span class="o">=</span> <span class="n">SphinxProject</span><span class="p">(</span>
+        <span class="n">PLUGIN_PATH</span> <span class="o">/</span> <span class="n">package</span><span class="p">,</span> <span class="n">PLUGIN_DOCS_PATH</span> <span class="o">/</span> <span class="n">package</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">project</span><span class="o">.</span><span class="n">project_exists</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">plugin_manager</span><span class="o">.</span><span class="n">is_loaded</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;Plugin must be loaded to build the project files.&#39;</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">project</span><span class="o">.</span><span class="n">build</span><span class="p">()</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="n">except_hooks</span><span class="o">.</span><span class="n">print_exception</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;An error occured while building project &#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;files for plugin &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+                <span class="s1">&#39;Project files have been built for &#39;</span> <span class="o">+</span>
+                <span class="s1">&#39;plugin &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">log_message</span><span class="p">(</span>
+            <span class="s1">&#39;Sphinx project does not exist for &#39;</span> <span class="o">+</span>
+            <span class="s1">&#39;plugin &quot;</span><span class="si">{0}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">package</span><span class="p">))</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; HELPER FUNCTIONS</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="is_source_python">
+<a class="viewcode-back" href="../../../developing/modules/core.command.docs.html#core.command.docs.is_source_python">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_source_python</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if the given package name is source-python.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">package</span> <span class="o">==</span> <span class="s1">&#39;source-python&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="is_custom_package">
+<a class="viewcode-back" href="../../../developing/modules/core.command.docs.html#core.command.docs.is_custom_package">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_custom_package</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if the given package name is a custom package.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">package</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="n">CUSTOM_PACKAGES_PATH</span><span class="o">.</span><span class="n">iterdir</span><span class="p">())</span></div>
+
+
+
+<div class="viewcode-block" id="is_plugin">
+<a class="viewcode-back" href="../../../developing/modules/core.command.docs.html#core.command.docs.is_plugin">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">is_plugin</span><span class="p">(</span><span class="n">package</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return True if the given package name is a plugin.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">package</span> <span class="ow">in</span> <span class="nb">map</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">path</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">path</span><span class="o">.</span><span class="n">name</span><span class="p">),</span> <span class="n">PLUGIN_PATH</span><span class="o">.</span><span class="n">dirs</span><span class="p">())</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; DESCRIPTIONS</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">TypedServerCommand</span><span class="o">.</span><span class="n">parser</span><span class="o">.</span><span class="n">set_node_description</span><span class="p">(</span>
+    <span class="p">[</span><span class="s1">&#39;sp&#39;</span><span class="p">,</span> <span class="s1">&#39;docs&#39;</span><span class="p">],</span> <span class="s1">&#39;Documentation specific commands.&#39;</span><span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../../index.html">
+              <img class="logo" src="../../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../core.html" >core</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="../command.html" >core.command</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">core.command.docs</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

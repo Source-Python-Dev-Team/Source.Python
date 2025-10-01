@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>translations.strings module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">translations.strings module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-translations.strings">
+<span id="translations-strings-module"></span><h1>translations.strings module<a class="headerlink" href="#module-translations.strings" title="Link to this heading">¶</a></h1>
+<p>Provides translation functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="translations.strings.LangStrings">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">translations.strings.</span></span><span class="sig-name descname"><span class="pre">LangStrings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">infile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf_8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/translations/strings.html#LangStrings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#translations.strings.LangStrings" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+<p>Dictionary class used to store all strings for a plugin.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="translations.strings.LangStrings.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">infile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'utf_8'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/translations/strings.html#LangStrings.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#translations.strings.LangStrings.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Add all strings and fix double escaped strings.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="translations.strings.LangStrings.get_strings">
+<span class="sig-name descname"><span class="pre">get_strings</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/translations/strings.html#LangStrings.get_strings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#translations.strings.LangStrings.get_strings" title="Link to this definition">¶</a></dt>
+<dd><p>Return a TranslationStrings object with updated tokens.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="translations.strings.TranslationStrings">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">translations.strings.</span></span><span class="sig-name descname"><span class="pre">TranslationStrings</span></span><a class="reference internal" href="../../_modules/translations/strings.html#TranslationStrings"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#translations.strings.TranslationStrings" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">dict</span></code></a></p>
+<p>Stores and get language strings for a particular string.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="translations.strings.TranslationStrings.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/translations/strings.html#TranslationStrings.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#translations.strings.TranslationStrings.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Store an empty dictionary as the tokens.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="translations.strings.TranslationStrings.get_language">
+<span class="sig-name descname"><span class="pre">get_language</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">language</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/translations/strings.html#TranslationStrings.get_language"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#translations.strings.TranslationStrings.get_language" title="Link to this definition">¶</a></dt>
+<dd><p>Return the language to be used.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="translations.strings.TranslationStrings.get_string">
+<span class="sig-name descname"><span class="pre">get_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">language</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/translations/strings.html#TranslationStrings.get_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#translations.strings.TranslationStrings.get_string" title="Link to this definition">¶</a></dt>
+<dd><p>Return the language string for the given language/tokens.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="translations.strings.TranslationStrings.tokenized">
+<span class="sig-name descname"><span class="pre">tokenized</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">tokens</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/translations/strings.html#TranslationStrings.tokenized"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#translations.strings.TranslationStrings.tokenized" title="Link to this definition">¶</a></dt>
+<dd><p>Create a new TranslationStrings instance and store tokens in it.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>tokens</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Tokens to store in the instance.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>New TranslationStrings instance with tokens stored in it.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#translations.strings.TranslationStrings" title="translations.strings.TranslationStrings">TranslationStrings</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">translations.strings module</a><ul>
+<li><a class="reference internal" href="#translations.strings.LangStrings"><code class="docutils literal notranslate"><span class="pre">LangStrings</span></code></a><ul>
+<li><a class="reference internal" href="#translations.strings.LangStrings.__init__"><code class="docutils literal notranslate"><span class="pre">LangStrings.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#translations.strings.LangStrings.get_strings"><code class="docutils literal notranslate"><span class="pre">LangStrings.get_strings()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#translations.strings.TranslationStrings"><code class="docutils literal notranslate"><span class="pre">TranslationStrings</span></code></a><ul>
+<li><a class="reference internal" href="#translations.strings.TranslationStrings.__init__"><code class="docutils literal notranslate"><span class="pre">TranslationStrings.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#translations.strings.TranslationStrings.get_language"><code class="docutils literal notranslate"><span class="pre">TranslationStrings.get_language()</span></code></a></li>
+<li><a class="reference internal" href="#translations.strings.TranslationStrings.get_string"><code class="docutils literal notranslate"><span class="pre">TranslationStrings.get_string()</span></code></a></li>
+<li><a class="reference internal" href="#translations.strings.TranslationStrings.tokenized"><code class="docutils literal notranslate"><span class="pre">TranslationStrings.tokenized()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/translations.strings.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">translations.strings module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>events.variable &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../events.html" accesskey="U">events</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">events.variable</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for events.variable</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../events/variable.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides variable types to be used with custom events.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Events</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">events</span><span class="w"> </span><span class="kn">import</span> <span class="n">events_logger</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;BoolVariable&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ByteVariable&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;FloatVariable&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;LongVariable&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;ShortVariable&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;StringVariable&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;_EventVariable&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Store a dictionary to get default values</span>
+<span class="n">_DEFAULT_VALUES</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;bool&#39;</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span> <span class="s1">&#39;int&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="s1">&#39;float&#39;</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="s1">&#39;string&#39;</span><span class="p">:</span> <span class="nb">str</span><span class="p">}</span>
+
+<span class="c1"># Get the sp.events.variable logger</span>
+<span class="n">events_variable_logger</span> <span class="o">=</span> <span class="n">events_logger</span><span class="o">.</span><span class="n">variable</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_EventVariable</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class used for event variable types.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">comment</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called on instantiation.&quot;&quot;&quot;</span>
+        <span class="c1"># Was a default value passed?</span>
+        <span class="k">if</span> <span class="n">default</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Set the default value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_default</span> <span class="o">=</span> <span class="n">default</span>
+
+        <span class="c1"># Was no default value passed?</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># Set the default value to the type&#39;s default</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_default</span> <span class="o">=</span> <span class="n">_DEFAULT_VALUES</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">method</span><span class="p">]()</span>
+
+        <span class="c1"># Store the comment</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_comment</span> <span class="o">=</span> <span class="n">comment</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the variable type name.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;variable&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Raise an error if the inheriting class does not have their own.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s1">&#39;No method attribute defined for class.&#39;</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="BoolVariable">
+<a class="viewcode-back" href="../../developing/modules/events.variable.html#events.variable.BoolVariable">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">BoolVariable</span><span class="p">(</span><span class="n">_EventVariable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store bool event variables.&quot;&quot;&quot;</span>
+
+    <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;bool&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="ByteVariable">
+<a class="viewcode-back" href="../../developing/modules/events.variable.html#events.variable.ByteVariable">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ByteVariable</span><span class="p">(</span><span class="n">_EventVariable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store byte event variables.&quot;&quot;&quot;</span>
+
+    <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="ShortVariable">
+<a class="viewcode-back" href="../../developing/modules/events.variable.html#events.variable.ShortVariable">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ShortVariable</span><span class="p">(</span><span class="n">_EventVariable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store short event variables.&quot;&quot;&quot;</span>
+
+    <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="LongVariable">
+<a class="viewcode-back" href="../../developing/modules/events.variable.html#events.variable.LongVariable">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">LongVariable</span><span class="p">(</span><span class="n">_EventVariable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store long event variables.&quot;&quot;&quot;</span>
+
+    <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;int&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="FloatVariable">
+<a class="viewcode-back" href="../../developing/modules/events.variable.html#events.variable.FloatVariable">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">FloatVariable</span><span class="p">(</span><span class="n">_EventVariable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store floating point event variables.&quot;&quot;&quot;</span>
+
+    <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;float&#39;</span></div>
+
+
+
+<div class="viewcode-block" id="StringVariable">
+<a class="viewcode-back" href="../../developing/modules/events.variable.html#events.variable.StringVariable">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">StringVariable</span><span class="p">(</span><span class="n">_EventVariable</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store string event variables.&quot;&quot;&quot;</span>
+
+    <span class="n">method</span> <span class="o">=</span> <span class="s1">&#39;string&#39;</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../events.html" >events</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">events.variable</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

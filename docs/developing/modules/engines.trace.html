@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>engines.trace module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">engines.trace module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-engines.trace">
+<span id="engines-trace-module"></span><h1>engines.trace module<a class="headerlink" href="#module-engines.trace" title="Link to this heading">¶</a></h1>
+<p>Provides ray tracing functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.trace.BaseTrace">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.trace.</span></span><span class="sig-name descname"><span class="pre">BaseTrace</span></span><a class="headerlink" href="#engines.trace.BaseTrace" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.trace.BaseTrace.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#engines.trace.BaseTrace.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.BaseTrace.all_solid">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">all_solid</span></span><a class="headerlink" href="#engines.trace.BaseTrace.all_solid" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.BaseTrace)arg1) -&gt; bool</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.BaseTrace.contents">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">contents</span></span><a class="headerlink" href="#engines.trace.BaseTrace.contents" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.BaseTrace)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.BaseTrace.displacement_flags">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">displacement_flags</span></span><a class="headerlink" href="#engines.trace.BaseTrace.displacement_flags" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.BaseTrace)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.BaseTrace.end_position">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">end_position</span></span><a class="headerlink" href="#engines.trace.BaseTrace.end_position" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.BaseTrace)arg1) -&gt; object</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.BaseTrace.fraction">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fraction</span></span><a class="headerlink" href="#engines.trace.BaseTrace.fraction" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.BaseTrace)arg1) -&gt; float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.BaseTrace.plane">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">plane</span></span><a class="headerlink" href="#engines.trace.BaseTrace.plane" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.BaseTrace)arg1) -&gt; object</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.BaseTrace.start_position">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_position</span></span><a class="headerlink" href="#engines.trace.BaseTrace.start_position" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.BaseTrace)arg1) -&gt; object</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.BaseTrace.start_solid">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">start_solid</span></span><a class="headerlink" href="#engines.trace.BaseTrace.start_solid" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.BaseTrace)arg1) -&gt; bool</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.trace.</span></span><span class="sig-name descname"><span class="pre">ContentFlags</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/engines/trace.html#ContentFlags"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#engines.trace.ContentFlags" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/enum.html#enum.IntFlag" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntFlag</span></code></a></p>
+<p>Content flags wrapper enumerator.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.ALL_VISIBLE">
+<span class="sig-name descname"><span class="pre">ALL_VISIBLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">255</span></em><a class="headerlink" href="#engines.trace.ContentFlags.ALL_VISIBLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.AREAPORTAL">
+<span class="sig-name descname"><span class="pre">AREAPORTAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">32768</span></em><a class="headerlink" href="#engines.trace.ContentFlags.AREAPORTAL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.AUX">
+<span class="sig-name descname"><span class="pre">AUX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#engines.trace.ContentFlags.AUX" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.BLOCKLOS">
+<span class="sig-name descname"><span class="pre">BLOCKLOS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">64</span></em><a class="headerlink" href="#engines.trace.ContentFlags.BLOCKLOS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.CURRENT_0">
+<span class="sig-name descname"><span class="pre">CURRENT_0</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">262144</span></em><a class="headerlink" href="#engines.trace.ContentFlags.CURRENT_0" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.CURRENT_180">
+<span class="sig-name descname"><span class="pre">CURRENT_180</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1048576</span></em><a class="headerlink" href="#engines.trace.ContentFlags.CURRENT_180" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.CURRENT_270">
+<span class="sig-name descname"><span class="pre">CURRENT_270</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2097152</span></em><a class="headerlink" href="#engines.trace.ContentFlags.CURRENT_270" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.CURRENT_90">
+<span class="sig-name descname"><span class="pre">CURRENT_90</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">524288</span></em><a class="headerlink" href="#engines.trace.ContentFlags.CURRENT_90" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.CURRENT_DOWN">
+<span class="sig-name descname"><span class="pre">CURRENT_DOWN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8388608</span></em><a class="headerlink" href="#engines.trace.ContentFlags.CURRENT_DOWN" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.CURRENT_UP">
+<span class="sig-name descname"><span class="pre">CURRENT_UP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4194304</span></em><a class="headerlink" href="#engines.trace.ContentFlags.CURRENT_UP" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.DEBRIS">
+<span class="sig-name descname"><span class="pre">DEBRIS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">67108864</span></em><a class="headerlink" href="#engines.trace.ContentFlags.DEBRIS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.DETAIL">
+<span class="sig-name descname"><span class="pre">DETAIL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">134217728</span></em><a class="headerlink" href="#engines.trace.ContentFlags.DETAIL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.EMPTY">
+<span class="sig-name descname"><span class="pre">EMPTY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#engines.trace.ContentFlags.EMPTY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.GRATE">
+<span class="sig-name descname"><span class="pre">GRATE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8</span></em><a class="headerlink" href="#engines.trace.ContentFlags.GRATE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.HITBOX">
+<span class="sig-name descname"><span class="pre">HITBOX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1073741824</span></em><a class="headerlink" href="#engines.trace.ContentFlags.HITBOX" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.IGNORE_NODRAW_OPAQUE">
+<span class="sig-name descname"><span class="pre">IGNORE_NODRAW_OPAQUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">8192</span></em><a class="headerlink" href="#engines.trace.ContentFlags.IGNORE_NODRAW_OPAQUE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.LADDER">
+<span class="sig-name descname"><span class="pre">LADDER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">536870912</span></em><a class="headerlink" href="#engines.trace.ContentFlags.LADDER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.LAST_VISIBLE">
+<span class="sig-name descname"><span class="pre">LAST_VISIBLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">128</span></em><a class="headerlink" href="#engines.trace.ContentFlags.LAST_VISIBLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.MONSTER">
+<span class="sig-name descname"><span class="pre">MONSTER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">33554432</span></em><a class="headerlink" href="#engines.trace.ContentFlags.MONSTER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.MONSTERCLIP">
+<span class="sig-name descname"><span class="pre">MONSTERCLIP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">131072</span></em><a class="headerlink" href="#engines.trace.ContentFlags.MONSTERCLIP" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.MOVEABLE">
+<span class="sig-name descname"><span class="pre">MOVEABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">16384</span></em><a class="headerlink" href="#engines.trace.ContentFlags.MOVEABLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.OPAQUE">
+<span class="sig-name descname"><span class="pre">OPAQUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">128</span></em><a class="headerlink" href="#engines.trace.ContentFlags.OPAQUE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.ORIGIN">
+<span class="sig-name descname"><span class="pre">ORIGIN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">16777216</span></em><a class="headerlink" href="#engines.trace.ContentFlags.ORIGIN" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.PLAYERCLIP">
+<span class="sig-name descname"><span class="pre">PLAYERCLIP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">65536</span></em><a class="headerlink" href="#engines.trace.ContentFlags.PLAYERCLIP" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.SLIME">
+<span class="sig-name descname"><span class="pre">SLIME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">16</span></em><a class="headerlink" href="#engines.trace.ContentFlags.SLIME" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.SOLID">
+<span class="sig-name descname"><span class="pre">SOLID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#engines.trace.ContentFlags.SOLID" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.TEAM1">
+<span class="sig-name descname"><span class="pre">TEAM1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2048</span></em><a class="headerlink" href="#engines.trace.ContentFlags.TEAM1" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.TEAM2">
+<span class="sig-name descname"><span class="pre">TEAM2</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4096</span></em><a class="headerlink" href="#engines.trace.ContentFlags.TEAM2" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.TESTFOGVOLUME">
+<span class="sig-name descname"><span class="pre">TESTFOGVOLUME</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">256</span></em><a class="headerlink" href="#engines.trace.ContentFlags.TESTFOGVOLUME" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.TRANSLUCENT">
+<span class="sig-name descname"><span class="pre">TRANSLUCENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">268435456</span></em><a class="headerlink" href="#engines.trace.ContentFlags.TRANSLUCENT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.UNUSED">
+<span class="sig-name descname"><span class="pre">UNUSED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">512</span></em><a class="headerlink" href="#engines.trace.ContentFlags.UNUSED" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.WATER">
+<span class="sig-name descname"><span class="pre">WATER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">32</span></em><a class="headerlink" href="#engines.trace.ContentFlags.WATER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentFlags.WINDOW">
+<span class="sig-name descname"><span class="pre">WINDOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#engines.trace.ContentFlags.WINDOW" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.trace.</span></span><span class="sig-name descname"><span class="pre">ContentMasks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">new_class_name</span></span></em>, <em class="sig-param"><span class="positional-only-separator o"><abbr title="Positional-only parameter separator (PEP 570)"><span class="pre">/</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">names</span></span></em>, <em class="sig-param"><span class="keyword-only-separator o"><abbr title="Keyword-only parameters separator (PEP 3102)"><span class="pre">*</span></abbr></span></em>, <em class="sig-param"><span class="n"><span class="pre">module</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qualname</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/engines/trace.html#ContentMasks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#engines.trace.ContentMasks" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/enum.html#enum.IntFlag" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntFlag</span></code></a></p>
+<p>Content masks wrapper enumerator.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.ALL">
+<span class="sig-name descname"><span class="pre">ALL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4294967295</span></em><a class="headerlink" href="#engines.trace.ContentMasks.ALL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.BLOCKLOS">
+<span class="sig-name descname"><span class="pre">BLOCKLOS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">16449</span></em><a class="headerlink" href="#engines.trace.ContentMasks.BLOCKLOS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.BLOCKLOS_AND_NPCS">
+<span class="sig-name descname"><span class="pre">BLOCKLOS_AND_NPCS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">33570881</span></em><a class="headerlink" href="#engines.trace.ContentMasks.BLOCKLOS_AND_NPCS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.CURRENT">
+<span class="sig-name descname"><span class="pre">CURRENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">16515072</span></em><a class="headerlink" href="#engines.trace.ContentMasks.CURRENT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.DEAD_SOLID">
+<span class="sig-name descname"><span class="pre">DEAD_SOLID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">65547</span></em><a class="headerlink" href="#engines.trace.ContentMasks.DEAD_SOLID" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.NPC_SOLID">
+<span class="sig-name descname"><span class="pre">NPC_SOLID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">33701899</span></em><a class="headerlink" href="#engines.trace.ContentMasks.NPC_SOLID" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.NPC_WORLD_STATIC">
+<span class="sig-name descname"><span class="pre">NPC_WORLD_STATIC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">131083</span></em><a class="headerlink" href="#engines.trace.ContentMasks.NPC_WORLD_STATIC" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.OPAQUE">
+<span class="sig-name descname"><span class="pre">OPAQUE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">16513</span></em><a class="headerlink" href="#engines.trace.ContentMasks.OPAQUE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.OPAQUE_AND_NPCS">
+<span class="sig-name descname"><span class="pre">OPAQUE_AND_NPCS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">33570945</span></em><a class="headerlink" href="#engines.trace.ContentMasks.OPAQUE_AND_NPCS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.PLAYER_SOLID">
+<span class="sig-name descname"><span class="pre">PLAYER_SOLID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">33636363</span></em><a class="headerlink" href="#engines.trace.ContentMasks.PLAYER_SOLID" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.PLAYER_SOLID_BRUSH_ONLY">
+<span class="sig-name descname"><span class="pre">PLAYER_SOLID_BRUSH_ONLY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">81931</span></em><a class="headerlink" href="#engines.trace.ContentMasks.PLAYER_SOLID_BRUSH_ONLY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.SHOT">
+<span class="sig-name descname"><span class="pre">SHOT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1174421507</span></em><a class="headerlink" href="#engines.trace.ContentMasks.SHOT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.SHOT_HULL">
+<span class="sig-name descname"><span class="pre">SHOT_HULL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">100679691</span></em><a class="headerlink" href="#engines.trace.ContentMasks.SHOT_HULL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.SHOT_PORTAL">
+<span class="sig-name descname"><span class="pre">SHOT_PORTAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">33570819</span></em><a class="headerlink" href="#engines.trace.ContentMasks.SHOT_PORTAL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.SOLID">
+<span class="sig-name descname"><span class="pre">SOLID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">33570827</span></em><a class="headerlink" href="#engines.trace.ContentMasks.SOLID" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.SOLID_BRUSH_ONLY">
+<span class="sig-name descname"><span class="pre">SOLID_BRUSH_ONLY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">16395</span></em><a class="headerlink" href="#engines.trace.ContentMasks.SOLID_BRUSH_ONLY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.SPLIT_AREA_PORTAL">
+<span class="sig-name descname"><span class="pre">SPLIT_AREA_PORTAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">48</span></em><a class="headerlink" href="#engines.trace.ContentMasks.SPLIT_AREA_PORTAL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.VISIBLE">
+<span class="sig-name descname"><span class="pre">VISIBLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">24705</span></em><a class="headerlink" href="#engines.trace.ContentMasks.VISIBLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.VISIBLE_AND_NPCS">
+<span class="sig-name descname"><span class="pre">VISIBLE_AND_NPCS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">33579137</span></em><a class="headerlink" href="#engines.trace.ContentMasks.VISIBLE_AND_NPCS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.ContentMasks.WATER">
+<span class="sig-name descname"><span class="pre">WATER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">16432</span></em><a class="headerlink" href="#engines.trace.ContentMasks.WATER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.trace.DisplacementFlags">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.trace.</span></span><span class="sig-name descname"><span class="pre">DisplacementFlags</span></span><a class="headerlink" href="#engines.trace.DisplacementFlags" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.DisplacementFlags.BUILDABLE">
+<span class="sig-name descname"><span class="pre">BUILDABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.DisplacementFlags.BUILDABLE</span></em><a class="headerlink" href="#engines.trace.DisplacementFlags.BUILDABLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.DisplacementFlags.SURFACE">
+<span class="sig-name descname"><span class="pre">SURFACE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.DisplacementFlags.SURFACE</span></em><a class="headerlink" href="#engines.trace.DisplacementFlags.SURFACE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.DisplacementFlags.SURFPROP1">
+<span class="sig-name descname"><span class="pre">SURFPROP1</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.DisplacementFlags.SURFPROP1</span></em><a class="headerlink" href="#engines.trace.DisplacementFlags.SURFPROP1" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.DisplacementFlags.SURFPROP2">
+<span class="sig-name descname"><span class="pre">SURFPROP2</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.DisplacementFlags.SURFPROP2</span></em><a class="headerlink" href="#engines.trace.DisplacementFlags.SURFPROP2" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.DisplacementFlags.WALKABLE">
+<span class="sig-name descname"><span class="pre">WALKABLE</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.DisplacementFlags.WALKABLE</span></em><a class="headerlink" href="#engines.trace.DisplacementFlags.WALKABLE" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.DisplacementFlags.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'BUILDABLE':</span> <span class="pre">_engines._trace.DisplacementFlags.BUILDABLE,</span> <span class="pre">'SURFACE':</span> <span class="pre">_engines._trace.DisplacementFlags.SURFACE,</span> <span class="pre">'SURFPROP1':</span> <span class="pre">_engines._trace.DisplacementFlags.SURFPROP1,</span> <span class="pre">'SURFPROP2':</span> <span class="pre">_engines._trace.DisplacementFlags.SURFPROP2,</span> <span class="pre">'WALKABLE':</span> <span class="pre">_engines._trace.DisplacementFlags.WALKABLE}</span></em><a class="headerlink" href="#engines.trace.DisplacementFlags.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.DisplacementFlags.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{1:</span> <span class="pre">_engines._trace.DisplacementFlags.SURFACE,</span> <span class="pre">2:</span> <span class="pre">_engines._trace.DisplacementFlags.WALKABLE,</span> <span class="pre">4:</span> <span class="pre">_engines._trace.DisplacementFlags.BUILDABLE,</span> <span class="pre">8:</span> <span class="pre">_engines._trace.DisplacementFlags.SURFPROP1,</span> <span class="pre">16:</span> <span class="pre">_engines._trace.DisplacementFlags.SURFPROP2}</span></em><a class="headerlink" href="#engines.trace.DisplacementFlags.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.trace.EntityEnumerator">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.trace.</span></span><span class="sig-name descname"><span class="pre">EntityEnumerator</span></span><a class="headerlink" href="#engines.trace.EntityEnumerator" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.trace.EntityEnumerator.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#engines.trace.EntityEnumerator.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.trace.EntityEnumerator.enum_entity">
+<span class="sig-name descname"><span class="pre">enum_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(EntityEnumerator)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities.HandleEntity)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#engines.trace.EntityEnumerator.enum_entity" title="Link to this definition">¶</a></dt>
+<dd><p>Gets called with each handle.</p>
+<p>enum_entity( (EntityEnumerator)arg1, (_entities.HandleEntity)arg2) -&gt; None</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.trace.GameTrace">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.trace.</span></span><span class="sig-name descname"><span class="pre">GameTrace</span></span><a class="headerlink" href="#engines.trace.GameTrace" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#engines.trace.BaseTrace" title="_engines._trace.BaseTrace"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseTrace</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.trace.GameTrace.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#engines.trace.GameTrace.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.trace.GameTrace.did_hit">
+<span class="sig-name descname"><span class="pre">did_hit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GameTrace)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#engines.trace.GameTrace.did_hit" title="Link to this definition">¶</a></dt>
+<dd><p>Returns true if there was any kind of impact at all</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.trace.GameTrace.did_hit_world">
+<span class="sig-name descname"><span class="pre">did_hit_world</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(GameTrace)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#engines.trace.GameTrace.did_hit_world" title="Link to this definition">¶</a></dt>
+<dd><p>Returns True if the ray hit the world entity.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.GameTrace.entity">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">entity</span></span><a class="headerlink" href="#engines.trace.GameTrace.entity" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.GameTrace)arg1) -&gt; object</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.GameTrace.entity_index">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">entity_index</span></span><a class="headerlink" href="#engines.trace.GameTrace.entity_index" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the index of the entity that was hit.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.GameTrace.fraction_left_solid">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fraction_left_solid</span></span><a class="headerlink" href="#engines.trace.GameTrace.fraction_left_solid" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.GameTrace)arg1) -&gt; float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.GameTrace.hitbox">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hitbox</span></span><a class="headerlink" href="#engines.trace.GameTrace.hitbox" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.GameTrace)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.GameTrace.hitgroup">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">hitgroup</span></span><a class="headerlink" href="#engines.trace.GameTrace.hitgroup" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.GameTrace)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.GameTrace.physicsbone">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">physicsbone</span></span><a class="headerlink" href="#engines.trace.GameTrace.physicsbone" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.GameTrace)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.GameTrace.surface">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">surface</span></span><a class="headerlink" href="#engines.trace.GameTrace.surface" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.GameTrace)arg1) -&gt; object</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.trace.Ray">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.trace.</span></span><span class="sig-name descname"><span class="pre">Ray</span></span><a class="headerlink" href="#engines.trace.Ray" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.trace.Ray.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_mathlib.Vector)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_mathlib.Vector)arg3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#object" title="(in Python v3.13)"><span class="pre">object</span></a></span></span><a class="headerlink" href="#engines.trace.Ray.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>__init__( (object)arg1, (_mathlib.Vector)arg2, (_mathlib.Vector)arg3, (_mathlib.Vector)arg4, (_mathlib.Vector)arg5) -&gt; object</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.trace.Surface">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.trace.</span></span><span class="sig-name descname"><span class="pre">Surface</span></span><a class="headerlink" href="#engines.trace.Surface" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.trace.Surface.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#engines.trace.Surface.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.Surface.flags">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">flags</span></span><a class="headerlink" href="#engines.trace.Surface.flags" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.Surface)arg1) -&gt; int</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.Surface.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#engines.trace.Surface.name" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.Surface)arg1) -&gt; str</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.trace.Surface.surface_props">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">surface_props</span></span><a class="headerlink" href="#engines.trace.Surface.surface_props" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_engines._trace.Surface)arg1) -&gt; int</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.trace.</span></span><span class="sig-name descname"><span class="pre">SurfaceFlags</span></span><a class="headerlink" href="#engines.trace.SurfaceFlags" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.BUMPLIGHT">
+<span class="sig-name descname"><span class="pre">BUMPLIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.SurfaceFlags.BUMPLIGHT</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.BUMPLIGHT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.HINT">
+<span class="sig-name descname"><span class="pre">HINT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.SurfaceFlags.HINT</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.HINT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.HITBOX">
+<span class="sig-name descname"><span class="pre">HITBOX</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.SurfaceFlags.HITBOX</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.HITBOX" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.LIGHT">
+<span class="sig-name descname"><span class="pre">LIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.SurfaceFlags.LIGHT</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.LIGHT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.NOCHOP">
+<span class="sig-name descname"><span class="pre">NOCHOP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.SurfaceFlags.NOCHOP</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.NOCHOP" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.NODECALS">
+<span class="sig-name descname"><span class="pre">NODECALS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.SurfaceFlags.NODECALS</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.NODECALS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.NODRAW">
+<span class="sig-name descname"><span class="pre">NODRAW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.SurfaceFlags.NODRAW</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.NODRAW" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.NOLIGHT">
+<span class="sig-name descname"><span class="pre">NOLIGHT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.SurfaceFlags.NOLIGHT</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.NOLIGHT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.NOPORTAL">
+<span class="sig-name descname"><span class="pre">NOPORTAL</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.SurfaceFlags.NOPORTAL</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.NOPORTAL" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.NOSHADOWS">
+<span class="sig-name descname"><span class="pre">NOSHADOWS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.SurfaceFlags.NOSHADOWS</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.NOSHADOWS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.SKIP">
+<span class="sig-name descname"><span class="pre">SKIP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.SurfaceFlags.SKIP</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.SKIP" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.SKY">
+<span class="sig-name descname"><span class="pre">SKY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.SurfaceFlags.SKY</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.SKY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.SKY2D">
+<span class="sig-name descname"><span class="pre">SKY2D</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.SurfaceFlags.SKY2D</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.SKY2D" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.TRANS">
+<span class="sig-name descname"><span class="pre">TRANS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.SurfaceFlags.TRANS</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.TRANS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.TRIGGER">
+<span class="sig-name descname"><span class="pre">TRIGGER</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.SurfaceFlags.TRIGGER</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.TRIGGER" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.WARP">
+<span class="sig-name descname"><span class="pre">WARP</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.SurfaceFlags.WARP</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.WARP" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'BUMPLIGHT':</span> <span class="pre">_engines._trace.SurfaceFlags.BUMPLIGHT,</span> <span class="pre">'HINT':</span> <span class="pre">_engines._trace.SurfaceFlags.HINT,</span> <span class="pre">'HITBOX':</span> <span class="pre">_engines._trace.SurfaceFlags.HITBOX,</span> <span class="pre">'LIGHT':</span> <span class="pre">_engines._trace.SurfaceFlags.LIGHT,</span> <span class="pre">'NOCHOP':</span> <span class="pre">_engines._trace.SurfaceFlags.NOCHOP,</span> <span class="pre">'NODECALS':</span> <span class="pre">_engines._trace.SurfaceFlags.NODECALS,</span> <span class="pre">'NODRAW':</span> <span class="pre">_engines._trace.SurfaceFlags.NODRAW,</span> <span class="pre">'NOLIGHT':</span> <span class="pre">_engines._trace.SurfaceFlags.NOLIGHT,</span> <span class="pre">'NOPORTAL':</span> <span class="pre">_engines._trace.SurfaceFlags.NOPORTAL,</span> <span class="pre">'NOSHADOWS':</span> <span class="pre">_engines._trace.SurfaceFlags.NOSHADOWS,</span> <span class="pre">'SKIP':</span> <span class="pre">_engines._trace.SurfaceFlags.SKIP,</span> <span class="pre">'SKY':</span> <span class="pre">_engines._trace.SurfaceFlags.SKY,</span> <span class="pre">'SKY2D':</span> <span class="pre">_engines._trace.SurfaceFlags.SKY2D,</span> <span class="pre">'TRANS':</span> <span class="pre">_engines._trace.SurfaceFlags.TRANS,</span> <span class="pre">'TRIGGER':</span> <span class="pre">_engines._trace.SurfaceFlags.TRIGGER,</span> <span class="pre">'WARP':</span> <span class="pre">_engines._trace.SurfaceFlags.WARP}</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.SurfaceFlags.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{1:</span> <span class="pre">_engines._trace.SurfaceFlags.LIGHT,</span> <span class="pre">2:</span> <span class="pre">_engines._trace.SurfaceFlags.SKY2D,</span> <span class="pre">4:</span> <span class="pre">_engines._trace.SurfaceFlags.SKY,</span> <span class="pre">8:</span> <span class="pre">_engines._trace.SurfaceFlags.WARP,</span> <span class="pre">16:</span> <span class="pre">_engines._trace.SurfaceFlags.TRANS,</span> <span class="pre">32:</span> <span class="pre">_engines._trace.SurfaceFlags.NOPORTAL,</span> <span class="pre">64:</span> <span class="pre">_engines._trace.SurfaceFlags.TRIGGER,</span> <span class="pre">128:</span> <span class="pre">_engines._trace.SurfaceFlags.NODRAW,</span> <span class="pre">256:</span> <span class="pre">_engines._trace.SurfaceFlags.HINT,</span> <span class="pre">512:</span> <span class="pre">_engines._trace.SurfaceFlags.SKIP,</span> <span class="pre">1024:</span> <span class="pre">_engines._trace.SurfaceFlags.NOLIGHT,</span> <span class="pre">2048:</span> <span class="pre">_engines._trace.SurfaceFlags.BUMPLIGHT,</span> <span class="pre">4096:</span> <span class="pre">_engines._trace.SurfaceFlags.NOSHADOWS,</span> <span class="pre">8192:</span> <span class="pre">_engines._trace.SurfaceFlags.NODECALS,</span> <span class="pre">16384:</span> <span class="pre">_engines._trace.SurfaceFlags.NOCHOP,</span> <span class="pre">32768:</span> <span class="pre">_engines._trace.SurfaceFlags.HITBOX}</span></em><a class="headerlink" href="#engines.trace.SurfaceFlags.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.trace.TraceFilter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.trace.</span></span><span class="sig-name descname"><span class="pre">TraceFilter</span></span><a class="headerlink" href="#engines.trace.TraceFilter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.trace.TraceFilter.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#engines.trace.TraceFilter.__init__" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.trace.TraceFilter.get_trace_type">
+<span class="sig-name descname"><span class="pre">get_trace_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(TraceFilter)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">TraceType</span> <span class="pre">:</span></span></span><a class="headerlink" href="#engines.trace.TraceFilter.get_trace_type" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the trace type.</p>
+<p>get_trace_type( (TraceFilter)arg1) -&gt; None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.trace.TraceFilter.should_hit_entity">
+<span class="sig-name descname"><span class="pre">should_hit_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(TraceFilter)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities.HandleEntity)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#engines.trace.TraceFilter.should_hit_entity" title="Link to this definition">¶</a></dt>
+<dd><p>Returns True if the a should hit the entity.</p>
+<p>should_hit_entity( (TraceFilter)arg1, (_entities.HandleEntity)arg2, (_engines._sound.Channel)arg3) -&gt; None</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.trace.TraceFilterSimple">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.trace.</span></span><span class="sig-name descname"><span class="pre">TraceFilterSimple</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trace_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_engines._trace.TraceType.EVERYTHING</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/engines/trace.html#TraceFilterSimple"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#engines.trace.TraceFilterSimple" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#engines.trace.TraceFilter" title="_engines._trace.TraceFilter"><code class="xref py py-class docutils literal notranslate"><span class="pre">TraceFilter</span></code></a></p>
+<p>A simple trace filter.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.trace.TraceFilterSimple.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ignore</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">trace_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">_engines._trace.TraceType.EVERYTHING</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/engines/trace.html#TraceFilterSimple.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#engines.trace.TraceFilterSimple.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the filter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ignore</strong> (<em>iterable</em>) – An iterable of entity indexes to ignore. The trace will not hit
+these entities.</p></li>
+<li><p><strong>trace_type</strong> (<a class="reference internal" href="#engines.trace.TraceType" title="engines.trace.TraceType"><em>TraceType</em></a>) – The trace type that should be used.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.trace.TraceFilterSimple.get_trace_type">
+<span class="sig-name descname"><span class="pre">get_trace_type</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/engines/trace.html#TraceFilterSimple.get_trace_type"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#engines.trace.TraceFilterSimple.get_trace_type" title="Link to this definition">¶</a></dt>
+<dd><p>Return the trace type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#engines.trace.TraceType" title="engines.trace.TraceType">TraceType</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.trace.TraceFilterSimple.should_hit_entity">
+<span class="sig-name descname"><span class="pre">should_hit_entity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mask</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/engines/trace.html#TraceFilterSimple.should_hit_entity"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#engines.trace.TraceFilterSimple.should_hit_entity" title="Link to this definition">¶</a></dt>
+<dd><p>Called when a trace is about to hit an entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>entity</strong> (<a class="reference internal" href="entities.html#entities.HandleEntity" title="entities.HandleEntity"><em>HandleEntity</em></a>) – The entity that should be hit.</p></li>
+<li><p><strong>mask</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><em>int</em></a>) – The mask that was used to intialize the trace.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.trace.TraceType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.trace.</span></span><span class="sig-name descname"><span class="pre">TraceType</span></span><a class="headerlink" href="#engines.trace.TraceType" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.TraceType.ENTITIES_ONLY">
+<span class="sig-name descname"><span class="pre">ENTITIES_ONLY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.TraceType.ENTITIES_ONLY</span></em><a class="headerlink" href="#engines.trace.TraceType.ENTITIES_ONLY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.TraceType.EVERYTHING">
+<span class="sig-name descname"><span class="pre">EVERYTHING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.TraceType.EVERYTHING</span></em><a class="headerlink" href="#engines.trace.TraceType.EVERYTHING" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.TraceType.EVERYTHING_FILTER_PROPS">
+<span class="sig-name descname"><span class="pre">EVERYTHING_FILTER_PROPS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.TraceType.EVERYTHING_FILTER_PROPS</span></em><a class="headerlink" href="#engines.trace.TraceType.EVERYTHING_FILTER_PROPS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.TraceType.WORLD_ONLY">
+<span class="sig-name descname"><span class="pre">WORLD_ONLY</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._trace.TraceType.WORLD_ONLY</span></em><a class="headerlink" href="#engines.trace.TraceType.WORLD_ONLY" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.TraceType.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'ENTITIES_ONLY':</span> <span class="pre">_engines._trace.TraceType.ENTITIES_ONLY,</span> <span class="pre">'EVERYTHING':</span> <span class="pre">_engines._trace.TraceType.EVERYTHING,</span> <span class="pre">'EVERYTHING_FILTER_PROPS':</span> <span class="pre">_engines._trace.TraceType.EVERYTHING_FILTER_PROPS,</span> <span class="pre">'WORLD_ONLY':</span> <span class="pre">_engines._trace.TraceType.WORLD_ONLY}</span></em><a class="headerlink" href="#engines.trace.TraceType.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.trace.TraceType.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">_engines._trace.TraceType.EVERYTHING,</span> <span class="pre">1:</span> <span class="pre">_engines._trace.TraceType.WORLD_ONLY,</span> <span class="pre">2:</span> <span class="pre">_engines._trace.TraceType.ENTITIES_ONLY,</span> <span class="pre">3:</span> <span class="pre">_engines._trace.TraceType.EVERYTHING_FILTER_PROPS}</span></em><a class="headerlink" href="#engines.trace.TraceType.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">engines.trace module</a><ul>
+<li><a class="reference internal" href="#engines.trace.BaseTrace"><code class="docutils literal notranslate"><span class="pre">BaseTrace</span></code></a><ul>
+<li><a class="reference internal" href="#engines.trace.BaseTrace.__init__"><code class="docutils literal notranslate"><span class="pre">BaseTrace.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.BaseTrace.all_solid"><code class="docutils literal notranslate"><span class="pre">BaseTrace.all_solid</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.BaseTrace.contents"><code class="docutils literal notranslate"><span class="pre">BaseTrace.contents</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.BaseTrace.displacement_flags"><code class="docutils literal notranslate"><span class="pre">BaseTrace.displacement_flags</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.BaseTrace.end_position"><code class="docutils literal notranslate"><span class="pre">BaseTrace.end_position</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.BaseTrace.fraction"><code class="docutils literal notranslate"><span class="pre">BaseTrace.fraction</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.BaseTrace.plane"><code class="docutils literal notranslate"><span class="pre">BaseTrace.plane</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.BaseTrace.start_position"><code class="docutils literal notranslate"><span class="pre">BaseTrace.start_position</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.BaseTrace.start_solid"><code class="docutils literal notranslate"><span class="pre">BaseTrace.start_solid</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags"><code class="docutils literal notranslate"><span class="pre">ContentFlags</span></code></a><ul>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.ALL_VISIBLE"><code class="docutils literal notranslate"><span class="pre">ContentFlags.ALL_VISIBLE</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.AREAPORTAL"><code class="docutils literal notranslate"><span class="pre">ContentFlags.AREAPORTAL</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.AUX"><code class="docutils literal notranslate"><span class="pre">ContentFlags.AUX</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.BLOCKLOS"><code class="docutils literal notranslate"><span class="pre">ContentFlags.BLOCKLOS</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.CURRENT_0"><code class="docutils literal notranslate"><span class="pre">ContentFlags.CURRENT_0</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.CURRENT_180"><code class="docutils literal notranslate"><span class="pre">ContentFlags.CURRENT_180</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.CURRENT_270"><code class="docutils literal notranslate"><span class="pre">ContentFlags.CURRENT_270</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.CURRENT_90"><code class="docutils literal notranslate"><span class="pre">ContentFlags.CURRENT_90</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.CURRENT_DOWN"><code class="docutils literal notranslate"><span class="pre">ContentFlags.CURRENT_DOWN</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.CURRENT_UP"><code class="docutils literal notranslate"><span class="pre">ContentFlags.CURRENT_UP</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.DEBRIS"><code class="docutils literal notranslate"><span class="pre">ContentFlags.DEBRIS</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.DETAIL"><code class="docutils literal notranslate"><span class="pre">ContentFlags.DETAIL</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.EMPTY"><code class="docutils literal notranslate"><span class="pre">ContentFlags.EMPTY</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.GRATE"><code class="docutils literal notranslate"><span class="pre">ContentFlags.GRATE</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.HITBOX"><code class="docutils literal notranslate"><span class="pre">ContentFlags.HITBOX</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.IGNORE_NODRAW_OPAQUE"><code class="docutils literal notranslate"><span class="pre">ContentFlags.IGNORE_NODRAW_OPAQUE</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.LADDER"><code class="docutils literal notranslate"><span class="pre">ContentFlags.LADDER</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.LAST_VISIBLE"><code class="docutils literal notranslate"><span class="pre">ContentFlags.LAST_VISIBLE</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.MONSTER"><code class="docutils literal notranslate"><span class="pre">ContentFlags.MONSTER</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.MONSTERCLIP"><code class="docutils literal notranslate"><span class="pre">ContentFlags.MONSTERCLIP</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.MOVEABLE"><code class="docutils literal notranslate"><span class="pre">ContentFlags.MOVEABLE</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.OPAQUE"><code class="docutils literal notranslate"><span class="pre">ContentFlags.OPAQUE</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.ORIGIN"><code class="docutils literal notranslate"><span class="pre">ContentFlags.ORIGIN</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.PLAYERCLIP"><code class="docutils literal notranslate"><span class="pre">ContentFlags.PLAYERCLIP</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.SLIME"><code class="docutils literal notranslate"><span class="pre">ContentFlags.SLIME</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.SOLID"><code class="docutils literal notranslate"><span class="pre">ContentFlags.SOLID</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.TEAM1"><code class="docutils literal notranslate"><span class="pre">ContentFlags.TEAM1</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.TEAM2"><code class="docutils literal notranslate"><span class="pre">ContentFlags.TEAM2</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.TESTFOGVOLUME"><code class="docutils literal notranslate"><span class="pre">ContentFlags.TESTFOGVOLUME</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.TRANSLUCENT"><code class="docutils literal notranslate"><span class="pre">ContentFlags.TRANSLUCENT</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.UNUSED"><code class="docutils literal notranslate"><span class="pre">ContentFlags.UNUSED</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.WATER"><code class="docutils literal notranslate"><span class="pre">ContentFlags.WATER</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentFlags.WINDOW"><code class="docutils literal notranslate"><span class="pre">ContentFlags.WINDOW</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks"><code class="docutils literal notranslate"><span class="pre">ContentMasks</span></code></a><ul>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.ALL"><code class="docutils literal notranslate"><span class="pre">ContentMasks.ALL</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.BLOCKLOS"><code class="docutils literal notranslate"><span class="pre">ContentMasks.BLOCKLOS</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.BLOCKLOS_AND_NPCS"><code class="docutils literal notranslate"><span class="pre">ContentMasks.BLOCKLOS_AND_NPCS</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.CURRENT"><code class="docutils literal notranslate"><span class="pre">ContentMasks.CURRENT</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.DEAD_SOLID"><code class="docutils literal notranslate"><span class="pre">ContentMasks.DEAD_SOLID</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.NPC_SOLID"><code class="docutils literal notranslate"><span class="pre">ContentMasks.NPC_SOLID</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.NPC_WORLD_STATIC"><code class="docutils literal notranslate"><span class="pre">ContentMasks.NPC_WORLD_STATIC</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.OPAQUE"><code class="docutils literal notranslate"><span class="pre">ContentMasks.OPAQUE</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.OPAQUE_AND_NPCS"><code class="docutils literal notranslate"><span class="pre">ContentMasks.OPAQUE_AND_NPCS</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.PLAYER_SOLID"><code class="docutils literal notranslate"><span class="pre">ContentMasks.PLAYER_SOLID</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.PLAYER_SOLID_BRUSH_ONLY"><code class="docutils literal notranslate"><span class="pre">ContentMasks.PLAYER_SOLID_BRUSH_ONLY</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.SHOT"><code class="docutils literal notranslate"><span class="pre">ContentMasks.SHOT</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.SHOT_HULL"><code class="docutils literal notranslate"><span class="pre">ContentMasks.SHOT_HULL</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.SHOT_PORTAL"><code class="docutils literal notranslate"><span class="pre">ContentMasks.SHOT_PORTAL</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.SOLID"><code class="docutils literal notranslate"><span class="pre">ContentMasks.SOLID</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.SOLID_BRUSH_ONLY"><code class="docutils literal notranslate"><span class="pre">ContentMasks.SOLID_BRUSH_ONLY</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.SPLIT_AREA_PORTAL"><code class="docutils literal notranslate"><span class="pre">ContentMasks.SPLIT_AREA_PORTAL</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.VISIBLE"><code class="docutils literal notranslate"><span class="pre">ContentMasks.VISIBLE</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.VISIBLE_AND_NPCS"><code class="docutils literal notranslate"><span class="pre">ContentMasks.VISIBLE_AND_NPCS</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.ContentMasks.WATER"><code class="docutils literal notranslate"><span class="pre">ContentMasks.WATER</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.trace.DisplacementFlags"><code class="docutils literal notranslate"><span class="pre">DisplacementFlags</span></code></a><ul>
+<li><a class="reference internal" href="#engines.trace.DisplacementFlags.BUILDABLE"><code class="docutils literal notranslate"><span class="pre">DisplacementFlags.BUILDABLE</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.DisplacementFlags.SURFACE"><code class="docutils literal notranslate"><span class="pre">DisplacementFlags.SURFACE</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.DisplacementFlags.SURFPROP1"><code class="docutils literal notranslate"><span class="pre">DisplacementFlags.SURFPROP1</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.DisplacementFlags.SURFPROP2"><code class="docutils literal notranslate"><span class="pre">DisplacementFlags.SURFPROP2</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.DisplacementFlags.WALKABLE"><code class="docutils literal notranslate"><span class="pre">DisplacementFlags.WALKABLE</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.DisplacementFlags.names"><code class="docutils literal notranslate"><span class="pre">DisplacementFlags.names</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.DisplacementFlags.values"><code class="docutils literal notranslate"><span class="pre">DisplacementFlags.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.trace.EntityEnumerator"><code class="docutils literal notranslate"><span class="pre">EntityEnumerator</span></code></a><ul>
+<li><a class="reference internal" href="#engines.trace.EntityEnumerator.__init__"><code class="docutils literal notranslate"><span class="pre">EntityEnumerator.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.EntityEnumerator.enum_entity"><code class="docutils literal notranslate"><span class="pre">EntityEnumerator.enum_entity()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.trace.GameTrace"><code class="docutils literal notranslate"><span class="pre">GameTrace</span></code></a><ul>
+<li><a class="reference internal" href="#engines.trace.GameTrace.__init__"><code class="docutils literal notranslate"><span class="pre">GameTrace.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.GameTrace.did_hit"><code class="docutils literal notranslate"><span class="pre">GameTrace.did_hit()</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.GameTrace.did_hit_world"><code class="docutils literal notranslate"><span class="pre">GameTrace.did_hit_world()</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.GameTrace.entity"><code class="docutils literal notranslate"><span class="pre">GameTrace.entity</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.GameTrace.entity_index"><code class="docutils literal notranslate"><span class="pre">GameTrace.entity_index</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.GameTrace.fraction_left_solid"><code class="docutils literal notranslate"><span class="pre">GameTrace.fraction_left_solid</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.GameTrace.hitbox"><code class="docutils literal notranslate"><span class="pre">GameTrace.hitbox</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.GameTrace.hitgroup"><code class="docutils literal notranslate"><span class="pre">GameTrace.hitgroup</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.GameTrace.physicsbone"><code class="docutils literal notranslate"><span class="pre">GameTrace.physicsbone</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.GameTrace.surface"><code class="docutils literal notranslate"><span class="pre">GameTrace.surface</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.trace.Ray"><code class="docutils literal notranslate"><span class="pre">Ray</span></code></a><ul>
+<li><a class="reference internal" href="#engines.trace.Ray.__init__"><code class="docutils literal notranslate"><span class="pre">Ray.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.trace.Surface"><code class="docutils literal notranslate"><span class="pre">Surface</span></code></a><ul>
+<li><a class="reference internal" href="#engines.trace.Surface.__init__"><code class="docutils literal notranslate"><span class="pre">Surface.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.Surface.flags"><code class="docutils literal notranslate"><span class="pre">Surface.flags</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.Surface.name"><code class="docutils literal notranslate"><span class="pre">Surface.name</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.Surface.surface_props"><code class="docutils literal notranslate"><span class="pre">Surface.surface_props</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags</span></code></a><ul>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.BUMPLIGHT"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.BUMPLIGHT</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.HINT"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.HINT</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.HITBOX"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.HITBOX</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.LIGHT"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.LIGHT</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.NOCHOP"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.NOCHOP</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.NODECALS"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.NODECALS</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.NODRAW"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.NODRAW</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.NOLIGHT"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.NOLIGHT</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.NOPORTAL"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.NOPORTAL</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.NOSHADOWS"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.NOSHADOWS</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.SKIP"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.SKIP</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.SKY"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.SKY</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.SKY2D"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.SKY2D</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.TRANS"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.TRANS</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.TRIGGER"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.TRIGGER</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.WARP"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.WARP</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.names"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.names</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.SurfaceFlags.values"><code class="docutils literal notranslate"><span class="pre">SurfaceFlags.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.trace.TraceFilter"><code class="docutils literal notranslate"><span class="pre">TraceFilter</span></code></a><ul>
+<li><a class="reference internal" href="#engines.trace.TraceFilter.__init__"><code class="docutils literal notranslate"><span class="pre">TraceFilter.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.TraceFilter.get_trace_type"><code class="docutils literal notranslate"><span class="pre">TraceFilter.get_trace_type()</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.TraceFilter.should_hit_entity"><code class="docutils literal notranslate"><span class="pre">TraceFilter.should_hit_entity()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.trace.TraceFilterSimple"><code class="docutils literal notranslate"><span class="pre">TraceFilterSimple</span></code></a><ul>
+<li><a class="reference internal" href="#engines.trace.TraceFilterSimple.__init__"><code class="docutils literal notranslate"><span class="pre">TraceFilterSimple.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.TraceFilterSimple.get_trace_type"><code class="docutils literal notranslate"><span class="pre">TraceFilterSimple.get_trace_type()</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.TraceFilterSimple.should_hit_entity"><code class="docutils literal notranslate"><span class="pre">TraceFilterSimple.should_hit_entity()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.trace.TraceType"><code class="docutils literal notranslate"><span class="pre">TraceType</span></code></a><ul>
+<li><a class="reference internal" href="#engines.trace.TraceType.ENTITIES_ONLY"><code class="docutils literal notranslate"><span class="pre">TraceType.ENTITIES_ONLY</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.TraceType.EVERYTHING"><code class="docutils literal notranslate"><span class="pre">TraceType.EVERYTHING</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.TraceType.EVERYTHING_FILTER_PROPS"><code class="docutils literal notranslate"><span class="pre">TraceType.EVERYTHING_FILTER_PROPS</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.TraceType.WORLD_ONLY"><code class="docutils literal notranslate"><span class="pre">TraceType.WORLD_ONLY</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.TraceType.names"><code class="docutils literal notranslate"><span class="pre">TraceType.names</span></code></a></li>
+<li><a class="reference internal" href="#engines.trace.TraceType.values"><code class="docutils literal notranslate"><span class="pre">TraceType.values</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/engines.trace.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">engines.trace module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

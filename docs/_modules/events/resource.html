@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>events.resource &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../events.html" accesskey="U">events</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">events.resource</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for events.resource</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../events/resource.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides a way to create resource (.res) files using custom events.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Collections</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">OrderedDict</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Events</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">events</span><span class="w"> </span><span class="kn">import</span> <span class="n">events_logger</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">events.custom</span><span class="w"> </span><span class="kn">import</span> <span class="n">CustomEvent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">events.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">game_event_manager</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">EVENT_PATH</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;ResourceFile&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Get the sp.events.resource logger</span>
+<span class="n">events_resource_logger</span> <span class="o">=</span> <span class="n">events_logger</span><span class="o">.</span><span class="n">resource</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="ResourceFile">
+<a class="viewcode-back" href="../../developing/modules/events.resource.html#events.resource.ResourceFile">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">ResourceFile</span><span class="p">(</span><span class="n">OrderedDict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to write and load custom event .res files.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="ResourceFile.__init__">
+<a class="viewcode-back" href="../../developing/modules/events.resource.html#events.resource.ResourceFile.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="o">*</span><span class="n">events</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called on instatiation.&quot;&quot;&quot;</span>
+        <span class="c1"># Create the OrderedDict instance</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="c1"># Does the given path end with the extension?</span>
+        <span class="k">if</span> <span class="n">filepath</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s1">&#39;.res&#39;</span><span class="p">):</span>
+
+            <span class="c1"># Remove the extension</span>
+            <span class="n">filepath</span> <span class="o">=</span> <span class="n">filepath</span><span class="p">[:</span><span class="o">~</span><span class="mi">3</span><span class="p">]</span>
+
+        <span class="c1"># Store the filepath</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_filepath</span> <span class="o">=</span> <span class="n">filepath</span>
+
+        <span class="c1"># Loop through all given events</span>
+        <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="n">events</span><span class="p">:</span>
+
+            <span class="c1"># Is the given class not a CustomEvent class?</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">issubclass</span><span class="p">(</span><span class="n">event</span><span class="p">,</span> <span class="n">CustomEvent</span><span class="p">):</span>
+
+                <span class="c1"># Clear the dictionary</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">clear</span><span class="p">()</span>
+
+                <span class="c1"># Raise an error</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="s1">&#39;Event classes must be sub-classes of CustomEvent&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Store the event with its variables in the dictionary</span>
+            <span class="bp">self</span><span class="p">[</span><span class="n">event</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">lower</span><span class="p">()]</span> <span class="o">=</span> <span class="n">event</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">filepath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the path to the .res file.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_filepath</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">fullpath</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the full path of the .res file.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">EVENT_PATH</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">filepath</span> <span class="o">+</span> <span class="s1">&#39;.res&#39;</span>
+
+<div class="viewcode-block" id="ResourceFile.write">
+<a class="viewcode-back" href="../../developing/modules/events.resource.html#events.resource.ResourceFile.write">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Write the .res file to disk.&quot;&quot;&quot;</span>
+        <span class="c1"># Does the director for the .res file exist?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">fullpath</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">is_dir</span><span class="p">():</span>
+
+            <span class="c1"># Create the directory</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fullpath</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">makedirs</span><span class="p">()</span>
+
+        <span class="c1"># Open the .res file to write to it</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">fullpath</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">open_file</span><span class="p">:</span>
+
+            <span class="c1"># Write the .res file&#39;s name</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">{0}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filepath</span><span class="p">))</span>
+
+            <span class="c1"># Create a group of events for the file</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;{</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Loop through all events</span>
+            <span class="k">for</span> <span class="n">event</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+
+                <span class="c1"># Write the event</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;    &quot;</span><span class="si">{0}</span><span class="s1">&quot;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">event</span><span class="p">))</span>
+
+                <span class="c1"># Create a group of variables for the event</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;    {</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Loop through the event&#39;s variables</span>
+                <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">[</span><span class="n">event</span><span class="p">]</span><span class="o">.</span><span class="n">_odict</span><span class="p">:</span>
+
+                    <span class="c1"># Get the variable&#39;s instance</span>
+                    <span class="n">instance</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">event</span><span class="p">]</span><span class="o">.</span><span class="n">_odict</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span>
+
+                    <span class="c1"># Get the variable&#39;s comment</span>
+                    <span class="n">comment</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="se">\t</span><span class="s1">// </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">instance</span><span class="o">.</span><span class="n">_comment</span><span class="p">)</span> <span class="k">if</span> <span class="n">instance</span><span class="o">.</span><span class="n">_comment</span> <span class="k">else</span> <span class="s1">&#39;&#39;</span>
+
+                    <span class="c1"># Write the variable with its type and comment</span>
+                    <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;        &quot;</span><span class="si">{0}</span><span class="s1">&quot;</span><span class="se">\t</span><span class="s1">&quot;</span><span class="si">{1}</span><span class="s1">&quot;</span><span class="si">{2}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">variable</span><span class="p">,</span> <span class="n">instance</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">comment</span><span class="p">))</span>
+
+                <span class="c1"># End the group of variables</span>
+                <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;    }</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+            <span class="c1"># End the group of events</span>
+            <span class="n">open_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="ResourceFile.load_events">
+<a class="viewcode-back" href="../../developing/modules/events.resource.html#events.resource.ResourceFile.load_events">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_events</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load events from the .res file.&quot;&quot;&quot;</span>
+        <span class="n">game_event_manager</span><span class="o">.</span><span class="n">load_events_from_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">fullpath</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../events.html" >events</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">events.resource</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>effects.templates &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../effects.html" accesskey="U">effects</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">effects.templates</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for effects.templates</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../effects/templates.py</span>
+
+<span class="sd">&quot;&quot;&quot;Base templates for effect classes.&quot;&quot;&quot;</span>
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">GameConfigObj</span>
+<span class="c1">#   Effects</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_effects._base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseTempEntity</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.classes</span><span class="w"> </span><span class="kn">import</span> <span class="n">_supported_property_types</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.classes</span><span class="w"> </span><span class="kn">import</span> <span class="n">server_classes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.props</span><span class="w"> </span><span class="kn">import</span> <span class="n">SendPropType</span>
+<span class="c1">#   Memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">TYPE_SIZES</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_size</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">HookType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">manager</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">SP_DATA_PATH</span>
+
+<span class="c1"># Site-Packages Imports</span>
+<span class="c1">#   ConfigObj</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">configobj</span><span class="w"> </span><span class="kn">import</span> <span class="n">Section</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;TempEntityTemplate&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TempEntityTemplates&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;temp_entity_templates&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># ============================================================================</span>
+<div class="viewcode-block" id="TempEntityTemplate">
+<a class="viewcode-back" href="../../developing/modules/effects.templates.html#effects.templates.TempEntityTemplate">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TempEntityTemplate</span><span class="p">(</span><span class="n">BaseTempEntity</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A temp entity template.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TempEntityTemplate.__init__">
+<a class="viewcode-back" href="../../developing/modules/effects.templates.html#effects.templates.TempEntityTemplate.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_entity</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the instance.</span>
+
+<span class="sd">        :param BaseTempEntity temp_entity:</span>
+<span class="sd">            The base entity instance to copy the base from.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Store the size of the temp entity...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">get_size</span><span class="p">(</span><span class="n">BaseTempEntity</span><span class="p">)</span>
+
+        <span class="c1"># Get the aliases...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_aliases</span> <span class="o">=</span> <span class="n">GameConfigObj</span><span class="p">(</span>
+            <span class="n">SP_DATA_PATH</span> <span class="o">/</span> <span class="s1">&#39;effects&#39;</span> <span class="o">/</span> <span class="n">temp_entity</span><span class="o">.</span><span class="n">server_class</span><span class="o">.</span><span class="n">name</span> <span class="o">+</span> <span class="s1">&#39;.ini&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Get a dictionary to store the properties...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="c1"># Add the properties to the dictionary...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_add_properties</span><span class="p">(</span><span class="n">temp_entity</span><span class="o">.</span><span class="n">server_class</span><span class="o">.</span><span class="n">table</span><span class="p">)</span>
+
+        <span class="c1"># Loop through all properties...</span>
+        <span class="k">for</span> <span class="n">prop</span> <span class="ow">in</span> <span class="n">temp_entity</span><span class="o">.</span><span class="n">server_class</span><span class="o">.</span><span class="n">table</span><span class="p">:</span>
+
+            <span class="c1"># Is the current prop a base class?</span>
+            <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s1">&#39;baseclass&#39;</span><span class="p">:</span>
+
+                <span class="c1"># Pass to the next property...</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Add the current table to the properties...</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_add_properties</span><span class="p">(</span><span class="n">prop</span><span class="o">.</span><span class="n">data_table</span><span class="p">)</span>
+
+        <span class="c1"># Get a list to store our hooks...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_hooks</span> <span class="o">=</span> <span class="nb">list</span><span class="p">()</span>
+
+        <span class="c1"># Initialize the base class...</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_copy_base</span><span class="p">(</span><span class="n">temp_entity</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_properties</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">send_table</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Parse the given send table and add all properties to the dictionary.</span>
+
+<span class="sd">        :param SendTable send_table:</span>
+<span class="sd">            The send table instance to parse.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Loop through all properties...</span>
+        <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">prop</span><span class="p">,</span> <span class="n">offset</span> <span class="ow">in</span> <span class="n">server_classes</span><span class="o">.</span><span class="n">_find_properties</span><span class="p">(</span><span class="n">send_table</span><span class="p">):</span>
+
+            <span class="c1"># Is the current prop an array?</span>
+            <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">ARRAY</span><span class="p">:</span>
+
+                <span class="c1"># Loop through all aliases...</span>
+                <span class="k">for</span> <span class="n">alias</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">aliases</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                    <span class="c1"># Is the current alias matching the prop name?</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">Section</span><span class="p">)</span> <span class="ow">and</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">name</span><span class="p">:</span>
+
+                        <span class="c1"># Set the name of the type...</span>
+                        <span class="n">type_name</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span>
+
+                        <span class="c1"># Get the size of the array...</span>
+                        <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_type_size</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">])</span> <span class="o">*</span> <span class="n">prop</span><span class="o">.</span><span class="n">length</span>
+
+                        <span class="c1"># No need to continue looping...</span>
+                        <span class="k">break</span>
+
+                <span class="c1"># Was no size retrieved?</span>
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="c1"># We don&#39;t want to add that property...</span>
+                    <span class="k">continue</span>
+
+            <span class="c1"># Otherwise, is the type supported?</span>
+            <span class="k">elif</span> <span class="n">prop</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="n">_supported_property_types</span><span class="p">:</span>
+
+                <span class="c1"># Set the name of the type...</span>
+                <span class="n">type_name</span> <span class="o">=</span> <span class="n">_supported_property_types</span><span class="p">[</span>
+                    <span class="n">prop</span><span class="o">.</span><span class="n">type</span><span class="p">]</span>
+
+                <span class="c1"># Get the size of the type...</span>
+                <span class="n">size</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_type_size</span><span class="p">(</span><span class="n">type_name</span><span class="p">)</span>
+
+            <span class="c1"># Otherwise...</span>
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="c1"># We don&#39;t want to add that property...</span>
+                <span class="k">continue</span>
+
+            <span class="c1"># Add the offset to the size...</span>
+            <span class="n">size</span> <span class="o">+=</span> <span class="n">offset</span>
+
+            <span class="c1"># Is the size larger than our actual stored size?</span>
+            <span class="k">if</span> <span class="n">size</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
+
+                <span class="c1"># Update the size...</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">=</span> <span class="n">size</span>
+
+            <span class="c1"># Add the property...</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">prop</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">type_name</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_type_size</span><span class="p">(</span><span class="n">type_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Helper method returning the size of the given type.</span>
+
+<span class="sd">        :param str type_name:</span>
+<span class="sd">            The name of the type.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Is the type native?</span>
+        <span class="k">if</span> <span class="n">Type</span><span class="o">.</span><span class="n">is_native</span><span class="p">(</span><span class="n">type_name</span><span class="p">):</span>
+
+            <span class="c1"># Return the size of the type...</span>
+            <span class="k">return</span> <span class="n">TYPE_SIZES</span><span class="p">[</span><span class="n">type_name</span><span class="o">.</span><span class="n">upper</span><span class="p">()]</span>
+
+        <span class="c1"># Otherwise...</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># Get the size of the type...</span>
+            <span class="k">return</span> <span class="n">get_size</span><span class="p">(</span><span class="n">manager</span><span class="o">.</span><span class="n">get_class</span><span class="p">(</span><span class="n">type_name</span><span class="p">))</span>
+
+        <span class="c1"># Raise an exception...</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is not a supported type.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">type_name</span><span class="p">))</span>
+
+<div class="viewcode-block" id="TempEntityTemplate.add_hook">
+<a class="viewcode-back" href="../../developing/modules/effects.templates.html#effects.templates.TempEntityTemplate.add_hook">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a hook for this temp entity.</span>
+
+<span class="sd">        :param function callback:</span>
+<span class="sd">            The callback function to register.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Is the given callback not callable?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">callable</span><span class="p">(</span><span class="n">callback</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;The given callback is not callable.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Is the callback already registered?</span>
+        <span class="k">if</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hooks</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The given callback is already registered.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Register the hook...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hooks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TempEntityTemplate.remove_hook">
+<a class="viewcode-back" href="../../developing/modules/effects.templates.html#effects.templates.TempEntityTemplate.remove_hook">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unregister a hook for this temp entity.</span>
+
+<span class="sd">        :param function callback:</span>
+<span class="sd">            The callback function to unregister.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Raise an exception if the given callback isn&#39;t registered...</span>
+        <span class="k">if</span> <span class="n">callback</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hooks</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;The given callback is not registered.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Unregister the hook...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">hooks</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TempEntityTemplate.handle_hook">
+<a class="viewcode-back" href="../../developing/modules/effects.templates.html#effects.templates.TempEntityTemplate.handle_hook">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">handle_hook</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_entity</span><span class="p">,</span> <span class="n">recipient_filter</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call the registered callbacks.</span>
+
+<span class="sd">        :param TempEntity temp_entity:</span>
+<span class="sd">            The TempEntity instance.</span>
+<span class="sd">        :param RecipientFilter recipient_filter:</span>
+<span class="sd">            The RecipientFilter instance.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Set the default return value to None...</span>
+        <span class="n">return_value</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Loop through all registered hooks for this temp entity...</span>
+        <span class="k">for</span> <span class="n">callback</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">hooks</span><span class="p">:</span>
+
+            <span class="c1"># Call the callback and store the value it returned...</span>
+            <span class="n">returned_value</span> <span class="o">=</span> <span class="n">callback</span><span class="p">(</span><span class="n">temp_entity</span><span class="p">,</span> <span class="n">recipient_filter</span><span class="p">)</span>
+
+            <span class="c1"># Did the callback return anything?</span>
+            <span class="k">if</span> <span class="n">returned_value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="c1"># Yes, so override the return value...</span>
+                <span class="n">return_value</span> <span class="o">=</span> <span class="n">returned_value</span>
+
+        <span class="c1"># Return the return value...</span>
+        <span class="k">return</span> <span class="n">return_value</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">aliases</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the aliases of the temp entity.</span>
+
+<span class="sd">        :rtype: GameConfigObj</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_aliases</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">hooks</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the registered hooks for this temp entity.</span>
+
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hooks</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the properties data of the temp entity.</span>
+
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_properties</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the size of the temp entity instance.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span></div>
+
+
+
+<div class="viewcode-block" id="TempEntityTemplates">
+<a class="viewcode-back" href="../../developing/modules/effects.templates.html#effects.templates.TempEntityTemplates">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TempEntityTemplates</span><span class="p">(</span><span class="nb">dict</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Container class used to store the temp entity templates instances.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__missing__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_entity_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when a temp entity template is requested but missing.</span>
+
+<span class="sd">        :param str temp_entity_name:</span>
+<span class="sd">            The name of the temp entity template requested.</span>
+<span class="sd">        :raise NameError:</span>
+<span class="sd">            Raised if the given name is not a valid temp entity name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Import this here to fix a cyclic import</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">effects</span><span class="w"> </span><span class="kn">import</span> <span class="n">_first_temp_entity</span>
+
+        <span class="c1"># Get the first temp entity in the chain...</span>
+        <span class="n">temp_entity</span> <span class="o">=</span> <span class="n">_first_temp_entity</span>
+
+        <span class="c1"># Loop as long as we have a valid instance...</span>
+        <span class="k">while</span> <span class="n">temp_entity</span><span class="p">:</span>
+
+            <span class="c1"># Are the names matching?</span>
+            <span class="k">if</span> <span class="n">temp_entity</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">temp_entity_name</span><span class="p">:</span>
+
+                <span class="c1"># No need to continue searching...</span>
+                <span class="k">break</span>
+
+            <span class="c1"># Pass to the next temp entity in the chain...</span>
+            <span class="n">temp_entity</span> <span class="o">=</span> <span class="n">temp_entity</span><span class="o">.</span><span class="n">next</span>
+
+        <span class="c1"># Did we reach the last temp entity in the chain?</span>
+        <span class="k">if</span> <span class="n">temp_entity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># If so, raise an exception....</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is not a valid temp entity name.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">temp_entity_name</span><span class="p">))</span>
+
+        <span class="c1"># Get the temp entity template...</span>
+        <span class="n">temp_entity_template</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">temp_entity_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">TempEntityTemplate</span><span class="p">(</span>
+            <span class="n">temp_entity</span><span class="p">)</span>
+
+        <span class="c1"># Return the temp entity template...</span>
+        <span class="k">return</span> <span class="n">temp_entity_template</span></div>
+
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># ============================================================================</span>
+<span class="c1"># Get a dictionary to store the temp entity templates...</span>
+<span class="n">temp_entity_templates</span> <span class="o">=</span> <span class="n">TempEntityTemplates</span><span class="p">()</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../effects.html" >effects</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">effects.templates</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

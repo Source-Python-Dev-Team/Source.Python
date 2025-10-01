@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>net_channel module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">net_channel module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-net_channel">
+<span id="net-channel-module"></span><h1>net_channel module<a class="headerlink" href="#module-net_channel" title="Link to this heading">¶</a></h1>
+<p>Provides access to the net channel interfaces.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="net_channel.NetChannel">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">net_channel.</span></span><span class="sig-name descname"><span class="pre">NetChannel</span></span><a class="headerlink" href="#net_channel.NetChannel" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannel.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#net_channel.NetChannel.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannel.deny_file">
+<span class="sig-name descname"><span class="pre">deny_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannel)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(int)transfer_id</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#net_channel.NetChannel.deny_file" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannel.request_file">
+<span class="sig-name descname"><span class="pre">request_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannel)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)file_name</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#net_channel.NetChannel.request_file" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannel.send_data">
+<span class="sig-name descname"><span class="pre">send_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannel)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_bitbuffers.BitBufferWrite)arg2</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(bool)reliable=True</span></span></em><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#net_channel.NetChannel.send_data" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannel.send_file">
+<span class="sig-name descname"><span class="pre">send_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannel)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)file_name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(int)transfer_id</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#net_channel.NetChannel.send_file" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannel.set_data_rate">
+<span class="sig-name descname"><span class="pre">set_data_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannel)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#net_channel.NetChannel.set_data_rate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="net_channel.NetChannel.msg_handler">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">msg_handler</span></span><a class="headerlink" href="#net_channel.NetChannel.msg_handler" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_net_channel.NetChannel)arg1) -&gt; _net_channel.NetChannelHandler</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="net_channel.NetChannelHandler">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">net_channel.</span></span><span class="sig-name descname"><span class="pre">NetChannelHandler</span></span><a class="headerlink" href="#net_channel.NetChannelHandler" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelHandler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#net_channel.NetChannelHandler.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">net_channel.</span></span><span class="sig-name descname"><span class="pre">NetChannelInfo</span></span><a class="headerlink" href="#net_channel.NetChannelInfo" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#net_channel.NetChannelInfo.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.get_avg_choke">
+<span class="sig-name descname"><span class="pre">get_avg_choke</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.get_avg_choke" title="Link to this definition">¶</a></dt>
+<dd><p>Return the average packet choke.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.get_avg_data">
+<span class="sig-name descname"><span class="pre">get_avg_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.get_avg_data" title="Link to this definition">¶</a></dt>
+<dd><p>Return the average data flow in bytes/second.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.get_avg_latency">
+<span class="sig-name descname"><span class="pre">get_avg_latency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.get_avg_latency" title="Link to this definition">¶</a></dt>
+<dd><p>Return the average latency in seconds.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.get_avg_loss">
+<span class="sig-name descname"><span class="pre">get_avg_loss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.get_avg_loss" title="Link to this definition">¶</a></dt>
+<dd><p>Return the average packet loss.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.get_avg_packets">
+<span class="sig-name descname"><span class="pre">get_avg_packets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.get_avg_packets" title="Link to this definition">¶</a></dt>
+<dd><p>Return the average packets/second.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.get_command_interpolation_amount">
+<span class="sig-name descname"><span class="pre">get_command_interpolation_amount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)"><span class="pre">float</span></a></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.get_command_interpolation_amount" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.get_latency">
+<span class="sig-name descname"><span class="pre">get_latency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.get_latency" title="Link to this definition">¶</a></dt>
+<dd><p>Return the current latency (RTT). It’s more accurate, but jittering.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.get_packet_bytes">
+<span class="sig-name descname"><span class="pre">get_packet_bytes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.get_packet_bytes" title="Link to this definition">¶</a></dt>
+<dd><p>Return the group size of this packet.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.get_packet_response_latency">
+<span class="sig-name descname"><span class="pre">get_packet_response_latency</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg4</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.get_packet_response_latency" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.get_packet_time">
+<span class="sig-name descname"><span class="pre">get_packet_time</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">float</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.get_packet_time" title="Link to this definition">¶</a></dt>
+<dd><p>Return the time when the packet was sent.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.get_remote_frame_rate">
+<span class="sig-name descname"><span class="pre">get_remote_frame_rate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(float)arg3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.get_remote_frame_rate" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.get_sequence_number">
+<span class="sig-name descname"><span class="pre">get_sequence_number</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.get_sequence_number" title="Link to this definition">¶</a></dt>
+<dd><p>Return the last sent sequence number.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.get_stream_progress">
+<span class="sig-name descname"><span class="pre">get_stream_progress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.get_stream_progress" title="Link to this definition">¶</a></dt>
+<dd><p>Return TCP progress if transmitting.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.get_total_data">
+<span class="sig-name descname"><span class="pre">get_total_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.get_total_data" title="Link to this definition">¶</a></dt>
+<dd><p>Return the total flow in/out in bytes.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.is_loopback">
+<span class="sig-name descname"><span class="pre">is_loopback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.is_loopback" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if loopback.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.is_playback">
+<span class="sig-name descname"><span class="pre">is_playback</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.is_playback" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if it’s a demo playback.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.is_timing_out">
+<span class="sig-name descname"><span class="pre">is_timing_out</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.is_timing_out" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if the channel is timing out.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.is_valid_packet">
+<span class="sig-name descname"><span class="pre">is_valid_packet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetChannelInfo)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetChannelInfo.is_valid_packet" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if the packet was not lost, dropped, choked or flushed.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.address">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">address</span></span><a class="headerlink" href="#net_channel.NetChannelInfo.address" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the net address of the player.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.buffer_size">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">buffer_size</span></span><a class="headerlink" href="#net_channel.NetChannelInfo.buffer_size" title="Link to this definition">¶</a></dt>
+<dd><p>Return the packet history size.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.data_rate">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">data_rate</span></span><a class="headerlink" href="#net_channel.NetChannelInfo.data_rate" title="Link to this definition">¶</a></dt>
+<dd><p>Return the send data rate in bytes/second.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#net_channel.NetChannelInfo.name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the channel’s name.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.time">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#net_channel.NetChannelInfo.time" title="Link to this definition">¶</a></dt>
+<dd><p>Return the current net time.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.time_connected">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time_connected</span></span><a class="headerlink" href="#net_channel.NetChannelInfo.time_connected" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the amount of time the player has been connected.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.time_since_last_received">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time_since_last_received</span></span><a class="headerlink" href="#net_channel.NetChannelInfo.time_since_last_received" title="Link to this definition">¶</a></dt>
+<dd><p>Return the time since the last received packet in seconds.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="net_channel.NetChannelInfo.timeout_seconds">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">timeout_seconds</span></span><a class="headerlink" href="#net_channel.NetChannelInfo.timeout_seconds" title="Link to this definition">¶</a></dt>
+<dd><p>None( (_net_channel.NetChannelInfo)arg1) -&gt; float</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="net_channel.NetFlow">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">net_channel.</span></span><span class="sig-name descname"><span class="pre">NetFlow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">values</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/net_channel.html#NetFlow"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#net_channel.NetFlow" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/enum.html#enum.IntEnum" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">IntEnum</span></code></a></p>
+<p>Network Channel Enum class.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="net_channel.NetFlow.INCOMING">
+<span class="sig-name descname"><span class="pre">INCOMING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#net_channel.NetFlow.INCOMING" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="net_channel.NetFlow.IN_OUT">
+<span class="sig-name descname"><span class="pre">IN_OUT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#net_channel.NetFlow.IN_OUT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="net_channel.NetFlow.OUTGOING">
+<span class="sig-name descname"><span class="pre">OUTGOING</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#net_channel.NetFlow.OUTGOING" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="net_channel.NetMessage">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">net_channel.</span></span><span class="sig-name descname"><span class="pre">NetMessage</span></span><a class="headerlink" href="#net_channel.NetMessage" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetMessage.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#net_channel.NetMessage.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetMessage.process">
+<span class="sig-name descname"><span class="pre">process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetMessage)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetMessage.process" title="Link to this definition">¶</a></dt>
+<dd><p>Call the recently set handler to process this message.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetMessage.read_from_buffer">
+<span class="sig-name descname"><span class="pre">read_from_buffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetMessage)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_bitbuffers.BitBufferRead)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetMessage.read_from_buffer" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if parsing was OK.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetMessage.to_string">
+<span class="sig-name descname"><span class="pre">to_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetMessage)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetMessage.to_string" title="Link to this definition">¶</a></dt>
+<dd><p>Return a human readable string about the message content.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="net_channel.NetMessage.write_to_buffer">
+<span class="sig-name descname"><span class="pre">write_to_buffer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(NetMessage)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_bitbuffers.BitBufferWrite)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#net_channel.NetMessage.write_to_buffer" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if writing was OK.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="net_channel.NetMessage.group">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">group</span></span><a class="headerlink" href="#net_channel.NetMessage.group" title="Link to this definition">¶</a></dt>
+<dd><p>Return the net message group.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="net_channel.NetMessage.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#net_channel.NetMessage.name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the network message name. E.g. svc_serverinfo.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="net_channel.NetMessage.net_channel">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">net_channel</span></span><a class="headerlink" href="#net_channel.NetMessage.net_channel" title="Link to this definition">¶</a></dt>
+<dd><p>Return the net channel this message is from/for.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="net_channel.NetMessage.reliable">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reliable</span></span><a class="headerlink" href="#net_channel.NetMessage.reliable" title="Link to this definition">¶</a></dt>
+<dd><p>Return True if the message needs reliable handling.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="net_channel.NetMessage.type">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#net_channel.NetMessage.type" title="Link to this definition">¶</a></dt>
+<dd><p>Return the module specific header tag. E.g. svc_serverinfo.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">net_channel module</a><ul>
+<li><a class="reference internal" href="#net_channel.NetChannel"><code class="docutils literal notranslate"><span class="pre">NetChannel</span></code></a><ul>
+<li><a class="reference internal" href="#net_channel.NetChannel.__init__"><code class="docutils literal notranslate"><span class="pre">NetChannel.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannel.deny_file"><code class="docutils literal notranslate"><span class="pre">NetChannel.deny_file()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannel.request_file"><code class="docutils literal notranslate"><span class="pre">NetChannel.request_file()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannel.send_data"><code class="docutils literal notranslate"><span class="pre">NetChannel.send_data()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannel.send_file"><code class="docutils literal notranslate"><span class="pre">NetChannel.send_file()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannel.set_data_rate"><code class="docutils literal notranslate"><span class="pre">NetChannel.set_data_rate()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannel.msg_handler"><code class="docutils literal notranslate"><span class="pre">NetChannel.msg_handler</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#net_channel.NetChannelHandler"><code class="docutils literal notranslate"><span class="pre">NetChannelHandler</span></code></a><ul>
+<li><a class="reference internal" href="#net_channel.NetChannelHandler.__init__"><code class="docutils literal notranslate"><span class="pre">NetChannelHandler.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo</span></code></a><ul>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.__init__"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.get_avg_choke"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.get_avg_choke()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.get_avg_data"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.get_avg_data()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.get_avg_latency"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.get_avg_latency()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.get_avg_loss"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.get_avg_loss()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.get_avg_packets"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.get_avg_packets()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.get_command_interpolation_amount"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.get_command_interpolation_amount()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.get_latency"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.get_latency()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.get_packet_bytes"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.get_packet_bytes()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.get_packet_response_latency"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.get_packet_response_latency()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.get_packet_time"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.get_packet_time()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.get_remote_frame_rate"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.get_remote_frame_rate()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.get_sequence_number"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.get_sequence_number()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.get_stream_progress"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.get_stream_progress()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.get_total_data"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.get_total_data()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.is_loopback"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.is_loopback()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.is_playback"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.is_playback()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.is_timing_out"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.is_timing_out()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.is_valid_packet"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.is_valid_packet()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.address"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.address</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.buffer_size"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.buffer_size</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.data_rate"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.data_rate</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.name"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.name</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.time"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.time</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.time_connected"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.time_connected</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.time_since_last_received"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.time_since_last_received</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetChannelInfo.timeout_seconds"><code class="docutils literal notranslate"><span class="pre">NetChannelInfo.timeout_seconds</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#net_channel.NetFlow"><code class="docutils literal notranslate"><span class="pre">NetFlow</span></code></a><ul>
+<li><a class="reference internal" href="#net_channel.NetFlow.INCOMING"><code class="docutils literal notranslate"><span class="pre">NetFlow.INCOMING</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetFlow.IN_OUT"><code class="docutils literal notranslate"><span class="pre">NetFlow.IN_OUT</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetFlow.OUTGOING"><code class="docutils literal notranslate"><span class="pre">NetFlow.OUTGOING</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#net_channel.NetMessage"><code class="docutils literal notranslate"><span class="pre">NetMessage</span></code></a><ul>
+<li><a class="reference internal" href="#net_channel.NetMessage.__init__"><code class="docutils literal notranslate"><span class="pre">NetMessage.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetMessage.process"><code class="docutils literal notranslate"><span class="pre">NetMessage.process()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetMessage.read_from_buffer"><code class="docutils literal notranslate"><span class="pre">NetMessage.read_from_buffer()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetMessage.to_string"><code class="docutils literal notranslate"><span class="pre">NetMessage.to_string()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetMessage.write_to_buffer"><code class="docutils literal notranslate"><span class="pre">NetMessage.write_to_buffer()</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetMessage.group"><code class="docutils literal notranslate"><span class="pre">NetMessage.group</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetMessage.name"><code class="docutils literal notranslate"><span class="pre">NetMessage.name</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetMessage.net_channel"><code class="docutils literal notranslate"><span class="pre">NetMessage.net_channel</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetMessage.reliable"><code class="docutils literal notranslate"><span class="pre">NetMessage.reliable</span></code></a></li>
+<li><a class="reference internal" href="#net_channel.NetMessage.type"><code class="docutils literal notranslate"><span class="pre">NetMessage.type</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/net_channel.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">net_channel module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

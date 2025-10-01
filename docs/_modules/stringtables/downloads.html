@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>stringtables.downloads &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">stringtables.downloads</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for stringtables.downloads</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../stringtables/downloads.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides access to the Downloadables stringtable.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoUnload</span>
+<span class="c1">#   Events</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">events.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">event_manager</span>
+<span class="c1">#   Paths</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">paths</span><span class="w"> </span><span class="kn">import</span> <span class="n">GAME_PATH</span>
+<span class="c1">#   Stringtables</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">stringtables</span><span class="w"> </span><span class="kn">import</span> <span class="n">string_tables</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Downloadables&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="Downloadables">
+<a class="viewcode-back" href="../../developing/modules/stringtables.downloads.html#stringtables.downloads.Downloadables">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Downloadables</span><span class="p">(</span><span class="n">AutoUnload</span><span class="p">,</span> <span class="nb">set</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to store downloadables for a script.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Downloadables.__init__">
+<a class="viewcode-back" href="../../developing/modules/stringtables.downloads.html#stringtables.downloads.Downloadables.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the instance to the downloadables list.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="n">_downloadables_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Downloadables.add">
+<a class="viewcode-back" href="../../developing/modules/stringtables.downloads.html#stringtables.downloads.Downloadables.add">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add an item to the downloadables for a script.</span>
+
+<span class="sd">        :param str item:</span>
+<span class="sd">            The path to add to the downloadables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Is the item already in the list?</span>
+        <span class="k">if</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+
+            <span class="c1"># If so, no need to add it</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Add the item to the downloadables stringtable</span>
+        <span class="n">_downloadables_list</span><span class="o">.</span><span class="n">_add_to_download_table</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+        <span class="c1"># Add the item to the script&#39;s downloadables</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Downloadables.add_directory">
+<a class="viewcode-back" href="../../developing/modules/stringtables.downloads.html#stringtables.downloads.Downloadables.add_directory">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add all files in the given directory to the downloadables.</span>
+
+<span class="sd">        :param str directory:</span>
+<span class="sd">            The directory to add to the downloadables.</span>
+<span class="sd">        :return:</span>
+<span class="sd">            Return the number of files that have been added.</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">GAME_PATH</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="n">directory</span><span class="p">)</span><span class="o">.</span><span class="n">walkfiles</span><span class="p">(),</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">GAME_PATH</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s1">&#39;/&#39;</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">index</span></div>
+
+
+<div class="viewcode-block" id="Downloadables.remove_directory">
+<a class="viewcode-back" href="../../developing/modules/stringtables.downloads.html#stringtables.downloads.Downloadables.remove_directory">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove_directory</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">directory</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove all files in the given directory from the downloadables.</span>
+
+<span class="sd">        :param str directory:</span>
+<span class="sd">            The directory to remove from the downloadables.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Convert slashes</span>
+        <span class="n">directory</span> <span class="o">=</span> <span class="n">directory</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&#39;</span><span class="p">,</span> <span class="s1">&#39;/&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Loop through all items in the set</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+            <span class="c1"># Is the current item in the given directory?</span>
+            <span class="k">if</span> <span class="n">item</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
+
+                <span class="c1"># Remove the item from the set</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_all_downloads</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add all downloadables for the script on level init.&quot;&quot;&quot;</span>
+        <span class="c1"># Loop through all items in the list</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+
+            <span class="c1"># Add the item to the downloadables stringtable</span>
+            <span class="n">_downloadables_list</span><span class="o">.</span><span class="n">_add_to_download_table</span><span class="p">(</span><span class="n">item</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove the instance from the downloadables list.&quot;&quot;&quot;</span>
+        <span class="n">_downloadables_list</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_DownloadablesList</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;List object used to store downloads on a per-script basis.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Refresh the downloadables table instance.&quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_table_instance</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_refresh_table_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the current instance of the downloadables table.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">download_table</span> <span class="o">=</span> <span class="n">string_tables</span><span class="o">.</span><span class="n">downloadables</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_to_download_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add the given file to the downloadables table.&quot;&quot;&quot;</span>
+        <span class="c1"># Is the server still in launching process?</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">download_table</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># If so, no need to go further...</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Add the given file to the downloadables table.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">download_table</span><span class="o">.</span><span class="n">add_string</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="n">item</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">server_spawn</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">game_event</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Add all items stored as downloadables to the stringtable.&quot;&quot;&quot;</span>
+        <span class="c1"># Refresh the downloadables table instance</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_refresh_table_instance</span><span class="p">()</span>
+
+        <span class="c1"># Loop through all items in the list</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+
+            <span class="c1"># Set all items in the current item as downloadables</span>
+            <span class="n">item</span><span class="o">.</span><span class="n">_set_all_downloads</span><span class="p">()</span>
+
+<span class="c1"># Get the _DownloadablesList instance</span>
+<span class="n">_downloadables_list</span> <span class="o">=</span> <span class="n">_DownloadablesList</span><span class="p">()</span>
+
+<span class="c1"># Register for the event server_spawn in</span>
+<span class="c1"># order to reset all downloads on map change</span>
+<span class="n">event_manager</span><span class="o">.</span><span class="n">register_for_event</span><span class="p">(</span>
+    <span class="s1">&#39;server_spawn&#39;</span><span class="p">,</span> <span class="n">_downloadables_list</span><span class="o">.</span><span class="n">server_spawn</span><span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">stringtables.downloads</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

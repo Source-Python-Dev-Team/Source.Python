@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>events.resource module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">events.resource module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-events.resource">
+<span id="events-resource-module"></span><h1>events.resource module<a class="headerlink" href="#module-events.resource" title="Link to this heading">¶</a></h1>
+<p>Provides a way to create resource (.res) files using custom events.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="events.resource.ResourceFile">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">events.resource.</span></span><span class="sig-name descname"><span class="pre">ResourceFile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">events</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/events/resource.html#ResourceFile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#events.resource.ResourceFile" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.13/library/collections.html#collections.OrderedDict" title="(in Python v3.13)"><code class="xref py py-class docutils literal notranslate"><span class="pre">OrderedDict</span></code></a></p>
+<p>Class used to write and load custom event .res files.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="events.resource.ResourceFile.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">events</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/events/resource.html#ResourceFile.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#events.resource.ResourceFile.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Called on instatiation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.resource.ResourceFile.load_events">
+<span class="sig-name descname"><span class="pre">load_events</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/events/resource.html#ResourceFile.load_events"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#events.resource.ResourceFile.load_events" title="Link to this definition">¶</a></dt>
+<dd><p>Load events from the .res file.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="events.resource.ResourceFile.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/events/resource.html#ResourceFile.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#events.resource.ResourceFile.write" title="Link to this definition">¶</a></dt>
+<dd><p>Write the .res file to disk.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="events.resource.ResourceFile.filepath">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">filepath</span></span><a class="headerlink" href="#events.resource.ResourceFile.filepath" title="Link to this definition">¶</a></dt>
+<dd><p>Return the path to the .res file.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="events.resource.ResourceFile.fullpath">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fullpath</span></span><a class="headerlink" href="#events.resource.ResourceFile.fullpath" title="Link to this definition">¶</a></dt>
+<dd><p>Return the full path of the .res file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">events.resource module</a><ul>
+<li><a class="reference internal" href="#events.resource.ResourceFile"><code class="docutils literal notranslate"><span class="pre">ResourceFile</span></code></a><ul>
+<li><a class="reference internal" href="#events.resource.ResourceFile.__init__"><code class="docutils literal notranslate"><span class="pre">ResourceFile.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#events.resource.ResourceFile.load_events"><code class="docutils literal notranslate"><span class="pre">ResourceFile.load_events()</span></code></a></li>
+<li><a class="reference internal" href="#events.resource.ResourceFile.write"><code class="docutils literal notranslate"><span class="pre">ResourceFile.write()</span></code></a></li>
+<li><a class="reference internal" href="#events.resource.ResourceFile.filepath"><code class="docutils literal notranslate"><span class="pre">ResourceFile.filepath</span></code></a></li>
+<li><a class="reference internal" href="#events.resource.ResourceFile.fullpath"><code class="docutils literal notranslate"><span class="pre">ResourceFile.fullpath</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/events.resource.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">events.resource module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

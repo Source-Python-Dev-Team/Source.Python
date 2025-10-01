@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>effects.hooks &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../effects.html" accesskey="U">effects</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">effects.hooks</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for effects.hooks</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../effects/hooks.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides hooking effect functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoUnload</span>
+<span class="c1">#   Effects</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">effects.base</span><span class="w"> </span><span class="kn">import</span> <span class="n">TempEntity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">effects.templates</span><span class="w"> </span><span class="kn">import</span> <span class="n">temp_entity_templates</span>
+<span class="c1">#   Engines</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">engine_server</span>
+<span class="c1">#   Filters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.recipients</span><span class="w"> </span><span class="kn">import</span> <span class="n">RecipientFilter</span>
+<span class="c1">#   Memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_virtual_function</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_object</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">HookType</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.hooks</span><span class="w"> </span><span class="kn">import</span> <span class="n">PreHook</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;TempEntityPreHook&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<div class="viewcode-block" id="TempEntityPreHook">
+<a class="viewcode-back" href="../../developing/modules/effects.hooks.html#effects.hooks.TempEntityPreHook">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TempEntityPreHook</span><span class="p">(</span><span class="n">AutoUnload</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator used to create temp entity pre hooks that auto unload.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TempEntityPreHook.__init__">
+<a class="viewcode-back" href="../../developing/modules/effects.hooks.html#effects.hooks.TempEntityPreHook.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_entity_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the hook object.</span>
+
+<span class="sd">        :param str temp_entity_name:</span>
+<span class="sd">            The name of the temp entity to hook.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get and store the temp entity template...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template</span> <span class="o">=</span> <span class="n">temp_entity_templates</span><span class="p">[</span><span class="n">temp_entity_name</span><span class="p">]</span>
+
+        <span class="c1"># Set the callback to None...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Store the callback and try initialize the hook.&quot;&quot;&quot;</span>
+        <span class="c1"># Store the callback...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="o">=</span> <span class="n">callback</span>
+
+        <span class="c1"># Initialize the hook...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">add_hook</span><span class="p">(</span><span class="n">callback</span><span class="p">)</span>
+
+        <span class="c1"># Return the callback...</span>
+        <span class="k">return</span> <span class="n">callback</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Unload the hook.&quot;&quot;&quot;</span>
+        <span class="c1"># Exit the call if the callback wasn&#39;t registered...</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">callback</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Unregister the hook...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">remove_hook</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">callback</span><span class="p">)</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">TempEntityPostHook</span><span class="p">(</span><span class="n">TempEntityPreHook</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Decorator used to create temp entity post hooks that auto unload.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_entity_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the hook object.</span>
+
+<span class="sd">        :param str temp_entity_name:</span>
+<span class="sd">            The name of the temp entity to hook.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">warnings</span><span class="w"> </span><span class="kn">import</span> <span class="n">warn</span>
+        <span class="n">warn</span><span class="p">(</span>
+            <span class="s1">&#39;TempEntityPostHook has been deprecated and will be entirely &#39;</span>
+            <span class="s1">&#39;unsupported in a future update. Use TempEntityPreHook instead &#39;</span>
+            <span class="s1">&#39;or register your own post hook on &#39;</span>
+            <span class="s1">&#39;CEngineServer::PlaybackTempEntity/CBaseTempEntity::Create.&#39;</span><span class="p">)</span>
+
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">temp_entity_name</span><span class="p">)</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; HOOKS</span>
+<span class="c1"># =============================================================================</span>
+<span class="nd">@PreHook</span><span class="p">(</span><span class="n">get_virtual_function</span><span class="p">(</span><span class="n">engine_server</span><span class="p">,</span> <span class="s1">&#39;PlaybackTempEntity&#39;</span><span class="p">))</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">pre_playback_temp_entity</span><span class="p">(</span><span class="n">stack_data</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Handle pre hooks.&quot;&quot;&quot;</span>
+    <span class="n">temp_entity</span> <span class="o">=</span> <span class="n">TempEntity</span><span class="p">(</span><span class="n">stack_data</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">recipients</span> <span class="o">=</span> <span class="n">make_object</span><span class="p">(</span><span class="n">RecipientFilter</span><span class="p">,</span> <span class="n">stack_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">except</span> <span class="ne">RuntimeError</span><span class="p">:</span>
+        <span class="k">global</span> <span class="n">_recipients</span>
+        <span class="n">_recipients</span> <span class="o">=</span> <span class="n">RecipientFilter</span><span class="o">.</span><span class="n">from_abstract_pointer</span><span class="p">(</span><span class="n">stack_data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">stack_data</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">recipients</span> <span class="o">=</span> <span class="n">_recipients</span>
+    <span class="k">return</span> <span class="n">temp_entity</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">handle_hook</span><span class="p">(</span><span class="n">temp_entity</span><span class="p">,</span> <span class="n">recipients</span><span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../effects.html" >effects</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">effects.hooks</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

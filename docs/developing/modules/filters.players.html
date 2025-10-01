@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>filters.players module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">filters.players module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-filters.players">
+<span id="filters-players-module"></span><h1>filters.players module<a class="headerlink" href="#module-filters.players" title="Link to this heading">¶</a></h1>
+<p>Provides player filtering functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="filters.players.PlayerIter">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">filters.players.</span></span><span class="sig-name descname"><span class="pre">PlayerIter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">is_filters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">not_filters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/filters/players.html#PlayerIter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#filters.players.PlayerIter" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">_IterObject</span></code></p>
+<p>Player iterate class.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="filters.players.PlayerIter.iterator">
+<em class="property"><span class="k"><span class="pre">static</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">iterator</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/filters/players.html#PlayerIter.iterator"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#filters.players.PlayerIter.iterator" title="Link to this definition">¶</a></dt>
+<dd><p>Iterate over all <a class="reference internal" href="players.entity.html#players.entity.Player" title="players.entity.Player"><code class="xref py py-class docutils literal notranslate"><span class="pre">players.entity.Player</span></code></a> objects.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="filters.players.get_default_filters">
+<span class="sig-prename descclassname"><span class="pre">filters.players.</span></span><span class="sig-name descname"><span class="pre">get_default_filters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/filters/players.html#get_default_filters"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#filters.players.get_default_filters" title="Link to this definition">¶</a></dt>
+<dd><p>Return the default filters (all available filters).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="filters.players.parse_filter">
+<span class="sig-prename descclassname"><span class="pre">filters.players.</span></span><span class="sig-name descname"><span class="pre">parse_filter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filters</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/filters/players.html#parse_filter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#filters.players.parse_filter" title="Link to this definition">¶</a></dt>
+<dd><p>Parse an expression and return a set containing <code class="xref py py-class docutils literal notranslate"><span class="pre">Player</span></code> objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>expr</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – The expression to parse.</p></li>
+<li><p><strong>filters</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#dict" title="(in Python v3.13)"><em>dict</em></a>) – Filters that should be used instead of the default
+filters. All filter names must be lowercase.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#set" title="(in Python v3.13)">set</a></p>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#SyntaxError" title="(in Python v3.13)"><strong>SyntaxError</strong></a> – Raised if the expression is invalid.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#KeyError" title="(in Python v3.13)"><strong>KeyError</strong></a> – Raised if an invalid filter was used.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Raised if the conversion from userid to index failed.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">filters.players module</a><ul>
+<li><a class="reference internal" href="#filters.players.PlayerIter"><code class="docutils literal notranslate"><span class="pre">PlayerIter</span></code></a><ul>
+<li><a class="reference internal" href="#filters.players.PlayerIter.iterator"><code class="docutils literal notranslate"><span class="pre">PlayerIter.iterator()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#filters.players.get_default_filters"><code class="docutils literal notranslate"><span class="pre">get_default_filters()</span></code></a></li>
+<li><a class="reference internal" href="#filters.players.parse_filter"><code class="docutils literal notranslate"><span class="pre">parse_filter()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/filters.players.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">filters.players module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

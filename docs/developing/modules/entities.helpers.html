@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>entities.helpers module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.helpers module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-entities.helpers">
+<span id="entities-helpers-module"></span><h1>entities.helpers module<a class="headerlink" href="#module-entities.helpers" title="Link to this heading">¶</a></h1>
+<p>Provides helper functions to convert from one type to another.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.helpers.EntityMemFuncWrapper">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">EntityMemFuncWrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrapped_self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrapper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/helpers.html#EntityMemFuncWrapper"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.helpers.EntityMemFuncWrapper" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="memory.helpers.html#memory.helpers.MemberFunction" title="memory.helpers.MemberFunction"><code class="xref py py-class docutils literal notranslate"><span class="pre">MemberFunction</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.helpers.EntityMemFuncWrapper.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrapped_self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wrapper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/helpers.html#EntityMemFuncWrapper.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.helpers.EntityMemFuncWrapper.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Initialize the instance.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.helpers.EntityMemFuncWrapper.call_trampoline">
+<span class="sig-name descname"><span class="pre">call_trampoline</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/helpers.html#EntityMemFuncWrapper.call_trampoline"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.helpers.EntityMemFuncWrapper.call_trampoline" title="Link to this definition">¶</a></dt>
+<dd><p>Call the trampoline dynamically.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.helpers.EntityMemFuncWrapper.skip_hooks">
+<span class="sig-name descname"><span class="pre">skip_hooks</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/helpers.html#EntityMemFuncWrapper.skip_hooks"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.helpers.EntityMemFuncWrapper.skip_hooks" title="Link to this definition">¶</a></dt>
+<dd><p>Call the function, but skip hooks if there are any.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.baseentity_from_basehandle">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">baseentity_from_basehandle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_entities.BaseEntityHandle)BaseHandle</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.baseentity_from_basehandle" title="Link to this definition">¶</a></dt>
+<dd><p>Return the BaseEntity (of type <cite>“CBaseEntity *”</cite>) from the given BaseHandle (of type <cite>“CBaseHandle”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.baseentity_from_edict">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">baseentity_from_edict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_entities.Edict)Edict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.baseentity_from_edict" title="Link to this definition">¶</a></dt>
+<dd><p>Return the BaseEntity (of type <cite>“CBaseEntity *”</cite>) from the given Edict (of type <cite>“edict_t *”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.baseentity_from_index">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">baseentity_from_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(int)Index</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.baseentity_from_index" title="Link to this definition">¶</a></dt>
+<dd><p>Return the BaseEntity (of type <cite>“CBaseEntity *”</cite>) from the given Index (of type <cite>“unsigned int”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.baseentity_from_inthandle">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">baseentity_from_inthandle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(int)IntHandle</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.baseentity_from_inthandle" title="Link to this definition">¶</a></dt>
+<dd><p>Return the BaseEntity (of type <cite>“CBaseEntity *”</cite>) from the given IntHandle (of type <cite>“unsigned int”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.baseentity_from_pointer">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">baseentity_from_pointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_memory.Pointer)Pointer</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.baseentity_from_pointer" title="Link to this definition">¶</a></dt>
+<dd><p>Return the BaseEntity (of type <cite>“CBaseEntity *”</cite>) from the given Pointer (of type <cite>“CPointer *”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.basehandle_from_baseentity">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">basehandle_from_baseentity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)BaseEntity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_entities.BaseEntityHandle</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.basehandle_from_baseentity" title="Link to this definition">¶</a></dt>
+<dd><p>Return the BaseHandle (of type <cite>“CBaseHandle”</cite>) from the given BaseEntity (of type <cite>“CBaseEntity *”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.basehandle_from_edict">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">basehandle_from_edict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_entities.Edict)Edict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_entities.BaseEntityHandle</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.basehandle_from_edict" title="Link to this definition">¶</a></dt>
+<dd><p>Return the BaseHandle (of type <cite>“CBaseHandle”</cite>) from the given Edict (of type <cite>“edict_t *”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.basehandle_from_index">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">basehandle_from_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(int)Index</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_entities.BaseEntityHandle</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.basehandle_from_index" title="Link to this definition">¶</a></dt>
+<dd><p>Return the BaseHandle (of type <cite>“CBaseHandle”</cite>) from the given Index (of type <cite>“unsigned int”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.basehandle_from_inthandle">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">basehandle_from_inthandle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(int)IntHandle</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_entities.BaseEntityHandle</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.basehandle_from_inthandle" title="Link to this definition">¶</a></dt>
+<dd><p>Return the BaseHandle (of type <cite>“CBaseHandle”</cite>) from the given IntHandle (of type <cite>“unsigned int”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.basehandle_from_pointer">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">basehandle_from_pointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_memory.Pointer)Pointer</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_entities.BaseEntityHandle</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.basehandle_from_pointer" title="Link to this definition">¶</a></dt>
+<dd><p>Return the BaseHandle (of type <cite>“CBaseHandle”</cite>) from the given Pointer (of type <cite>“CPointer *”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.edict_from_baseentity">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">edict_from_baseentity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)BaseEntity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_entities.Edict</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.edict_from_baseentity" title="Link to this definition">¶</a></dt>
+<dd><p>Return the Edict (of type <cite>“edict_t *”</cite>) from the given BaseEntity (of type <cite>“CBaseEntity *”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.edict_from_basehandle">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">edict_from_basehandle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_entities.BaseEntityHandle)BaseHandle</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_entities.Edict</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.edict_from_basehandle" title="Link to this definition">¶</a></dt>
+<dd><p>Return the Edict (of type <cite>“edict_t *”</cite>) from the given BaseHandle (of type <cite>“CBaseHandle”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.edict_from_index">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">edict_from_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(int)Index</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_entities.Edict</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.edict_from_index" title="Link to this definition">¶</a></dt>
+<dd><p>Return the Edict (of type <cite>“edict_t *”</cite>) from the given Index (of type <cite>“unsigned int”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.edict_from_inthandle">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">edict_from_inthandle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(int)IntHandle</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_entities.Edict</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.edict_from_inthandle" title="Link to this definition">¶</a></dt>
+<dd><p>Return the Edict (of type <cite>“edict_t *”</cite>) from the given IntHandle (of type <cite>“unsigned int”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.edict_from_pointer">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">edict_from_pointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_memory.Pointer)Pointer</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_entities.Edict</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.edict_from_pointer" title="Link to this definition">¶</a></dt>
+<dd><p>Return the Edict (of type <cite>“edict_t *”</cite>) from the given Pointer (of type <cite>“CPointer *”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.find_output_name">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">find_output_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)caller</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)output</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.find_output_name" title="Link to this definition">¶</a></dt>
+<dd><p>Lookup the name of an output.</p>
+<p>If no name has been found, None will be returned.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.index_from_baseentity">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">index_from_baseentity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)BaseEntity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.index_from_baseentity" title="Link to this definition">¶</a></dt>
+<dd><p>Return the Index (of type <cite>“unsigned int”</cite>) from the given BaseEntity (of type <cite>“CBaseEntity *”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.index_from_basehandle">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">index_from_basehandle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_entities.BaseEntityHandle)BaseHandle</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.index_from_basehandle" title="Link to this definition">¶</a></dt>
+<dd><p>Return the Index (of type <cite>“unsigned int”</cite>) from the given BaseHandle (of type <cite>“CBaseHandle”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.index_from_edict">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">index_from_edict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_entities.Edict)Edict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.index_from_edict" title="Link to this definition">¶</a></dt>
+<dd><p>Return the Index (of type <cite>“unsigned int”</cite>) from the given Edict (of type <cite>“edict_t *”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.index_from_inthandle">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">index_from_inthandle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(int)IntHandle</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.index_from_inthandle" title="Link to this definition">¶</a></dt>
+<dd><p>Return the Index (of type <cite>“unsigned int”</cite>) from the given IntHandle (of type <cite>“unsigned int”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.index_from_pointer">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">index_from_pointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_memory.Pointer)Pointer</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.index_from_pointer" title="Link to this definition">¶</a></dt>
+<dd><p>Return the Index (of type <cite>“unsigned int”</cite>) from the given Pointer (of type <cite>“CPointer *”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.inthandle_from_baseentity">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">inthandle_from_baseentity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)BaseEntity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.inthandle_from_baseentity" title="Link to this definition">¶</a></dt>
+<dd><p>Return the IntHandle (of type <cite>“unsigned int”</cite>) from the given BaseEntity (of type <cite>“CBaseEntity *”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.inthandle_from_basehandle">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">inthandle_from_basehandle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_entities.BaseEntityHandle)BaseHandle</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.inthandle_from_basehandle" title="Link to this definition">¶</a></dt>
+<dd><p>Return the IntHandle (of type <cite>“unsigned int”</cite>) from the given BaseHandle (of type <cite>“CBaseHandle”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.inthandle_from_edict">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">inthandle_from_edict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_entities.Edict)Edict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.inthandle_from_edict" title="Link to this definition">¶</a></dt>
+<dd><p>Return the IntHandle (of type <cite>“unsigned int”</cite>) from the given Edict (of type <cite>“edict_t *”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.inthandle_from_index">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">inthandle_from_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(int)Index</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.inthandle_from_index" title="Link to this definition">¶</a></dt>
+<dd><p>Return the IntHandle (of type <cite>“unsigned int”</cite>) from the given Index (of type <cite>“unsigned int”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.inthandle_from_pointer">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">inthandle_from_pointer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_memory.Pointer)Pointer</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.inthandle_from_pointer" title="Link to this definition">¶</a></dt>
+<dd><p>Return the IntHandle (of type <cite>“unsigned int”</cite>) from the given Pointer (of type <cite>“CPointer *”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.pointer_from_baseentity">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">pointer_from_baseentity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)BaseEntity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_memory.Pointer</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.pointer_from_baseentity" title="Link to this definition">¶</a></dt>
+<dd><p>Return the Pointer (of type <cite>“CPointer”</cite>) from the given BaseEntity (of type <cite>“CBaseEntity *”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.pointer_from_basehandle">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">pointer_from_basehandle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_entities.BaseEntityHandle)BaseHandle</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_memory.Pointer</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.pointer_from_basehandle" title="Link to this definition">¶</a></dt>
+<dd><p>Return the Pointer (of type <cite>“CPointer”</cite>) from the given BaseHandle (of type <cite>“CBaseHandle”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.pointer_from_edict">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">pointer_from_edict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(_entities.Edict)Edict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_memory.Pointer</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.pointer_from_edict" title="Link to this definition">¶</a></dt>
+<dd><p>Return the Pointer (of type <cite>“CPointer”</cite>) from the given Edict (of type <cite>“edict_t *”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.pointer_from_index">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">pointer_from_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(int)Index</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_memory.Pointer</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.pointer_from_index" title="Link to this definition">¶</a></dt>
+<dd><p>Return the Pointer (of type <cite>“CPointer”</cite>) from the given Index (of type <cite>“unsigned int”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.pointer_from_inthandle">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">pointer_from_inthandle</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(int)IntHandle</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_memory.Pointer</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.helpers.pointer_from_inthandle" title="Link to this definition">¶</a></dt>
+<dd><p>Return the Pointer (of type <cite>“CPointer”</cite>) from the given IntHandle (of type <cite>“unsigned int”</cite>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="entities.helpers.wrap_entity_mem_func">
+<span class="sig-prename descclassname"><span class="pre">entities.helpers.</span></span><span class="sig-name descname"><span class="pre">wrap_entity_mem_func</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">wrapper</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/helpers.html#wrap_entity_mem_func"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.helpers.wrap_entity_mem_func" title="Link to this definition">¶</a></dt>
+<dd><p>A decorator to wrap an entity memory function.</p>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">entities.helpers module</a><ul>
+<li><a class="reference internal" href="#entities.helpers.EntityMemFuncWrapper"><code class="docutils literal notranslate"><span class="pre">EntityMemFuncWrapper</span></code></a><ul>
+<li><a class="reference internal" href="#entities.helpers.EntityMemFuncWrapper.__init__"><code class="docutils literal notranslate"><span class="pre">EntityMemFuncWrapper.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.EntityMemFuncWrapper.call_trampoline"><code class="docutils literal notranslate"><span class="pre">EntityMemFuncWrapper.call_trampoline()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.EntityMemFuncWrapper.skip_hooks"><code class="docutils literal notranslate"><span class="pre">EntityMemFuncWrapper.skip_hooks()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.helpers.baseentity_from_basehandle"><code class="docutils literal notranslate"><span class="pre">baseentity_from_basehandle()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.baseentity_from_edict"><code class="docutils literal notranslate"><span class="pre">baseentity_from_edict()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.baseentity_from_index"><code class="docutils literal notranslate"><span class="pre">baseentity_from_index()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.baseentity_from_inthandle"><code class="docutils literal notranslate"><span class="pre">baseentity_from_inthandle()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.baseentity_from_pointer"><code class="docutils literal notranslate"><span class="pre">baseentity_from_pointer()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.basehandle_from_baseentity"><code class="docutils literal notranslate"><span class="pre">basehandle_from_baseentity()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.basehandle_from_edict"><code class="docutils literal notranslate"><span class="pre">basehandle_from_edict()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.basehandle_from_index"><code class="docutils literal notranslate"><span class="pre">basehandle_from_index()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.basehandle_from_inthandle"><code class="docutils literal notranslate"><span class="pre">basehandle_from_inthandle()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.basehandle_from_pointer"><code class="docutils literal notranslate"><span class="pre">basehandle_from_pointer()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.edict_from_baseentity"><code class="docutils literal notranslate"><span class="pre">edict_from_baseentity()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.edict_from_basehandle"><code class="docutils literal notranslate"><span class="pre">edict_from_basehandle()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.edict_from_index"><code class="docutils literal notranslate"><span class="pre">edict_from_index()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.edict_from_inthandle"><code class="docutils literal notranslate"><span class="pre">edict_from_inthandle()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.edict_from_pointer"><code class="docutils literal notranslate"><span class="pre">edict_from_pointer()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.find_output_name"><code class="docutils literal notranslate"><span class="pre">find_output_name()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.index_from_baseentity"><code class="docutils literal notranslate"><span class="pre">index_from_baseentity()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.index_from_basehandle"><code class="docutils literal notranslate"><span class="pre">index_from_basehandle()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.index_from_edict"><code class="docutils literal notranslate"><span class="pre">index_from_edict()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.index_from_inthandle"><code class="docutils literal notranslate"><span class="pre">index_from_inthandle()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.index_from_pointer"><code class="docutils literal notranslate"><span class="pre">index_from_pointer()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.inthandle_from_baseentity"><code class="docutils literal notranslate"><span class="pre">inthandle_from_baseentity()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.inthandle_from_basehandle"><code class="docutils literal notranslate"><span class="pre">inthandle_from_basehandle()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.inthandle_from_edict"><code class="docutils literal notranslate"><span class="pre">inthandle_from_edict()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.inthandle_from_index"><code class="docutils literal notranslate"><span class="pre">inthandle_from_index()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.inthandle_from_pointer"><code class="docutils literal notranslate"><span class="pre">inthandle_from_pointer()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.pointer_from_baseentity"><code class="docutils literal notranslate"><span class="pre">pointer_from_baseentity()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.pointer_from_basehandle"><code class="docutils literal notranslate"><span class="pre">pointer_from_basehandle()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.pointer_from_edict"><code class="docutils literal notranslate"><span class="pre">pointer_from_edict()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.pointer_from_index"><code class="docutils literal notranslate"><span class="pre">pointer_from_index()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.pointer_from_inthandle"><code class="docutils literal notranslate"><span class="pre">pointer_from_inthandle()</span></code></a></li>
+<li><a class="reference internal" href="#entities.helpers.wrap_entity_mem_func"><code class="docutils literal notranslate"><span class="pre">wrap_entity_mem_func()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/entities.helpers.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.helpers module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

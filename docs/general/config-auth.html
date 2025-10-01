@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Configuring authorization &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../_static/classic.css?v=2780edc4" />
+    
+    <script src="../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Console commands" href="sp-commands.html" />
+    <link rel="prev" title="Updating" href="updating.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="sp-commands.html" title="Console commands"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="updating.html" title="Updating"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Configuring authorization</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="configuring-authorization">
+<h1>Configuring authorization<a class="headerlink" href="#configuring-authorization" title="Link to this heading">¶</a></h1>
+<section id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading">¶</a></h2>
+<p>Source.Python provides an authorization package that can be used by plugins to
+check whether a player is granted a specific permission. There are two object
+types that can have permissions:</p>
+<ul class="simple">
+<li><p>Players</p></li>
+<li><p>Parents</p></li>
+</ul>
+<p>Parents can be used to create a set of permissions (like groups or roles).
+Both, players and parents, can inherit permissions from parents, allowing a
+flexible and dynamic permission hierarchy.</p>
+<p>Before granting permissions and creating parents, you need to choose an
+authorization backend.</p>
+</section>
+<section id="backends">
+<h2>Backends<a class="headerlink" href="#backends" title="Link to this heading">¶</a></h2>
+<p>The backend defines how permissions are stored. Currently, you can choose
+between two built-in backends:</p>
+<ul class="simple">
+<li><p>Flatfile</p></li>
+<li><p>SQL</p></li>
+</ul>
+<p>To define which backend should be used, please open <code class="docutils literal notranslate"><span class="pre">core_settings.ini</span></code> and
+specify the backend you want to use in the <code class="docutils literal notranslate"><span class="pre">AUTH_SETTINGS</span></code> section. Backend
+specific settings are provided in sub-sections within the <code class="docutils literal notranslate"><span class="pre">BACKENDS</span></code> section.</p>
+<p>Example/default settings:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[AUTH_SETTINGS]</span>
+<span class="na">backend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">flatfile</span>
+<span class="na">server_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">-1</span>
+
+<span class="k">[[BACKENDS]]</span>
+
+<span class="k">[[[flatfile]]]</span>
+<span class="na">player_config_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">../cfg/source-python/auth/players.json</span>
+<span class="na">simple_config_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">../cfg/source-python/auth/simple.txt</span>
+<span class="na">parent_config_path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">../cfg/source-python/auth/parents.json</span>
+
+<span class="k">[[[sql]]]</span>
+<span class="na">uri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">sqlite:///../addons/source-python/data/source-python/permissions.db</span>
+</pre></div>
+</div>
+<section id="flatfile">
+<h3>Flatfile<a class="headerlink" href="#flatfile" title="Link to this heading">¶</a></h3>
+<p>The flatfile backend is a very easy and simple backend. It’s the
+pre-configured/default backend in Source.Python and a good choice in the
+following situations:</p>
+<ul class="simple">
+<li><p>You only run a single server</p></li>
+<li><p>You run multiple servers, but don’t want cross-server permissions (each server has its own permissions)</p></li>
+<li><p>You just want to quickly configure authorization</p></li>
+</ul>
+<p>The backend creates three files to store all the authorization related data:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">players.json</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parents.json</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">simple.txt</span></code></p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>By default these files are created in <code class="docutils literal notranslate"><span class="pre">../cfg/source-python/auth/</span></code>, but
+you can easily configure other locations in the <code class="docutils literal notranslate"><span class="pre">AUTH_SETTINGS</span></code> section
+in <code class="docutils literal notranslate"><span class="pre">core_settings.ini</span></code>.</p>
+</div>
+<p>The first file is used to grant players permissions and add parents to
+players. All data is stored in the JSON format.</p>
+<p>Example content for <code class="docutils literal notranslate"><span class="pre">players.json</span></code>:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;[U:1:6456723]&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;permissions&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;admin.kick&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s2">&quot;admin.ban&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="s2">&quot;STEAM_0:323145&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;permissions&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;fun.rtd&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="s2">&quot;78944003194&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;parents&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;administrator&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The SteamID format can be either SteamID2 (STEAM_Y:X:Z), SteamID3 ([U:X])
+or SteamID64 (a long number).</p>
+</div>
+<p>The second file is used to grant parents permissions and to add parents to
+other parents. The format is pretty much the same like the format in
+<code class="docutils literal notranslate"><span class="pre">players.json</span></code>. The only difference is that you don’t use SteamIDs, but
+names for the parents.</p>
+<p>Example content for <code class="docutils literal notranslate"><span class="pre">parents.json</span></code>:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;administrator&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;permissions&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;admin.*&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>The above example creates a new group called <code class="docutils literal notranslate"><span class="pre">administrator</span></code> which is able
+to execute every permission defined by the <code class="docutils literal notranslate"><span class="pre">admin</span></code> plugin. Every player
+or parent that inherits from this parent is able to execute <code class="docutils literal notranslate"><span class="pre">admin.kick</span></code>
+and <code class="docutils literal notranslate"><span class="pre">admin.ban</span></code>. In case the plugin author of <code class="docutils literal notranslate"><span class="pre">admin</span></code> adds in another
+permission (e.g. <code class="docutils literal notranslate"><span class="pre">admin.burn</span></code>) all players and parents inheriting from
+<code class="docutils literal notranslate"><span class="pre">administrator</span></code> will automatically have the permission to execute
+<code class="docutils literal notranslate"><span class="pre">admin.burn</span></code>, because the asterisk symbol (*) matches all subnodes.</p>
+<p>The third file is a simple text file that grants all players that have been
+added to this file the permission to execute everything and all.</p>
+<p>Example content for <code class="docutils literal notranslate"><span class="pre">simple.txt</span></code>:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[U:1:6456723]
+STEAM_0:323145
+78944003194
+</pre></div>
+</div>
+<p>The equivalent for this configuration by using <code class="docutils literal notranslate"><span class="pre">players.json</span></code> would look
+like this:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;[U:1:6456723]&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;permissions&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;*&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="s2">&quot;STEAM_0:323145&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;permissions&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;*&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="s2">&quot;78944003194&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;permissions&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;*&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Another possibility would be to create a super admin parent and add the
+parents to all SteamIDs.</p>
+<p>Example content for <code class="docutils literal notranslate"><span class="pre">players.json</span></code>:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;[U:1:6456723]&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;parents&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;super_admin&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="s2">&quot;STEAM_0:323145&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;parents&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;super_admin&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="s2">&quot;78944003194&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;parents&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;super_admin&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Example content for <code class="docutils literal notranslate"><span class="pre">parents.json</span></code>:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">    </span><span class="s2">&quot;super_admin&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="s2">&quot;permissions&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">            </span><span class="s2">&quot;*&quot;</span>
+<span class="w">        </span><span class="p">]</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="sql">
+<h3>SQL<a class="headerlink" href="#sql" title="Link to this heading">¶</a></h3>
+<p>The SQL backend is a more advanced backend and is a good choice in the
+following situations:</p>
+<ul class="simple">
+<li><p>You run multiple server and want to share the permissions across all servers.</p></li>
+<li><p>You want to use <a class="reference external" href="http://github.com/necavi/SP-Webmin">SP-Webmin</a> for advanced multi-server management.</p></li>
+</ul>
+<p>Currently, the auth API officially only supports SQLite and MySQL, but as it is
+implemented using SQLAlchemy it should work on other database engines such as
+Postgre.</p>
+<section id="sqlite-configuration">
+<h4>SQLite configuration<a class="headerlink" href="#sqlite-configuration" title="Link to this heading">¶</a></h4>
+<p>Abstract example:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[[[sql]]]</span>
+<span class="na">uri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">sqlite://&lt;path to database file&gt;</span>
+</pre></div>
+</div>
+<p>Concrete example:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[[[sql]]]</span>
+<span class="na">uri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">sqlite://&lt;addon path&gt;\source-python\data\source-python\permissions.db</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>While multiple servers can use the same SQLite database it is not recommended.</p>
+</div>
+</section>
+<section id="mysql-configuration">
+<h4>MySQL configuration<a class="headerlink" href="#mysql-configuration" title="Link to this heading">¶</a></h4>
+<p>Abstract example:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[[[sql]]]</span>
+<span class="na">uri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">mysql+pymysql://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;/&lt;database&gt;``</span>
+</pre></div>
+</div>
+<p>Concrete example:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[[[sql]]]</span>
+<span class="na">uri</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">mysql+pymysql://user:1234@127.0.0.1/permissions</span>
+</pre></div>
+</div>
+<p>Any number of servers can be pointed to the same database.</p>
+</section>
+</section>
+</section>
+<section id="adding-modifying-and-deleting-permissions-and-parents">
+<h2>Adding, modifying and deleting permissions and parents<a class="headerlink" href="#adding-modifying-and-deleting-permissions-and-parents" title="Link to this heading">¶</a></h2>
+<p>You can always add, modify and delete permissions and parents by accessing the
+JSON files or SQL database directly. However, Source.Python also provides
+server commands to do these tasks. <a class="reference internal" href="sp-commands.html"><span class="doc">You might want to try them.</span></a></p>
+</section>
+<section id="assigning-permissions-to-guests">
+<h2>Assigning permissions to guests<a class="headerlink" href="#assigning-permissions-to-guests" title="Link to this heading">¶</a></h2>
+<p>There is a special parent called <code class="docutils literal notranslate"><span class="pre">guest</span></code> which can be used to assign
+permissions to anonymous players. Every player on the server is a member of
+that group.</p>
+</section>
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../index.html">
+              <img class="logo" src="../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">Configuring authorization</a><ul>
+<li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#backends">Backends</a><ul>
+<li><a class="reference internal" href="#flatfile">Flatfile</a></li>
+<li><a class="reference internal" href="#sql">SQL</a><ul>
+<li><a class="reference internal" href="#sqlite-configuration">SQLite configuration</a></li>
+<li><a class="reference internal" href="#mysql-configuration">MySQL configuration</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#adding-modifying-and-deleting-permissions-and-parents">Adding, modifying and deleting permissions and parents</a></li>
+<li><a class="reference internal" href="#assigning-permissions-to-guests">Assigning permissions to guests</a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div>
+    <h4>Previous topic</h4>
+    <p class="topless"><a href="updating.html"
+                          title="previous chapter">Updating</a></p>
+  </div>
+  <div>
+    <h4>Next topic</h4>
+    <p class="topless"><a href="sp-commands.html"
+                          title="next chapter">Console commands</a></p>
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/general/config-auth.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="sp-commands.html" title="Console commands"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="updating.html" title="Updating"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Configuring authorization</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>effects.base &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../effects.html" accesskey="U">effects</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">effects.base</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for effects.base</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../effects/base.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides base effect classes.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Colors</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">colors</span><span class="w"> </span><span class="kn">import</span> <span class="n">Color</span>
+<span class="c1">#   Effects</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">effects.templates</span><span class="w"> </span><span class="kn">import</span> <span class="n">temp_entity_templates</span>
+<span class="c1">#   Engines</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.precache</span><span class="w"> </span><span class="kn">import</span> <span class="n">Decal</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.precache</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.classes</span><span class="w"> </span><span class="kn">import</span> <span class="n">_supported_property_types</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Entity</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.props</span><span class="w"> </span><span class="kn">import</span> <span class="n">SendPropType</span>
+<span class="c1">#   Filters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.recipients</span><span class="w"> </span><span class="kn">import</span> <span class="n">RecipientFilter</span>
+<span class="c1">#   Memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_object_pointer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_size</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_object</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pointer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Array</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">Type</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.manager</span><span class="w"> </span><span class="kn">import</span> <span class="n">manager</span>
+<span class="c1">#   Players</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+<span class="c1">#   String Tables</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">stringtables</span><span class="w"> </span><span class="kn">import</span> <span class="n">string_tables</span>
+
+<span class="c1"># Site-Packages Imports</span>
+<span class="c1">#   ConfigObj</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">configobj</span><span class="w"> </span><span class="kn">import</span> <span class="n">Section</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FORWARD IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Effects</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_effects._base</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseTempEntity</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; ALL DECLARATION</span>
+<span class="c1"># =============================================================================</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;BaseTempEntity&#39;</span><span class="p">,</span>
+           <span class="s1">&#39;TempEntity&#39;</span><span class="p">,</span>
+           <span class="p">)</span>
+
+
+<span class="c1"># ============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># ============================================================================</span>
+<div class="viewcode-block" id="TempEntity">
+<a class="viewcode-back" href="../../developing/modules/effects.base.html#effects.base.TempEntity">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TempEntity</span><span class="p">(</span><span class="n">BaseTempEntity</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to interact with a specific temp entity.&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TempEntity.__init__">
+<a class="viewcode-back" href="../../developing/modules/effects.base.html#effects.base.TempEntity.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">temp_entity</span><span class="p">,</span> <span class="o">**</span><span class="n">aliases</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the temp entity instance.</span>
+
+<span class="sd">        :param str/Pointer temp_entity:</span>
+<span class="sd">            The name of the temp entity to initialize or the pointer to wrap.</span>
+<span class="sd">        :param aliases:</span>
+<span class="sd">            Any alias to set on initialization.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Is the given name a Pointer instance?</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">temp_entity</span><span class="p">,</span> <span class="n">Pointer</span><span class="p">):</span>
+
+            <span class="c1"># Wrap the given pointer...</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_wrap_ptr</span><span class="p">(</span><span class="n">temp_entity</span><span class="p">)</span>
+
+        <span class="c1"># Otherwise...</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># Get the template of the temp entity...</span>
+            <span class="n">template</span> <span class="o">=</span> <span class="n">temp_entity_templates</span><span class="p">[</span><span class="n">temp_entity</span><span class="p">]</span>
+
+            <span class="c1"># Initialize the temp entity...</span>
+            <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_copy_base</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">template</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+
+        <span class="c1"># Loop through all given aliases...</span>
+        <span class="k">for</span> <span class="n">alias</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">aliases</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="c1"># Set the alias to the given value...</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alias</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_obj</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ptr</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Wrap the given pointer.</span>
+
+<span class="sd">        :param Pointer ptr:</span>
+<span class="sd">            The pointer to wrap.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">ptr</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_size</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the size of the temp entity.</span>
+
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">size</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the value of the given alias.</span>
+
+<span class="sd">        :param str name:</span>
+<span class="sd">            The alias name.</span>
+<span class="sd">        :rtype: object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the name of the prop...</span>
+        <span class="n">prop_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">aliases</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Was the given name a valid alias?</span>
+        <span class="k">if</span> <span class="n">prop_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Is the name a section?</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">Section</span><span class="p">):</span>
+
+                <span class="c1"># Is the alias a decal?</span>
+                <span class="k">if</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Decal</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+
+                    <span class="c1"># Return the decal instance...</span>
+                    <span class="k">return</span> <span class="n">Decal</span><span class="p">(</span><span class="n">string_tables</span><span class="p">[</span><span class="n">Decal</span><span class="o">.</span><span class="n">precache_table</span><span class="p">][</span>
+                        <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])])</span>
+
+                <span class="c1"># Otherwise, is the alias an entity?</span>
+                <span class="k">elif</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Entity</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+
+                    <span class="c1"># Return the entity instance...</span>
+                    <span class="k">return</span> <span class="n">Entity</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]))</span>
+
+                <span class="c1"># Otherwise, is the alias a player?</span>
+                <span class="k">elif</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Player</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+
+                    <span class="c1"># Return the player instance...</span>
+                    <span class="k">return</span> <span class="n">Player</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]))</span>
+
+                <span class="c1"># Otherwise, is the alias a model?</span>
+                <span class="k">elif</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Model</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+
+                    <span class="c1"># Get the name of the model...</span>
+                    <span class="n">model_name</span> <span class="o">=</span> <span class="n">string_tables</span><span class="p">[</span><span class="n">Model</span><span class="o">.</span><span class="n">precache_table</span><span class="p">][</span>
+                        <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])]</span>
+
+                    <span class="c1"># Was the model not precached?</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">model_name</span><span class="p">:</span>
+
+                        <span class="c1"># Return an error model...</span>
+                        <span class="k">return</span> <span class="n">Model</span><span class="p">(</span><span class="s1">&#39;models/error.mdl&#39;</span><span class="p">)</span>
+
+                    <span class="c1"># Return the model instance...</span>
+                    <span class="k">return</span> <span class="n">Model</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span>
+
+                <span class="c1"># Otherwise, is the alias a color?</span>
+                <span class="k">elif</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Color</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+
+                    <span class="c1"># Get a tuple to store the RGBA values...</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
+
+                    <span class="c1"># Loop through all aliases...</span>
+                    <span class="k">for</span> <span class="n">alias</span> <span class="ow">in</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]:</span>
+
+                        <span class="c1"># Add the current value to the tuple...</span>
+                        <span class="n">values</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alias</span><span class="p">),)</span>
+
+                    <span class="c1"># Return the color instance...</span>
+                    <span class="k">return</span> <span class="n">Color</span><span class="p">(</span><span class="o">*</span><span class="n">values</span><span class="p">)</span>
+
+                <span class="c1"># Otherwise...</span>
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="c1"># Get the data of the property...</span>
+                    <span class="n">prop</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">type_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span>
+                        <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span>
+
+                    <span class="c1"># Return the value of the property...</span>
+                    <span class="k">return</span> <span class="n">make_object</span><span class="p">(</span>
+                        <span class="n">manager</span><span class="o">.</span><span class="n">get_class</span><span class="p">(</span><span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]),</span>
+                        <span class="n">get_object_pointer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+
+            <span class="c1"># Get the data of the property...</span>
+            <span class="n">prop</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">type_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_name</span><span class="p">]</span>
+
+            <span class="c1"># Return the value of the property...</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">type</span><span class="p">)</span>
+
+        <span class="c1"># Return the value of the given attribute...</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__getattribute__</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the value of the given alias.</span>
+
+<span class="sd">        :param str name:</span>
+<span class="sd">            The alias name.</span>
+<span class="sd">        :param object value:</span>
+<span class="sd">            The value to set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the name of the prop...</span>
+        <span class="n">prop_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">aliases</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+        <span class="c1"># Was the given name a valid alias?</span>
+        <span class="k">if</span> <span class="n">prop_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Is the name a section?</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">Section</span><span class="p">):</span>
+
+                <span class="c1"># Is the alias a decal?</span>
+                <span class="k">if</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Decal</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+
+                    <span class="c1"># Is the given value an invalid decal instance?</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Decal</span><span class="p">):</span>
+
+                        <span class="c1"># Raise an exception...</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is not a valid Decal instance.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">value</span><span class="p">))</span>
+
+                    <span class="c1"># Set the model index...</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">value</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+                <span class="c1"># Is the alias an entity?</span>
+                <span class="k">elif</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Entity</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+
+                    <span class="c1"># Is the given value an invalid entity instance?</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Entity</span><span class="p">):</span>
+
+                        <span class="c1"># Raise an exception...</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is not a valid Entity instance.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">value</span><span class="p">))</span>
+
+                    <span class="c1"># Set the alias value...</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">value</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+                <span class="c1"># Otherwise, is the alias a player?</span>
+                <span class="k">elif</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Player</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+
+                    <span class="c1"># Set the player instance...</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">value</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+                <span class="c1"># Otherwise, is the alias a model?</span>
+                <span class="k">elif</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Model</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+
+                    <span class="c1"># Is the given value an invalid model instance?</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Model</span><span class="p">):</span>
+
+                        <span class="c1"># Raise an exception...</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is not a valid Model instance.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">value</span><span class="p">))</span>
+
+                    <span class="c1"># Set the model index...</span>
+                    <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">],</span> <span class="n">value</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
+
+                <span class="c1"># Otherwise, is the alias a color?</span>
+                <span class="k">elif</span> <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">Color</span><span class="o">.</span><span class="vm">__name__</span><span class="p">:</span>
+
+                    <span class="c1"># Is the given value an invalid color instance?</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Color</span><span class="p">):</span>
+
+                        <span class="c1"># Raise an exception...</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                            <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is not a valid Color instance.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">value</span><span class="p">))</span>
+
+                    <span class="c1"># Loop through all aliases...</span>
+                    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">alias</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]):</span>
+
+                        <span class="c1"># Set the current alias...</span>
+                        <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alias</span><span class="p">,</span> <span class="n">value</span><span class="p">[</span><span class="n">index</span><span class="p">])</span>
+
+                <span class="c1"># Otherwise...</span>
+                <span class="k">else</span><span class="p">:</span>
+
+                    <span class="c1"># Get the data of the property...</span>
+                    <span class="n">prop</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">type_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span>
+                        <span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">]]</span>
+
+                    <span class="c1"># Get the class of the type...</span>
+                    <span class="bp">cls</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">get_class</span><span class="p">(</span><span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">])</span>
+
+                    <span class="c1"># Is the given value not valid?</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+
+                        <span class="c1"># Raise an exception...</span>
+                        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                            <span class="s1">&#39;The given value is not of type &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                                <span class="n">type_name</span><span class="p">))</span>
+
+                    <span class="c1"># Set the value of the property...</span>
+                    <span class="n">get_object_pointer</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>
+                        <span class="n">get_object_pointer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">_get_type_size</span><span class="p">(</span><span class="n">prop_name</span><span class="p">[</span><span class="s1">&#39;type&#39;</span><span class="p">]))</span>
+
+                <span class="c1"># No need to go further...</span>
+                <span class="k">return</span>
+
+            <span class="c1"># Get the data of the property...</span>
+            <span class="n">prop</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">type_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_name</span><span class="p">]</span>
+
+            <span class="c1"># Set the value of the property...</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">type</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+            <span class="c1"># No need to go further...</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Set the value of the given attribute...</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an alphabetized list of attributes for the instance.&quot;&quot;&quot;</span>
+        <span class="c1"># Get the base attributes</span>
+        <span class="n">attributes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">())</span>
+
+        <span class="c1"># Add all aliases to the attributes</span>
+        <span class="n">attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">aliases</span><span class="p">))</span>
+
+        <span class="c1"># Return a sorted list of attributes</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">,</span> <span class="n">prop_type</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the value of the given property name.</span>
+
+<span class="sd">        :param str prop_name:</span>
+<span class="sd">            The name of the property.</span>
+<span class="sd">        :param SendPropType prop_type:</span>
+<span class="sd">            The type of the property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Is the given property not valid?</span>
+        <span class="k">if</span> <span class="n">prop_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">properties</span><span class="p">:</span>
+
+            <span class="c1"># Raise an exception...</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span>
+                <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is not a valid property for temp entity &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">prop_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># Get the property data...</span>
+        <span class="n">prop</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">type_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_name</span><span class="p">]</span>
+
+        <span class="c1"># Are the prop types matching?</span>
+        <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">prop_type</span><span class="p">:</span>
+
+            <span class="c1"># Raise an exception...</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is not of type &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">prop_name</span><span class="p">,</span> <span class="n">prop_type</span><span class="p">))</span>
+
+        <span class="c1"># Is the property an array?</span>
+        <span class="k">if</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">ARRAY</span><span class="p">:</span>
+
+            <span class="c1"># Return an array instance...</span>
+            <span class="k">return</span> <span class="n">Array</span><span class="p">(</span><span class="n">manager</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">type_name</span><span class="p">,</span> <span class="n">get_object_pointer</span><span class="p">(</span>
+                <span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">prop</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
+
+        <span class="c1"># Is the given type not supported?</span>
+        <span class="k">if</span> <span class="n">prop_type</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">_supported_property_types</span><span class="p">:</span>
+
+            <span class="c1"># Raise an exception...</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is not supported.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prop_type</span><span class="p">))</span>
+
+        <span class="c1"># Is the type native?</span>
+        <span class="k">if</span> <span class="n">Type</span><span class="o">.</span><span class="n">is_native</span><span class="p">(</span><span class="n">type_name</span><span class="p">):</span>
+
+            <span class="c1"># Return the value...</span>
+            <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span>
+                <span class="n">get_object_pointer</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="s1">&#39;get_&#39;</span> <span class="o">+</span> <span class="n">type_name</span><span class="p">)(</span><span class="n">offset</span><span class="p">)</span>
+
+        <span class="c1"># Otherwise</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># Make the object and return it...</span>
+            <span class="k">return</span> <span class="n">make_object</span><span class="p">(</span>
+                <span class="n">manager</span><span class="o">.</span><span class="n">get_class</span><span class="p">(</span><span class="n">type_name</span><span class="p">),</span>
+                <span class="n">get_object_pointer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span>
+
+        <span class="c1"># Raise an exception...</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Unable to get the value of &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">prop_name</span><span class="p">))</span>
+
+<div class="viewcode-block" id="TempEntity.get_property_array">
+<a class="viewcode-back" href="../../developing/modules/effects.base.html#effects.base.TempEntity.get_property_array">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_property_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the value of the given property as an Array instance.</span>
+
+<span class="sd">        :param str prop_name:</span>
+<span class="sd">            The name of the property.</span>
+<span class="sd">        :rtype: Array</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">ARRAY</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TempEntity.get_property_bool">
+<a class="viewcode-back" href="../../developing/modules/effects.base.html#effects.base.TempEntity.get_property_bool">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_property_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the value of the given property as a boolean.</span>
+
+<span class="sd">        :param str prop_name:</span>
+<span class="sd">            The name of the property.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">INT</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="TempEntity.get_property_float">
+<a class="viewcode-back" href="../../developing/modules/effects.base.html#effects.base.TempEntity.get_property_float">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_property_float</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the value of the given property as a float.</span>
+
+<span class="sd">        :param str prop_name:</span>
+<span class="sd">            The name of the property.</span>
+<span class="sd">        :rtype: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TempEntity.get_property_int">
+<a class="viewcode-back" href="../../developing/modules/effects.base.html#effects.base.TempEntity.get_property_int">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_property_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the value of the given property as an integer.</span>
+
+<span class="sd">        :param str prop_name:</span>
+<span class="sd">            The name of the property.</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">INT</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TempEntity.get_property_string">
+<a class="viewcode-back" href="../../developing/modules/effects.base.html#effects.base.TempEntity.get_property_string">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_property_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the value of the given property as a string.</span>
+
+<span class="sd">        :param str prop_name:</span>
+<span class="sd">            The name of the property.</span>
+<span class="sd">        :rtype: str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">STRING</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TempEntity.get_property_vector">
+<a class="viewcode-back" href="../../developing/modules/effects.base.html#effects.base.TempEntity.get_property_vector">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_property_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the value of the given property as a string.</span>
+
+<span class="sd">        :param str prop_name:</span>
+<span class="sd">            The name of the property.</span>
+<span class="sd">        :rtype: Vector</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_property</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">VECTOR</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_property</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">,</span> <span class="n">prop_type</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the given property to the given value.</span>
+
+<span class="sd">        :param str prop_name:</span>
+<span class="sd">            The name of the property.</span>
+<span class="sd">        :param SendPropType prop_type:</span>
+<span class="sd">            The type of the property.</span>
+<span class="sd">        :param value object:</span>
+<span class="sd">            To value to set to the given property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Is the given property not valid?</span>
+        <span class="k">if</span> <span class="n">prop_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">properties</span><span class="p">:</span>
+
+            <span class="c1"># Raise an exception...</span>
+            <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span>
+                <span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is not a valid property for temp entity &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">prop_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+        <span class="c1"># Get the property data...</span>
+        <span class="n">prop</span><span class="p">,</span> <span class="n">offset</span><span class="p">,</span> <span class="n">type_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">template</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">prop_name</span><span class="p">]</span>
+
+        <span class="c1"># Are the prop types matching?</span>
+        <span class="k">if</span> <span class="n">prop</span><span class="o">.</span><span class="n">type</span> <span class="o">!=</span> <span class="n">prop_type</span><span class="p">:</span>
+
+            <span class="c1"># Raise an exception...</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is not of type &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">prop_name</span><span class="p">,</span> <span class="n">prop_type</span><span class="p">))</span>
+
+        <span class="c1"># Is the property an array?</span>
+        <span class="k">if</span> <span class="n">prop_type</span> <span class="o">==</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">ARRAY</span><span class="p">:</span>
+
+            <span class="c1"># Is the given value not an Array instance?</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="n">Array</span><span class="p">):</span>
+
+                <span class="c1"># Raise an exception...</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;Given value is not an Array instance.&#39;</span><span class="p">)</span>
+
+            <span class="c1"># Is the length not matching?</span>
+            <span class="k">if</span> <span class="n">value</span><span class="o">.</span><span class="n">_length</span> <span class="o">!=</span> <span class="n">prop</span><span class="o">.</span><span class="n">length</span><span class="p">:</span>
+
+                <span class="c1"># Raise an exception...</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Given array is not of length &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">prop</span><span class="o">.</span><span class="n">length</span><span class="p">))</span>
+
+            <span class="c1"># Copy the values...</span>
+            <span class="n">value</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">get_object_pointer</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_type_size</span><span class="p">(</span>
+                <span class="n">type_name</span><span class="p">)</span> <span class="o">*</span> <span class="n">prop</span><span class="o">.</span><span class="n">length</span><span class="p">)</span>
+
+            <span class="c1"># No need to go further...</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Otherwise, is the type native?</span>
+        <span class="k">elif</span> <span class="n">Type</span><span class="o">.</span><span class="n">is_native</span><span class="p">(</span><span class="n">type_name</span><span class="p">):</span>
+
+            <span class="c1"># Set the value of the property...</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">get_object_pointer</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="s1">&#39;set_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">type_name</span><span class="p">))(</span>
+                <span class="n">value</span><span class="p">,</span> <span class="n">offset</span><span class="p">)</span>
+
+            <span class="c1"># No need to go further...</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Otherwise...</span>
+        <span class="k">else</span><span class="p">:</span>
+
+            <span class="c1"># Get the class...</span>
+            <span class="bp">cls</span> <span class="o">=</span> <span class="n">manager</span><span class="o">.</span><span class="n">get_class</span><span class="p">(</span><span class="n">type_name</span><span class="p">)</span>
+
+            <span class="c1"># Is the given value valid?</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+
+                <span class="c1"># Raise an exception...</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;&quot;</span><span class="si">{}</span><span class="s1">&quot; is not a valid &quot;</span><span class="si">{}</span><span class="s1">&quot; value.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">value</span><span class="p">,</span> <span class="n">type_name</span><span class="p">))</span>
+
+            <span class="c1"># Set the value of the property...</span>
+            <span class="n">get_object_pointer</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span>
+                <span class="n">get_object_pointer</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="p">,</span> <span class="n">get_size</span><span class="p">(</span><span class="bp">cls</span><span class="p">))</span>
+
+            <span class="c1"># No need to go further...</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Raise an exception...</span>
+        <span class="k">raise</span> <span class="ne">NameError</span><span class="p">(</span><span class="s1">&#39;Unable to set &quot;</span><span class="si">{}</span><span class="s1">&quot; for the temp entity &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">prop_name</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">))</span>
+
+<div class="viewcode-block" id="TempEntity.set_property_array">
+<a class="viewcode-back" href="../../developing/modules/effects.base.html#effects.base.TempEntity.set_property_array">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_property_array</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the value of the given property as an Array instance.</span>
+
+<span class="sd">        :param str prop_name:</span>
+<span class="sd">            The name of the property.</span>
+<span class="sd">        :param Array value:</span>
+<span class="sd">            The value to set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">ARRAY</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TempEntity.set_property_bool">
+<a class="viewcode-back" href="../../developing/modules/effects.base.html#effects.base.TempEntity.set_property_bool">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_property_bool</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the value of the given property as a boolean.</span>
+
+<span class="sd">        :param str prop_name:</span>
+<span class="sd">            The name of the property.</span>
+<span class="sd">        :param bool value:</span>
+<span class="sd">            The value to set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="TempEntity.set_property_float">
+<a class="viewcode-back" href="../../developing/modules/effects.base.html#effects.base.TempEntity.set_property_float">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_property_float</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the value of the given property as a float.</span>
+
+<span class="sd">        :param str prop_name:</span>
+<span class="sd">            The name of the property.</span>
+<span class="sd">        :param float value:</span>
+<span class="sd">            The value to set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">FLOAT</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TempEntity.set_property_int">
+<a class="viewcode-back" href="../../developing/modules/effects.base.html#effects.base.TempEntity.set_property_int">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_property_int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the value of the given property as an integer.</span>
+
+<span class="sd">        :param str prop_name:</span>
+<span class="sd">            The name of the property.</span>
+<span class="sd">        :param int value:</span>
+<span class="sd">            The value to set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">INT</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TempEntity.set_property_string">
+<a class="viewcode-back" href="../../developing/modules/effects.base.html#effects.base.TempEntity.set_property_string">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_property_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the value of the given property as a string.</span>
+
+<span class="sd">        :param str prop_name:</span>
+<span class="sd">            The name of the property.</span>
+<span class="sd">        :param str value:</span>
+<span class="sd">            The value to set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">STRING</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TempEntity.set_property_vector">
+<a class="viewcode-back" href="../../developing/modules/effects.base.html#effects.base.TempEntity.set_property_vector">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_property_vector</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prop_name</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the value of the given property as a string.</span>
+
+<span class="sd">        :param str prop_name:</span>
+<span class="sd">            The name of the property.</span>
+<span class="sd">        :param Vector value:</span>
+<span class="sd">            The value to set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_set_property</span><span class="p">(</span><span class="n">prop_name</span><span class="p">,</span> <span class="n">SendPropType</span><span class="o">.</span><span class="n">VECTOR</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TempEntity.create">
+<a class="viewcode-back" href="../../developing/modules/effects.base.html#effects.base.TempEntity.create">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">create</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">recipients</span><span class="p">,</span> <span class="n">delay</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="o">**</span><span class="n">aliases</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the temp entity effect.</span>
+
+<span class="sd">        :param RecipientFilter recipients:</span>
+<span class="sd">            The recipient filter listing the players to send the effect to.</span>
+<span class="sd">        :param float delay:</span>
+<span class="sd">            The delay before creating the effect.</span>
+<span class="sd">        :param dict aliases:</span>
+<span class="sd">            Any aliases to set before creating the temp entity effect.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get a recipient filter matching the given players...</span>
+        <span class="n">recipients</span> <span class="o">=</span> <span class="n">RecipientFilter</span><span class="p">(</span><span class="o">*</span><span class="n">recipients</span><span class="p">)</span>
+
+        <span class="c1"># Loop trhough all given aliases...</span>
+        <span class="k">for</span> <span class="n">alias</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">aliases</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+            <span class="c1"># Set the alias to the given value...</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">alias</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="c1"># Create the temp entity effect...</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">recipients</span><span class="p">,</span> <span class="n">delay</span><span class="p">)</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">template</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the template of the temp entity.</span>
+
+<span class="sd">        :rtype: TempEntityTemplate</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">temp_entity_templates</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">]</span></div>
+
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../effects.html" >effects</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">effects.base</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

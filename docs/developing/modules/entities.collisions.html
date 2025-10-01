@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>entities.collisions module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.collisions module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-entities.collisions">
+<span id="entities-collisions-module"></span><h1>entities.collisions module<a class="headerlink" href="#module-entities.collisions" title="Link to this heading">¶</a></h1>
+<p>Provides entity collisions functionality.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.collisions.BaseCollisionRules">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.collisions.</span></span><span class="sig-name descname"><span class="pre">BaseCollisionRules</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#entities.collisions.BaseCollisionRules" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#core.WeakAutoUnload" title="core.WeakAutoUnload"><code class="xref py py-class docutils literal notranslate"><span class="pre">WeakAutoUnload</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.BaseCollisionRules.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#entities.collisions.BaseCollisionRules.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.BaseCollisionRules.should_collide">
+<span class="sig-name descname"><span class="pre">should_collide</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(BaseCollisionRules)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.BaseCollisionRules.should_collide" title="Link to this definition">¶</a></dt>
+<dd><p>Returns whether the given entities should collide with each other.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.collisions.BaseCollisionRules.mode">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#entities.collisions.BaseCollisionRules.mode" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the collision mode for these rules.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#entities.collisions.CollisionMode" title="entities.collisions.CollisionMode">CollisionMode</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.collisions.BaseCollisionRules.solid_only">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">solid_only</span></span><a class="headerlink" href="#entities.collisions.BaseCollisionRules.solid_only" title="Link to this definition">¶</a></dt>
+<dd><p>Returns whether these rules affect solid contents only.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.collisions.CollisionHash">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.collisions.</span></span><span class="sig-name descname"><span class="pre">CollisionHash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#entities.collisions.CollisionHash" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#entities.collisions.BaseCollisionRules" title="_entities._collisions.BaseCollisionRules"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCollisionRules</span></code></a></p>
+<p>Collision rules where contained pairs never collide with each other.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">entities.collisions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollisionHash</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+
+<span class="n">h</span> <span class="o">=</span> <span class="n">CollisionHash</span><span class="p">()</span>
+
+<span class="nd">@Event</span><span class="p">(</span><span class="s1">&#39;player_say&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">player_say</span><span class="p">(</span><span class="n">game_event</span><span class="p">):</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="o">.</span><span class="n">from_userid</span><span class="p">(</span><span class="n">game_event</span><span class="p">[</span><span class="s1">&#39;userid&#39;</span><span class="p">])</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">view_entity</span>
+    <span class="k">if</span> <span class="n">entity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="c1"># Toggle collisions with aimed entity</span>
+    <span class="k">if</span> <span class="n">h</span><span class="o">.</span><span class="n">has_pair</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">entity</span><span class="p">):</span>
+        <span class="n">h</span><span class="o">.</span><span class="n">remove_pair</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">entity</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">h</span><span class="o">.</span><span class="n">add_pair</span><span class="p">(</span><span class="n">player</span><span class="p">,</span> <span class="n">entity</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionHash.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(CollisionMode)mode=_entities._collisions.CollisionMode.PREVENT</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(bool)solid_only=True</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.CollisionHash.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Constructs and initializes the collision hash.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mode</strong> (<a class="reference internal" href="#entities.collisions.CollisionMode" title="entities.collisions.CollisionMode"><em>CollisionMode</em></a>) – The collision mode for these rules.</p></li>
+<li><p><strong>solid_only</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether these rules should affect solid contents only.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionHash.add_pair">
+<span class="sig-name descname"><span class="pre">add_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CollisionHash)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.CollisionHash.add_pair" title="Link to this definition">¶</a></dt>
+<dd><p>Adds the given entity pair to the hash.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If any of the given entities is not networked.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionHash.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CollisionHash)self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.CollisionHash.clear" title="Link to this definition">¶</a></dt>
+<dd><p>Removes all entities from the hash.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionHash.get_count">
+<span class="sig-name descname"><span class="pre">get_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CollisionHash)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.CollisionHash.get_count" title="Link to this definition">¶</a></dt>
+<dd><p>Returns the amount of pairs associated with the given entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionHash.get_pairs">
+<span class="sig-name descname"><span class="pre">get_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CollisionHash)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.CollisionHash.get_pairs" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a list of all entities associated with the given entity.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionHash.has_pair">
+<span class="sig-name descname"><span class="pre">has_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CollisionHash)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.CollisionHash.has_pair" title="Link to this definition">¶</a></dt>
+<dd><p>Returns whether the given pair is in the hash.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionHash.remove_pair">
+<span class="sig-name descname"><span class="pre">remove_pair</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CollisionHash)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)other</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.CollisionHash.remove_pair" title="Link to this definition">¶</a></dt>
+<dd><p>Removes the given pair from the hash.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionHash.remove_pairs">
+<span class="sig-name descname"><span class="pre">remove_pairs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CollisionHash)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.CollisionHash.remove_pairs" title="Link to this definition">¶</a></dt>
+<dd><p>Removes all pairs associated with the given entity.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.collisions.CollisionHook">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.collisions.</span></span><span class="sig-name descname"><span class="pre">CollisionHook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/collisions.html#CollisionHook"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.collisions.CollisionHook" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="core.html#core.AutoUnload" title="core.AutoUnload"><code class="xref py py-class docutils literal notranslate"><span class="pre">AutoUnload</span></code></a></p>
+<p>Decorator used to create collision hooks that auto unload.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">engines.trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContentFlags</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.collisions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollisionHook</span>
+
+<span class="nd">@CollisionHook</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">collision_hook</span><span class="p">(</span><span class="n">entity</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">trace_filter</span><span class="p">,</span> <span class="n">mask</span><span class="p">):</span>
+    <span class="c1"># Prevent hostages from being killed by bullets</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">mask</span> <span class="o">&amp;</span> <span class="n">ContentFlags</span><span class="o">.</span><span class="n">HITBOX</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="k">return</span> <span class="n">other</span><span class="o">.</span><span class="n">classname</span> <span class="o">!=</span> <span class="s1">&#39;hostage_entity&#39;</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionHook.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">callback</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/entities/collisions.html#CollisionHook.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#entities.collisions.CollisionHook.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Registers the collision hook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>callback</strong> (<em>function</em>) – Function to register as a collision hook callback.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.collisions.CollisionManager">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.collisions.</span></span><span class="sig-name descname"><span class="pre">CollisionManager</span></span><a class="headerlink" href="#entities.collisions.CollisionManager" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionManager.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#entities.collisions.CollisionManager.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionManager.register_hook">
+<span class="sig-name descname"><span class="pre">register_hook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CollisionManager)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)callback</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.CollisionManager.register_hook" title="Link to this definition">¶</a></dt>
+<dd><p>Registers a collision hook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>callback</strong> (<em>function</em>) – Function to register as a collision hook callback.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the given callback is already registered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionManager.unregister_hook">
+<span class="sig-name descname"><span class="pre">unregister_hook</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CollisionManager)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)callback</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.CollisionManager.unregister_hook" title="Link to this definition">¶</a></dt>
+<dd><p>Unregisters a collision hook.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>callback</strong> (<em>function</em>) – Function to unregister as a collision hook callback.</p>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the given callback was not registered.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="entities.collisions.CollisionManager.solid_masks">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">solid_masks</span></span><a class="headerlink" href="#entities.collisions.CollisionManager.solid_masks" title="Link to this definition">¶</a></dt>
+<dd><p>Returns a list containing the masks that are currently considered solid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#list" title="(in Python v3.13)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.collisions.CollisionMap">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.collisions.</span></span><span class="sig-name descname"><span class="pre">CollisionMap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#entities.collisions.CollisionMap" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#entities.collisions.BaseCollisionRules" title="_entities._collisions.BaseCollisionRules"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCollisionRules</span></code></a></p>
+<p>Collision rules that overrides one-way collisions.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">entities.collisions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollisionMap</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="n">CollisionMap</span><span class="p">()</span>
+
+<span class="nd">@Event</span><span class="p">(</span><span class="s1">&#39;player_say&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">player_say</span><span class="p">(</span><span class="n">game_event</span><span class="p">):</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="o">.</span><span class="n">from_userid</span><span class="p">(</span><span class="n">game_event</span><span class="p">[</span><span class="s1">&#39;userid&#39;</span><span class="p">])</span>
+    <span class="n">entity</span> <span class="o">=</span> <span class="n">player</span><span class="o">.</span><span class="n">view_entity</span>
+    <span class="k">if</span> <span class="n">entity</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="c1"># Toggle one-way collisions with aimed entity</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">m</span><span class="p">[</span><span class="n">player</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">entity</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">entity</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionMap.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(CollisionMode)mode=_entities._collisions.CollisionMode.PREVENT</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(bool)solid_only=True</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.CollisionMap.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Constructs and initializes the collision map.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mode</strong> (<a class="reference internal" href="#entities.collisions.CollisionMode" title="entities.collisions.CollisionMode"><em>CollisionMode</em></a>) – The collision mode for these rules.</p></li>
+<li><p><strong>solid_only</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether these rules should affect solid contents only.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionMap.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CollisionMap)self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.CollisionMap.clear" title="Link to this definition">¶</a></dt>
+<dd><p>Removes all entities from the map.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.collisions.CollisionMode">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.collisions.</span></span><span class="sig-name descname"><span class="pre">CollisionMode</span></span><a class="headerlink" href="#entities.collisions.CollisionMode" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.collisions.CollisionMode.ALLOW">
+<span class="sig-name descname"><span class="pre">ALLOW</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._collisions.CollisionMode.ALLOW</span></em><a class="headerlink" href="#entities.collisions.CollisionMode.ALLOW" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.collisions.CollisionMode.PREVENT">
+<span class="sig-name descname"><span class="pre">PREVENT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_entities._collisions.CollisionMode.PREVENT</span></em><a class="headerlink" href="#entities.collisions.CollisionMode.PREVENT" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.collisions.CollisionMode.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'ALLOW':</span> <span class="pre">_entities._collisions.CollisionMode.ALLOW,</span> <span class="pre">'PREVENT':</span> <span class="pre">_entities._collisions.CollisionMode.PREVENT}</span></em><a class="headerlink" href="#entities.collisions.CollisionMode.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="entities.collisions.CollisionMode.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">_entities._collisions.CollisionMode.ALLOW,</span> <span class="pre">1:</span> <span class="pre">_entities._collisions.CollisionMode.PREVENT}</span></em><a class="headerlink" href="#entities.collisions.CollisionMode.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="entities.collisions.CollisionSet">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">entities.collisions.</span></span><span class="sig-name descname"><span class="pre">CollisionSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#entities.collisions.CollisionSet" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#entities.collisions.BaseCollisionRules" title="_entities._collisions.BaseCollisionRules"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCollisionRules</span></code></a></p>
+<p>Collision rules where contained entities never collide with anything.</p>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">entities.collisions</span><span class="w"> </span><span class="kn">import</span> <span class="n">CollisionSet</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">events</span><span class="w"> </span><span class="kn">import</span> <span class="n">Event</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Player</span>
+
+<span class="n">s</span> <span class="o">=</span> <span class="n">CollisionSet</span><span class="p">()</span>
+
+<span class="nd">@Event</span><span class="p">(</span><span class="s1">&#39;player_say&#39;</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">player_say</span><span class="p">(</span><span class="n">game_event</span><span class="p">):</span>
+    <span class="n">player</span> <span class="o">=</span> <span class="n">Player</span><span class="o">.</span><span class="n">from_userid</span><span class="p">(</span><span class="n">game_event</span><span class="p">[</span><span class="s1">&#39;userid&#39;</span><span class="p">])</span>
+    <span class="c1"># Toggle collisions with everything</span>
+    <span class="k">if</span> <span class="n">player</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionSet.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(object)arg1</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(CollisionMode)mode=_entities._collisions.CollisionMode.PREVENT</span></span></em><span class="optional">[</span>, <em class="sig-param"><span class="n"><span class="pre">(bool)solid_only=True</span></span></em><span class="optional">]</span><span class="optional">]</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">object</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.CollisionSet.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Constructs and initializes the collision set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mode</strong> (<a class="reference internal" href="#entities.collisions.CollisionMode" title="entities.collisions.CollisionMode"><em>CollisionMode</em></a>) – The collision mode for these rules.</p></li>
+<li><p><strong>solid_only</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)"><em>bool</em></a>) – Whether these rules should affect solid contents only.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionSet.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CollisionSet)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.CollisionSet.add" title="Link to this definition">¶</a></dt>
+<dd><p>Adds the given entity to the set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – If the given entity is not networked.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionSet.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CollisionSet)self</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.CollisionSet.clear" title="Link to this definition">¶</a></dt>
+<dd><p>Removes all entities from the set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="entities.collisions.CollisionSet.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(CollisionSet)self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_entities._entity.BaseEntity)entity</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#entities.collisions.CollisionSet.remove" title="Link to this definition">¶</a></dt>
+<dd><p>Removes the given entity from the set.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">entities.collisions module</a><ul>
+<li><a class="reference internal" href="#entities.collisions.BaseCollisionRules"><code class="docutils literal notranslate"><span class="pre">BaseCollisionRules</span></code></a><ul>
+<li><a class="reference internal" href="#entities.collisions.BaseCollisionRules.__init__"><code class="docutils literal notranslate"><span class="pre">BaseCollisionRules.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.BaseCollisionRules.should_collide"><code class="docutils literal notranslate"><span class="pre">BaseCollisionRules.should_collide()</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.BaseCollisionRules.mode"><code class="docutils literal notranslate"><span class="pre">BaseCollisionRules.mode</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.BaseCollisionRules.solid_only"><code class="docutils literal notranslate"><span class="pre">BaseCollisionRules.solid_only</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.collisions.CollisionHash"><code class="docutils literal notranslate"><span class="pre">CollisionHash</span></code></a><ul>
+<li><a class="reference internal" href="#entities.collisions.CollisionHash.__init__"><code class="docutils literal notranslate"><span class="pre">CollisionHash.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionHash.add_pair"><code class="docutils literal notranslate"><span class="pre">CollisionHash.add_pair()</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionHash.clear"><code class="docutils literal notranslate"><span class="pre">CollisionHash.clear()</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionHash.get_count"><code class="docutils literal notranslate"><span class="pre">CollisionHash.get_count()</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionHash.get_pairs"><code class="docutils literal notranslate"><span class="pre">CollisionHash.get_pairs()</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionHash.has_pair"><code class="docutils literal notranslate"><span class="pre">CollisionHash.has_pair()</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionHash.remove_pair"><code class="docutils literal notranslate"><span class="pre">CollisionHash.remove_pair()</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionHash.remove_pairs"><code class="docutils literal notranslate"><span class="pre">CollisionHash.remove_pairs()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.collisions.CollisionHook"><code class="docutils literal notranslate"><span class="pre">CollisionHook</span></code></a><ul>
+<li><a class="reference internal" href="#entities.collisions.CollisionHook.__init__"><code class="docutils literal notranslate"><span class="pre">CollisionHook.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.collisions.CollisionManager"><code class="docutils literal notranslate"><span class="pre">CollisionManager</span></code></a><ul>
+<li><a class="reference internal" href="#entities.collisions.CollisionManager.__init__"><code class="docutils literal notranslate"><span class="pre">CollisionManager.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionManager.register_hook"><code class="docutils literal notranslate"><span class="pre">CollisionManager.register_hook()</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionManager.unregister_hook"><code class="docutils literal notranslate"><span class="pre">CollisionManager.unregister_hook()</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionManager.solid_masks"><code class="docutils literal notranslate"><span class="pre">CollisionManager.solid_masks</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.collisions.CollisionMap"><code class="docutils literal notranslate"><span class="pre">CollisionMap</span></code></a><ul>
+<li><a class="reference internal" href="#entities.collisions.CollisionMap.__init__"><code class="docutils literal notranslate"><span class="pre">CollisionMap.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionMap.clear"><code class="docutils literal notranslate"><span class="pre">CollisionMap.clear()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.collisions.CollisionMode"><code class="docutils literal notranslate"><span class="pre">CollisionMode</span></code></a><ul>
+<li><a class="reference internal" href="#entities.collisions.CollisionMode.ALLOW"><code class="docutils literal notranslate"><span class="pre">CollisionMode.ALLOW</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionMode.PREVENT"><code class="docutils literal notranslate"><span class="pre">CollisionMode.PREVENT</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionMode.names"><code class="docutils literal notranslate"><span class="pre">CollisionMode.names</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionMode.values"><code class="docutils literal notranslate"><span class="pre">CollisionMode.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#entities.collisions.CollisionSet"><code class="docutils literal notranslate"><span class="pre">CollisionSet</span></code></a><ul>
+<li><a class="reference internal" href="#entities.collisions.CollisionSet.__init__"><code class="docutils literal notranslate"><span class="pre">CollisionSet.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionSet.add"><code class="docutils literal notranslate"><span class="pre">CollisionSet.add()</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionSet.clear"><code class="docutils literal notranslate"><span class="pre">CollisionSet.clear()</span></code></a></li>
+<li><a class="reference internal" href="#entities.collisions.CollisionSet.remove"><code class="docutils literal notranslate"><span class="pre">CollisionSet.remove()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/entities.collisions.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities.collisions module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

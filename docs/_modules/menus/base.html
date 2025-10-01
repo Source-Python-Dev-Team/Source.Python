@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>menus.base &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">menus.base</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for menus.base</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../menus/base.py</span>
+
+<span class="sd">&quot;&quot;&quot;Contains base menu functionality.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Collections</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="c1">#   Math</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">math</span>
+<span class="c1">#   Weakref</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">weakref</span><span class="w"> </span><span class="kn">import</span> <span class="n">WeakValueDictionary</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">WeakAutoUnload</span>
+<span class="c1">#   Filters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.recipients</span><span class="w"> </span><span class="kn">import</span> <span class="n">RecipientFilter</span>
+<span class="c1">#   Listeners</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners</span><span class="w"> </span><span class="kn">import</span> <span class="n">OnClientDisconnect</span>
+<span class="c1">#   Players</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_client_language</span>
+<span class="c1">#   Translations</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">translations.strings</span><span class="w"> </span><span class="kn">import</span> <span class="n">TranslationStrings</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_PlayerPage</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Stores information about the player&#39;s current active page.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the object.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="p">{}</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_BaseMenu</span><span class="p">(</span><span class="n">WeakAutoUnload</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;The base menu. Every menu class should inherit from this class.&quot;&quot;&quot;</span>
+
+    <span class="n">_instances</span> <span class="o">=</span> <span class="n">WeakValueDictionary</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">select_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">build_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">close_callback</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the menu.</span>
+
+<span class="sd">        :param iterable|None data: Data that should be added to the menu.</span>
+<span class="sd">        :param callable|None select_callback: A function that gets called</span>
+<span class="sd">            whenever a selection was made.</span>
+
+<span class="sd">            The callback will receive 3 parameters:</span>
+<span class="sd">                1. The instance of this menu.</span>
+<span class="sd">                2. The player&#39;s index who made the selection.</span>
+<span class="sd">                3. The player&#39;s choice.</span>
+
+<span class="sd">        :param callable|None build_callback: A function that gets called</span>
+<span class="sd">            before a menu is displayed.</span>
+
+<span class="sd">            The callback will receive 2 parameters:</span>
+<span class="sd">                1. The instance of this menu.</span>
+<span class="sd">                2. The index of the player who will receive this menu.</span>
+
+<span class="sd">        :param callable|None close_callback: A function that gets called</span>
+<span class="sd">            when a menu is closed by a player.</span>
+
+<span class="sd">            The callback will receive 2 parameters:</span>
+<span class="sd">                1. The instance of this menu.</span>
+<span class="sd">                2. The index of the player who will close this menu.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="nb">list</span><span class="p">()</span> <span class="k">if</span> <span class="n">data</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">data</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_callback</span> <span class="o">=</span> <span class="n">select_callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build_callback</span> <span class="o">=</span> <span class="n">build_callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_callback</span> <span class="o">=</span> <span class="n">close_callback</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_player_pages</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="n">_PlayerPage</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)]</span> <span class="o">=</span> <span class="bp">self</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_instance</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close this menu object for every player.&quot;&quot;&quot;</span>
+        <span class="c1"># Just close all open menus, which will remove all instances from the</span>
+        <span class="c1"># queues.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+        <span class="c1"># Also remove the instance from the _instances dict.</span>
+        <span class="c1"># This process is necessary because there is no guarantee that</span>
+        <span class="c1"># the instance will be destroyed when the plugin is unloaded.</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_instances</span><span class="p">[</span><span class="nb">id</span><span class="p">(</span><span class="bp">self</span><span class="p">)]</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_unload_player</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove every player specific information.</span>
+
+<span class="sd">        :param int player_index: A player index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_player_pages</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">player_index</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_refresh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Re-send the menu to a player.</span>
+
+<span class="sd">        :param int player_index: The index of the player whose menu should be</span>
+<span class="sd">            refreshed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_send</span><span class="p">(</span><span class="n">player_index</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_build</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call the build callback and return all relevant menu data.</span>
+
+<span class="sd">        :param int player_index: The index of the player whose menu should be</span>
+<span class="sd">            built.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Call the build callback if there is one</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">build_callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">build_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_menu_data</span><span class="p">(</span><span class="n">player_index</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_select</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">,</span> <span class="n">choice_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle a menu selection.</span>
+
+<span class="sd">        :param int player_index: The index of the player who made the</span>
+<span class="sd">            selection.</span>
+<span class="sd">        :param int choice_index: Defines what was selected.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">select_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">,</span> <span class="n">choice_index</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_select_close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Handle the close menu selection.</span>
+
+<span class="sd">        :param int player_index: The index of the player who made the</span>
+<span class="sd">            selection.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">close_callback</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">close_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">ply_indexes</span><span class="p">,</span> <span class="o">**</span><span class="n">tokens</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send the menu to the given player indexes.</span>
+
+<span class="sd">        If no indexes were given, the menu will be sent to every player.</span>
+
+<span class="sd">        :param ply_indexes:</span>
+<span class="sd">            Player indexes that should receive the menu.</span>
+<span class="sd">        :param tokens:</span>
+<span class="sd">            Translation tokens for menu options, title and description.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ply_indexes</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">RecipientFilter</span><span class="p">(</span><span class="o">*</span><span class="n">ply_indexes</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">ply_indexes</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="c1"># Update option tokens</span>
+        <span class="k">for</span> <span class="n">option</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">option</span><span class="o">.</span><span class="n">text</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">tokens</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="c1"># Not a _MenuData or TranslationStrings instance</span>
+                <span class="k">pass</span>
+
+        <span class="c1"># Update title if existant</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">tokens</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># Update description if existant</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="o">.</span><span class="n">tokens</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="o">**</span><span class="n">tokens</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="k">for</span> <span class="n">player_index</span> <span class="ow">in</span> <span class="n">ply_indexes</span><span class="p">:</span>
+            <span class="n">queue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_user_queue</span><span class="p">(</span><span class="n">player_index</span><span class="p">)</span>
+            <span class="n">queue</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="n">queue</span><span class="o">.</span><span class="n">_refresh</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">ply_indexes</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close the menu for the given player indexes.</span>
+
+<span class="sd">        If no indexes were given, the menu will be closed for all players.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ply_indexes</span> <span class="o">=</span> <span class="n">RecipientFilter</span><span class="p">(</span><span class="o">*</span><span class="n">ply_indexes</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">player_index</span> <span class="ow">in</span> <span class="n">ply_indexes</span><span class="p">:</span>
+            <span class="n">queue</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_user_queue</span><span class="p">(</span><span class="n">player_index</span><span class="p">)</span>
+
+            <span class="c1"># Try to remove this menu from the queue</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">queue</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="c1"># If it fails, do nothing</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># If the queue is now empty, send an empty menu to hide</span>
+                <span class="c1"># the last menu</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">queue</span><span class="p">:</span>
+                    <span class="c1"># Send an empty menu</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_close</span><span class="p">(</span><span class="n">player_index</span><span class="p">)</span>
+
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="c1"># There is at least one menu in the queue, so refresh to</span>
+                    <span class="c1"># display it.</span>
+                    <span class="n">queue</span><span class="o">.</span><span class="n">_refresh</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_active_menu</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if this menu is the first menu in the user&#39;s queue.</span>
+
+<span class="sd">        :param int player_index: A player index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_user_queue</span><span class="p">(</span><span class="n">player_index</span><span class="p">)</span><span class="o">.</span><span class="n">active_menu</span> <span class="ow">is</span> <span class="bp">self</span>
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_user_queue</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">player_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the menu queue for the given player.</span>
+
+<span class="sd">        :param int player_index: A player index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_get_queue_holder</span><span class="p">()[</span><span class="n">player_index</span><span class="p">]</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_queue_holder</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a _QueueHolder object.</span>
+
+<span class="sd">        This method needs to be implemented by a subclass!</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_menu_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the required data to send a menu.</span>
+
+<span class="sd">        This method needs to be implemented by a subclass!</span>
+
+<span class="sd">        :param int player_index: A player index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_send</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Send a menu to the player.</span>
+
+<span class="sd">        This method needs to be implemented by a subclass!</span>
+
+<span class="sd">        :param int player_index: A player index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_close</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Close a menu for the player by sending an empty menu.</span>
+
+<span class="sd">        This method needs to be implemented by a subclass!</span>
+
+<span class="sd">        :param int player_index: A player index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_select_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a select callback for the menu.</span>
+
+<span class="sd">        Can and should be used as a decorator.</span>
+
+<span class="sd">        :param callable callback: A function that gets called</span>
+<span class="sd">            whenever a selection was made.</span>
+
+<span class="sd">            The callback will receive 3 parameters:</span>
+<span class="sd">                1. The instance of this menu.</span>
+<span class="sd">                2. The player&#39;s index who made the selection.</span>
+<span class="sd">                3. The player&#39;s choice.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">select_callback</span> <span class="o">=</span> <span class="n">callback</span>
+        <span class="k">return</span> <span class="n">callback</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_build_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a build callback for the menu.</span>
+
+<span class="sd">        Can and should be used as a decorator.</span>
+
+<span class="sd">        :param callable callback: A function that gets called</span>
+<span class="sd">            before a menu is displayed.</span>
+
+<span class="sd">            The callback will receive 2 parameters:</span>
+<span class="sd">                1. The instance of this menu.</span>
+<span class="sd">                2. The index of the player who will receive this menu.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">build_callback</span> <span class="o">=</span> <span class="n">callback</span>
+        <span class="k">return</span> <span class="n">callback</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">register_close_callback</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Register a close callback for the menu.</span>
+
+<span class="sd">        Can and should be used as a decorator.</span>
+
+<span class="sd">        :param callable callback: A function that gets called</span>
+<span class="sd">            when a menu is closed by a player.</span>
+
+<span class="sd">            The callback will receive 2 parameters:</span>
+<span class="sd">                1. The instance of this menu.</span>
+<span class="sd">                2. The index of the player who will receive this menu.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">close_callback</span> <span class="o">=</span> <span class="n">callback</span>
+        <span class="k">return</span> <span class="n">callback</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_MenuData</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Base class for menu data.</span>
+
+<span class="sd">    All data types should inherit from this class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the instance.</span>
+
+<span class="sd">        :param str text: The text that should be displayed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">text</span> <span class="o">=</span> <span class="n">text</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">,</span> <span class="n">choice_index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Render the data.</span>
+
+<span class="sd">        :param int player_index: A player index.</span>
+<span class="sd">        :param int|None choice_index: The number that was selected.</span>
+<span class="sd">            It depends on the menu type if this parameter gets passed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_PagedMenuBase</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Implements the base of every page based menu.&quot;&quot;&quot;</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_max_item_count</span><span class="p">():</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the maximum possible item count per page.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_get_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">page_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a tuple containing the options for the given page index.</span>
+
+<span class="sd">        :param int page_index: The index of the page.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">item_count</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_max_item_count</span><span class="p">()</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="p">[</span><span class="n">page_index</span> <span class="o">*</span> <span class="n">item_count</span><span class="p">:</span> <span class="p">(</span><span class="n">page_index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">item_count</span><span class="p">]</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">last_page_index</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the index of the last page.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">page_count</span> <span class="o">-</span> <span class="mi">1</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">page_count</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the number of pages the menu currently has.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_max_item_count</span><span class="p">()))</span> <span class="ow">or</span> <span class="mi">1</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_player_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">,</span> <span class="n">page_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the player&#39;s current page index.</span>
+
+<span class="sd">        :param int player_index: A player index.</span>
+<span class="sd">        :param int page_index: The current active page index.</span>
+
+<span class="sd">        If ``page_index`` is lower than 0, the page index will be set to 0.</span>
+
+<span class="sd">        If ``page_index`` is greater than the last page index, it will be set</span>
+<span class="sd">        to the last page index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">page</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_player_pages</span><span class="p">[</span><span class="n">player_index</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">page_index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">page</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">elif</span> <span class="n">page_index</span> <span class="o">&gt;</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_page_index</span><span class="p">:</span>
+            <span class="n">page</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_page_index</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">page</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">page_index</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_player_page</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the current player page index.</span>
+
+<span class="sd">        :param int player_index: A player index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_player_pages</span><span class="p">[</span><span class="n">player_index</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
+
+
+<div class="viewcode-block" id="Text">
+<a class="viewcode-back" href="../../developing/modules/menus.base.html#menus.Text">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Text</span><span class="p">(</span><span class="n">_MenuData</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Display plain text.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">,</span> <span class="n">choice_index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See :meth:`_MenuData._render`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">_translate_text</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">text</span><span class="p">,</span> <span class="n">player_index</span><span class="p">))</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span></div>
+
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">_BaseOption</span><span class="p">(</span><span class="n">_MenuData</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;This class is used to display an enumerated option.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">value</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">highlight</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">selectable</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the option.</span>
+
+<span class="sd">        :param str text: The text that should be displayed.</span>
+<span class="sd">        :param value: The value that should be passed to the menu&#39;s</span>
+<span class="sd">            selection callback.</span>
+<span class="sd">        :param bool highlight: Set this to true if the text should be</span>
+<span class="sd">            highlighted.</span>
+<span class="sd">        :param bool selectable: Set this to True if the option should be</span>
+<span class="sd">            selectable.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">value</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">highlight</span> <span class="o">=</span> <span class="n">highlight</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">selectable</span> <span class="o">=</span> <span class="n">selectable</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_render</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">player_index</span><span class="p">,</span> <span class="n">choice_index</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;See :meth:`_MenuData._render`.&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; HELPER FUNCTIONS</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_translate_text</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">player_index</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Translate the given ``text``.</span>
+
+<span class="sd">    Only translate if ``text`` is an instance of</span>
+<span class="sd">    :class:`translations.strings.TranslationStrings`. Otherwise the original</span>
+<span class="sd">    text will be returned.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">TranslationStrings</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">text</span><span class="o">.</span><span class="n">get_string</span><span class="p">(</span><span class="n">get_client_language</span><span class="p">(</span><span class="n">player_index</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">text</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">_format_paged_title</span><span class="p">(</span><span class="n">menu</span><span class="p">,</span> <span class="n">player_index</span><span class="p">,</span> <span class="n">page</span><span class="p">):</span>
+    <span class="n">buffer</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">if</span> <span class="n">menu</span><span class="o">.</span><span class="n">title</span><span class="p">:</span>
+        <span class="n">buffer</span> <span class="o">+=</span> <span class="n">_translate_text</span><span class="p">(</span><span class="n">menu</span><span class="o">.</span><span class="n">title</span><span class="p">,</span> <span class="n">player_index</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">menu</span><span class="o">.</span><span class="n">show_pages</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">buffer</span><span class="p">:</span>
+            <span class="n">buffer</span> <span class="o">+=</span> <span class="s1">&#39; &#39;</span>
+
+        <span class="n">buffer</span> <span class="o">+=</span> <span class="sa">f</span><span class="s1">&#39;[</span><span class="si">{</span><span class="n">page</span><span class="o">.</span><span class="n">index</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">/</span><span class="si">{</span><span class="n">menu</span><span class="o">.</span><span class="n">page_count</span><span class="si">}</span><span class="s1">]&#39;</span>
+
+    <span class="k">return</span> <span class="n">buffer</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; LISTENERS</span>
+<span class="c1"># =============================================================================</span>
+<span class="nd">@OnClientDisconnect</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">on_player_disconnect</span><span class="p">(</span><span class="n">player_index</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Called whenever a player left the server.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">instance</span> <span class="ow">in</span> <span class="n">_BaseMenu</span><span class="o">.</span><span class="n">_instances</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+        <span class="n">instance</span><span class="o">.</span><span class="n">_unload_player</span><span class="p">(</span><span class="n">player_index</span><span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">menus.base</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

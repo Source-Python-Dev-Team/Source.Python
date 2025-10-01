@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>entities._base &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" accesskey="U">Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities._base</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for entities._base</h1><div class="highlight"><pre>
+<span></span><span class="c1"># ../entities/_base.py</span>
+
+<span class="sd">&quot;&quot;&quot;Provides a base class to interact with a specific entity.&quot;&quot;&quot;</span>
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Python Imports</span>
+<span class="c1">#   Collections</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="c1">#   Inspect</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">inspect</span><span class="w"> </span><span class="kn">import</span> <span class="n">signature</span>
+<span class="c1">#   WeakRef</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">weakref</span><span class="w"> </span><span class="kn">import</span> <span class="n">WeakSet</span>
+
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Core</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">GAME_NAME</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core</span><span class="w"> </span><span class="kn">import</span> <span class="n">BoostPythonClass</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">core.cache</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">INVALID_ENTITY_INDEX</span>
+<span class="c1">#   Engines</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.precache</span><span class="w"> </span><span class="kn">import</span> <span class="n">Model</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.server</span><span class="w"> </span><span class="kn">import</span> <span class="n">engine_server</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">Attenuation</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">Channel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pitch</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sound</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">SoundFlags</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">StreamSound</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.sound</span><span class="w"> </span><span class="kn">import</span> <span class="n">VOL_NORM</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">engine_trace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">ContentMasks</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">GameTrace</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">Ray</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">engines.trace</span><span class="w"> </span><span class="kn">import</span> <span class="n">TraceFilterSimple</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities</span><span class="w"> </span><span class="kn">import</span> <span class="n">TakeDamageInfo</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.classes</span><span class="w"> </span><span class="kn">import</span> <span class="n">server_classes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">WORLD_ENTITY_INDEX</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">DamageTypes</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.datamaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">InputFunction</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">index_from_inthandle</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">index_from_pointer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">entities.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">wrap_entity_mem_func</span>
+<span class="c1">#   Filters</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">filters.weapons</span><span class="w"> </span><span class="kn">import</span> <span class="n">WeaponClassIter</span>
+<span class="c1">#   Listeners</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners.tick</span><span class="w"> </span><span class="kn">import</span> <span class="n">Delay</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners.tick</span><span class="w"> </span><span class="kn">import</span> <span class="n">Repeat</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">listeners.tick</span><span class="w"> </span><span class="kn">import</span> <span class="n">RepeatStatus</span>
+<span class="c1">#   Mathlib</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">NULL_VECTOR</span>
+<span class="c1">#   Memory</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">Pointer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory</span><span class="w"> </span><span class="kn">import</span> <span class="n">make_object</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">memory.helpers</span><span class="w"> </span><span class="kn">import</span> <span class="n">MemberFunction</span>
+<span class="c1">#   Players</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">players.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">HitGroup</span>
+<span class="c1">#   Studio</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">studio.constants</span><span class="w"> </span><span class="kn">import</span> <span class="n">INVALID_ATTACHMENT_INDEX</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; FORWARD IMPORTS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Source.Python Imports</span>
+<span class="c1">#   Entities</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">_entities._entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseEntity</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; GLOBAL VARIABLES</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># Get a list of projectiles for the game</span>
+<span class="n">_projectile_weapons</span> <span class="o">=</span> <span class="p">[</span><span class="n">weapon</span><span class="o">.</span><span class="n">name</span> <span class="k">for</span> <span class="n">weapon</span> <span class="ow">in</span> <span class="n">WeaponClassIter</span><span class="p">(</span><span class="s1">&#39;grenade&#39;</span><span class="p">)]</span>
+
+<span class="c1"># Get a dictionary to store the delays</span>
+<span class="n">_entity_delays</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+
+<span class="c1"># Get a dictionary to store the repeats</span>
+<span class="n">_entity_repeats</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">set</span><span class="p">)</span>
+
+<span class="c1"># Get a set to store the registered entity classes</span>
+<span class="n">_entity_classes</span> <span class="o">=</span> <span class="n">WeakSet</span><span class="p">()</span>
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; CLASSES</span>
+<span class="c1"># =============================================================================</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">_EntityCaching</span><span class="p">(</span><span class="n">BoostPythonClass</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Metaclass used to cache entity instances.&quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">classname</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attributes</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes the class.&quot;&quot;&quot;</span>
+        <span class="c1"># New instances of this class will be cached in that dictionary</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="c1"># Set whether or not this class is caching its instances by default</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_caching</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span>
+                <span class="n">signature</span><span class="p">(</span>
+                    <span class="nb">vars</span><span class="p">(</span><span class="bp">cls</span><span class="p">)[</span><span class="s1">&#39;__init__&#39;</span><span class="p">]</span>
+                <span class="p">)</span><span class="o">.</span><span class="n">parameters</span><span class="p">[</span><span class="s1">&#39;caching&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">default</span>
+            <span class="p">)</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="bp">cls</span><span class="o">.</span><span class="n">_caching</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;caching&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">))</span>
+
+        <span class="c1"># Add the class to the registered classes</span>
+        <span class="n">_entity_classes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__call__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">caching</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Called when a new instance of this class is requested.</span>
+
+<span class="sd">        :param int index:</span>
+<span class="sd">            The index of the entity instance requested.</span>
+<span class="sd">        :param bool caching:</span>
+<span class="sd">            Whether to lookup the cache for an existing instance or not.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get whether or not we should lookup for a cached instance</span>
+        <span class="k">if</span> <span class="n">caching</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">caching</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_caching</span>
+
+        <span class="c1"># Let&#39;s first lookup for a cached instance</span>
+        <span class="k">if</span> <span class="n">caching</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+            <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="c1"># Nothing in cache, let&#39;s create a new instance</span>
+        <span class="n">obj</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__call__</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+
+        <span class="c1"># Let&#39;s cache the new instance we just created</span>
+        <span class="k">if</span> <span class="n">caching</span><span class="p">:</span>
+
+            <span class="c1"># Only cache entities that are not marked for deletion.</span>
+            <span class="c1"># This is required, because if someone request an entity instance</span>
+            <span class="c1"># after we invalidated our cache but before the engine processed</span>
+            <span class="c1"># the deletion we would now have an invalid instance in the cache.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">obj</span><span class="o">.</span><span class="n">is_marked_for_deletion</span><span class="p">():</span>
+                <span class="bp">cls</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="o">=</span> <span class="n">obj</span>
+
+        <span class="c1"># We are done, let&#39;s return the instance</span>
+        <span class="k">return</span> <span class="n">obj</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets an attribute to the given value and invalidate the cache.</span>
+
+<span class="sd">        :param str attr:</span>
+<span class="sd">            The name of the attribute to assign.</span>
+<span class="sd">        :param object value:</span>
+<span class="sd">            The value to assign to the attribute mathing the given name.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="c1"># Invalidate the attributes cache.</span>
+        <span class="c1"># We don&#39;t simply assign the value ourselves for 2 reasons:</span>
+        <span class="c1">#   1. We don&#39;t want to compute the attributes on class definition</span>
+        <span class="c1">#       and want to do so only when explicitely requested.</span>
+        <span class="c1">#   2. The value we currently have may have been transformed if the</span>
+        <span class="c1">#       assigned attribute is a descriptor defined by a subclass.</span>
+        <span class="k">del</span> <span class="bp">cls</span><span class="o">.</span><span class="n">attributes</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">attributes</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns all the attributes available for this class.</span>
+
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">attributes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span><span class="bp">cls</span><span class="o">.</span><span class="n">mro</span><span class="p">()):</span>
+            <span class="n">attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="nb">vars</span><span class="p">(</span><span class="bp">cls</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">attributes</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">caching</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns whether this class is caching its instances by default.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_caching</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">cache</span><span class="p">(</span><span class="bp">cls</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the cached instances of this class.</span>
+
+<span class="sd">        :rtype: dict</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">_cache</span>
+
+
+<div class="viewcode-block" id="Entity">
+<a class="viewcode-back" href="../../developing/modules/entities.entity.html#entities.entity.Entity">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">Entity</span><span class="p">(</span><span class="n">BaseEntity</span><span class="p">,</span> <span class="n">Pointer</span><span class="p">,</span> <span class="n">metaclass</span><span class="o">=</span><span class="n">_EntityCaching</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Class used to interact directly with entities.</span>
+
+<span class="sd">    Beside the standard way of doing stuff via methods and properties this</span>
+<span class="sd">    class also provides dynamic attributes that depend on the entity that is</span>
+<span class="sd">    being accessed with this class. You can print all dynamic properties by</span>
+<span class="sd">    iterating over the following generators:</span>
+
+<span class="sd">    1. :attr:`properties`</span>
+<span class="sd">    2. :attr:`inputs`</span>
+<span class="sd">    3. :attr:`outputs`</span>
+<span class="sd">    4. :attr:`keyvalues`</span>
+
+<span class="sd">    :var cache:</span>
+<span class="sd">        A read-only attribute that returns a dictionary containing the cached</span>
+<span class="sd">        instances of this class.</span>
+
+<span class="sd">        .. note::</span>
+<span class="sd">            This is not an instance property, so it can only be</span>
+<span class="sd">            accessed through the class itself.</span>
+
+<span class="sd">    :var caching:</span>
+<span class="sd">        A read-only attribute that returns whether this class is caching its</span>
+<span class="sd">        instances by default.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Entity.__init__">
+<a class="viewcode-back" href="../../developing/modules/entities.entity.html#entities.entity.Entity.__init__">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">caching</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the Entity instance.</span>
+
+<span class="sd">        :param int index:</span>
+<span class="sd">            The entity index to wrap.</span>
+<span class="sd">        :param bool caching:</span>
+<span class="sd">            Whether to lookup the cache for an existing instance or not.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Initialize the object</span>
+        <span class="n">BaseEntity</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span>
+        <span class="n">Pointer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointer</span><span class="p">)</span>
+
+        <span class="c1"># Set the entity&#39;s base attributes</span>
+        <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">set_cached_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="p">)</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a hash value based on the entity inthandle.&quot;&quot;&quot;</span>
+        <span class="c1"># Required for sets, because we have implemented __eq__</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">inthandle</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find if the attribute is valid and returns the appropriate value.&quot;&quot;&quot;</span>
+        <span class="c1"># Try to resolve the dynamic attribute</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">instance</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamic_attributes</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">AttributeError</span><span class="p">(</span><span class="s1">&#39;Attribute &quot;</span><span class="si">{0}</span><span class="s1">&quot; not found&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">attr</span><span class="p">))</span>
+
+        <span class="c1"># Is the attribute a property descriptor?</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="fm">__get__</span><span class="p">(</span><span class="n">instance</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># Is the value a dynamic function?</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="p">(</span><span class="n">MemberFunction</span><span class="p">,</span> <span class="n">InputFunction</span><span class="p">)):</span>
+
+            <span class="c1"># Cache the value</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="k">return</span> <span class="n">value</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Find if the attribute is valid and sets its value.&quot;&quot;&quot;</span>
+        <span class="c1"># Is the given attribute a property?</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">setter</span> <span class="o">=</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">attributes</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span><span class="o">.</span><span class="fm">__set__</span>
+
+        <span class="c1"># KeyError:</span>
+        <span class="c1">#   The attribute does not exist.</span>
+        <span class="c1"># AttributeError:</span>
+        <span class="c1">#   The attribute is not a descriptor.</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
+
+            <span class="c1"># Try to resolve a dynamic attribute</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="p">,</span> <span class="n">setter</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dynamic_attributes</span><span class="p">[</span><span class="n">attr</span><span class="p">]</span>
+                <span class="n">setter</span> <span class="o">=</span> <span class="n">setter</span><span class="o">.</span><span class="fm">__set__</span>
+
+            <span class="c1"># KeyError:</span>
+            <span class="c1">#   The attribute does not exist.</span>
+            <span class="c1"># AttributeError:</span>
+            <span class="c1">#   The attribute is not a descriptor.</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">KeyError</span><span class="p">,</span> <span class="ne">AttributeError</span><span class="p">):</span>
+
+                <span class="c1"># Set the attribute to the given value</span>
+                <span class="k">return</span> <span class="nb">object</span><span class="o">.</span><span class="fm">__setattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+        <span class="c1"># Set the attribute&#39;s value</span>
+        <span class="n">setter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__dir__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an alphabetized list of attributes for the instance.&quot;&quot;&quot;</span>
+        <span class="c1"># Get the base attributes</span>
+        <span class="n">attributes</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__dir__</span><span class="p">())</span>
+
+        <span class="c1"># Loop through all server classes for the entity</span>
+        <span class="k">for</span> <span class="n">server_class</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_classes</span><span class="p">:</span>
+
+            <span class="c1"># Loop through all of the server class&#39; attributes</span>
+            <span class="k">for</span> <span class="n">attr</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="n">server_class</span><span class="p">):</span>
+
+                <span class="c1"># Add the attribute if it is not private</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">attr</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;_&#39;</span><span class="p">):</span>
+                    <span class="n">attributes</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+
+        <span class="c1"># Return a sorted list of attributes</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">attributes</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Entity.from_inthandle">
+<a class="viewcode-back" href="../../developing/modules/entities.entity.html#entities.entity.Entity.from_inthandle">[docs]</a>
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">from_inthandle</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">inthandle</span><span class="p">,</span> <span class="n">caching</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create an entity instance from an inthandle.</span>
+
+<span class="sd">        :param int inthandle:</span>
+<span class="sd">            The inthandle.</span>
+<span class="sd">        :param bool caching:</span>
+<span class="sd">            Whether to lookup the cache for an existing instance or not.</span>
+<span class="sd">        :rtype: Entity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">index_from_inthandle</span><span class="p">(</span><span class="n">inthandle</span><span class="p">),</span> <span class="n">caching</span><span class="o">=</span><span class="n">caching</span><span class="p">)</span></div>
+
+
+    <span class="nd">@classmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_obj</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ptr</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return an entity instance of the given pointer.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">index_from_pointer</span><span class="p">(</span><span class="n">ptr</span><span class="p">))</span>
+
+<div class="viewcode-block" id="Entity.is_networked">
+<a class="viewcode-back" href="../../developing/modules/entities.entity.html#entities.entity.Entity.is_networked">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_networked</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return True if the entity is networked.</span>
+
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">owner</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the entity&#39;s owner.</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            None if the entity has no owner.</span>
+<span class="sd">        :rtype: Entity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Entity</span><span class="p">(</span><span class="n">index_from_inthandle</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">owner_handle</span><span class="p">))</span>
+        <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">OverflowError</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">server_classes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Yield all server classes for the entity.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="n">server_class</span><span class="p">:</span> <span class="n">make_object</span><span class="p">(</span><span class="n">server_class</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointer</span><span class="p">)</span> <span class="k">for</span>
+            <span class="n">server_class</span> <span class="ow">in</span> <span class="nb">reversed</span><span class="p">(</span>
+                <span class="n">server_classes</span><span class="o">.</span><span class="n">get_entity_server_classes</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+            <span class="p">)</span>
+        <span class="p">}</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">dynamic_attributes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the dynamic attributes for this entity.&quot;&quot;&quot;</span>
+        <span class="n">attributes</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="bp">cls</span><span class="p">,</span> <span class="n">instance</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_classes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">attributes</span><span class="o">.</span><span class="n">update</span><span class="p">(</span>
+                <span class="p">{</span><span class="n">attr</span><span class="p">:(</span><span class="n">instance</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">for</span> <span class="n">attr</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="nb">vars</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">attributes</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">properties</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over all descriptors available for the entity.&quot;&quot;&quot;</span>
+        <span class="n">properties</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">server_class</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_classes</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">prop</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">server_class</span><span class="o">.</span><span class="n">properties</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">properties</span><span class="p">[</span><span class="n">prop</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="k">return</span> <span class="n">properties</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">inputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over all inputs available for the entity.&quot;&quot;&quot;</span>
+        <span class="n">inputs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">server_class</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_classes</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="k">for</span> <span class="nb">input</span> <span class="ow">in</span> <span class="n">server_class</span><span class="o">.</span><span class="n">inputs</span><span class="p">:</span>
+                <span class="n">inputs</span><span class="p">[</span><span class="nb">input</span><span class="p">]</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span>
+                    <span class="n">make_object</span><span class="p">(</span>
+                        <span class="n">server_class</span><span class="o">.</span><span class="n">_inputs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">pointer</span>                 
+                    <span class="p">),</span>
+                    <span class="nb">input</span>
+                <span class="p">)</span>
+        <span class="k">return</span> <span class="n">inputs</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over all outputs available for the entity.&quot;&quot;&quot;</span>
+        <span class="n">outputs</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">server_class</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_classes</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">output</span> <span class="ow">in</span> <span class="n">server_class</span><span class="o">.</span><span class="n">outputs</span><span class="p">:</span>
+                <span class="n">outputs</span><span class="p">[</span><span class="n">output</span><span class="p">]</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">get_output</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">outputs</span>
+
+    <span class="nd">@cached_property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">keyvalues</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Iterate over all entity keyvalues available for the entity.</span>
+
+<span class="sd">        .. note::</span>
+
+<span class="sd">            An entity might also have hardcoded keyvalues that can&#39;t be listed</span>
+<span class="sd">            with this property.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">keyvalues</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">server_class</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">server_classes</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">keyvalue</span><span class="p">,</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">server_class</span><span class="o">.</span><span class="n">keyvalues</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="n">keyvalues</span><span class="p">[</span><span class="n">keyvalue</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+        <span class="k">return</span> <span class="n">keyvalues</span>
+
+<div class="viewcode-block" id="Entity.get_model">
+<a class="viewcode-back" href="../../developing/modules/entities.entity.html#entities.entity.Entity.get_model">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_model</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the entity&#39;s model.</span>
+
+<span class="sd">        :return:</span>
+<span class="sd">            ``None`` if the entity has no model.</span>
+<span class="sd">        :rtype: Model</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">model_name</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model_name</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">model_name</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">return</span> <span class="n">Model</span><span class="p">(</span><span class="n">model_name</span><span class="p">)</span></div>
+
+
+    <span class="nd">@wrap_entity_mem_func</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the entity&#39;s model to the given model.</span>
+
+<span class="sd">        :param str/Model model:</span>
+<span class="sd">            The model path or model to set.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">Model</span><span class="p">):</span>
+            <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">path</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">engine_server</span><span class="o">.</span><span class="n">is_model_precached</span><span class="p">(</span><span class="n">model</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Model is not precached: </span><span class="si">{</span><span class="n">model</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">model</span><span class="p">]</span>
+
+    <span class="n">model</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="n">get_model</span><span class="p">,</span>
+        <span class="k">lambda</span> <span class="bp">self</span><span class="p">,</span> <span class="n">model</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">set_model</span><span class="p">(</span><span class="n">model</span><span class="p">),</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Property to get/set the entity&#39;s model.</span>
+
+<span class="s2">        .. seealso:: :meth:`get_model` and :meth:`set_model`&quot;&quot;&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Entity.get_parent">
+<a class="viewcode-back" href="../../developing/modules/entities.entity.html#entities.entity.Entity.get_parent">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the entity&#39;s parent.</span>
+
+<span class="sd">        :rtype: Entity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the parent handle...</span>
+        <span class="n">parent_inthandle</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parent_inthandle</span>
+
+        <span class="c1"># Does the entity have no parent?</span>
+        <span class="k">if</span> <span class="n">parent_inthandle</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Return the parent of the entity...</span>
+        <span class="k">return</span> <span class="n">Entity</span><span class="p">(</span><span class="n">index_from_inthandle</span><span class="p">(</span><span class="n">parent_inthandle</span><span class="p">))</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_set_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the parent of the entity.</span>
+
+<span class="sd">        :param Entity parent:</span>
+<span class="sd">            The parent of the entity. If None, actual parent will be cleared.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Clear the actual parent if None was given...</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">clear_parent</span><span class="p">()</span>
+
+        <span class="c1"># Set the parent of the entity...</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_parent</span><span class="p">(</span><span class="n">parent</span><span class="p">)</span>
+
+    <span class="n">parent</span> <span class="o">=</span> <span class="nb">property</span><span class="p">(</span>
+        <span class="n">get_parent</span><span class="p">,</span> <span class="n">_set_parent</span><span class="p">,</span>
+        <span class="n">doc</span><span class="o">=</span><span class="s2">&quot;&quot;&quot;Property to get/set the parent of the entity.</span>
+
+<span class="s2">        .. seealso:: :meth:`get_parent` and :meth:`set_parent`&quot;&quot;&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Entity.delay">
+<a class="viewcode-back" href="../../developing/modules/entities.entity.html#entities.entity.Entity.delay">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">delay</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">delay</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">cancel_on_level_end</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the delay which will be stopped after removing the entity.</span>
+
+<span class="sd">        :param float delay:</span>
+<span class="sd">            The delay in seconds.</span>
+<span class="sd">        :param callback:</span>
+<span class="sd">            A callable object that should be called after the delay expired.</span>
+<span class="sd">        :param tuple args:</span>
+<span class="sd">            Arguments that should be passed to the callback.</span>
+<span class="sd">        :param dict kwargs:</span>
+<span class="sd">            Keyword arguments that should be passed to the callback.</span>
+<span class="sd">        :param bool cancel_on_level_end:</span>
+<span class="sd">            Whether or not to cancel the delay at the end of the map.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            If the given callback is not callable.</span>
+<span class="sd">        :return:</span>
+<span class="sd">            The delay instance.</span>
+<span class="sd">        :rtype: Delay</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the index of the entity</span>
+        <span class="n">index</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span>
+
+        <span class="c1"># TODO: Ideally, we want to subclass Delay and cleanup on cancel() too</span>
+        <span class="c1">#   in case the caller manually cancel the returned Delay.</span>
+        <span class="k">def</span><span class="w"> </span><span class="nf">_callback</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">            </span><span class="sd">&quot;&quot;&quot;Called when the delay is executed.&quot;&quot;&quot;</span>
+            <span class="c1"># Remove the delay from the global dictionary...</span>
+            <span class="n">_entity_delays</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+
+            <span class="c1"># Was this the last pending delay for the entity?</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_entity_delays</span><span class="p">[</span><span class="n">index</span><span class="p">]:</span>
+
+                <span class="c1"># Remove the entity from the dictionary...</span>
+                <span class="k">del</span> <span class="n">_entity_delays</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+
+            <span class="c1"># Call the callback...</span>
+            <span class="n">callback</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># Get the delay instance...</span>
+        <span class="n">delay</span> <span class="o">=</span> <span class="n">Delay</span><span class="p">(</span><span class="n">delay</span><span class="p">,</span> <span class="n">_callback</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">cancel_on_level_end</span><span class="p">)</span>
+
+        <span class="c1"># Add the delay to the dictionary...</span>
+        <span class="n">_entity_delays</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">delay</span><span class="p">)</span>
+
+        <span class="c1"># Return the delay instance...</span>
+        <span class="k">return</span> <span class="n">delay</span></div>
+
+
+<div class="viewcode-block" id="Entity.repeat">
+<a class="viewcode-back" href="../../developing/modules/entities.entity.html#entities.entity.Entity.repeat">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">repeat</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">callback</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(),</span> <span class="n">kwargs</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">cancel_on_level_end</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Create the repeat which will be stopped after removing the entity.</span>
+<span class="sd">        :param callback:</span>
+<span class="sd">            A callable object that should be called at the end of each loop.</span>
+<span class="sd">        :param tuple args:</span>
+<span class="sd">            Arguments that should be passed to the callback.</span>
+<span class="sd">        :param dict kwargs:</span>
+<span class="sd">            Keyword arguments that should be passed to the callback.</span>
+<span class="sd">        :param bool cancel_on_level_end:</span>
+<span class="sd">            Whether or not to cancel the delay at the end of the map.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the given callback is not callable.</span>
+<span class="sd">        :return:</span>
+<span class="sd">            The repeat instance.</span>
+<span class="sd">        :rtype: Repeat</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Get the repeat instance...</span>
+        <span class="n">repeat</span> <span class="o">=</span> <span class="n">Repeat</span><span class="p">(</span><span class="n">callback</span><span class="p">,</span> <span class="n">args</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">,</span> <span class="n">cancel_on_level_end</span><span class="p">)</span>
+
+        <span class="c1"># Add the repeat to the dictionary...</span>
+        <span class="n">_entity_repeats</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">repeat</span><span class="p">)</span>
+
+        <span class="c1"># Return the repeat instance...</span>
+        <span class="k">return</span> <span class="n">repeat</span></div>
+
+
+<div class="viewcode-block" id="Entity.get_output">
+<a class="viewcode-back" href="../../developing/modules/entities.entity.html#entities.entity.Entity.get_output">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_output</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the output instance matching the given name.</span>
+
+<span class="sd">        :parma str name:</span>
+<span class="sd">            Name of the output.</span>
+<span class="sd">        :rtype: BaseEntityOutput</span>
+<span class="sd">        :raise KeyError:</span>
+<span class="sd">            Raised if the output instance wasn&#39;t found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">outputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Entity.get_input">
+<a class="viewcode-back" href="../../developing/modules/entities.entity.html#entities.entity.Entity.get_input">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the input function matching the given name.</span>
+
+<span class="sd">        :parma str name:</span>
+<span class="sd">            Name of the input function.</span>
+<span class="sd">        :rtype: InputFunction</span>
+<span class="sd">        :raise KeyError:</span>
+<span class="sd">            Raised if the input function wasn&#39;t found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">inputs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span></div>
+
+
+<div class="viewcode-block" id="Entity.call_input">
+<a class="viewcode-back" href="../../developing/modules/entities.entity.html#entities.entity.Entity.call_input">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">call_input</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Call the input function matching the given name.</span>
+
+<span class="sd">        :param str name:</span>
+<span class="sd">            Name of the input function.</span>
+<span class="sd">        :param args:</span>
+<span class="sd">            Optional arguments that should be passed to the input function.</span>
+<span class="sd">        :param kwargs:</span>
+<span class="sd">            Optional keyword arguments that should be passed to the input</span>
+<span class="sd">            function.</span>
+<span class="sd">        :raise ValueError:</span>
+<span class="sd">            Raised if the input function wasn&#39;t found.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">get_input</span><span class="p">(</span><span class="n">name</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Entity.emit_sound">
+<a class="viewcode-back" href="../../developing/modules/entities.entity.html#entities.entity.Entity.emit_sound">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">emit_sound</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="n">recipients</span><span class="o">=</span><span class="p">(),</span> <span class="n">volume</span><span class="o">=</span><span class="n">VOL_NORM</span><span class="p">,</span>
+            <span class="n">attenuation</span><span class="o">=</span><span class="n">Attenuation</span><span class="o">.</span><span class="n">NONE</span><span class="p">,</span> <span class="n">channel</span><span class="o">=</span><span class="n">Channel</span><span class="o">.</span><span class="n">AUTO</span><span class="p">,</span>
+            <span class="n">flags</span><span class="o">=</span><span class="n">SoundFlags</span><span class="o">.</span><span class="n">NO_FLAGS</span><span class="p">,</span> <span class="n">pitch</span><span class="o">=</span><span class="n">Pitch</span><span class="o">.</span><span class="n">NORMAL</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">NULL_VECTOR</span><span class="p">,</span>
+            <span class="n">direction</span><span class="o">=</span><span class="n">NULL_VECTOR</span><span class="p">,</span> <span class="n">origins</span><span class="o">=</span><span class="p">(),</span> <span class="n">update_positions</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">sound_time</span><span class="o">=</span><span class="mf">0.0</span><span class="p">,</span> <span class="n">speaker_entity</span><span class="o">=</span><span class="n">INVALID_ENTITY_INDEX</span><span class="p">,</span>
+            <span class="n">download</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">stream</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Emit a sound from this entity.</span>
+
+<span class="sd">        :param str sample:</span>
+<span class="sd">            Sound file relative to the ``sounds`` directory.</span>
+<span class="sd">        :param RecipientFilter recipients:</span>
+<span class="sd">            Recipients to emit the sound to.</span>
+<span class="sd">        :param int index:</span>
+<span class="sd">            Index of the entity to emit the sound from.</span>
+<span class="sd">        :param float volume:</span>
+<span class="sd">            Volume of the sound.</span>
+<span class="sd">        :param Attenuation attenuation:</span>
+<span class="sd">            How far the sound should reaches.</span>
+<span class="sd">        :param int channel:</span>
+<span class="sd">            Channel to emit the sound with.</span>
+<span class="sd">        :param SoundFlags flags:</span>
+<span class="sd">            Flags of the sound.</span>
+<span class="sd">        :param Pitch pitch:</span>
+<span class="sd">            Pitch of the sound.</span>
+<span class="sd">        :param Vector origin:</span>
+<span class="sd">            Origin of the sound.</span>
+<span class="sd">        :param Vector direction:</span>
+<span class="sd">            Direction of the sound.</span>
+<span class="sd">        :param tuple origins:</span>
+<span class="sd">            Origins of the sound.</span>
+<span class="sd">        :param bool update_positions:</span>
+<span class="sd">            Whether or not the positions should be updated.</span>
+<span class="sd">        :param float sound_time:</span>
+<span class="sd">            Time to play the sound for.</span>
+<span class="sd">        :param int speaker_entity:</span>
+<span class="sd">            Index of the speaker entity.</span>
+<span class="sd">        :param bool download:</span>
+<span class="sd">            Whether or not the sample should be added to the downloadables.</span>
+<span class="sd">        :param bool stream:</span>
+<span class="sd">            Whether or not the sound should be streamed.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the correct Sound class...</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">stream</span><span class="p">:</span>
+            <span class="n">sound_class</span> <span class="o">=</span> <span class="n">Sound</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">sound_class</span> <span class="o">=</span> <span class="n">StreamSound</span>
+
+        <span class="c1"># Get the sound...</span>
+        <span class="n">sound</span> <span class="o">=</span> <span class="n">sound_class</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">volume</span><span class="p">,</span> <span class="n">attenuation</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span>
+            <span class="n">flags</span><span class="p">,</span> <span class="n">pitch</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="n">direction</span><span class="p">,</span> <span class="n">origins</span><span class="p">,</span> <span class="n">update_positions</span><span class="p">,</span>
+            <span class="n">sound_time</span><span class="p">,</span> <span class="n">speaker_entity</span><span class="p">,</span> <span class="n">download</span><span class="p">)</span>
+
+        <span class="c1"># Make sure we have a tuple as recipients...</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">recipients</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+            <span class="n">recipients</span> <span class="o">=</span> <span class="p">(</span><span class="n">recipients</span><span class="p">,)</span>
+
+        <span class="c1"># Emit the sound to the given recipients...</span>
+        <span class="n">sound</span><span class="o">.</span><span class="n">play</span><span class="p">(</span><span class="o">*</span><span class="n">recipients</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="Entity.is_in_solid">
+<a class="viewcode-back" href="../../developing/modules/entities.entity.html#entities.entity.Entity.is_in_solid">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">is_in_solid</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">mask</span><span class="o">=</span><span class="n">ContentMasks</span><span class="o">.</span><span class="n">ALL</span><span class="p">,</span> <span class="n">generator</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return whether or not the entity is in solid.</span>
+
+<span class="sd">        :param ContentMasks mask:</span>
+<span class="sd">            Contents the ray can possibly collide with.</span>
+<span class="sd">        :param generator:</span>
+<span class="sd">            A callable that returns an iterable which contains</span>
+<span class="sd">            :class:`BaseEntity` instances that are ignored by the ray.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the entity&#39;s origin</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span>
+
+        <span class="c1"># Get a Ray object of the entity physic box</span>
+        <span class="n">ray</span> <span class="o">=</span> <span class="n">Ray</span><span class="p">(</span><span class="n">origin</span><span class="p">,</span> <span class="n">origin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">mins</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">maxs</span><span class="p">)</span>
+
+        <span class="c1"># Get a new GameTrace instance</span>
+        <span class="n">trace</span> <span class="o">=</span> <span class="n">GameTrace</span><span class="p">()</span>
+
+        <span class="c1"># Do the trace</span>
+        <span class="k">if</span> <span class="n">generator</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># No need to trace against anything but the world if we are going</span>
+            <span class="c1"># to filter out everything regardless.</span>
+            <span class="n">engine_trace</span><span class="o">.</span><span class="n">clip_ray_to_entity</span><span class="p">(</span>
+                <span class="n">ray</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">BaseEntity</span><span class="p">(</span><span class="n">WORLD_ENTITY_INDEX</span><span class="p">),</span> <span class="n">trace</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">engine_trace</span><span class="o">.</span><span class="n">trace_ray</span><span class="p">(</span><span class="n">ray</span><span class="p">,</span> <span class="n">mask</span><span class="p">,</span> <span class="n">TraceFilterSimple</span><span class="p">(</span>
+                <span class="n">generator</span><span class="p">()),</span> <span class="n">trace</span><span class="p">)</span>
+
+        <span class="c1"># Return whether or not the trace did hit</span>
+        <span class="k">return</span> <span class="n">trace</span><span class="o">.</span><span class="n">did_hit</span><span class="p">()</span></div>
+
+
+<div class="viewcode-block" id="Entity.take_damage">
+<a class="viewcode-back" href="../../developing/modules/entities.entity.html#entities.entity.Entity.take_damage">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">take_damage</span><span class="p">(</span>
+            <span class="bp">self</span><span class="p">,</span> <span class="n">damage</span><span class="p">,</span> <span class="n">damage_type</span><span class="o">=</span><span class="n">DamageTypes</span><span class="o">.</span><span class="n">GENERIC</span><span class="p">,</span> <span class="n">attacker_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">weapon_index</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">hitgroup</span><span class="o">=</span><span class="n">HitGroup</span><span class="o">.</span><span class="n">GENERIC</span><span class="p">,</span> <span class="n">skip_hooks</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Deal damage to the entity.</span>
+
+<span class="sd">        :param int damage:</span>
+<span class="sd">            Amount of damage to deal.</span>
+<span class="sd">        :param DamageTypes damage_type:</span>
+<span class="sd">            Type of the dealed damage.</span>
+<span class="sd">        :param int attacker_index:</span>
+<span class="sd">            If not None, the index will be used as the attacker.</span>
+<span class="sd">        :param int weapon_index:</span>
+<span class="sd">            If not None, the index will be used as the weapon. This method</span>
+<span class="sd">            also tries to retrieve the attacker from the weapon, if</span>
+<span class="sd">            ``attacker_index`` wasn&#39;t set.</span>
+<span class="sd">        :param HitGroup hitgroup:</span>
+<span class="sd">            The hitgroup where the damage should be applied.</span>
+<span class="sd">        :param bool skip_hooks:</span>
+<span class="sd">            If True, the damage will be dealed directly by skipping any</span>
+<span class="sd">            registered hooks.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Import Entity classes</span>
+        <span class="c1"># Doing this in the global scope causes cross import errors</span>
+        <span class="kn">from</span><span class="w"> </span><span class="nn">weapons.entity</span><span class="w"> </span><span class="kn">import</span> <span class="n">Weapon</span>
+
+        <span class="c1"># Is the game supported?</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;on_take_damage&#39;</span><span class="p">):</span>
+
+            <span class="c1"># Raise an error if not supported</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+                <span class="s1">&#39;&quot;take_damage&quot; is not implemented for </span><span class="si">{0}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">GAME_NAME</span><span class="p">))</span>
+
+        <span class="c1"># Store values for later use</span>
+        <span class="n">attacker</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">weapon</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># Was an attacker given?</span>
+        <span class="k">if</span> <span class="n">attacker_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Try to get the Entity instance of the attacker</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">attacker</span> <span class="o">=</span> <span class="n">Entity</span><span class="p">(</span><span class="n">attacker_index</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="c1"># Was a weapon given?</span>
+        <span class="k">if</span> <span class="n">weapon_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Try to get the Weapon instance of the weapon</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">weapon</span> <span class="o">=</span> <span class="n">Weapon</span><span class="p">(</span><span class="n">weapon_index</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="c1"># Is there a weapon but no attacker?</span>
+        <span class="k">if</span> <span class="n">attacker</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">weapon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Try to get the attacker based off of the weapon&#39;s owner</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">attacker_index</span> <span class="o">=</span> <span class="n">index_from_inthandle</span><span class="p">(</span><span class="n">weapon</span><span class="o">.</span><span class="n">owner_handle</span><span class="p">)</span>
+                <span class="n">attacker</span> <span class="o">=</span> <span class="n">Entity</span><span class="p">(</span><span class="n">attacker_index</span><span class="p">)</span>
+            <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">OverflowError</span><span class="p">):</span>
+                <span class="k">pass</span>
+
+        <span class="c1"># Is there an attacker but no weapon?</span>
+        <span class="k">if</span> <span class="n">attacker</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">weapon</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Try to use the attacker&#39;s active weapon</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">weapon</span> <span class="o">=</span> <span class="n">attacker</span><span class="o">.</span><span class="n">active_weapon</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">pass</span>
+
+        <span class="c1"># Try to set the hitgroup</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">hitgroup</span> <span class="o">=</span> <span class="n">hitgroup</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># Get a TakeDamageInfo instance</span>
+        <span class="n">take_damage_info</span> <span class="o">=</span> <span class="n">TakeDamageInfo</span><span class="p">()</span>
+
+        <span class="c1"># Is there a valid weapon?</span>
+        <span class="k">if</span> <span class="n">weapon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Is the weapon a projectile?</span>
+            <span class="k">if</span> <span class="n">weapon</span><span class="o">.</span><span class="n">classname</span> <span class="ow">in</span> <span class="n">_projectile_weapons</span><span class="p">:</span>
+
+                <span class="c1"># Set the inflictor to the weapon&#39;s index</span>
+                <span class="n">take_damage_info</span><span class="o">.</span><span class="n">inflictor</span> <span class="o">=</span> <span class="n">weapon</span><span class="o">.</span><span class="n">index</span>
+
+            <span class="c1"># Is the weapon not a projectile and the attacker is valid?</span>
+            <span class="k">elif</span> <span class="n">attacker_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+                <span class="c1"># Set the inflictor to the attacker&#39;s index</span>
+                <span class="n">take_damage_info</span><span class="o">.</span><span class="n">inflictor</span> <span class="o">=</span> <span class="n">attacker_index</span>
+
+            <span class="c1"># Set the weapon to the weapon&#39;s index</span>
+            <span class="n">take_damage_info</span><span class="o">.</span><span class="n">weapon</span> <span class="o">=</span> <span class="n">weapon</span><span class="o">.</span><span class="n">index</span>
+
+        <span class="c1"># Is the attacker valid?</span>
+        <span class="k">if</span> <span class="n">attacker_index</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+
+            <span class="c1"># Set the attacker to the attacker&#39;s index</span>
+            <span class="n">take_damage_info</span><span class="o">.</span><span class="n">attacker</span> <span class="o">=</span> <span class="n">attacker_index</span>
+
+        <span class="c1"># Set the damage amount</span>
+        <span class="n">take_damage_info</span><span class="o">.</span><span class="n">damage</span> <span class="o">=</span> <span class="n">damage</span>
+
+        <span class="c1"># Set the damage type value</span>
+        <span class="n">take_damage_info</span><span class="o">.</span><span class="n">type</span> <span class="o">=</span> <span class="n">damage_type</span>
+
+        <span class="c1"># Loop through the given keywords</span>
+        <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+
+            <span class="c1"># Set the offset&#39;s value</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">take_damage_info</span><span class="p">,</span> <span class="n">item</span><span class="p">,</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">item</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">skip_hooks</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_take_damage</span><span class="o">.</span><span class="n">skip_hooks</span><span class="p">(</span><span class="n">take_damage_info</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">on_take_damage</span><span class="p">(</span><span class="n">take_damage_info</span><span class="p">)</span></div>
+
+
+    <span class="nd">@wrap_entity_mem_func</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">teleport</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">angle</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">velocity</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Change the origin, angle and/or velocity of the entity.</span>
+
+<span class="sd">        :param Vector origin:</span>
+<span class="sd">            New location of the entity.</span>
+<span class="sd">        :param QAngle angle:</span>
+<span class="sd">            New angle of the entity.</span>
+<span class="sd">        :param Vector velocity:</span>
+<span class="sd">            New velocity of the entity.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">origin</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">velocity</span><span class="p">]</span>
+
+    <span class="nd">@wrap_entity_mem_func</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">attachment</span><span class="o">=</span><span class="n">INVALID_ATTACHMENT_INDEX</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the parent of the entity.</span>
+
+<span class="sd">        :param Pointer parent:</span>
+<span class="sd">            The parent.</span>
+<span class="sd">        :param str attachment:</span>
+<span class="sd">            The attachment name/index.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">attachment</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">attachment</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lookup_attachment</span><span class="p">(</span><span class="n">attachment</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">parent</span><span class="p">,</span> <span class="n">attachment</span><span class="p">]</span></div>
+
+
+
+<span class="c1"># =============================================================================</span>
+<span class="c1"># &gt;&gt; LISTENERS</span>
+<span class="c1"># =============================================================================</span>
+<span class="c1"># NOTE: This callback is called by sp_main.cpp after all registered entity</span>
+<span class="c1">#       deletion listeners have been called.</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_on_networked_entity_deleted</span><span class="p">(</span><span class="n">index</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Called when a networked entity is removed.</span>
+
+<span class="sd">    :param int index:</span>
+<span class="sd">        The removed entity index.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Loop through all delays...</span>
+    <span class="k">for</span> <span class="n">delay</span> <span class="ow">in</span> <span class="n">_entity_delays</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">()):</span>
+
+        <span class="c1"># Cancel the delay...</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">delay</span><span class="o">.</span><span class="n">cancel</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="c1"># Loop through all repeats...</span>
+    <span class="k">for</span> <span class="n">repeat</span> <span class="ow">in</span> <span class="n">_entity_repeats</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="p">()):</span>
+
+        <span class="c1"># Stop the repeat if running</span>
+        <span class="k">if</span> <span class="n">repeat</span><span class="o">.</span><span class="n">status</span> <span class="ow">is</span> <span class="n">RepeatStatus</span><span class="o">.</span><span class="n">RUNNING</span><span class="p">:</span>
+            <span class="n">repeat</span><span class="o">.</span><span class="n">stop</span><span class="p">()</span>
+
+    <span class="c1"># Invalidate the internal entity caches for this entity</span>
+    <span class="k">for</span> <span class="bp">cls</span> <span class="ow">in</span> <span class="n">_entity_classes</span><span class="p">:</span>
+        <span class="bp">cls</span><span class="o">.</span><span class="n">cache</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+</pre></div>
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">entities._base</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>

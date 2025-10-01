@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+
+<html lang="en" data-content_root="../../">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>engines.server module &#8212;  Source.Python  v742 documentation</title>
+    <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="../../_static/classic.css?v=2780edc4" />
+    
+    <script src="../../_static/documentation_options.js?v=12c636f2"></script>
+    <script src="../../_static/doctools.js?v=9bcbadda"></script>
+    <script src="../../_static/sphinx_highlight.js?v=dc90522c"></script>
+    
+    <link rel="icon" href="../../_static/sp_wiki_favicon.png"/>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">engines.server module</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <section id="module-engines.server">
+<span id="engines-server-module"></span><h1>engines.server module<a class="headerlink" href="#module-engines.server" title="Link to this heading">¶</a></h1>
+<p>Provides access to the base Server interfaces.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.server.ConnectionlessPacketHandler">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.server.</span></span><span class="sig-name descname"><span class="pre">ConnectionlessPacketHandler</span></span><a class="headerlink" href="#engines.server.ConnectionlessPacketHandler" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">instance</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.server.ConnectionlessPacketHandler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engines.server.ConnectionlessPacketHandler.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.server.MapLoadType">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.server.</span></span><span class="sig-name descname"><span class="pre">MapLoadType</span></span><a class="headerlink" href="#engines.server.MapLoadType" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.server.MapLoadType.Background">
+<span class="sig-name descname"><span class="pre">Background</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_globals.MapLoadType.Background</span></em><a class="headerlink" href="#engines.server.MapLoadType.Background" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.server.MapLoadType.LoadGame">
+<span class="sig-name descname"><span class="pre">LoadGame</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_globals.MapLoadType.LoadGame</span></em><a class="headerlink" href="#engines.server.MapLoadType.LoadGame" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.server.MapLoadType.NewGame">
+<span class="sig-name descname"><span class="pre">NewGame</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_globals.MapLoadType.NewGame</span></em><a class="headerlink" href="#engines.server.MapLoadType.NewGame" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.server.MapLoadType.Transition">
+<span class="sig-name descname"><span class="pre">Transition</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_globals.MapLoadType.Transition</span></em><a class="headerlink" href="#engines.server.MapLoadType.Transition" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.server.MapLoadType.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'Background':</span> <span class="pre">_globals.MapLoadType.Background,</span> <span class="pre">'LoadGame':</span> <span class="pre">_globals.MapLoadType.LoadGame,</span> <span class="pre">'NewGame':</span> <span class="pre">_globals.MapLoadType.NewGame,</span> <span class="pre">'Transition':</span> <span class="pre">_globals.MapLoadType.Transition}</span></em><a class="headerlink" href="#engines.server.MapLoadType.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.server.MapLoadType.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">_globals.MapLoadType.NewGame,</span> <span class="pre">1:</span> <span class="pre">_globals.MapLoadType.LoadGame,</span> <span class="pre">2:</span> <span class="pre">_globals.MapLoadType.Transition,</span> <span class="pre">3:</span> <span class="pre">_globals.MapLoadType.Background}</span></em><a class="headerlink" href="#engines.server.MapLoadType.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.server.QueryCvarStatus">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.server.</span></span><span class="sig-name descname"><span class="pre">QueryCvarStatus</span></span><a class="headerlink" href="#engines.server.QueryCvarStatus" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">enum</span></code></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.server.QueryCvarStatus.INVALID">
+<span class="sig-name descname"><span class="pre">INVALID</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._server.QueryCvarStatus.INVALID</span></em><a class="headerlink" href="#engines.server.QueryCvarStatus.INVALID" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.server.QueryCvarStatus.NOT_FOUND">
+<span class="sig-name descname"><span class="pre">NOT_FOUND</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._server.QueryCvarStatus.NOT_FOUND</span></em><a class="headerlink" href="#engines.server.QueryCvarStatus.NOT_FOUND" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.server.QueryCvarStatus.PROTECTED">
+<span class="sig-name descname"><span class="pre">PROTECTED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._server.QueryCvarStatus.PROTECTED</span></em><a class="headerlink" href="#engines.server.QueryCvarStatus.PROTECTED" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.server.QueryCvarStatus.SUCCESS">
+<span class="sig-name descname"><span class="pre">SUCCESS</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_engines._server.QueryCvarStatus.SUCCESS</span></em><a class="headerlink" href="#engines.server.QueryCvarStatus.SUCCESS" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.server.QueryCvarStatus.names">
+<span class="sig-name descname"><span class="pre">names</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'INVALID':</span> <span class="pre">_engines._server.QueryCvarStatus.INVALID,</span> <span class="pre">'NOT_FOUND':</span> <span class="pre">_engines._server.QueryCvarStatus.NOT_FOUND,</span> <span class="pre">'PROTECTED':</span> <span class="pre">_engines._server.QueryCvarStatus.PROTECTED,</span> <span class="pre">'SUCCESS':</span> <span class="pre">_engines._server.QueryCvarStatus.SUCCESS}</span></em><a class="headerlink" href="#engines.server.QueryCvarStatus.names" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="engines.server.QueryCvarStatus.values">
+<span class="sig-name descname"><span class="pre">values</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{0:</span> <span class="pre">_engines._server.QueryCvarStatus.SUCCESS,</span> <span class="pre">1:</span> <span class="pre">_engines._server.QueryCvarStatus.NOT_FOUND,</span> <span class="pre">2:</span> <span class="pre">_engines._server.QueryCvarStatus.INVALID,</span> <span class="pre">3:</span> <span class="pre">_engines._server.QueryCvarStatus.PROTECTED}</span></em><a class="headerlink" href="#engines.server.QueryCvarStatus.values" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="engines.server.Server">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">engines.server.</span></span><span class="sig-name descname"><span class="pre">Server</span></span><a class="headerlink" href="#engines.server.Server" title="Link to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#engines.server.ConnectionlessPacketHandler" title="_engines._server.ConnectionlessPacketHandler"><code class="xref py py-class docutils literal notranslate"><span class="pre">ConnectionlessPacketHandler</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.server.Server.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engines.server.Server.__init__" title="Link to this definition">¶</a></dt>
+<dd><p>Raises an exception
+This class cannot be instantiated from Python</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.server.Server.broadcast_message">
+<span class="sig-name descname"><span class="pre">broadcast_message</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Server)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_net_channel.NetMessage)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(bool)arg3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(bool)arg4</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#engines.server.Server.broadcast_message" title="Link to this definition">¶</a></dt>
+<dd><p>broadcast_message( (Server)arg1, (_net_channel.NetMessage)arg2, (_filters._recipients.BaseRecipientFilter)arg3) -&gt; None</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.server.Server.disconnect_client">
+<span class="sig-name descname"><span class="pre">disconnect_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Server)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_players.Client)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(str)arg3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.13/library/constants.html#None" title="(in Python v3.13)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#engines.server.Server.disconnect_client" title="Link to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.server.Server.get_client">
+<span class="sig-name descname"><span class="pre">get_client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Server)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">_players.Client</span> <span class="pre">:</span></span></span><a class="headerlink" href="#engines.server.Server.get_client" title="Link to this definition">¶</a></dt>
+<dd><p>Return the interface to a client.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="players.html#players.Client" title="players.Client">Client</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.server.Server.get_player_info">
+<span class="sig-name descname"><span class="pre">get_player_info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Server)arg1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(_engines._sound.Channel)arg2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">(object)arg3</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#engines.server.Server.get_player_info" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.server.Server.is_active">
+<span class="sig-name descname"><span class="pre">is_active</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Server)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#engines.server.Server.is_active" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.server.Server.is_dedicated">
+<span class="sig-name descname"><span class="pre">is_dedicated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Server)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#engines.server.Server.is_dedicated" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.server.Server.is_hltv">
+<span class="sig-name descname"><span class="pre">is_hltv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Server)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#engines.server.Server.is_hltv" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.server.Server.is_loading">
+<span class="sig-name descname"><span class="pre">is_loading</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Server)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#engines.server.Server.is_loading" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.server.Server.is_multiplayer">
+<span class="sig-name descname"><span class="pre">is_multiplayer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Server)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#engines.server.Server.is_multiplayer" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="engines.server.Server.is_pausable">
+<span class="sig-name descname"><span class="pre">is_pausable</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(Server)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span> <span class="pre">:</span></span></span><a class="headerlink" href="#engines.server.Server.is_pausable" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.class_bits">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">class_bits</span></span><a class="headerlink" href="#engines.server.Server.class_bits" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.client_count">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">client_count</span></span><a class="headerlink" href="#engines.server.Server.client_count" title="Link to this definition">¶</a></dt>
+<dd><p>Return the number of client slots (used and unused).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.map_name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">map_name</span></span><a class="headerlink" href="#engines.server.Server.map_name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the current map name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.max_clients">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">max_clients</span></span><a class="headerlink" href="#engines.server.Server.max_clients" title="Link to this definition">¶</a></dt>
+<dd><p>Return the current client limit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.name">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#engines.server.Server.name" title="Link to this definition">¶</a></dt>
+<dd><p>Return the public server name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.net_stats">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">net_stats</span></span><a class="headerlink" href="#engines.server.Server.net_stats" title="Link to this definition">¶</a></dt>
+<dd><p>Return a tuple containing the total net in/out in bytes/sec.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#tuple" title="(in Python v3.13)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.num_classes">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_classes</span></span><a class="headerlink" href="#engines.server.Server.num_classes" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.num_clients">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_clients</span></span><a class="headerlink" href="#engines.server.Server.num_clients" title="Link to this definition">¶</a></dt>
+<dd><p>Return the current number of clients.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.num_fake_clients">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_fake_clients</span></span><a class="headerlink" href="#engines.server.Server.num_fake_clients" title="Link to this definition">¶</a></dt>
+<dd><p>Return the number of fake clients.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.num_players">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_players</span></span><a class="headerlink" href="#engines.server.Server.num_players" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.num_proxies">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">num_proxies</span></span><a class="headerlink" href="#engines.server.Server.num_proxies" title="Link to this definition">¶</a></dt>
+<dd><p>Return the number of attached HLTV proxies.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.password">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">password</span></span><a class="headerlink" href="#engines.server.Server.password" title="Link to this definition">¶</a></dt>
+<dd><p>Return the server password.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.paused">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">paused</span></span><a class="headerlink" href="#engines.server.Server.paused" title="Link to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#bool" title="(in Python v3.13)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.spawn_count">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spawn_count</span></span><a class="headerlink" href="#engines.server.Server.spawn_count" title="Link to this definition">¶</a></dt>
+<dd><p>Return the spawn count.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.tick">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tick</span></span><a class="headerlink" href="#engines.server.Server.tick" title="Link to this definition">¶</a></dt>
+<dd><p>Return the game world tick.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.tick_interval">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tick_interval</span></span><a class="headerlink" href="#engines.server.Server.tick_interval" title="Link to this definition">¶</a></dt>
+<dd><p>Return the tick interval in seconds.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.time">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">time</span></span><a class="headerlink" href="#engines.server.Server.time" title="Link to this definition">¶</a></dt>
+<dd><p>Return the game world time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#float" title="(in Python v3.13)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="engines.server.Server.udp_port">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">udp_port</span></span><a class="headerlink" href="#engines.server.Server.udp_port" title="Link to this definition">¶</a></dt>
+<dd><p>Return the currently used UDP port.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/functions.html#int" title="(in Python v3.13)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="engines.server.execute_server_command">
+<span class="sig-prename descclassname"><span class="pre">engines.server.</span></span><span class="sig-name descname"><span class="pre">execute_server_command</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engines.server.execute_server_command" title="Link to this definition">¶</a></dt>
+<dd><p>Execute a server command immediately.</p>
+<p>Additional arguments can be passed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>command</strong> (<a class="reference external" href="https://docs.python.org/3.13/library/stdtypes.html#str" title="(in Python v3.13)"><em>str</em></a>) – Command to execute.</p></li>
+<li><p><strong>*args</strong> – <p>Additional arguments that should be passed to the command.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#TypeError" title="(in Python v3.13)"><strong>TypeError</strong></a> – Raised if keyword arguments have been passed.</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Raised if the server command was not found or if the command couldn’t be tokenized.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="engines.server.insert_command_string">
+<span class="sig-prename descclassname"><span class="pre">engines.server.</span></span><span class="sig-name descname"><span class="pre">insert_command_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(str)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#engines.server.insert_command_string" title="Link to this definition">¶</a></dt>
+<dd><p>Same like <a class="reference internal" href="#engines.server.queue_command_string" title="engines.server.queue_command_string"><code class="xref py py-func docutils literal notranslate"><span class="pre">queue_command_string()</span></code></a>, but inserts the command at the beginning of the server command queue.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="engines.server.insert_server_command">
+<span class="sig-prename descclassname"><span class="pre">engines.server.</span></span><span class="sig-name descname"><span class="pre">insert_server_command</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engines.server.insert_server_command" title="Link to this definition">¶</a></dt>
+<dd><p>Same as <a class="reference internal" href="#engines.server.queue_server_command" title="engines.server.queue_server_command"><code class="xref py py-func docutils literal notranslate"><span class="pre">queue_server_command()</span></code></a>, but inserts the command at the beginning of the server command queue.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Raised if the server command was not found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="engines.server.queue_command_string">
+<span class="sig-prename descclassname"><span class="pre">engines.server.</span></span><span class="sig-name descname"><span class="pre">queue_command_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">(str)arg1</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span> <span class="pre">:</span></span></span><a class="headerlink" href="#engines.server.queue_command_string" title="Link to this definition">¶</a></dt>
+<dd><p>Adds a string to the end of the server command queue. It’s the same like typing something into the server console.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="engines.server.queue_server_command">
+<span class="sig-prename descclassname"><span class="pre">engines.server.</span></span><span class="sig-name descname"><span class="pre">queue_server_command</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#engines.server.queue_server_command" title="Link to this definition">¶</a></dt>
+<dd><p>Same as <a class="reference internal" href="#engines.server.execute_server_command" title="engines.server.execute_server_command"><code class="xref py py-func docutils literal notranslate"><span class="pre">execute_server_command()</span></code></a>, but does not execute the server command immediately. Instead it is added to the server command queue. Thus, it can be executed with a little delay.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3.13/library/exceptions.html#ValueError" title="(in Python v3.13)"><strong>ValueError</strong></a> – Raised if the server command was not found.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="Main">
+        <div class="sphinxsidebarwrapper">
+            <p class="logo"><a href="../../index.html">
+              <img class="logo" src="../../_static/sp_wiki_banner.png" alt="Logo of  Source.Python"/>
+            </a></p>
+  <div>
+    <h3><a href="../../index.html">Table of Contents</a></h3>
+    <ul>
+<li><a class="reference internal" href="#">engines.server module</a><ul>
+<li><a class="reference internal" href="#engines.server.ConnectionlessPacketHandler"><code class="docutils literal notranslate"><span class="pre">ConnectionlessPacketHandler</span></code></a><ul>
+<li><a class="reference internal" href="#engines.server.ConnectionlessPacketHandler.__init__"><code class="docutils literal notranslate"><span class="pre">ConnectionlessPacketHandler.__init__()</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.server.MapLoadType"><code class="docutils literal notranslate"><span class="pre">MapLoadType</span></code></a><ul>
+<li><a class="reference internal" href="#engines.server.MapLoadType.Background"><code class="docutils literal notranslate"><span class="pre">MapLoadType.Background</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.MapLoadType.LoadGame"><code class="docutils literal notranslate"><span class="pre">MapLoadType.LoadGame</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.MapLoadType.NewGame"><code class="docutils literal notranslate"><span class="pre">MapLoadType.NewGame</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.MapLoadType.Transition"><code class="docutils literal notranslate"><span class="pre">MapLoadType.Transition</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.MapLoadType.names"><code class="docutils literal notranslate"><span class="pre">MapLoadType.names</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.MapLoadType.values"><code class="docutils literal notranslate"><span class="pre">MapLoadType.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.server.QueryCvarStatus"><code class="docutils literal notranslate"><span class="pre">QueryCvarStatus</span></code></a><ul>
+<li><a class="reference internal" href="#engines.server.QueryCvarStatus.INVALID"><code class="docutils literal notranslate"><span class="pre">QueryCvarStatus.INVALID</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.QueryCvarStatus.NOT_FOUND"><code class="docutils literal notranslate"><span class="pre">QueryCvarStatus.NOT_FOUND</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.QueryCvarStatus.PROTECTED"><code class="docutils literal notranslate"><span class="pre">QueryCvarStatus.PROTECTED</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.QueryCvarStatus.SUCCESS"><code class="docutils literal notranslate"><span class="pre">QueryCvarStatus.SUCCESS</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.QueryCvarStatus.names"><code class="docutils literal notranslate"><span class="pre">QueryCvarStatus.names</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.QueryCvarStatus.values"><code class="docutils literal notranslate"><span class="pre">QueryCvarStatus.values</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.server.Server"><code class="docutils literal notranslate"><span class="pre">Server</span></code></a><ul>
+<li><a class="reference internal" href="#engines.server.Server.__init__"><code class="docutils literal notranslate"><span class="pre">Server.__init__()</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.broadcast_message"><code class="docutils literal notranslate"><span class="pre">Server.broadcast_message()</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.disconnect_client"><code class="docutils literal notranslate"><span class="pre">Server.disconnect_client()</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.get_client"><code class="docutils literal notranslate"><span class="pre">Server.get_client()</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.get_player_info"><code class="docutils literal notranslate"><span class="pre">Server.get_player_info()</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.is_active"><code class="docutils literal notranslate"><span class="pre">Server.is_active()</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.is_dedicated"><code class="docutils literal notranslate"><span class="pre">Server.is_dedicated()</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.is_hltv"><code class="docutils literal notranslate"><span class="pre">Server.is_hltv()</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.is_loading"><code class="docutils literal notranslate"><span class="pre">Server.is_loading()</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.is_multiplayer"><code class="docutils literal notranslate"><span class="pre">Server.is_multiplayer()</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.is_pausable"><code class="docutils literal notranslate"><span class="pre">Server.is_pausable()</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.class_bits"><code class="docutils literal notranslate"><span class="pre">Server.class_bits</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.client_count"><code class="docutils literal notranslate"><span class="pre">Server.client_count</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.map_name"><code class="docutils literal notranslate"><span class="pre">Server.map_name</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.max_clients"><code class="docutils literal notranslate"><span class="pre">Server.max_clients</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.name"><code class="docutils literal notranslate"><span class="pre">Server.name</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.net_stats"><code class="docutils literal notranslate"><span class="pre">Server.net_stats</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.num_classes"><code class="docutils literal notranslate"><span class="pre">Server.num_classes</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.num_clients"><code class="docutils literal notranslate"><span class="pre">Server.num_clients</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.num_fake_clients"><code class="docutils literal notranslate"><span class="pre">Server.num_fake_clients</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.num_players"><code class="docutils literal notranslate"><span class="pre">Server.num_players</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.num_proxies"><code class="docutils literal notranslate"><span class="pre">Server.num_proxies</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.password"><code class="docutils literal notranslate"><span class="pre">Server.password</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.paused"><code class="docutils literal notranslate"><span class="pre">Server.paused</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.spawn_count"><code class="docutils literal notranslate"><span class="pre">Server.spawn_count</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.tick"><code class="docutils literal notranslate"><span class="pre">Server.tick</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.tick_interval"><code class="docutils literal notranslate"><span class="pre">Server.tick_interval</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.time"><code class="docutils literal notranslate"><span class="pre">Server.time</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.Server.udp_port"><code class="docutils literal notranslate"><span class="pre">Server.udp_port</span></code></a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#engines.server.execute_server_command"><code class="docutils literal notranslate"><span class="pre">execute_server_command()</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.insert_command_string"><code class="docutils literal notranslate"><span class="pre">insert_command_string()</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.insert_server_command"><code class="docutils literal notranslate"><span class="pre">insert_server_command()</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.queue_command_string"><code class="docutils literal notranslate"><span class="pre">queue_command_string()</span></code></a></li>
+<li><a class="reference internal" href="#engines.server.queue_server_command"><code class="docutils literal notranslate"><span class="pre">queue_server_command()</span></code></a></li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/developing/modules/engines.server.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<search id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"/>
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</search>
+<script>document.getElementById('searchbox').style.display = "block"</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="Related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html"> Source.Python  v742 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">engines.server module</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+    &#169; Copyright 2025,  Source.Python Development Team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 8.2.3.
+    </div>
+  </body>
+</html>
