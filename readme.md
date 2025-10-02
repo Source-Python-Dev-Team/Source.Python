@@ -1,7 +1,7 @@
 # Source.Python
 
 ## Introduction
-Source.Python is an open-source project that uses boost::python to allow scripters to interact with Valve's Source-engine.
+Source.Python is an open-source project that uses Boost.Python to allow scripters to interact with Valve's Source-engine.
 
 
 ## Directory Structure
@@ -24,6 +24,7 @@ Source.Python is an open-source project that uses boost::python to allow scripte
     * __../Python3/__ - Python3.x base
 * __cfg/__
   * __../source-python/__ - configuration files
+* __docs/__ - Generated documentation that is hosted on Github Pages
 * __logs/__
   * __../source-python/__ - log files
 * __resource/__
@@ -41,5 +42,6 @@ Source.Python is an open-source project that uses boost::python to allow scripte
 
 
 ## Useful links
-* [Source.Python Forums](http://forums.sourcepython.com)
-* [Source.Python Wiki](http://wiki.sourcepython.com)
+* [Source.Python Discussions](https://github.com/Source-Python-Dev-Team/Source.Python/discussions)
+* [Source.Python Forums (old)](https://web.archive.org/web/20250810154852/https://sourcepython.com/)
+* [Source.Python Wiki](https://source-python-dev-team.github.io/Source.Python/)

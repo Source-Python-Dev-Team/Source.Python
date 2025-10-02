@@ -27,7 +27,7 @@ There are no special requirements.
 Installation steps
 ------------------
 
-1. Download the latest Source.Python version from our `download page <http://downloads.sourcepython.com/>`_.
+1. Download the latest Source.Python version from our `download page <https://github.com/Source-Python-Dev-Team/Source.Python/releases>`_.
 2. Extract the archive in your server's game folder. E.g. ``../my_servers/css/cstrike/``
 3. Start/restart your server and validate the installation by typing ``sp info`` into the server console (use ``rcon`` if you are not working directly on your server). It should print something like this:
 
@@ -49,4 +49,4 @@ Installation steps
 4. If you validated the installation, you successfully installed Source.Python!
 5. You can now edit your server's ``../cfg/source-python/core_settings.ini`` file to your liking.
 
-If you are having problems installing Source.Python (e. g. ``Unknown command "sp"``), please let us know on our `forums <http://forums.sourcepython.com/>`_!
+If you are having problems installing Source.Python (e. g. ``Unknown command "sp"``), please let us know on `GitHub <https://github.com/Source-Python-Dev-Team/Source.Python/discussions>`_!

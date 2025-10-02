@@ -5,11 +5,7 @@ Welcome to the Source.Python documentation!
 
 Source.Python is an open-source project that uses Boost.Python to allow
 scripters to interact with Valve's Source-engine. In this wiki, you will find
-documentation on how to install, update, and use Source.Python. If you have
-any questions, please search for an answer on our
-`forums <https://forums.sourcepython.com/>`_. If you cannot find the
-answer to your question, please post a question of your own in the appropriate
-forum.
+documentation on how to install, update, and use Source.Python.
 
 Source.Python is currently embedding Python 3.13 and will be upgraded from
 time to time.
@@ -67,7 +63,8 @@ Other helpful links
 -------------------
 * Source.Python
 
-  * `Source.Python forums <https://forums.sourcepython.com//>`_
+  * `Source.Python discussions <https://github.com/Source-Python-Dev-Team/Source.Python/discussions>`_
+  * `Source.Python forums (old) <https://web.archive.org/web/20250810154852/https://sourcepython.com/>`_
   * `Source.Python repository <https://github.com/Source-Python-Dev-Team/Source.Python/>`_
   * `Source.Python issue list <https://github.com/Source-Python-Dev-Team/Source.Python/issues>`_
   

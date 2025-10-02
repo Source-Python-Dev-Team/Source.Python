@@ -82,7 +82,7 @@ def load():
     setup_core_settings()
     setup_logging()
     setup_exception_hooks()
-    setup_data_update()
+    #setup_data_update()
     setup_translations()
     setup_data()
     setup_global_pointers()
