@@ -6,6 +6,7 @@
 # >> IMPORTS
 # =============================================================================
 # Python Imports
+import json
 from urllib.request import urlopen
 # Source.Python Imports
 #   Cvars
@@ -32,8 +33,7 @@ VERSION = None
 GIT_COMMIT = None
 
 LAST_SUCCESSFUL_BUILD_NUMBER_URL = (
-    'http://downloads.sourcepython.com/version.txt')
-
+    'https://api.github.com/repos/Source-Python-Dev-Team/Source.Python/releases/latest')
 
 # =============================================================================
 # >> GLOBAL VARIABLES
@@ -52,7 +52,9 @@ def get_last_successful_build_number(timeout=3):
     :rtype: int
     """
     with urlopen(LAST_SUCCESSFUL_BUILD_NUMBER_URL, timeout=timeout) as url:
-        return int(url.read().decode('utf-8'))
+        data = json.load(url)
+        tag_name = data['tag_name']
+        return int(tag_name[1:])
 
 def is_unversioned():
     """Return ``True`` if this Source.Python installation has no version.

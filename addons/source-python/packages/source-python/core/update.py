@@ -71,7 +71,8 @@ CHECKSUM_URL = f'{BASE_DATA_URL}/checksum.txt'
 DATA_URL = f'{BASE_DATA_URL}/source-python-data.zip'
 
 BASE_DOWNLOAD_URL = 'http://downloads.sourcepython.com'
-ARTIFACTS_URL = f'{BASE_DOWNLOAD_URL}/artifacts.txt'
+
+LATEST_RELEASE_URL = "https://api.github.com/repos/Source-Python-Dev-Team/Source.Python/releases/latest"
 
 DEFAULT_TIMEOUT = 3
 
@@ -144,8 +145,10 @@ def get_build_artifacts(timeout=DEFAULT_TIMEOUT):
         Number of seconds that need to pass until a timeout occurs.
     """
     update_logger.log_debug('Getting artifacts...')
-    with urlopen(ARTIFACTS_URL, timeout=timeout) as url:
-        return url.read().decode('utf-8').split('\n')
+    with urlopen(LATEST_RELEASE_URL, timeout=timeout) as url:
+        data = json.load(url)
+
+    return [asset['browser_download_url'] for asset in data.get('assets', [])]
 
 def get_download_url(game=SOURCE_ENGINE_BRANCH, timeout=DEFAULT_TIMEOUT):
     """Get the latest Source.Python download URL for a specific game.
@@ -158,9 +161,9 @@ def get_download_url(game=SOURCE_ENGINE_BRANCH, timeout=DEFAULT_TIMEOUT):
     :raise ValueError:
         Raised if the game wasn't found.
     """
-    for relative_path in get_build_artifacts(timeout):
-        if f'-{game}-' in relative_path:
-            return f'{BASE_DOWNLOAD_URL}/{relative_path}'
+    for download_url in get_build_artifacts(timeout):
+        if f'-{game}-' in download_url:
+            return download_url
 
     raise ValueError(f'Unable to find a download URL for game "{game}".')
 
