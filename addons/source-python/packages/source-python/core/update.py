@@ -145,11 +145,10 @@ def get_build_artifacts(timeout=DEFAULT_TIMEOUT):
         Number of seconds that need to pass until a timeout occurs.
     """
     update_logger.log_debug('Getting artifacts...')
-    with urlopen(LATEST_RELEASE_URL, timeout=timeout) as resp:
-        release = json.loads(resp.read().decode("utf-8"))
+    with urlopen(LATEST_RELEASE_URL, timeout=timeout) as url:
+        data = json.load(url)
 
-    urls = [asset["browser_download_url"] for asset in release.get("assets", [])]
-    return urls
+    return [asset['browser_download_url'] for asset in data.get('assets', [])]
 
 def get_download_url(game=SOURCE_ENGINE_BRANCH, timeout=DEFAULT_TIMEOUT):
     """Get the latest Source.Python download URL for a specific game.
@@ -162,9 +161,9 @@ def get_download_url(game=SOURCE_ENGINE_BRANCH, timeout=DEFAULT_TIMEOUT):
     :raise ValueError:
         Raised if the game wasn't found.
     """
-    for relative_path in get_build_artifacts(timeout):
-        if f'-{game}-' in relative_path:
-            return relative_path
+    for download_url in get_build_artifacts(timeout):
+        if f'-{game}-' in download_url:
+            return download_url
 
     raise ValueError(f'Unable to find a download URL for game "{game}".')
 

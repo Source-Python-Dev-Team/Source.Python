@@ -52,8 +52,7 @@ def get_last_successful_build_number(timeout=3):
     :rtype: int
     """
     with urlopen(LAST_SUCCESSFUL_BUILD_NUMBER_URL, timeout=timeout) as url:
-        response = url.read().decode("utf-8")
-        data = json.loads(response)
+        data = json.load(url)
         tag_name = data['tag_name']
         return int(tag_name[1:])
 
