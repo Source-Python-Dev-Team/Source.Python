@@ -199,4 +199,29 @@ public:
 };
 
 
+//-----------------------------------------------------------------------------
+// IServerGameDLL wrapper class.
+//-----------------------------------------------------------------------------
+class IServerGameDLLWrapper : public IServerGameDLL
+{
+public:
+	float m_fAutoSaveDangerousTime;
+	float m_fAutoSaveDangerousMinHealthToCommit;
+	bool m_bIsHibernating;
+};
+
+
+//-----------------------------------------------------------------------------
+// IServerGameDLL extension class.
+//-----------------------------------------------------------------------------
+class IServerGameDLLExt
+{
+public:
+	static bool IsHibernating(IServerGameDLL *pServerGameDLL)
+	{
+		return reinterpret_cast<IServerGameDLLWrapper *>(pServerGameDLL)->m_bIsHibernating;
+	}
+};
+
+
 #endif // _ENGINES_H

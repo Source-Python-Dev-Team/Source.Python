@@ -129,6 +129,8 @@ __all__ = ('ButtonStatus',
            'OnTick',
            'OnVersionUpdate',
            'OnServerOutput',
+           'OnServerHibernating',
+           'OnServerWakingUp',
            'get_button_combination_status',
            'on_client_active_listener_manager',
            'on_client_connect_listener_manager',
@@ -170,6 +172,8 @@ __all__ = ('ButtonStatus',
            'on_player_transmit_listener_manager',
            'on_player_run_command_listener_manager',
            'on_button_state_changed_listener_manager',
+           'on_server_hibernating_listener_manager',
+           'on_server_waking_up_listener_manager',
            )
 
 
@@ -185,6 +189,8 @@ on_plugin_unloaded_manager = ListenerManager()
 on_plugin_loading_manager = ListenerManager()
 on_plugin_unloading_manager = ListenerManager()
 on_level_end_listener_manager = ListenerManager()
+on_server_hibernating_listener_manager = ListenerManager()
+on_server_waking_up_listener_manager = ListenerManager()
 
 _check_for_update = ConVar(
     'sp_check_for_update',
@@ -549,6 +555,18 @@ class OnServerOutput(ListenerManagerDecorator):
     manager = on_server_output_listener_manager
 
 
+class OnServerHibernating(ListenerManagerDecorator):
+    """Register/unregister a server hibernating listener."""
+
+    manager = on_server_hibernating_listener_manager
+
+
+class OnServerWakingUp(ListenerManagerDecorator):
+    """Register/unregister a server waking up listener."""
+
+    manager = on_server_waking_up_listener_manager
+
+
 # =============================================================================
 # >> FUNCTIONS
 # =============================================================================
@@ -697,7 +715,13 @@ else:
 @PreHook(get_virtual_function(server_game_dll, _hibernation_function_name))
 def _pre_hibernation_function(stack_data):
     """Called when the server is hibernating."""
-    if not stack_data[1]:
+    hibernating = stack_data[1]
+    if hibernating:
+        on_server_hibernating_listener_manager.notify()
+    else:
+        on_server_waking_up_listener_manager.notify()
+
+    if not hibernating:
         return
 
     # Disconnect all bots...
