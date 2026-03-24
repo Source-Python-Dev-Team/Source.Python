@@ -11,8 +11,6 @@ import math
 import time
 
 from enum import IntEnum
-from threading import Thread
-from warnings import warn
 
 # Source.Python
 from core import AutoUnload
@@ -28,7 +26,7 @@ from listeners import (
 # =============================================================================
 __all__ = (
     'Delay',
-    'GameThread',
+    'GameThread', # Backward compatibility
     'Repeat',
     'RepeatStatus',
 )
@@ -39,26 +37,6 @@ __all__ = (
 # =============================================================================
 # Get the sp.listeners.tick logger
 listeners_tick_logger = listeners_logger.tick
-
-
-# =============================================================================
-# >> THREAD WORKAROUND
-# =============================================================================
-class GameThread(WeakAutoUnload, Thread):
-    """A subclass of :class:`threading.Thread` that throws a warning if the
-    plugin that created the thread has been unloaded while the thread is still
-    running.
-    """
-
-    def _add_instance(self, caller):
-        super()._add_instance(caller)
-        self._caller = caller
-
-    def _unload_instance(self):
-        if self.is_alive():
-            warn(
-                f'Thread "{self.name}" ({self.ident}) from "{self._caller}" '
-                f'is running even though its plugin has been unloaded!')
 
 
 # =============================================================================

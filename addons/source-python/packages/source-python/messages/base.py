@@ -7,6 +7,8 @@
 # ============================================================================
 # Python Imports
 import collections
+#   Threading
+from threading import Lock
 
 # Source.Python Imports
 #   Colors
@@ -78,6 +80,10 @@ class UserMessageCreator(AttrDict):
                 self._get_translated_kwargs(language, tokens))
             self._send(indexes, translated_kwargs)
 
+    # Get a lock to ensure thread-safety for bitbuf messages
+    if not UserMessage.is_protobuf():
+        _bitbuf_lock = Lock()
+
     def _send(self, player_indexes, translated_kwargs):
         """Send the user message to the given players.
 
@@ -87,12 +93,14 @@ class UserMessageCreator(AttrDict):
         """
         recipients = RecipientFilter(*player_indexes)
         recipients.reliable = self.reliable
-        user_message = UserMessage(recipients, self.message_name)
 
-        if user_message.is_protobuf():
+        if UserMessage.is_protobuf():
+            user_message = UserMessage(recipients, self.message_name)
             self.protobuf(user_message.buffer, translated_kwargs)
             user_message.send()
         else:
+            self._bitbuf_lock.acquire()
+            user_message = UserMessage(recipients, self.message_name)
             try:
                 self.bitbuf(user_message.buffer, translated_kwargs)
             except:
@@ -109,6 +117,7 @@ class UserMessageCreator(AttrDict):
                 raise
             finally:
                 user_message.send()
+                self._bitbuf_lock.release()
 
     @staticmethod
     def _categorize_players_by_language(player_indexes):

@@ -11,7 +11,12 @@ which causes either EventScripts to be loaded with Source.Python's Python
 version or vice versa. This doesn't work well and results in a crash on startup.
 
 SourceMod's Accelerator incompatibility
----------------------------------------------------
+---------------------------------------
 If you are running `SourceMod's Accelerator <https://forums.alliedmods.net/showthread.php?t=277703&>`_
 with Source.Python, you may experience random crashes that would normally be caught since this extension
 prevents us from catching and preventing them.
+
+Hibernation issues
+------------------
+Some features (such as tick listeners, delays, Python threads, etc.) do not work on some games (e.g. CS:GO)
+while the server is hibernating. If you require these features at all time, please disable hibernation.

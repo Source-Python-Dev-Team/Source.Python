@@ -66,6 +66,7 @@ class _CoreSettings(ConfigObj):
         self._check_logging_settings()
         self._check_user_settings()
         self._check_auth_settings()
+        self._check_thread_settings()
 
     def _check_base_settings(self):
         """Add base settings if they are missing."""
@@ -214,6 +215,22 @@ class _CoreSettings(ConfigObj):
                 backend.options[option] = backend_settings[option]
             else:
                 backend_settings[option] = value
+
+    def _check_thread_settings(self):
+        """Add thread settings if they are missing."""
+        from threads import ThreadYielder
+        if not ThreadYielder.is_implemented():
+            return
+
+        self.setdefault(
+            'THREAD_SETTINGS', {}
+        ).setdefault('enable_thread_yielding', '0')
+        self['THREAD_SETTINGS'].comments[
+            'enable_thread_yielding'
+        ] = _core_strings[
+            'enable_thread_yielding'
+        ].get_string(self._language).splitlines()
+            
 
 # Get the _CoreSettings instance
 _core_settings = _CoreSettings(CFG_PATH / 'core_settings.ini',

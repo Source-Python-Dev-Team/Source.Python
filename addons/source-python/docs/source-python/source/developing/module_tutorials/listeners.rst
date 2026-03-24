@@ -633,6 +633,34 @@ message is logged/printed or not.
         return OutputReturn.CONTINUE
 
 
+OnServerHibernating
+-------------------
+
+Called when the server starts hibernating.
+
+.. code-block:: python
+
+    from listeners import OnServerHibernating
+
+    @OnServerHibernating
+    def on_server_hibernating():
+        ...
+
+
+OnServerWakingUp
+----------------
+
+Called when the server is waking up from hibernation.
+
+.. code-block:: python
+
+    from listeners import OnServerWakingUp
+
+    @OnServerWakingUp
+    def on_server_waking_up():
+        ...
+
+
 OnTick
 ------
 

@@ -38,11 +38,11 @@ CCachedProperty::CCachedProperty(
 	object fget=object(), object fset=object(), object fdel=object(), object doc=object(),
 	boost::python::tuple args=boost::python::tuple(), object kwargs=object())
 {
+	m_doc = doc;
+
 	set_getter(fget);
 	set_setter(fset);
 	set_deleter(fdel);
-
-	m_doc = doc;
 
 	m_args = args;
 
@@ -73,6 +73,11 @@ object CCachedProperty::get_getter()
 object CCachedProperty::set_getter(object fget)
 {
 	m_fget = _callable_check(fget, "getter");
+
+	if (m_doc.is_none()) {
+		m_doc = m_fget.attr("__doc__");
+	}
+
 	return fget;
 }
 
