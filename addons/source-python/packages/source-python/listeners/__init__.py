@@ -79,6 +79,43 @@ from _listeners import on_player_transmit_listener_manager
 from _listeners import on_player_run_command_listener_manager
 from _listeners import on_player_post_run_command_listener_manager
 from _listeners import on_button_state_changed_listener_manager
+from _listeners import on_player_jump_listener_manager
+from _listeners import on_player_land_listener_manager
+from _listeners import on_player_duck_listener_manager
+from _listeners import on_player_ducked_listener_manager
+from _listeners import on_player_unduck_listener_manager
+from _listeners import on_player_unducked_listener_manager
+from _listeners import on_player_water_jump_listener_manager
+from _listeners import on_player_ground_entity_changed_listener_manager
+from _listeners import on_player_water_level_changed_listener_manager
+from _listeners import on_player_start_climbing_ladder_listener_manager
+from _listeners import on_player_stop_climbing_ladder_listener_manager
+from _listeners import on_player_check_jump_button_listener_manager
+from _listeners import on_player_rough_landing_effects_listener_manager
+from _listeners import on_player_accelerate_listener_manager
+from _listeners import on_player_post_accelerate_listener_manager
+from _listeners import on_player_air_accelerate_listener_manager
+from _listeners import on_player_post_air_accelerate_listener_manager
+from _listeners import on_player_move_listener_manager
+from _listeners import on_player_finish_move_listener_manager
+from _listeners import on_player_water_move_listener_manager
+from _listeners import on_player_finish_water_move_listener_manager
+from _listeners import on_player_air_move_listener_manager
+from _listeners import on_player_finish_air_move_listener_manager
+from _listeners import on_player_fall_move_listener_manager
+from _listeners import on_player_finish_fall_move_listener_manager
+from _listeners import on_player_walk_move_listener_manager
+from _listeners import on_player_finish_walk_move_listener_manager
+from _listeners import on_player_full_walk_move_listener_manager
+from _listeners import on_player_finish_full_walk_move_listener_manager
+from _listeners import on_player_toss_move_listener_manager
+from _listeners import on_player_finish_toss_move_listener_manager
+from _listeners import on_player_ladder_move_listener_manager
+from _listeners import on_player_finish_ladder_move_listener_manager
+from _listeners import on_player_full_ladder_move_listener_manager
+from _listeners import on_player_finish_full_ladder_move_listener_manager
+from _listeners import on_player_step_move_listener_manager
+from _listeners import on_player_finish_step_move_listener_manager
 
 
 # =============================================================================
@@ -129,6 +166,43 @@ __all__ = ('ButtonStatus',
            'OnTick',
            'OnVersionUpdate',
            'OnServerOutput',
+           'OnPlayerJump',
+           'OnPlayerLand',
+           'OnPlayerDuck',
+           'OnPlayerDucked',
+           'OnPlayerUnduck',
+           'OnPlayerUnducked',
+           'OnPlayerWaterJump',
+           'OnPlayerGroundEntityChanged',
+           'OnPlayerWaterLevelChanged',
+           'OnPlayerStartClimbingLadder',
+           'OnPlayerStopClimbingLadder',
+           'OnPlayerCheckJumpButton',
+           'OnPlayerRoughLandingEffects',
+           'OnPlayerAccelerate',
+           'OnPlayerPostAccelerate',
+           'OnPlayerAirAccelerate',
+           'OnPlayerPostAirAccelerate',
+           'OnPlayerMove',
+           'OnPlayerFinishMove',
+           'OnPlayerWaterMove',
+           'OnPlayerFinishWaterMove',
+           'OnPlayerAirMove',
+           'OnPlayerFinishAirMove',
+           'OnPlayerFallMove',
+           'OnPlayerFinishFallMove',
+           'OnPlayerWalkMove',
+           'OnPlayerFinishWalkMove',
+           'OnPlayerFullWalkMove',
+           'OnPlayerFinishFullWalkMove',
+           'OnPlayerTossMove',
+           'OnPlayerFinishTossMove',
+           'OnPlayerLadderMove',
+           'OnPlayerFinishLadderMove',
+           'OnPlayerFullLadderMove',
+           'OnPlayerFinishFullLadderMove',
+           'OnPlayerStepMove',
+           'OnPlayerFinishStepMove',
            'get_button_combination_status',
            'on_client_active_listener_manager',
            'on_client_connect_listener_manager',
@@ -170,6 +244,42 @@ __all__ = ('ButtonStatus',
            'on_player_transmit_listener_manager',
            'on_player_run_command_listener_manager',
            'on_button_state_changed_listener_manager',
+           'on_player_jump_listener_manager',
+           'on_player_land_listener_manager',
+           'on_player_duck_listener_manager',
+           'on_player_ducked_listener_manager',
+           'on_player_unduck_listener_manager',
+           'on_player_unducked_listener_manager',
+           'on_player_water_jump_listener_manager',
+           'on_player_ground_entity_changed_listener_manager',
+           'on_player_water_level_changed_listener_manager',
+           'on_player_start_climbing_ladder_listener_manager',
+           'on_player_stop_climbing_ladder_listener_manager',
+           'on_player_rough_landing_effects_listener_manager',
+           'on_player_accelerate_listener_manager',
+           'on_player_post_accelerate_listener_manager',
+           'on_player_air_accelerate_listener_manager',
+           'on_player_post_air_accelerate_listener_manager',
+           'on_player_move_listener_manager',
+           'on_player_finish_move_listener_manager',
+           'on_player_water_move_listener_manager',
+           'on_player_finish_water_move_listener_manager',
+           'on_player_air_move_listener_manager',
+           'on_player_finish_air_move_listener_manager',
+           'on_player_fall_move_listener_manager',
+           'on_player_finish_fall_move_listener_manager',
+           'on_player_walk_move_listener_manager',
+           'on_player_finish_walk_move_listener_manager',
+           'on_player_full_walk_move_listener_manager',
+           'on_player_finish_full_walk_move_listener_manager',
+           'on_player_toss_move_listener_manager',
+           'on_player_finish_toss_move_listener_manager',
+           'on_player_ladder_move_listener_manager',
+           'on_player_finish_ladder_move_listener_manager',
+           'on_player_full_ladder_move_listener_manager',
+           'on_player_finish_full_ladder_move_listener_manager',
+           'on_player_step_move_listener_manager',
+           'on_player_finish_step_move_listener_manager',
            )
 
 
@@ -547,6 +657,228 @@ class OnServerOutput(ListenerManagerDecorator):
     """Register/unregister a server output listener."""
 
     manager = on_server_output_listener_manager
+
+
+class OnPlayerJump(ListenerManagerDecorator):
+    """Register/unregister a player jump listener."""
+
+    manager = on_player_jump_listener_manager
+
+
+class OnPlayerLand(ListenerManagerDecorator):
+    """Register/unregister a player land listener."""
+
+    manager = on_player_land_listener_manager
+
+
+class OnPlayerDuck(ListenerManagerDecorator):
+    """Register/unregister a player duck listener."""
+
+    manager = on_player_duck_listener_manager
+
+
+class OnPlayerDucked(ListenerManagerDecorator):
+    """Register/unregister a player ducked listener."""
+
+    manager = on_player_ducked_listener_manager
+
+
+class OnPlayerUnduck(ListenerManagerDecorator):
+    """Register/unregister a player unduck listener."""
+
+    manager = on_player_unduck_listener_manager
+
+
+class OnPlayerUnducked(ListenerManagerDecorator):
+    """Register/unregister a player unducked listener."""
+
+    manager = on_player_unducked_listener_manager
+
+
+class OnPlayerWaterJump(ListenerManagerDecorator):
+    """Register/unregister a player water jump listener."""
+
+    manager = on_player_water_jump_listener_manager
+
+
+class OnPlayerGroundEntityChanged(ListenerManagerDecorator):
+    """Register/unregister a player ground entity changed listener."""
+
+    manager = on_player_ground_entity_changed_listener_manager
+
+
+class OnPlayerWaterLevelChanged(ListenerManagerDecorator):
+    """Register/unregister a player water level changed listener."""
+
+    manager = on_player_water_level_changed_listener_manager
+
+
+class OnPlayerStartClimbingLadder(ListenerManagerDecorator):
+    """Register/unregister a player start climbing ladder listener."""
+
+    manager = on_player_start_climbing_ladder_listener_manager
+
+
+class OnPlayerStopClimbingLadder(ListenerManagerDecorator):
+    """Register/unregister a player stop climbing ladder listener."""
+
+    manager = on_player_stop_climbing_ladder_listener_manager
+
+
+class OnPlayerCheckJumpButton(ListenerManagerDecorator):
+    """Register/unregister a player check jump button listener."""
+
+    manager = on_player_check_jump_button_listener_manager
+
+
+class OnPlayerRoughLandingEffects(ListenerManagerDecorator):
+    """Register/unregister a player rough landing effects listener."""
+
+    manager = on_player_rough_landing_effects_listener_manager
+
+
+class OnPlayerAccelerate(ListenerManagerDecorator):
+    """Register/unregister a player accelerate listener."""
+
+    manager = on_player_accelerate_listener_manager
+
+
+class OnPlayerPostAccelerate(ListenerManagerDecorator):
+    """Register/unregister a player post accelerate listener."""
+
+    manager = on_player_post_accelerate_listener_manager
+
+
+class OnPlayerAirAccelerate(ListenerManagerDecorator):
+    """Register/unregister a player air accelerate listener."""
+
+    manager = on_player_air_accelerate_listener_manager
+
+
+class OnPlayerPostAirAccelerate(ListenerManagerDecorator):
+    """Register/unregister a player post air accelerate listener."""
+
+    manager = on_player_post_air_accelerate_listener_manager
+
+
+class OnPlayerMove(ListenerManagerDecorator):
+    """Register/unregister a player move listener."""
+
+    manager = on_player_move_listener_manager
+
+
+class OnPlayerFinishMove(ListenerManagerDecorator):
+    """Register/unregister a player finish move listener."""
+
+    manager = on_player_finish_move_listener_manager
+
+
+class OnPlayerWaterMove(ListenerManagerDecorator):
+    """Register/unregister a player water move listener."""
+
+    manager = on_player_water_move_listener_manager
+
+
+class OnPlayerFinishWaterMove(ListenerManagerDecorator):
+    """Register/unregister a player finish water move listener."""
+
+    manager = on_player_finish_water_move_listener_manager
+
+
+class OnPlayerAirMove(ListenerManagerDecorator):
+    """Register/unregister a player air move listener."""
+
+    manager = on_player_air_move_listener_manager
+
+
+class OnPlayerFinishAirMove(ListenerManagerDecorator):
+    """Register/unregister a player finish air move listener."""
+
+    manager = on_player_finish_air_move_listener_manager
+
+
+class OnPlayerFallMove(ListenerManagerDecorator):
+    """Register/unregister a player air fall listener."""
+
+    manager = on_player_fall_move_listener_manager
+
+
+class OnPlayerFinishFallMove(ListenerManagerDecorator):
+    """Register/unregister a player finish fall move listener."""
+
+    manager = on_player_finish_fall_move_listener_manager
+
+
+class OnPlayerWalkMove(ListenerManagerDecorator):
+    """Register/unregister a player walk move listener."""
+
+    manager = on_player_walk_move_listener_manager
+
+
+class OnPlayerFinishWalkMove(ListenerManagerDecorator):
+    """Register/unregister a player finish walk move listener."""
+
+    manager = on_player_finish_walk_move_listener_manager
+
+
+class OnPlayerFullWalkMove(ListenerManagerDecorator):
+    """Register/unregister a player full walk move listener."""
+
+    manager = on_player_full_walk_move_listener_manager
+
+
+class OnPlayerFinishFullWalkMove(ListenerManagerDecorator):
+    """Register/unregister a player finish full walk move listener."""
+
+    manager = on_player_finish_full_walk_move_listener_manager
+
+
+class OnPlayerTossMove(ListenerManagerDecorator):
+    """Register/unregister a player toss move listener."""
+
+    manager = on_player_toss_move_listener_manager
+
+
+class OnPlayerFinishTossMove(ListenerManagerDecorator):
+    """Register/unregister a player finish toss move listener."""
+
+    manager = on_player_finish_toss_move_listener_manager
+
+
+class OnPlayerLadderMove(ListenerManagerDecorator):
+    """Register/unregister a player ladder move listener."""
+
+    manager = on_player_ladder_move_listener_manager
+
+
+class OnPlayerFinishLadderMove(ListenerManagerDecorator):
+    """Register/unregister a player finish ladder move listener."""
+
+    manager = on_player_finish_ladder_move_listener_manager
+
+
+class OnPlayerFullLadderMove(ListenerManagerDecorator):
+    """Register/unregister a player full ladder move listener."""
+
+    manager = on_player_full_ladder_move_listener_manager
+
+
+class OnPlayerFinishFullLadderMove(ListenerManagerDecorator):
+    """Register/unregister a player finish full ladder move listener."""
+
+    manager = on_player_finish_full_ladder_move_listener_manager
+
+
+class OnPlayerStepMove(ListenerManagerDecorator):
+    """Register/unregister a player step move listener."""
+
+    manager = on_player_step_move_listener_manager
+
+
+class OnPlayerFinishStepMove(ListenerManagerDecorator):
+    """Register/unregister a player finish step move listener."""
+
+    manager = on_player_finish_step_move_listener_manager
 
 
 # =============================================================================

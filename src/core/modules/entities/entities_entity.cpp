@@ -37,6 +37,7 @@
 #include ENGINE_INCLUDE_PATH(entities_datamaps_wrap.h)
 #include "../engines/engines.h"
 #include "modules/core/core_cache.h"
+#include "modules/players/players_movements.h"
 
 // ============================================================================
 // >> External variables
@@ -620,8 +621,21 @@ int CBaseEntityWrapper::GetGroundEntity()
 
 void CBaseEntityWrapper::SetGroundEntity(int entity)
 {
-	static int offset = FindDatamapPropertyOffset("m_hGroundEntity");
-	SetDatamapPropertyByOffset<int>(offset, entity);
+	if (IsPlayer() && reinterpret_cast<PlayerMixin *>(GetGameMovement()->player) == this) {
+		CBaseEntity *pEntity;
+		if (BaseEntityFromIntHandle(entity, pEntity)) {
+			static trace_t *s_pTrace = new trace_t;
+			s_pTrace->m_pEnt = pEntity;
+			GetGameMovement()->SetGroundEntity(s_pTrace);
+		}
+		else {
+			GetGameMovement()->SetGroundEntity(NULL);
+		}
+	}
+	else {
+		static int offset = FindDatamapPropertyOffset("m_hGroundEntity");
+		SetDatamapPropertyByOffset<int>(offset, entity);
+	}
 }
 
 

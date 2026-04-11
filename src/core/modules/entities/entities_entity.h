@@ -454,7 +454,7 @@ public:
 //-----------------------------------------------------------------------------
 inline object GetEntityObject(CBaseEntityWrapper *pEntity)
 {
-	if (pEntity->IsNetworked()) {
+	if (pEntity && pEntity->IsNetworked()) {
 		if (pEntity->IsPlayer()) {
 			static object Player = import("players").attr("entity").attr("Player");
 			return Player(pEntity->GetIndex());
@@ -487,5 +487,9 @@ inline object GetEntityObject(unsigned int uiIndex)
 	return GetEntityObject((CBaseEntityWrapper *)pEntity);
 }
 
+inline object GetEntityObject(CBasePlayer *pPlayer)
+{
+	return GetEntityObject(reinterpret_cast<CBaseEntity *>(pPlayer));
+}
 
 #endif // _ENTITIES_ENTITY_H

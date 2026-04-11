@@ -207,15 +207,18 @@ END_CLASS_INFO()
 */
 
 // Start a new class info dictionary
-#define BEGIN_CLASS_INFO(classname) \
+#define BEGIN_CLASS_INFO_WRAPPER(classname, realname) \
 	{ \
 		typedef classname functionInfoClass; \
 		extern DeferredDict g_oClassInfo; \
 		dict classInfoDict; \
-		if (g_oClassInfo.get().contains( #classname )) \
-			classInfoDict = extract<dict>(g_oClassInfo.get()[ #classname ]); \
+		if (g_oClassInfo.get().contains( #realname )) \
+			classInfoDict = extract<dict>(g_oClassInfo.get()[ #realname ]); \
 		else \
-			g_oClassInfo.get()[ #classname ] = classInfoDict;
+			g_oClassInfo.get()[ #realname ] = classInfoDict;
+
+#define BEGIN_CLASS_INFO(classname) \
+	BEGIN_CLASS_INFO_WRAPPER(classname, classname)
 
 // Finish a class info dictionary
 #define END_CLASS_INFO() \

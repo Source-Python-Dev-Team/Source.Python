@@ -38,6 +38,7 @@
 #include "export_main.h"
 #include "modules/entities/entities_entity.h"
 #include "icommandline.h"
+#include "utilities/baseplayer.h"
 
 
 //---------------------------------------------------------------------------------
@@ -357,7 +358,7 @@ struct baseentity_to_python
 
 	static PyObject* convert(CBaseEntity* pAddr)
 	{
-		return incref(object(CBaseEntityWrapper::wrap(pAddr)).ptr());
+		return incref(GetEntityObject(pAddr).ptr());
 	}
 };
 
@@ -401,6 +402,60 @@ struct baseentity_index_from_python
 		}
 
 		return (void *)ExcBaseEntityFromIndex(extractor());
+	}
+};
+
+// CBasePlayer*
+struct baseplayer_to_python
+{
+	baseplayer_to_python()
+	{
+		to_python_converter< CBasePlayer*, baseplayer_to_python >();
+	}
+
+	static PyObject* convert(CBasePlayer* pAddr)
+	{
+		return incref(GetEntityObject(pAddr).ptr());
+	}
+};
+
+struct baseplayer_from_python
+{
+	baseplayer_from_python()
+	{
+		boost::python::converter::registry::insert(
+			&convert,
+			boost::python::type_id<CBasePlayer>()
+		);
+	}
+
+	static void* convert(PyObject* obj)
+	{
+		CBaseEntityWrapper *pEntity = extract<CBaseEntityWrapper*>(obj);
+		return (void *)(pEntity && pEntity->IsPlayer() ? pEntity : NULL);
+	}
+};
+
+struct baseplayer_index_from_python
+{
+	baseplayer_index_from_python()
+	{
+		boost::python::converter::registry::insert(
+			&convert,
+			boost::python::type_id<CBasePlayer>()
+		);
+	}
+
+	static void* convert(PyObject* obj)
+	{
+		extract<unsigned int> extractor(obj);
+		if (!extractor.check()) {
+			return NULL;
+		}
+
+		CBaseEntityWrapper *pEntity =
+			reinterpret_cast<CBaseEntityWrapper *>(ExcBaseEntityFromIndex(extractor()));
+		return (void *)(pEntity->IsPlayer() ? pEntity : NULL);
 	}
 };
 
@@ -460,6 +515,10 @@ void InitConverters()
 	baseentity_from_python();
 	baseentity_index_from_python();
 	
+	baseplayer_to_python();
+	baseplayer_from_python();
+	baseplayer_index_from_python();
+
 	void_ptr_to_python();
 	void_ptr_from_python();
 	

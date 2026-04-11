@@ -34,6 +34,7 @@
 using namespace boost::python;
 
 #include "modules/entities/entities_entity.h"
+#include "game/shared/igamemovement.h"
 
 
 //-----------------------------------------------------------------------------
@@ -97,6 +98,9 @@ public:
 	bool GetIsDucking();
 	void SetIsDucking(bool value);
 
+	float GetDuckTime();
+	void SetDuckTime(float value);
+
 	unsigned short GetFlags();
 	void SetFlags(unsigned short value);
 
@@ -131,6 +135,9 @@ public:
 
 	int GetButtons();
 	void SetButtons(int value);
+
+	int GetLastButtons();
+	void SetLastButtons(int value);
 
 	int GetHiddenHUDs();
 	void SetHiddenHUDs(int value);
@@ -230,6 +237,8 @@ public:
 
 	int GetRagdoll();
 	void SetRagdoll(int value);
+
+	CMoveData *GetMoveData();
 
 	// HL2
 	unsigned char GetActiveDevices();
