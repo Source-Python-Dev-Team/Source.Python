@@ -27,6 +27,8 @@
 // --------------------------------------------------------
 // Includes
 // --------------------------------------------------------
+#include <cstring>
+
 #include "sp_python.h"
 #include "sp_main.h"
 #include "interface.h"
@@ -255,6 +257,30 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 		return false;
 	}
 
+#ifdef SOURCEPYTHON_X86_64
+	// SetCacheNotify does not expose the previous notifier. Discover its slot
+	// from the single pointer changed in a bounded snapshot of the interface.
+	const size_t cacheSnapshotSize = 256;
+	unsigned char cacheSnapshot[cacheSnapshotSize];
+	memcpy(cacheSnapshot, modelcache, cacheSnapshotSize);
+
+	DevMsg(1, MSG_PREFIX "Setting the new cache notifier...\n");
+	modelcache->SetCacheNotify(this);
+
+	for (size_t offset = 0; offset + sizeof(void*) <= cacheSnapshotSize;
+		offset += sizeof(void*)) {
+		IMDLCacheNotify* currentNotifier = NULL;
+		memcpy(&currentNotifier,
+			reinterpret_cast<unsigned char*>(modelcache) + offset,
+			sizeof(currentNotifier));
+		if (currentNotifier != this)
+			continue;
+
+		memcpy(&m_pOldMDLCacheNotifier, cacheSnapshot + offset,
+			sizeof(m_pOldMDLCacheNotifier));
+		break;
+	}
+#else
 	// TODO: Don't hardcode the 64 bytes offset
 #ifdef ENGINE_LEFT4DEAD2
 	#define CACHE_NOTIFY_OFFSET 68
@@ -267,6 +293,7 @@ bool CSourcePython::Load(	CreateInterfaceFn interfaceFactory, CreateInterfaceFn 
 
 	DevMsg(1, MSG_PREFIX "Setting the new cache notifier...\n");
 	modelcache->SetCacheNotify(this);
+#endif
 
 	g_EntityHooks.push_back(new PlayerHook(
 		"run_command",

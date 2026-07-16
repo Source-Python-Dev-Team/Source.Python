@@ -64,6 +64,7 @@ from _core import SOURCE_ENGINE_BRANCH
 # >> ALL DECLARATION
 # =============================================================================
 __all__ = ('AutoUnload',
+           'ARCHITECTURE',
            'BoostPythonClass',
            'ConfigFile',
            'GameConfigObj',
@@ -94,6 +95,7 @@ GAME_NAME = GAME_PATH.name
 
 # Get the platform the server is on
 PLATFORM = system().lower()
+ARCHITECTURE = 'x86_64' if sys.maxsize > 2 ** 32 else 'x86'
 
 
 # =============================================================================

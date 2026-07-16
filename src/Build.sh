@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/usr/bin/env bash
 
 # Store the start directory for later reference
 STARTDIR="$PWD"
@@ -131,14 +131,14 @@ CreateBuild () {
     cd "$STARTDIR"
 
     # Set the branch's build directory
-    BUILDDIR="$STARTDIR/Builds/Linux/$BRANCH"
+    BUILDDIR="$STARTDIR/Builds/Linux/$BRANCH-$ARCH"
 
     # Does the build directory exist (make it if not)?
     if [ ! -d "$BUILDDIR" ]; then
         mkdir -p "$BUILDDIR"
     fi
 
-    cmake . -B"$BUILDDIR" -DBRANCH=$BRANCH
+    cmake . -B"$BUILDDIR" -DBRANCH=$BRANCH -DSOURCEPYTHON_ARCH=$ARCH
 
     # Navigate to the ../Builds/<Branch> directory
     cd "$BUILDDIR"
@@ -152,7 +152,13 @@ CreateBuild () {
     test ${PIPESTATUS[0]} -eq 0
 
 }
-if [ "$#" -eq "1" ]; then
+ARCH=${2:-x86}
+if [ "$ARCH" != "x86" ] && [ "$ARCH" != "x86_64" ]; then
+    echo "Usage: $0 [branch] [x86|x86_64]"
+    exit 2
+fi
+
+if [ "$#" -ge "1" ]; then
     BRANCH=$1
     CloneRepo
 else

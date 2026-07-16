@@ -144,6 +144,16 @@ def setup_data():
     from memory.manager import manager
     from paths import SP_DATA_PATH
 
+    try:
+        from _entities import _global_entity_list
+    except ImportError:
+        pass
+    else:
+        manager.global_pointers.setdefault(
+            'CGlobalEntityList', _global_entity_list)
+        manager.global_pointers.setdefault(
+            'GlobalEntityList', _global_entity_list)
+
     import players
     players.BaseClient = manager.create_type_from_dict(
         'BaseClient',
@@ -450,6 +460,7 @@ def setup_versioning():
 # =============================================================================
 def setup_sqlite():
     """Pre-load libsqlite3.so.0 on Linux."""
+    from core import ARCHITECTURE
     from core import PLATFORM
     if PLATFORM != 'linux':
         return
@@ -463,8 +474,9 @@ def setup_sqlite():
     # version installed. This fixes the issue by loading the library into the
     # memory using its absolute path.
     # Using RPATH might be a better solution, but I don't get it working...
+    platform_dir = 'plat-linux64' if ARCHITECTURE == 'x86_64' else 'plat-linux'
     ctypes.cdll.LoadLibrary(
-    	BASE_PATH / 'Python3/plat-linux/libsqlite3.so.0')
+        BASE_PATH / 'Python3' / platform_dir / 'libsqlite3.so.0')
 
 
 # =============================================================================

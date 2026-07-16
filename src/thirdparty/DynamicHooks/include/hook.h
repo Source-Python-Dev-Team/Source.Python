@@ -36,6 +36,7 @@
 // ============================================================================
 #include <list>
 #include <map>
+#include <stddef.h>
 
 #include "registers.h"
 #include "convention.h"
@@ -118,6 +119,11 @@ public:
 	m_pRegisterPre in a pre-hook and m_pRegisterPost in a post-hook.
 	*/
 	CRegisters* GetRegisters();
+#if defined(__linux__) && defined(__x86_64__)
+	bool GetUsePreRegisters();
+	void SetUsePreRegisters(bool value);
+	void* GetCurrentReturnAddress();
+#endif
 
 	template<class T>
 	T GetArgument(int iIndex)
@@ -159,6 +165,14 @@ private:
 
 	bool CreatePostCallback();
 
+#if defined(__linux__) && defined(__x86_64__)
+	static bool DispatchPre(CHook* pHook, void* pSnapshot, void* pStack);
+	static void* DispatchPost(CHook* pHook, void* pSnapshot, void* pStack);
+	void SnapshotToRegisters(void* pSnapshot, CRegisters* pRegisters, bool bPost);
+	void RegistersToSnapshot(CRegisters* pRegisters, void* pSnapshot, bool bPost);
+	void CopyRegisters(CRegisters* pSource, CRegisters* pDestination);
+#endif
+
 	bool __cdecl HookHandler(HookType_t type);
 
 	void* __cdecl GetReturnAddress(void* pESP);
@@ -190,6 +204,16 @@ public:
 	bool m_bUsePreRegisters;
 
 	asmjit::JitRuntime m_asmjit_rt;
+
+#if defined(__linux__) && defined(__x86_64__)
+	// Appended so the layout of all existing x86 members remains unchanged.
+	size_t m_iCopiedBytes;
+	size_t m_iTrampolineSize;
+	void* m_pRelay;
+	size_t m_iRelaySize;
+	unsigned char m_CopiedBytes[32];
+	bool m_bTargetPatched;
+#endif
 };
 
 #endif // _HOOK_H

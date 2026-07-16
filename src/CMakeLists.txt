@@ -4,6 +4,18 @@
 CMake_Minimum_Required(VERSION 3.15)
 project(source-python)
 
+Set(SOURCEPYTHON_ARCH "x86" CACHE STRING "Target architecture (x86 or x86_64)")
+Set_Property(CACHE SOURCEPYTHON_ARCH PROPERTY STRINGS x86 x86_64)
+If(NOT SOURCEPYTHON_ARCH MATCHES "^(x86|x86_64)$")
+    Message(FATAL_ERROR "SOURCEPYTHON_ARCH must be x86 or x86_64")
+EndIf()
+If(SOURCEPYTHON_ARCH STREQUAL "x86_64")
+    If(NOT UNIX OR NOT BRANCH STREQUAL "hl2dm")
+        Message(FATAL_ERROR "x86_64 is currently supported only for Linux HL2DM")
+    EndIf()
+    Add_Definitions(-DSOURCEPYTHON_X86_64)
+EndIf()
+
 # ------------------------------------------------------------------
 # Makefile includes.
 # ------------------------------------------------------------------

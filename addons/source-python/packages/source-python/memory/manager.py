@@ -771,10 +771,15 @@ class TypeManager(dict):
 
         # Create the global pointer objects
         for name, data in pointers:
+            if name in self.global_pointers:
+                continue
             cls = self.get_class(name)
             if cls is None:
                 raise NameError('Unknown class "{0}".'.format(name))
 
+            if cls.__name__ in self.global_pointers:
+                self.global_pointers[name] = self.global_pointers[cls.__name__]
+                continue
             self.global_pointer(cls, *data)
 
     def get_global_pointer(self, name):

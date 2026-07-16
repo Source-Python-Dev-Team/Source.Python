@@ -161,7 +161,8 @@ void InitHooks(CBaseEntity* pEntity)
 //---------------------------------------------------------------------------------
 bool PrePlayerRunCommand(HookType_t hook_type, CHook* pHook)
 {
-	bool bUsePreRegister;
+	bool bUsePreRegister = false;
+	bool bRestoreRegisterSelection = false;
 
 	if (hook_type == HOOKTYPE_PRE) {
 		GET_LISTENER_MANAGER(OnPlayerRunCommand, run_command_manager);
@@ -171,21 +172,38 @@ bool PrePlayerRunCommand(HookType_t hook_type, CHook* pHook)
 			return false;
 	}
 	else {
-		bUsePreRegister = pHook->m_bUsePreRegisters;
-		pHook->m_bUsePreRegisters = true;
-
 		GET_LISTENER_MANAGER(OnPlayerPostRunCommand, post_run_command_manager);
 
 		if (!post_run_command_manager->GetCount())
 			return false;
+
+		// Arguments belong to the function-entry snapshot.  On x86-64 the
+		// active register set is invocation-local, so changing the legacy
+		// CHook member does not select the pre-hook registers.
+#ifdef SOURCEPYTHON_X86_64
+		bUsePreRegister = pHook->GetUsePreRegisters();
+		pHook->SetUsePreRegisters(true);
+#else
+		bUsePreRegister = pHook->m_bUsePreRegisters;
+		pHook->m_bUsePreRegisters = true;
+#endif
+		bRestoreRegisterSelection = true;
 	}
 
 	static object Player = import("players.entity").attr("Player");
 
 	CBaseEntity* pEntity = pHook->GetArgument<CBaseEntity*>(0);
 	unsigned int index;
-	if (!IndexFromBaseEntity(pEntity, index))
+	if (!IndexFromBaseEntity(pEntity, index)) {
+		if (bRestoreRegisterSelection) {
+#ifdef SOURCEPYTHON_X86_64
+			pHook->SetUsePreRegisters(bUsePreRegister);
+#else
+			pHook->m_bUsePreRegisters = bUsePreRegister;
+#endif
+		}
 		return false;
+	}
 	
 	// https://github.com/Source-Python-Dev-Team/Source.Python/issues/149
 #if defined(ENGINE_BRANCH_TF2)
@@ -222,8 +240,12 @@ bool PrePlayerRunCommand(HookType_t hook_type, CHook* pHook)
 	memcpy(pRealCmd, pCmd, sizeof(CUserCmd));
 #endif
 
-	if (hook_type == HOOKTYPE_POST) {
+	if (bRestoreRegisterSelection) {
+#ifdef SOURCEPYTHON_X86_64
+		pHook->SetUsePreRegisters(bUsePreRegister);
+#else
 		pHook->m_bUsePreRegisters = bUsePreRegister;
+#endif
 	}
 
 	return false;

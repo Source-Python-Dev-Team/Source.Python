@@ -58,21 +58,33 @@ public:
 
 	void* GetReturnAddress()
 	{
+#ifdef SOURCEPYTHON_X86_64
+		return m_pHook->GetCurrentReturnAddress();
+#else
 		void* pESP = m_pHook->GetRegisters()->m_esp->GetValue<void*>();
 		if (m_pHook->m_RetAddr.count(pESP) == 0) {
 			return NULL;
 		}
 		return m_pHook->m_RetAddr[pESP].back();
+#endif
 	}
 
 	bool GetUsePreRegister()
 	{
+#ifdef SOURCEPYTHON_X86_64
+		return m_pHook->GetUsePreRegisters();
+#else
 		return m_pHook->m_bUsePreRegisters;
+#endif
 	}
 
 	void SetUsePreRegisters(bool value)
 	{
+#ifdef SOURCEPYTHON_X86_64
+		m_pHook->SetUsePreRegisters(value);
+#else
 		m_pHook->m_bUsePreRegisters = value;
+#endif
 	}
 
 protected:
