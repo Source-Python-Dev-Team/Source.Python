@@ -527,7 +527,7 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 		}
 	}
 
-	unsigned long ulSize;
+	unsigned long ulSize = 0;
 
 #ifdef _WIN32
 	IMAGE_DOS_HEADER* dos = (IMAGE_DOS_HEADER *) ulModule;
@@ -539,13 +539,24 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 	// Copied from here. Thanks!
 	// https://github.com/alliedmodders/sourcemod/blob/237db0504c7a59e394828446af3e8ca3d53ef647/core/logic/MemoryUtils.cpp#L486
 
-	Elf32_Ehdr *file;
-	Elf32_Phdr *phdr;
+#ifdef SOURCEPYTHON_X86_64
+	typedef Elf64_Ehdr ElfHeader;
+	typedef Elf64_Phdr ElfProgramHeader;
+	const unsigned char expectedClass = ELFCLASS64;
+	const Elf64_Half expectedMachine = EM_X86_64;
+#else
+	typedef Elf32_Ehdr ElfHeader;
+	typedef Elf32_Phdr ElfProgramHeader;
+	const unsigned char expectedClass = ELFCLASS32;
+	const Elf32_Half expectedMachine = EM_386;
+#endif
+	ElfHeader *file;
+	ElfProgramHeader *phdr;
 	uint16_t phdrCount;
 
 	struct link_map *lm = (struct link_map*) ulModule;
 	ulBase = reinterpret_cast<uintptr_t>(lm->l_addr);
-	file = reinterpret_cast<Elf32_Ehdr *>(ulBase);
+	file = reinterpret_cast<ElfHeader *>(ulBase);
 
 	/* Check ELF magic */
 	if (memcmp(ELFMAG, file->e_ident, SELFMAG) != 0)
@@ -559,10 +570,10 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "ELF version check failed.");
 	}
 
-	/* Check ELF architecture, which is 32-bit/x86 right now
-	 * Should change this for 64-bit if Valve gets their act together
-	 */
-	if (file->e_ident[EI_CLASS] != ELFCLASS32 || file->e_machine != EM_386 || file->e_ident[EI_DATA] != ELFDATA2LSB)
+	/* Reject binaries for the other architecture before interpreting headers. */
+	if (file->e_ident[EI_CLASS] != expectedClass ||
+		file->e_machine != expectedMachine ||
+		file->e_ident[EI_DATA] != ELFDATA2LSB)
 	{
 		BOOST_RAISE_EXCEPTION(PyExc_ValueError, "ELF architecture check failed.");
 	}
@@ -574,14 +585,15 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 	}
 
 	phdrCount = file->e_phnum;
-	phdr = reinterpret_cast<Elf32_Phdr *>(ulBase + file->e_phoff);
+	phdr = reinterpret_cast<ElfProgramHeader *>(ulBase + file->e_phoff);
 
 	for (uint16_t i = 0; i < phdrCount; i++)
 	{
-		Elf32_Phdr &hdr = phdr[i];
+		ElfProgramHeader &hdr = phdr[i];
 
 		/* We only really care about the segment with executable code */
-		if (hdr.p_type == PT_LOAD && hdr.p_flags == (PF_X|PF_R))
+		if (hdr.p_type == PT_LOAD &&
+			(hdr.p_flags & (PF_X | PF_R)) == (PF_X | PF_R))
 		{
 			/* From glibc, elf/dl-load.c:
 			 * c->mapend = ((ph->p_vaddr + ph->p_filesz + GLRO(dl_pagesize) - 1) 
@@ -593,6 +605,12 @@ CBinaryFile* CBinaryManager::FindBinary(char* szPath, bool bSrvCheck /* = true *
 			ulSize = PAGE_ALIGN_UP(hdr.p_filesz);
 			break;
 		}
+	}
+
+	if (!ulSize)
+	{
+		BOOST_RAISE_EXCEPTION(
+			PyExc_ValueError, "No executable ELF load segment was found.");
 	}
 #else
 #error "BinaryManager::FindBinary() is not implemented on this OS"

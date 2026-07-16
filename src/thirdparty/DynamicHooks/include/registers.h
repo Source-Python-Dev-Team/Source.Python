@@ -42,7 +42,7 @@
 // ============================================================================
 // >> RegisterSize
 // ============================================================================
-enum RegisterSize : uint8_t {
+enum RegisterSize {
 	SIZE_INVALID = 0,
 	SIZE_BYTE = 1,
 	SIZE_WORD = 2,
@@ -141,6 +141,63 @@ enum Register_t
 	ST5,
 	ST6,
 	ST7,
+
+#if defined(__linux__) && defined(__x86_64__)
+	// Keep every x86 value above stable. 64-bit-only values are appended so
+	// existing users do not observe renumbered registers.
+	SPL,
+	BPL,
+	SIL,
+	DIL,
+	R8B,
+	R9B,
+	R10B,
+	R11B,
+	R12B,
+	R13B,
+	R14B,
+	R15B,
+	R8W,
+	R9W,
+	R10W,
+	R11W,
+	R12W,
+	R13W,
+	R14W,
+	R15W,
+	R8D,
+	R9D,
+	R10D,
+	R11D,
+	R12D,
+	R13D,
+	R14D,
+	R15D,
+	RAX,
+	RCX,
+	RDX,
+	RBX,
+	RSP,
+	RBP,
+	RSI,
+	RDI,
+	R8,
+	R9,
+	R10,
+	R11,
+	R12,
+	R13,
+	R14,
+	R15,
+	XMM8,
+	XMM9,
+	XMM10,
+	XMM11,
+	XMM12,
+	XMM13,
+	XMM14,
+	XMM15,
+#endif
 };
 
 
@@ -286,6 +343,62 @@ public:
 	CRegister* m_st5;
 	CRegister* m_st6;
 	CRegister* m_st7;
+
+#if defined(__linux__) && defined(__x86_64__)
+	// Appended to preserve the offsets of every legacy x86 member.
+	CRegister* m_spl;
+	CRegister* m_bpl;
+	CRegister* m_sil;
+	CRegister* m_dil;
+	CRegister* m_r8b;
+	CRegister* m_r9b;
+	CRegister* m_r10b;
+	CRegister* m_r11b;
+	CRegister* m_r12b;
+	CRegister* m_r13b;
+	CRegister* m_r14b;
+	CRegister* m_r15b;
+	CRegister* m_r8w;
+	CRegister* m_r9w;
+	CRegister* m_r10w;
+	CRegister* m_r11w;
+	CRegister* m_r12w;
+	CRegister* m_r13w;
+	CRegister* m_r14w;
+	CRegister* m_r15w;
+	CRegister* m_r8d;
+	CRegister* m_r9d;
+	CRegister* m_r10d;
+	CRegister* m_r11d;
+	CRegister* m_r12d;
+	CRegister* m_r13d;
+	CRegister* m_r14d;
+	CRegister* m_r15d;
+	CRegister* m_rax;
+	CRegister* m_rcx;
+	CRegister* m_rdx;
+	CRegister* m_rbx;
+	CRegister* m_rsp;
+	CRegister* m_rbp;
+	CRegister* m_rsi;
+	CRegister* m_rdi;
+	CRegister* m_r8;
+	CRegister* m_r9;
+	CRegister* m_r10;
+	CRegister* m_r11;
+	CRegister* m_r12;
+	CRegister* m_r13;
+	CRegister* m_r14;
+	CRegister* m_r15;
+	CRegister* m_xmm8;
+	CRegister* m_xmm9;
+	CRegister* m_xmm10;
+	CRegister* m_xmm11;
+	CRegister* m_xmm12;
+	CRegister* m_xmm13;
+	CRegister* m_xmm14;
+	CRegister* m_xmm15;
+#endif
 };
 
 #endif // _REGISTERS_H

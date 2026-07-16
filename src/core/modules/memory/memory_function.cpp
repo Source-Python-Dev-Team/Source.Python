@@ -38,12 +38,16 @@
 #include "memory_wrap.h"
 
 // DynamicHooks
+#ifdef SOURCEPYTHON_X86_64
+#include "conventions/x64GccSystemV.h"
+#else
 #include "conventions/x86MsCdecl.h"
 #include "conventions/x86MsThiscall.h"
 #include "conventions/x86MsStdcall.h"
 #include "conventions/x86MsFastcall.h"
 #include "conventions/x86GccCdecl.h"
 #include "conventions/x86GccThiscall.h"
+#endif
 
 // Source.Python
 #include "utilities/call_python.h"
@@ -71,10 +75,14 @@ int GetDynCallConvention(Convention_t eConv)
 		case CONV_CUSTOM: return -1;
 		case CONV_CDECL: return DC_CALL_C_DEFAULT;
 		case CONV_THISCALL:
+			#ifdef SOURCEPYTHON_X86_64
+				return DC_CALL_C_DEFAULT;
+			#else
 			#ifdef _WIN32
 				return DC_CALL_C_X86_WIN32_THIS_MS;
 			#else
 				return DC_CALL_C_X86_WIN32_THIS_GNU;
+			#endif
 			#endif
 #ifdef _WIN32
 		case CONV_STDCALL: return DC_CALL_C_X86_WIN32_STD;
@@ -92,6 +100,14 @@ int GetDynCallConvention(Convention_t eConv)
 // ============================================================================
 ICallingConvention* MakeDynamicHooksConvention(Convention_t eConv, std::vector<DataType_t> vecArgTypes, DataType_t returnType, int iAlignment)
 {
+#ifdef SOURCEPYTHON_X86_64
+	switch (eConv)
+	{
+	case CONV_CDECL:
+	case CONV_THISCALL:
+		return new x64GccSystemV(vecArgTypes, returnType, iAlignment);
+	}
+#else
 #ifdef _WIN32
 	switch (eConv)
 	{
@@ -106,6 +122,7 @@ ICallingConvention* MakeDynamicHooksConvention(Convention_t eConv, std::vector<D
 	case CONV_CDECL: return new x86GccCdecl(vecArgTypes, returnType, iAlignment);
 	case CONV_THISCALL: return new x86GccThiscall(vecArgTypes, returnType, iAlignment);
 	}
+#endif
 #endif
 
 	BOOST_RAISE_EXCEPTION(PyExc_ValueError, "Unsupported calling convention.")

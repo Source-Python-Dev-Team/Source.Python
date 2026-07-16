@@ -21,7 +21,8 @@ Set(THIRDPARTY_DIR       ${CMAKE_CURRENT_SOURCE_DIR}/thirdparty)
 # ------------------------------------------------------------------
 # SDK Directories.
 # ------------------------------------------------------------------
-Set(SOURCESDK            ${SOURCESDK_DIR}/${BRANCH})
+Set(SOURCEPYTHON_SDK "${SOURCESDK_DIR}/${BRANCH}" CACHE PATH "Path to the HL2SDK checkout")
+Set(SOURCESDK            ${SOURCEPYTHON_SDK})
 Set(SOURCESDK_LIB        ${SOURCESDK}/lib)
 
 # ------------------------------------------------------------------

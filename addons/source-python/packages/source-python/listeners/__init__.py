@@ -694,14 +694,22 @@ else:
     # To remind us to add newly supported engines...
     raise NotImplementedError('No hibernation function exposed.')
 
-@PreHook(get_virtual_function(server_game_dll, _hibernation_function_name))
-def _pre_hibernation_function(stack_data):
-    """Called when the server is hibernating."""
-    if not stack_data[1]:
-        return
+try:
+    _hibernation_function = get_virtual_function(
+        server_game_dll, _hibernation_function_name)
+    _hibernation_hook = PreHook(_hibernation_function)
+except (OSError, ValueError) as error:
+    from warnings import warn
+    warn('Unable to install the hibernation hook: {0}'.format(error))
+else:
+    @_hibernation_hook
+    def _pre_hibernation_function(stack_data):
+        """Called when the server is hibernating."""
+        if not stack_data[1]:
+            return
 
-    # Disconnect all bots...
-    _disconnect_bots()
+        # Disconnect all bots...
+        _disconnect_bots()
 
 
 @OnLevelEnd

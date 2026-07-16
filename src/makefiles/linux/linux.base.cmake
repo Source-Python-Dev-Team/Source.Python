@@ -20,7 +20,15 @@ Endif(NOT CMAKE_BUILD_TYPE)
 # ------------------------------------------------------------------
 # Python directories
 # ------------------------------------------------------------------
-Set(PYTHONSDK            ${THIRDPARTY_DIR}/python_linux)
+If(SOURCEPYTHON_ARCH STREQUAL "x86_64")
+    Set(PYTHONSDK            ${THIRDPARTY_DIR}/python_linux64)
+    Set(BOOSTSDK_LIB         ${BOOSTSDK_LIB}/linux64)
+    Set(DYNCALLSDK_LIB       ${DYNCALLSDK_LIB}/linux64)
+    Set(ASMJITSDK_LIB        ${ASMJITSDK_LIB}/linux64)
+    Set(DYNAMICHOOKSSDK_LIB  ${DYNAMICHOOKSSDK_LIB}/linux64)
+Else()
+    Set(PYTHONSDK            ${THIRDPARTY_DIR}/python_linux)
+EndIf()
 Set(PYTHONSDK_INCLUDE    ${PYTHONSDK}/include)
 Set(PYTHONSDK_LIB        ${PYTHONSDK}/libs)
 
@@ -50,6 +58,14 @@ If(SOURCE_ENGINE MATCHES "bms")
         ${SOURCESDK_LIB}/public/linux32/tier3.a
         ${SOURCESDK_LIB}/public/linux32/libtier0_srv.so
         ${SOURCESDK_LIB}/public/linux32/libvstdlib_srv.so
+    )
+ElseIf(SOURCE_ENGINE MATCHES "orangebox" AND SOURCEPYTHON_ARCH STREQUAL "x86_64")
+    Set(SOURCEPYTHON_LINK_LIBRARIES
+        "${SOURCEPYTHON_LINK_LIBRARIES}"
+        ${SOURCESDK_LIB}/public/linux64/mathlib.a
+        ${SOURCESDK_LIB}/public/linux64/tier1.a
+        ${SOURCESDK_LIB}/public/linux64/libtier0.so
+        ${SOURCESDK_LIB}/public/linux64/libvstdlib.so
     )
 ElseIf(SOURCE_ENGINE MATCHES "orangebox")
     Set(SOURCEPYTHON_LINK_LIBRARIES
@@ -115,8 +131,12 @@ Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-conversion-null -Wno-write-strings"
 Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-invalid-offsetof -Wno-reorder")
 
 # Others
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpmath=sse -msse -m32 -fno-strict-aliasing")
-Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fno-threadsafe-statics -v -fvisibility=hidden")
+If(SOURCEPYTHON_ARCH STREQUAL "x86_64")
+    Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC -fno-strict-aliasing")
+Else()
+    Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -mfpmath=sse -msse -m32 -fno-strict-aliasing")
+EndIf()
+Set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -fno-threadsafe-statics -fvisibility=hidden")
 
 
 # ------------------------------------------------------------------
@@ -145,3 +165,14 @@ Set(SOURCEPYTHON_LINK_LIBRARIES_RELEASE
     ${DYNCALLSDK_LIB}/libdynload_s.a
     rt
 )
+
+If(SOURCEPYTHON_ARCH STREQUAL "x86_64")
+    Set_Target_Properties(source-python PROPERTIES
+        BUILD_WITH_INSTALL_RPATH TRUE
+        INSTALL_RPATH ""
+    )
+    Set_Target_Properties(core PROPERTIES
+        BUILD_WITH_INSTALL_RPATH TRUE
+        INSTALL_RPATH "\$ORIGIN/../Python3/plat-linux64"
+    )
+EndIf()

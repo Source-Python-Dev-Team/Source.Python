@@ -149,11 +149,21 @@ bool CPythonManager::Initialize( void )
 	if (!AddToSysPath(config, "/Python3/plat-win"))
 		return false;
 #else
+#if defined(SOURCEPYTHON_X86_64)
+	if (!AddToSysPath(config, "/Python3/plat-linux64"))
+		return false;
+#else
 	if (!AddToSysPath(config, "/Python3/plat-linux"))
 		return false;
+#endif
 
+#if defined(SOURCEPYTHON_X86_64)
+	if (!AddToSysPath(config, "/Python3/lib-dynload-linux64"))
+		return false;
+#else
 	if (!AddToSysPath(config, "/Python3/lib-dynload"))
 		return false;
+#endif
 #endif
 
 	if (!AddToSysPath(config, "/packages/site-packages"))
