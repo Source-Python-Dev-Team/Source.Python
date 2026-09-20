@@ -137,7 +137,11 @@ bool IndexFromIntHandle( unsigned int iEntityHandle, unsigned int& output )
 	if (iEntityHandle == (int) INVALID_EHANDLE_INDEX)
 		return false;
 
-	CBaseHandle hBaseHandle(iEntityHandle);
+#ifndef ENGINE_ORANGEBOX
+	CBaseHandle hBaseHandle = CBaseHandle(iEntityHandle);
+#else
+	CBaseHandle hBaseHandle = CBaseHandle::UnsafeFromIndex(iEntityHandle);
+#endif
 	unsigned int iEntityIndex;
 	if (!IndexFromBaseHandle(hBaseHandle, iEntityIndex))
 		return false;

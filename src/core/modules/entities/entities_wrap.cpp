@@ -94,10 +94,18 @@ DECLARE_SP_MODULE(_entities)
 //-----------------------------------------------------------------------------
 void export_base_entity_handle(scope _entities)
 {
+#ifndef ENGINE_ORANGEBOX
 	class_<CBaseHandle>("BaseEntityHandle")
 		.def(init<CBaseHandle&>())
 		.def(init<unsigned long>())
 		.def(init<int, int>())
+#else
+	class_<CBaseHandle, boost::shared_ptr<CBaseHandle>>("BaseEntityHandle")
+		.def(init<CBaseHandle&>())
+		.def(init<int, int>())
+
+		.def("__init__", make_constructor(&CBaseHandleExt::__init__))
+#endif
 
 		.def("init",
 			&CBaseHandle::Init,

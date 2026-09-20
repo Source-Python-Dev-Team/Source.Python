@@ -73,7 +73,11 @@ bool BaseHandleFromIndex( unsigned int iEntityIndex, CBaseHandle& output )
 //-----------------------------------------------------------------------------
 bool BaseHandleFromIntHandle( unsigned int iEntityHandle, CBaseHandle& output )
 {
+#ifndef ENGINE_ORANGEBOX
 	CBaseHandle hBaseHandle = CBaseHandle(iEntityHandle);
+#else
+	CBaseHandle hBaseHandle = CBaseHandle::UnsafeFromIndex(iEntityHandle);
+#endif
 	unsigned int iIndex;
 	if (!IndexFromBaseHandle(hBaseHandle, iIndex))
 		return false;
